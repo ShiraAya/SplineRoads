@@ -15,34 +15,36 @@ public final class LaneDeck {
     var out=new ArrayList<Integer>();for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.temporary()&&!out.contains(cut.lane()))out.add(cut.lane());
     var at=RoadStructures.sample(raw,d);out.sort(Comparator.comparingDouble(slot->LanePoints.lane(raw,d,slot).position().sub(at.center()).dot(at.left())));return out;
   }
-  private static List<Span> holes(Mesh mesh,Sample sample){
+  private static List<Span> holes(Mesh mesh,Sample sample){return holes(mesh,sample,sample.distance());}
+  private static List<Span> holes(Mesh mesh,Sample sample,double interval){
     var raw=LaneSections.reference(mesh);var holes=new ArrayList<Span>();
     for(int slot:slots(mesh)){
-      double removed=0;for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.temporary()&&cut.lane()==slot)removed=Math.max(removed,cut.removed(sample.distance()));
+      double removed=0;for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.temporary()&&cut.lane()==slot)removed=Math.max(removed,cut.removed(cut.arrival()&&Math.abs(sample.distance()-cut.end())<1e-7?interval:sample.distance()));
       var lane=LanePoints.lane(raw,sample.distance(),slot);
       double center=lane.position().sub(sample.center()).dot(sample.left()),half=lane.width()*removed/2;
       double lo=Math.max(-sample.halfWidth(),Math.min(sample.halfWidth(),center-half));
       double hi=Math.max(lo,Math.min(sample.halfWidth(),center+half));holes.add(new Span(lo,hi,false,false));
     }return holes;
   }
-  public static List<Span> spans(Mesh mesh,Sample sample){
+  public static List<Span> spans(Mesh mesh,Sample sample){return spans(mesh,sample,sample.distance());}
+  private static List<Span> spans(Mesh mesh,Sample sample,double interval){
     if(!hasOpenings(mesh))return List.of(new Span(-sample.halfWidth(),sample.halfWidth(),true,true));
     var out=new ArrayList<Span>();double low=-sample.halfWidth();boolean wall=true;
-    for(var hole:holes(mesh,sample)){
+    for(var hole:holes(mesh,sample,interval)){
       double high=Math.max(low,hole.low());boolean open=hole.high()-hole.low()>1e-7;
       out.add(new Span(low,high,wall,open));low=Math.max(low,hole.high());wall=open;
     }
     out.add(new Span(low,sample.halfWidth(),wall,true));return out;
   }
   public static List<Strip> strips(Mesh mesh,Sample a,Sample b){
-    var aa=spans(mesh,a);var bb=spans(mesh,b);var result=new ArrayList<Strip>();
+    double probe=(a.distance()+b.distance())/2;var aa=spans(mesh,a,probe);var bb=spans(mesh,b,probe);var result=new ArrayList<Strip>();
     for(int i=0;i<aa.size();i++){
       var x=aa.get(i);var y=bb.get(i);if(Math.max(x.high()-x.low(),y.high()-y.low())<1e-8)continue;
       result.add(new Strip(a.at(x.high(),0),a.at(x.low(),0),b.at(y.high(),0),b.at(y.low(),0),x.lowWall()||y.lowWall(),x.highWall()||y.highWall()));
     }return result;
   }
   public static List<List<V>> holeQuads(Mesh mesh,Sample a,Sample b){
-    var aa=holes(mesh,a);var bb=holes(mesh,b);var out=new ArrayList<List<V>>();
+    double probe=(a.distance()+b.distance())/2;var aa=holes(mesh,a,probe);var bb=holes(mesh,b,probe);var out=new ArrayList<List<V>>();
     for(int i=0;i<aa.size();i++){var x=aa.get(i);var y=bb.get(i);
       if(Math.max(x.high()-x.low(),y.high()-y.low())>1e-8)out.add(List.of(a.at(x.high(),0),a.at(x.low(),0),b.at(y.low(),0),b.at(y.high(),0)));
     }return out;
@@ -62,6 +64,20 @@ public final class LaneDeck {
       var bounds=RoadRibbon.mesh(subset,mesh.settings());
       out.add(new Mesh(subset,mesh.settings(),bounds.min(),bounds.max(),mesh.length(),false,null,mesh.controls(),LaneSections.reference(mesh)));start=i;
     }return out;
+  }
+  /** Motor bands and the median, not shoulders which form part of the joining mouth. */
+  public static Mesh motorOnly(Mesh host){
+    var samples=new ArrayList<Sample>();
+    for(var sample:host.samples()){
+      var l=RoadProfile.layout(host,sample);samples.add(new Sample(sample.at(l.motorCenter(),0),sample.left(),sample.distance(),(l.motorMax()-l.motorMin())/2));
+    }
+    return new Mesh(List.copyOf(samples),host.settings(),host.min(),host.max(),host.length(),host.closed(),host.controlPoint(),host.controls(),LaneSections.reference(host));
+  }
+  public static Mesh excludingSlot(Mesh host,int slot){
+    var cuts=new ArrayList<>(host.settings().options().lanePoints().cuts());
+    cuts.add(new LaneSections.Cut(new UUID(0,slot+1),slot,1,-1024,host.length()+1024,2,null,true));
+    var settings=host.settings().options(host.settings().options().lanePoints(host.settings().options().lanePoints().cuts(cuts)));
+    return new Mesh(host.samples(),settings,host.min(),host.max(),host.length(),host.closed(),host.controlPoint(),host.controls(),LaneSections.reference(host));
   }
   private LaneDeck(){}
 }

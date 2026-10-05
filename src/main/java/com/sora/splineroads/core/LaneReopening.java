@@ -15,6 +15,20 @@ public final class LaneReopening {
     if(end<.001||end>raw.length()-.001)throw new IllegalArgumentException("匝道/结构未在本路段让出通行空间，或不足以渐变恢复车道；请延长主路或调整汇入位置/高程");
     return end;
   }
+  /** Target lane closes before the FIRST unsafe upstream crossing, and remains closed
+   * right up to B, where the connector terminates on its lane axis. Other slots are unchanged. */
+  public static double closeBeforeStation(Mesh host,int slot,double end,Mesh ramp,List<RoadStructures.Part> parts,double transition){
+    var raw=LaneSections.reference(host);int sign=LanePoints.lane(raw,end,slot).sign();
+    var sweep=laneSweep(raw,slot);double first=sign*end;
+    var obstacles=new ArrayList<Mesh>();obstacles.add(ramp);for(var p:parts)obstacles.add(envelope(p,ramp.settings()));
+    for(var obstacle:obstacles)for(var c:RoadClearance.contacts(sweep,obstacle))if(c.blocked()){
+      double lo=sign>0?c.from():-c.to();if(lo<=sign*end+.01)first=Math.min(first,lo);
+      double hi=sign>0?c.to():-c.from();
+      if(hi>sign*end+.10)throw new IllegalArgumentException("匝道/结构在汇入点后仍侵入目标车道，不能在 B 强行开放");
+    }
+    double begin=(Math.min(sign*end-2*transition,first-transition-END_MARGIN))*sign;
+    return Math.max(0,Math.min(raw.length(),begin));
+  }
   private static double lastBlocked(Mesh sweep,Mesh obstacle,double begin,int sign,double last){
     for(var c:RoadClearance.contacts(sweep,obstacle))if(c.blocked()){
       double d=sign>0?c.to():-c.from();if(d>=sign*begin-.01)last=Math.max(last,d);

@@ -9,7 +9,8 @@ import java.util.*;
  * Slot IDs never renumber when an outer lane is absent. An absent slot remains a REPLACE target.
  */
 public final class LaneSections {
-  public record Cut(UUID connection,int lane,int sign,double begin,double end,double transition,UUID replacement,boolean temporary) {
+  public record Cut(UUID connection,int lane,int sign,double begin,double end,double transition,UUID replacement,boolean temporary,boolean arrival) {
+    public Cut(UUID connection,int lane,int sign,double begin,double end,double transition,UUID replacement,boolean temporary){this(connection,lane,sign,begin,end,transition,replacement,temporary,false);}
     public Cut(UUID connection,int lane,int sign,double begin,double end,double transition,UUID replacement){this(connection,lane,sign,begin,end,transition,replacement,false);}
     public Cut(UUID connection,int lane,int sign,double begin,double end,double transition){this(connection,lane,sign,begin,end,transition,null);}
     public Cut {
@@ -20,11 +21,12 @@ public final class LaneSections {
     public double removed(double station){
       double distance=sign*(end-begin);if(distance<1e-6)return 0;
       double span=Math.min(transition,distance/2);
+      if(arrival)return sign*(station-end)>=-1e-8?0:smooth(sign*(station-begin)/span);
       return Math.min(smooth(sign*(station-begin)/span),smooth(sign*(end-station)/span));
     }
     private static double smooth(double t){return Settings.smooth(Math.max(0,Math.min(1,t)));}
   }
-  public enum Kind { DEPART, REPLACE, TEMPORARY }
+  public enum Kind { DEPART, REPLACE, TEMPORARY, ARRIVE }
   public record Event(UUID connection,Kind kind,int lane,int sign,double station,double transition,double returnStation){
     public Event(UUID connection,Kind kind,int lane,int sign,double station,double transition){this(connection,kind,lane,sign,station,transition,Double.NaN);}
   }
@@ -32,7 +34,7 @@ public final class LaneSections {
   public static List<Cut> derive(Mesh mesh,List<Event> events){
     var raw=reference(mesh);var cuts=new ArrayList<Cut>();var used=new HashSet<UUID>();
     var ordered=new ArrayList<>(events);ordered.sort(Comparator.comparingDouble(e->e.station()*e.sign()));
-    for(Event event:ordered)if(event.kind()!=Kind.REPLACE){
+    for(Event event:ordered)if(event.kind()!=Kind.REPLACE&&event.kind()!=Kind.ARRIVE){
       var lane=LanePoints.lane(raw,event.station(),event.lane());
       var layout=RoadProfile.layout(raw,RoadStructures.sample(raw,event.station()));
       var c=layout.catalog();int per=c.lanes()/2;
@@ -55,6 +57,17 @@ public final class LaneSections {
         throw new IllegalArgumentException("同一车道空位内重复整车道分离；Y 分叉请使用普通分流（原车道直行）");
       if(replacement!=null&&!used.add(replacement.connection()))throw new IllegalArgumentException("补入车道同时匹配多个分离接头");
       cuts.add(new Cut(event.connection(),event.lane(),event.sign(),event.station(),end,event.transition(),replacement==null?null:replacement.connection(),event.kind()==Kind.TEMPORARY));
+    }
+    for(Event event:ordered)if(event.kind()==Kind.ARRIVE){
+      var lane=LanePoints.lane(raw,event.station(),event.lane());
+      if(lane.sign()!=event.sign())throw new IllegalArgumentException("汇入车道封闭方向与行驶方向不一致");
+      double begin=Double.isFinite(event.returnStation())?event.returnStation():(event.sign()>0?0:raw.length());
+      if(event.sign()*(event.station()-begin)<.02)continue; // Free start: no upstream target traffic.
+      if(begin<0||begin>raw.length()||event.station()<0||event.station()>raw.length())throw new IllegalArgumentException("汇入封闭范围超出实际宿主路段");
+      var cut=new Cut(event.connection(),event.lane(),event.sign(),begin,event.station(),event.transition(),null,true,true);
+      for(var old:cuts)if(old.lane()==cut.lane()&&Math.min(Math.max(old.begin(),old.end()),Math.max(cut.begin(),cut.end()))-Math.max(Math.min(old.begin(),old.end()),Math.min(cut.begin(),cut.end()))>.01)
+        throw new IllegalArgumentException("目标车道的汇入封闭与既有分离/汇入区间冲突，不能覆盖其他连接");
+      cuts.add(cut);
     }
     for(Event event:ordered)if(event.kind()==Kind.REPLACE&&!used.contains(event.connection()))
       throw new IllegalArgumentException("补入模式需要同一车道上游已经整车道分离形成空位；普通汇入请选并入现有车道");

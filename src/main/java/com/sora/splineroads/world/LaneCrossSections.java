@@ -23,7 +23,7 @@ public final class LaneCrossSections {
     for(var road:records.values())if(!road.id().equals(edited)){
       var link=LaneTopology.metadata(road).link();if(link==null)continue;
       if(hosts==null||hosts.contains(link.from().road())||hosts.contains(link.to().road()))
-        add(events,records,road.id(),link,hosts,link.options().departure()==LanePoints.Departure.TEMPORARY?road.rawMesh():null,road.structures());
+        add(events,records,road.id(),link,hosts,link.options().departure()==LanePoints.Departure.TEMPORARY||link.closesTarget()?road.rawMesh():null,road.structures());
     }
     if(proposal!=null)add(events,records,edited,proposal,hosts,candidate,List.of());
     for(var road:new ArrayList<>(records.values())){
@@ -48,6 +48,13 @@ public final class LaneCrossSections {
         }
       }
     }
+    if(link.closesTarget()&&(hosts==null||hosts.contains(link.to().road()))){
+      var target=all.get(link.to().road());if(target==null)throw new IllegalArgumentException("汇入目标道路已不存在");
+      var point=LaneTopology.point(target,link.to().point());var raw=target.rawMesh();var lane=LanePoints.lane(raw,point);
+      double end=lane.station()+lane.sign()*link.targetOffset();
+      double begin=candidate==null?Double.NaN:LaneReopening.closeBeforeStation(raw,point.lane(),end,candidate,parts,link.options().transition());
+      events.computeIfAbsent(target.id(),key->new ArrayList<>()).add(new LaneSections.Event(connection,LaneSections.Kind.ARRIVE,point.lane(),lane.sign(),end,link.options().transition(),begin));
+    }
     if(link.options().arrival()==LanePoints.Arrival.REPLACE&&(hosts==null||hosts.contains(link.to().road()))){
       if(link.to().road()==null)throw new IllegalArgumentException("路口中心不能作为车道空位补入目标");
       add(events,all,connection,link.to(),LaneSections.Kind.REPLACE,link.targetOffset(),link.options().transition());
@@ -65,8 +72,9 @@ public final class LaneCrossSections {
     Set<UUID> changes=new HashSet<>(changed),hosts=new HashSet<>();var all=new LinkedHashMap<UUID,RoadRecord>();
     for(var b:planning)all.put(b.record.id(),b.record);
     for(var r:all.values()){
-      var l=LaneTopology.metadata(r).link();if(l!=null&&l.options().departure()==LanePoints.Departure.TEMPORARY&&
-          (changes.contains(r.id())||changes.contains(l.from().road())))hosts.add(l.from().road());
+      var l=LaneTopology.metadata(r).link();if(l==null)continue;
+      if(l.options().departure()==LanePoints.Departure.TEMPORARY&&(changes.contains(r.id())||changes.contains(l.from().road())))hosts.add(l.from().road());
+      if(l.closesTarget()&&(changes.contains(r.id())||changes.contains(l.to().road())))hosts.add(l.to().road());
     }
     if(hosts.isEmpty())return false;var staged=new LinkedHashMap<>(all);derive(staged,null,null,hosts,null);
     for(UUID host:hosts)if(!LaneTopology.metadata(all.get(host)).cuts().equals(LaneTopology.metadata(staged.get(host)).cuts()))return true;

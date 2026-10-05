@@ -569,6 +569,11 @@ public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,
   public static Layout layout(Settings s, double actualWidth) {
     var c = catalog(s.style());
     var o = s.options();
+    // New precise lane connectors have one centred driveable strip. Inherit neither
+    // ordinary-road verge nor the highway's asymmetric shoulder at a four-block lane port.
+    // The persisted marker keeps old saved meshes unchanged until an explicit edit.
+    if(o.lanePoints().link()!=null&&o.lanePoints().link().protectedMerge()&&c.lanes()==1)
+      return new Layout(new Catalog(c.type(),1,false,Median.NONE,false),actualWidth,0,-actualWidth/2,actualWidth/2,0,0,0,trafficSign(o.leftTraffic()),null);
     int sides = c.twoWay() ? 2 : 1, outside = trafficSign(o.leftTraffic());
     double cycle = c.type() == Type.ORDINARY && o.cycle() ? 2.5+RoadStreetscape.separatorWidth(o) : 0,
         curb = c.type() == Type.ORDINARY && o.curb() ? .5 : 0;

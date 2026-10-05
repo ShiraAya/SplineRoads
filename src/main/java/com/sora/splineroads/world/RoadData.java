@@ -58,7 +58,7 @@ public final class RoadData extends SavedData {
 
   private static boolean rSign(RoadStructures.Part p){return p.material()==RoadStructures.Material.SIGN_GREEN||p.material()==RoadStructures.Material.SIGN_BLUE;}
   public static RoadData load(CompoundTag root) {
-    if (root.getInt("Version") > 36)
+    if (root.getInt("Version") > 37)
       throw new IllegalStateException("Spline Roads save is newer than this mod");
     long loadStarted=System.nanoTime();
     RoadData data = new RoadData();
@@ -93,7 +93,7 @@ public final class RoadData extends SavedData {
 
   @Override
   public CompoundTag save(CompoundTag root) {
-    root.putInt("Version", 36);
+    root.putInt("Version", 37);
     var cleanup=new ListTag();retiredSignsByChunk.forEach((chunk,parts)->{var t=new CompoundTag();t.putLong("Chunk",chunk);t.putByteArray("Parts",RoadRecord.packStructures(parts));cleanup.add(t);});root.put("RetiredSignCleanup",cleanup);
     ListTag logical=new ListTag();streets.values().forEach(r->logical.add(r.save()));root.put("LogicalStreets",logical);
     ListTag roads = new ListTag();
