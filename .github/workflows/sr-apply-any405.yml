@@ -7,7 +7,7 @@ permissions:
   contents: read
 jobs:
   apply:
-    if: github.repository == 'ShiraAya/SplineRoads' && github.event.head_commit.message == 'WIP: apply reviewed any-lane temporary separation checkpoint'
+    if: "github.repository == 'ShiraAya/SplineRoads' && github.event.head_commit.message == 'WIP: apply reviewed any-lane temporary separation checkpoint'"
     permissions:
       contents: write
     runs-on: ubuntu-latest
