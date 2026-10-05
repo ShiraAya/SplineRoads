@@ -6,5 +6,7 @@ CP=build/tunnel406/core/classes:src/main/resources
 javac --release 17 -encoding UTF-8 -cp "$CP" -d build/tunnel406/core/classes src/validation/java/com/sora/splineroads/Arrival417GeometryValidation.java
 java -Dfile.encoding=UTF-8 -Xmx1500m -XX:ActiveProcessorCount=2 -cp "$CP" com.sora.splineroads.Arrival417GeometryValidation | tee build/checkpoint-logs/Arrival417GeometryValidation.txt
 CP=build/tunnel406/core/classes:build/tunnel406/model/classes:src/main/resources
-javac --release 17 -encoding UTF-8 -cp "$CP" -d build/tunnel406/model/classes tools/model-validation/com/sora/splineroads/world/Arrival417ModelValidation.java
-java -Dfile.encoding=UTF-8 -Xmx1500m -XX:ActiveProcessorCount=2 -cp "$CP" com.sora.splineroads.world.Arrival417ModelValidation | tee build/checkpoint-logs/Arrival417ModelValidation.txt
+javac --release 17 -encoding UTF-8 -cp "$CP" -d build/tunnel406/model/classes tools/model-validation/com/sora/splineroads/world/Arrival417ModelValidation.java tools/model-validation/com/sora/splineroads/world/Arrival417ReconcileValidation.java
+for TEST in Arrival417ModelValidation Arrival417ReconcileValidation; do
+  java -Dfile.encoding=UTF-8 -Xmx1500m -XX:ActiveProcessorCount=2 -cp "$CP" "com.sora.splineroads.world.$TEST" | tee "build/checkpoint-logs/$TEST.txt"
+done

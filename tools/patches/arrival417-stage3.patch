@@ -1,0 +1,9 @@
+diff --git a/src/main/java/com/sora/splineroads/world/LaneRamps.java b/src/main/java/com/sora/splineroads/world/LaneRamps.java
+index d1267e8..28e4ee2 100644
+--- a/src/main/java/com/sora/splineroads/world/LaneRamps.java
++++ b/src/main/java/com/sora/splineroads/world/LaneRamps.java
+@@ -54,0 +55 @@ public final class LaneRamps {
++    base=base.options(base.options().lanePoints(base.options().lanePoints().link(link)));
+@@ -291 +292 @@ public final class LaneRamps {
+-      reply.putBoolean("TargetClosure",true);reply.putDouble("TargetClosedBefore",cut.sign()*(cut.end()-cut.begin()));break;
++      reply.putBoolean("TargetClosure",true);reply.putDouble("TargetClosedBefore",cut.sign()*(cut.end()-Math.max(0,Math.min(staging.get(to.road()).rawMesh().length(),cut.begin()))));break;
