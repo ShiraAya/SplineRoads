@@ -1,0 +1,55 @@
+name: SR 0.40.5 stage2 saved source and real Forge build
+on:
+  push:
+    branches: [chat/sr-0402]
+    paths: [.github/workflows/sr-0405-stage2.yml]
+permissions:
+  contents: write
+concurrency:
+  group: sr-0405-stage2
+  cancel-in-progress: false
+jobs:
+  save-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: chat/sr-0402
+          fetch-depth: 1
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Guard and save production changes before testing
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python tools/apply_0405_stage2.py
+          rm .github/workflows/sr-0405-stage2.yml
+          git config user.name 'SR checkpoint automation'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git add src build.gradle .github/workflows
+          git commit -m 'fix: space nearby physical shafts and split transaction profiling stages; release 0.40.5'
+          git push origin HEAD:refs/heads/chat/sr-0402
+      - name: Actual core model regressions and complete Forge compile
+        run: bash tools/check_release0405.sh
+      - name: Preserve saved source and logs even on failure
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr-0405-source-logs-${{ github.sha }}
+          path: build/checkpoint-logs/
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr-0405-compiled-${{ github.sha }}
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 14
