@@ -1164,7 +1164,7 @@ public final class RoadData extends SavedData {
         if(move.to()==null){
           if(move.from()==null||finalRoads.stream().anyMatch(r->r.record.a().equals(move.from())||r.record.b().equals(move.from())))throw new IllegalArgumentException("仍在使用的端点不能清理");
           long key=move.from().asLong();
-          writes.put(key,body.containsKey(key)?collisionState(key,Blocks.AIR.defaultBlockState(),body.get(key)):Blocks.AIR.defaultBlockState());
+          writes.put(key,body.containsKey(key)?collisionState(key,Blocks.AIR.defaultBlockState(),body.get(key),sidewalks.get(key),dry.contains(key)):dry.contains(key)?SplineRoads.TUNNEL_AIR.get().defaultBlockState():Blocks.AIR.defaultBlockState());
           continue;
         }
         BlockState state = level.getBlockState(move.to());
@@ -1196,8 +1196,8 @@ public final class RoadData extends SavedData {
           writes.put(
               source,
               body.containsKey(source)
-                  ? collisionState(source, Blocks.AIR.defaultBlockState(), body.get(source))
-                  : Blocks.AIR.defaultBlockState());
+                  ? collisionState(source, Blocks.AIR.defaultBlockState(), body.get(source),sidewalks.get(source),dry.contains(source))
+                  : dry.contains(source)?SplineRoads.TUNNEL_AIR.get().defaultBlockState():Blocks.AIR.defaultBlockState());
         writes.put(move.to().asLong(), SplineRoads.NODE.get().defaultBlockState());
       }
       // Count only world writes. Cleared headroom has no restoration history.
@@ -1284,7 +1284,9 @@ public final class RoadData extends SavedData {
   }
   private BlockState collisionState(long key, BlockState previous, List<RoadIndex.Built> roads,BlockState sidewalk) {
     var pos=BlockPos.of(key);
-    return collisionState(key,previous,roads,sidewalk,roads.stream().anyMatch(r->r.record.settings().structure()==Structure.TUNNEL&&r.clearanceAt(pos)));
+    boolean dryInterior=index.inChunk(new net.minecraft.world.level.ChunkPos(pos).toLong()).stream()
+        .map(index.roads::get).anyMatch(r->r!=null&&r.record.settings().structure()==Structure.TUNNEL&&r.clearanceAt(pos));
+    return collisionState(key,previous,roads,sidewalk,dryInterior);
   }
   private BlockState collisionState(long key, BlockState previous, List<RoadIndex.Built> roads,BlockState sidewalk,boolean dryInterior) {
     BlockPos p = BlockPos.of(key);
