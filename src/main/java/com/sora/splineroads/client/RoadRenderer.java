@@ -335,13 +335,13 @@ public final class RoadRenderer {
     long deadline = System.nanoTime() + com.sora.splineroads.config.RoadClientConfig.VBO_UPLOAD_MICROS.get()*1000L;
     int uploads = 0;
     visible.clear();
-    int distance = mc.options.getEffectiveRenderDistance() * 16 + 32;
-    double limit = (double) distance * distance;
+    int renderChunks=mc.options.getEffectiveRenderDistance();
     // Distance and frustum checks also precede lighting and uploads, including newly loaded roads.
     for (var s : regions.values()) {
       if (s.bounds == null) continue;
       double d = s.bounds.distanceToSqr(camera);
-      if (d >= limit || !event.getFrustum().isVisible(s.bounds)) continue;
+      if (!RoadVisibility.within(s.bounds.minX,s.bounds.minZ,s.bounds.maxX,s.bounds.maxZ,
+          camera.x,camera.z,renderChunks)||!event.getFrustum().isVisible(s.bounds)) continue;
       if (d > 112 * 112) s.distant = true;
       else if (d < 88 * 88) s.distant = false; // hysteresis, no flicker near a LOD boundary
       V origin = s.key.origin();

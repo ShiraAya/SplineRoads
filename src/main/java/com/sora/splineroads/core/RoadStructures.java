@@ -419,11 +419,20 @@ public final class RoadStructures {
     return spans;
   }
 
+  /** Tunnel and open-road medians use the same actual transition profile. Do not
+   * replace tunnel medians by a fixed narrow concrete bar or omit its last 2m tile. */
+  public static void medianFurniture(Mesh mesh,Ground ground,List<Part> out) {
+    var catalog=RoadProfile.catalog(mesh.settings().style());if(!catalog.twoWay())return;
+    for(double d=0;d<mesh.length()-1e-6;d+=2)
+      for(double[] span:medianSpans(mesh,ground,d,Math.min(mesh.length(),d+2)))
+        median(out,mesh,ground,sample(mesh,span[0]),sample(mesh,span[1]),catalog.type()==RoadProfile.Type.HIGHWAY,span[0]);
+  }
+
   private static void median(List<Part> out, Mesh mesh, Ground ground,
       Sample a, Sample b, boolean highway, double d) {
     var la = RoadProfile.layout(mesh, a);
     var lb = RoadProfile.layout(mesh, b);
-    boolean raised = bridgeAt(mesh,sample(mesh,(a.distance()+b.distance())/2),ground);
+    boolean raised = mesh.settings().structure()!=Structure.TUNNEL&&bridgeAt(mesh,sample(mesh,(a.distance()+b.distance())/2),ground);
     double green = Math.min(RoadTransitions.green(mesh, a), RoadTransitions.green(mesh, b));
     double terrainBlend = raised ? 0 : 1;
     green *= terrainBlend;

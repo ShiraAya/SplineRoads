@@ -186,8 +186,11 @@ public final class RoadSurface {
         var la = RoadProfile.layout(mesh, a);
         var lb = RoadProfile.layout(mesh, b);
         boolean dash = painted(mesh,(a.distance()+b.distance())/2);
-        var median = la.catalog().median();
-        if (median == RoadProfile.Median.DOUBLE_YELLOW && la.median() < .12) {
+        // Classify the interval at its midpoint, not at the reference start. Reversing
+        // construction direction must not change yellow/white treatment of the same tile.
+        var middle=RoadProfile.layout(mesh,RoadStructures.sample(mesh,(a.distance()+b.distance())/2));
+        var median = middle.catalog().median();
+        if (median == RoadProfile.Median.DOUBLE_YELLOW && middle.median() < .12) {
           if(!overrideLine(markings,mesh,a,b,"center:-1",la.medianCenter()-(.14+la.median()/2),lb.medianCenter()-(.14+lb.median()/2),dividers))stripe(
               markings,
               a,
@@ -201,7 +204,7 @@ public final class RoadSurface {
         } else if (median == RoadProfile.Median.DASHED_YELLOW) {
           if(!overrideLine(markings,mesh,a,b,"center:0",la.medianCenter(),lb.medianCenter(),dividers)&&dash)stripe(markings, a, b, la.medianCenter(), lb.medianCenter(), .12, true, dividers);
         }
-        else if (la.median() >= .12
+        else if (middle.median() >= .12
             || median == RoadProfile.Median.RAIL
             || median == RoadProfile.Median.GREEN)
           for (int side : new int[] {-1, 1})

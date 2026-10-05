@@ -72,7 +72,7 @@ public final class RoadInfrastructure {
   public static double clearance(Settings s){var c=s.options().infrastructure();return s.structure()==Structure.TUNNEL?c.headroom()+tunnelRise(c,s.width()/2)+1.25:0;}
   public static List<Part> plan(Mesh mesh,Ground ground) {
     var out=new ArrayList<Part>(); var c=mesh.settings().options().infrastructure();
-    if(mesh.settings().structure()==Structure.TUNNEL){tunnel(mesh,c,out);return checked(out);}
+    if(mesh.settings().structure()==Structure.TUNNEL){tunnel(mesh,c,out);RoadStructures.medianFurniture(mesh,ground,out);return checked(out);}
     if(customBridge(mesh)){bridge(mesh,c,ground,out);validateOwnClearance(mesh,out);
       if(out.stream().anyMatch(ground::blocked))throw new IllegalArgumentException("桥梁结构侵入其他道路净空；请抬高桥面或调整桥位");
     }
@@ -128,9 +128,6 @@ public final class RoadInfrastructure {
         out.add(new Part(at(a,oa,ya-.22),at(b,ob,yb-.22),.22,.24,false,Material.LAMP)
             .frames(a.left().mul(.11).add(new V(0,tiltA,0)),b.left().mul(.11).add(new V(0,tiltB,0))));
       }
-      var la=RoadProfile.layout(mesh,a);var lb=RoadProfile.layout(mesh,b);
-      if(d>=2&&d+2<mesh.length()-2&&la.median()>=.4&&lb.median()>=.4)
-        longitudinal(out,a,b,0,0,0,Math.min(.5,Math.min(la.median(),lb.median())),.8,Material.CONCRETE);
     }
     // End collars surround the opening; never put a solid cap across the travel lanes.
     for(double d:new double[]{.6,Math.max(.6,mesh.length()-.6)}){
