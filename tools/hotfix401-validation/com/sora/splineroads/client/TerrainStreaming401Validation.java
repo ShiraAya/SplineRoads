@@ -30,7 +30,7 @@ public final class TerrainStreaming401Validation {
   }
   public static void main(String[] args){
     var mc=Minecraft.getInstance();mc.level.loadedChunks=new HashSet<>();
-    RoadClientConfig.SURFACE_BACKEND.set(RoadClientConfig.SurfaceBackend.TERRAIN);
+    RoadClientConfig.SURFACE_BACKEND.set(RoadClientConfig.SurfaceBackend.TERRAIN);RoadClientConfig.TERRAIN_CACHE_MIB.set(1); // Explicit new weighted budget.
     RoadTerrainModels.baked(new ModelEvent.BakingCompleted());RoadTerrainModels.beginFrame();
     RoadRenderer.executor=Runnable::run;UUID id=new UUID(41,1);Chunk c0=new Chunk(0,0),c1=new Chunk(1,0),c2=new Chunk(2,0);
     change(c0,true);change(c1,true);RoadTerrainModels.install(id,RoadTerrainMesh.source(strip(6)));drain();
@@ -70,8 +70,8 @@ public final class TerrainStreaming401Validation {
     check(RoadTerrainModels.stats().active()==140,"all requested loaded tiles prepared incrementally");
     for(int i=0;i<140;i++)change(new Chunk(i,0),false);pump(300);
     check(RoadTerrainModels.stats().active()==0,"unloaded chunks release active contributions");
-    check(RoadTerrainModels.stats().cached()<=128&&RoadTerrainModels.stats().cachedQuads()<=131072,"unloaded LRU bounded by tiles AND quads");
-    check(RoadTerrainModels.stats().cached()==128,"oldest unloaded tiles evicted at configured bound");
+    check(RoadTerrainModels.stats().cached()<=2048&&RoadTerrainModels.stats().cachedQuads()<=4096,"unloaded LRU bounded by tiles AND quads");
+    check(RoadTerrainModels.stats().cached()>0&&RoadTerrainModels.stats().cached()<140,"weighted budget evicts oldest unloaded tiles");
     RoadTerrainModels.remove(id);pump(80);check(RoadTerrainModels.stats().cached()==0,"deletion frees all cached road tiles");
     // Publishing/removing one contributor must preserve another road in the same section.
     change(c0,true);UUID second=new UUID(41,2);

@@ -111,34 +111,22 @@ public final class RoadRenderMesh {
         mesh.controlPoint(),mesh.controls(),mesh.reference());
   }
 
-  public static Map<Section, Piece> sections(
-      RoadSurface.Geometry geometry, List<RoadStructures.Part> structures) {
-    Map<Section, List<RoadSurface.Face>> pavement = new HashMap<>(),
-        detail = new HashMap<>(),
-        distant = new HashMap<>();
-    for (var f : geometry.pavement()) {
-      if(f.texture()==RoadSurface.Texture.PLAIN)add(pavement,f.color()==0xDCDCDC?upward(f):f);
-      else {add(detail,f);add(distant,f);}
-    }
-    for (var original : geometry.markings()) {
-      var f=upward(original);
-      add(detail, f);
-      add(distant, f);
-    }
-    for (var f : structureFaces(structures, false)) add(detail, f);
-    for (var f : structureFaces(structures, true)) add(distant, f);
-    Set<Section> all = new HashSet<>(pavement.keySet());
-    all.addAll(detail.keySet());
-    all.addAll(distant.keySet());
-    Map<Section, Piece> result = new HashMap<>();
-    for (var section : all)
-      result.put(
-          section,
-          new Piece(
-              List.copyOf(pavement.getOrDefault(section, List.of())),
-              List.copyOf(detail.getOrDefault(section, List.of())),
-              List.copyOf(distant.getOrDefault(section, List.of()))));
-    return result;
+  public record Layers(Piece shared,Piece surface) {}
+  /** Shared furniture is built once; only asphalt and paint switch backend. */
+  public static Map<Section,Layers> layers(RoadSurface.Geometry geometry,List<RoadStructures.Part> structures){
+    Map<Section,List<RoadSurface.Face>> pavement=new HashMap<>(),paint=new HashMap<>(),detail=new HashMap<>(),distant=new HashMap<>();
+    for(var f:geometry.pavement())if(f.texture()==RoadSurface.Texture.PLAIN)add(pavement,f.color()==0xDCDCDC?upward(f):f);else{add(detail,f);add(distant,f);}
+    for(var f:geometry.markings())add(paint,upward(f));
+    for(var f:structureFaces(structures,false))add(detail,f);for(var f:structureFaces(structures,true))add(distant,f);
+    Set<Section> keys=new HashSet<>(pavement.keySet());keys.addAll(paint.keySet());keys.addAll(detail.keySet());keys.addAll(distant.keySet());
+    Map<Section,Layers> out=new HashMap<>();for(var k:keys){var lines=List.copyOf(paint.getOrDefault(k,List.of()));out.put(k,new Layers(
+      new Piece(List.of(),List.copyOf(detail.getOrDefault(k,List.of())),List.copyOf(distant.getOrDefault(k,List.of()))),
+      new Piece(List.copyOf(pavement.getOrDefault(k,List.of())),lines,lines)));}return out;
+  }
+  public static Map<Section,Piece> sections(RoadSurface.Geometry geometry,List<RoadStructures.Part> structures){
+    Map<Section,Piece> out=new HashMap<>();layers(geometry,structures).forEach((k,l)->{
+      var near=new ArrayList<>(l.surface().detail());near.addAll(l.shared().detail());var far=new ArrayList<>(l.surface().distant());far.addAll(l.shared().distant());
+      out.put(k,new Piece(l.surface().pavement(),List.copyOf(near),List.copyOf(far)));});return out;
   }
 
   public static RoadSurface.Face upward(RoadSurface.Face f){

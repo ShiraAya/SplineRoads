@@ -44,13 +44,13 @@ public final class RoadTerrainModels {
   private static final Set<Tile> waiting=new LinkedHashSet<>();
   private static final Map<Tile,TileJob> jobs=new LinkedHashMap<>();
   private static final Set<Chunk> streamDirty=new LinkedHashSet<>();
-  private static final int CACHE_TILES=128,CACHE_QUADS=131072,MAX_JOBS=2;
-  private static int cachedQuads;
+  private static final int CACHE_TILES=2048,MAX_JOBS=2;
+  private static int cachedQuads,lastCacheMiB=-1;
   private static boolean sortWaiting;
   private static long preparedTiles,cacheHits,discardedTiles;
   private static volatile Assets loadedAssets;
   private static volatile long resourceRevision;
-  private static long observedSignature=Long.MIN_VALUE;
+  private static long observedResource=Long.MIN_VALUE;
   private static volatile boolean enabled;
   private static String shaderStatus="not queried";
 
@@ -80,9 +80,10 @@ public final class RoadTerrainModels {
   }
   @SubscribeEvent public static void baked(ModelEvent.BakingCompleted event) {
     var atlas=event.getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS);
-    loadedAssets=new Assets(atlas.getSprite(ResourceLocation.fromNamespaceAndPath(SplineRoads.ID,"block/terrain_asphalt")),
+    var next=new Assets(atlas.getSprite(ResourceLocation.fromNamespaceAndPath(SplineRoads.ID,"block/terrain_asphalt")),
         atlas.getSprite(ResourceLocation.fromNamespaceAndPath(SplineRoads.ID,"block/terrain_paint")));
-    resourceRevision++;
+    var old=loadedAssets;loadedAssets=next;
+    if(old==null||old.asphalt()!=next.asphalt()||old.paint()!=next.paint())resourceRevision++;
   }
   /** Called on the ordinary world pass only. API reports false on disabled/failed shaders. */
   public static void beginFrame() {
@@ -92,15 +93,24 @@ public final class RoadTerrainModels {
     var choice=RoadClientConfig.SURFACE_BACKEND.get();
     boolean wanted=loadedAssets!=null&&(choice==RoadClientConfig.SurfaceBackend.TERRAIN||
         choice==RoadClientConfig.SurfaceBackend.AUTO&&shader.active());
-    long signature=(resourceRevision<<1)|(wanted?1:0);
-    if(observedSignature!=signature) {
-      boolean wasInitialized=observedSignature!=Long.MIN_VALUE;
-      observedSignature=signature;enabled=wanted;
-      RoadRenderer.reset();RoadRenderer.changed(new ArrayList<>(ClientRoads.INDEX.roads.keySet()));
-      if(wasInitialized&&Minecraft.getInstance().level!=null)Minecraft.getInstance().levelRenderer.allChanged();
-    }
+    boolean initialized=observedResource!=Long.MIN_VALUE,changed=observedResource!=resourceRevision,toggle=enabled!=wanted;
+    observedResource=resourceRevision;RoadRenderer.shaderMode(ShaderPackState.extendedVertices(shader));
+    if(lastCacheMiB!=RoadClientConfig.TERRAIN_CACHE_MIB.get())trimCache();
+    if(changed)reloadAtlas();enabled=wanted;
+    if(toggle&&!wanted)suspend();
+    if(wanted&&(toggle||changed))for(var e:chunkRoads.entrySet())if(loaded(e.getKey()))for(UUID road:e.getValue())request(new Tile(road,e.getKey()));
+    if(initialized&&(changed||toggle)&&Minecraft.getInstance().level!=null)Minecraft.getInstance().levelRenderer.allChanged();
   }
+  public static boolean enabled(){return enabled;}
   public static Assets assets(){return enabled?loadedAssets:null;}
+  private static void reloadAtlas(){
+    jobs.values().forEach(j->j.future().cancel(false));jobs.clear();waiting.clear();active.clear();cache.clear();cachedQuads=0;
+    pending.clear();published.clear();parts.clear();snapshots.clear();sources.replaceAll((road,source)->new Source(source.mesh(),loadedAssets));
+  }
+  private static void suspend(){
+    waiting.clear();sortWaiting=false;var order=new ArrayList<>(active.keySet());order.sort(Comparator.comparingDouble((Tile t)->distance(t.chunk())).reversed());
+    for(var t:order)remember(t,active.get(t));active.clear();pending.clear();published.clear();parts.clear();snapshots.clear();
+  }
   public static void clear(){
     jobs.values().forEach(job->job.future().cancel(false));jobs.clear();waiting.clear();
     sources.clear();chunkRoads.clear();active.clear();cache.clear();cachedQuads=0;
@@ -110,11 +120,11 @@ public final class RoadTerrainModels {
   /** Install a newly changed road's immutable face index. Atlas/road changes invalidate old tiles. */
   public static void install(UUID road,RoadTerrainMesh.Source mesh) {
     remove(road);
-    if(!enabled||loadedAssets==null||mesh==null)return;
+    if(mesh==null)return;
     sources.put(road,new Source(mesh,loadedAssets));
     for(var chunk:mesh.chunks().keySet()){
       chunkRoads.computeIfAbsent(chunk,key->new LinkedHashSet<>()).add(road);
-      if(loaded(chunk))request(new Tile(road,chunk));
+      if(enabled&&loadedAssets!=null&&loaded(chunk))request(new Tile(road,chunk));
     }
   }
   private static void request(Tile tile){
@@ -154,27 +164,29 @@ public final class RoadTerrainModels {
     waiting.remove(tile);var job=jobs.remove(tile);if(job!=null)job.future().cancel(false);
     var data=active.remove(tile);if(data==null)return;
     for(var section:data.sections().keySet()){dropPart(tile.road(),section);snapshots.remove(section);}
-    var old=cache.put(tile,data);if(old!=null)cachedQuads-=old.quads();cachedQuads+=data.quads();
-    var it=cache.entrySet().iterator();while(it.hasNext()&&(cache.size()>CACHE_TILES||cachedQuads>CACHE_QUADS)){
-      cachedQuads-=it.next().getValue().quads();it.remove();
-    }
+    remember(tile,data);
+  }
+  private static void remember(Tile tile,Prepared data){var old=cache.put(tile,data);if(old!=null)cachedQuads-=old.quads();cachedQuads+=data.quads();trimCache();}
+  private static void trimCache(){
+    lastCacheMiB=RoadClientConfig.TERRAIN_CACHE_MIB.get();long limit=lastCacheMiB*1048576L/256L;
+    var it=cache.entrySet().iterator();while(it.hasNext()&&(cache.size()>CACHE_TILES||cachedQuads>limit)){cachedQuads-=it.next().getValue().quads();it.remove();}
   }
   /** Chunk lifecycle events are coalesced; do NOT mark road geometry or infrastructure dirty. */
-  static void chunkChanged(Chunk chunk){if(enabled)streamDirty.add(chunk);}
+  static void chunkChanged(Chunk chunk){streamDirty.add(chunk);}
   private static void stream(){
     long deadline=System.nanoTime()+500_000;
     for(int n=0;n<16&&!streamDirty.isEmpty()&&(n==0||System.nanoTime()<deadline);n++){
       var it=streamDirty.iterator();var chunk=it.next();it.remove();boolean present=loaded(chunk);
       for(UUID road:chunkRoads.getOrDefault(chunk,Set.of())){
-        var tile=new Tile(road,chunk);if(present)request(tile);else unload(tile);
+        var tile=new Tile(road,chunk);if(present&&enabled)request(tile);else unload(tile);
       }
     }
     int consumed=0;
     for(var it=jobs.entrySet().iterator();it.hasNext()&&consumed<2;){
       var entry=it.next();var job=entry.getValue();if(!job.future().isDone())continue;it.remove();consumed++;
       var tile=entry.getKey();
-      if(!enabled||sources.get(tile.road())!=job.source()||!loaded(tile.chunk())){discardedTiles++;continue;}
-      try{activate(tile,job.future().join());preparedTiles++;}
+      if(sources.get(tile.road())!=job.source()){discardedTiles++;continue;}
+      try{var data=job.future().join();if(enabled&&loaded(tile.chunk()))activate(tile,data);else remember(tile,data);preparedTiles++;}
       catch(CancellationException ignored){discardedTiles++;}
       catch(CompletionException failure){ClientRoads.error="道路 terrain 分块构建失败："+failure.getCause();}
     }
@@ -184,7 +196,7 @@ public final class RoadTerrainModels {
     }
     for(var it=waiting.iterator();it.hasNext()&&jobs.size()<MAX_JOBS;){
       Tile tile=it.next();it.remove();Source source=sources.get(tile.road());
-      if(source==null||!enabled||!loaded(tile.chunk()))continue;
+      if(source==null||source.assets()==null||!enabled||!loaded(tile.chunk()))continue;
       var geometry=source.mesh().chunks().get(tile.chunk());if(geometry==null)continue;
       jobs.put(tile,new TileJob(source,CompletableFuture.supplyAsync(
           ()->prepare(geometry,source.assets(),Set.of(tile.chunk())),RoadRenderer.terrainExecutor())));
@@ -193,7 +205,7 @@ public final class RoadTerrainModels {
   /** Merge changed contributors once per section, even when many roads touch that section. */
   public static void publish() {
     var mc=Minecraft.getInstance();if(mc.level==null)return;
-    if(enabled)stream();
+    stream();
     int allowance=RoadClientConfig.TERRAIN_SECTIONS_PER_FRAME.get();long deadline=System.nanoTime()+900_000;
     while(allowance-->0&&!pending.isEmpty()&&System.nanoTime()<deadline) {
       var it=pending.iterator();Section section=it.next();it.remove();
@@ -211,7 +223,7 @@ public final class RoadTerrainModels {
     }
   }
   public static String status(){return (enabled?"terrain":"VBO")+" ("+shaderStatus+"), "+snapshots.size()+" sections, "+
-      (waiting.size()+jobs.size())+" terrain tiles queued, "+pending.size()+" publish, "+cache.size()+" cached";}
+      (waiting.size()+jobs.size())+" terrain tiles queued, "+pending.size()+" publish, "+cache.size()+" cached, "+preparedTiles+" baked / "+cacheHits+" reused";}
   record Stats(int queued,int active,int cached,int cachedQuads,long baked,long hits,long discarded){}
   static Stats stats(){return new Stats(waiting.size()+jobs.size(),active.size(),cache.size(),cachedQuads,preparedTiles,cacheHits,discardedTiles);}
 
@@ -278,6 +290,7 @@ public final class RoadTerrainModels {
     private final BakedModel baseModel;
     TerrainModel(BakedModel original,boolean originalVisible){super(original);this.baseModel=original;this.originalVisible=originalVisible;}
     @Override public ModelData getModelData(BlockAndTintGetter level,BlockPos pos,BlockState state,ModelData input) {
+      if(!enabled)return withoutRoads(input);
       var section=new Section(pos.getX()>>4,pos.getY()>>4,pos.getZ()>>4);
       var map=snapshots.get(section);if(map==null)return withoutRoads(input);
       ModelData data=map.get((pos.getX()&15)|((pos.getZ()&15)<<4)|((pos.getY()&15)<<8));
@@ -293,7 +306,7 @@ public final class RoadTerrainModels {
     @Override public List<BakedQuad> getQuads(BlockState state,Direction side,RandomSource random,ModelData data,RenderType layer) {
       List<BakedQuad> base=originalVisible?super.getQuads(state,side,random,data,layer):List.of();
       var roads=data.get(QUADS);
-      if(side!=null||(layer!=null&&layer!=RenderType.solid())||roads==null||roads.isEmpty())return base;
+      if(!enabled||side!=null||(layer!=null&&layer!=RenderType.solid())||roads==null||roads.isEmpty())return base;
       if(base.isEmpty())return roads;
       return new AbstractList<>() {public int size(){return base.size()+roads.size();}
         public BakedQuad get(int i){return i<base.size()?base.get(i):roads.get(i-base.size());}};

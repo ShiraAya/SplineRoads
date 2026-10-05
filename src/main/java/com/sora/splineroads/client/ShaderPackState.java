@@ -45,6 +45,20 @@ final class ShaderPackState {
     }
     return new Probe(null,null,null,"no Iris/Oculus API");
   }
+  private static final class EncodingHolder {
+    static final EncodingProbe PROBE=discoverEncoding(ShaderPackState.class.getClassLoader(),
+        "net.irisshaders.iris.shaderpack.materialmap.WorldRenderingSettings","net.coderbot.iris.block_rendering.WorldRenderingSettings");
+  }
+  static final class EncodingProbe {
+    final Object instance;final Method method;
+    EncodingProbe(Object instance,Method method){this.instance=instance;this.method=method;}
+    boolean read(boolean fallback){if(method==null)return fallback;try{return Boolean.TRUE.equals(method.invoke(instance));}catch(ReflectiveOperationException|RuntimeException|LinkageError e){return fallback;}}
+  }
+  static EncodingProbe discoverEncoding(ClassLoader loader,String... names){
+    for(String name:names)try{var type=Class.forName(name,false,loader);return new EncodingProbe(type.getField("INSTANCE").get(null),type.getMethod("shouldUseExtendedVertexFormat"));}
+    catch(ReflectiveOperationException|RuntimeException|LinkageError e){}return new EncodingProbe(null,null);
+  }
+  static boolean extendedVertices(State state){return EncodingHolder.PROBE.read(state.active());}
   static State current(){return Holder.PROBE.read();}
   private ShaderPackState(){}
 }

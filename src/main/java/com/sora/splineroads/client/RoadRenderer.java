@@ -83,7 +83,9 @@ public final class RoadRenderer {
   private static boolean dirtyNeedsSort;
   private static final Map<UUID, Job> jobs = new HashMap<>();
   private static final Map<UUID, Set<Section>> roadSections = new HashMap<>();
-  private static final Map<Section, GpuSection> regions = new LinkedHashMap<>();
+  private static Map<Section,GpuSection> regions=new LinkedHashMap<>(),dormant=new LinkedHashMap<>();
+  private static boolean extendedEncoding;
+  private static long useClock,retainedBytes,lastBudget=-1;
   private static V cameraPosition = new V(0, 0, 0);
   private static volatile long epoch;
   private static int lastDraws, lastUploads, lastDistant;
@@ -95,15 +97,16 @@ public final class RoadRenderer {
   private static final RoadUploadArena uploadArena = new RoadUploadArena();
   private static final RoadUploadArena previewArena = new RoadUploadArena();
   private static Upload pendingUpload;
-  private record Prepared(Piece piece,AABB bounds,Map<RoadSurface.Texture,List<RoadSurface.Face>> near,
+  private record Prepared(Piece piece,List<RoadSurface.Face> paint,AABB bounds,Map<RoadSurface.Texture,List<RoadSurface.Face>> near,
       Map<RoadSurface.Texture,List<RoadSurface.Face>> far) {
-    static Prepared of(Piece piece) {
-      piece=new Piece(RoadUploadBudget.faces(piece.pavement()),RoadUploadBudget.faces(piece.detail()),RoadUploadBudget.faces(piece.distant()));
+    static Prepared of(Layers layers) {
+      var piece=new Piece(RoadUploadBudget.faces(layers.surface().pavement()),RoadUploadBudget.faces(layers.shared().detail()),RoadUploadBudget.faces(layers.shared().distant()));
+      var paint=RoadUploadBudget.faces(layers.surface().detail());
       var near=new EnumMap<RoadSurface.Texture,List<RoadSurface.Face>>(RoadSurface.Texture.class);
       var far=new EnumMap<RoadSurface.Texture,List<RoadSurface.Face>>(RoadSurface.Texture.class);
       for(var f:piece.detail())near.computeIfAbsent(f.texture(),k->new ArrayList<>()).add(f);
       for(var f:piece.distant())far.computeIfAbsent(f.texture(),k->new ArrayList<>()).add(f);
-      return new Prepared(piece,RoadRenderer.bounds(piece),near,far);
+      var bound=new ArrayList<>(piece.detail());bound.addAll(paint);return new Prepared(piece,paint,RoadRenderer.bounds(new Piece(piece.pavement(),bound,piece.distant())),near,far);
     }
   }
   private record SignalCache(List<RoadSurface.Face> faces, RoadSignalBatch batch) {}
@@ -145,11 +148,11 @@ public final class RoadRenderer {
   private static final class GpuSection {
     final Section key;
     final Map<UUID, Prepared> pieces = new HashMap<>();
-    final List<VertexBuffer> pavement=new ArrayList<>();
+    final List<VertexBuffer> pavement=new ArrayList<>(),paint=new ArrayList<>();
     final Map<RoadSurface.Texture, List<VertexBuffer>> near = new EnumMap<>(RoadSurface.Texture.class),
         far = new EnumMap<>(RoadSurface.Texture.class);
     boolean distant;
-    long nearVertices, farVertices;
+    long nearVertices, farVertices,surfaceVertices,lastUsed;
     final Matrix4f transform = new Matrix4f();
     AABB bounds;
     boolean dirty = true;
@@ -162,7 +165,7 @@ public final class RoadRenderer {
     }
 
     void close() {
-      pavement.forEach(VertexBuffer::close);pavement.clear();
+      pavement.forEach(VertexBuffer::close);pavement.clear();paint.forEach(VertexBuffer::close);paint.clear();
       near.values().forEach(list->list.forEach(VertexBuffer::close));
       far.values().forEach(list->list.forEach(VertexBuffer::close));
       near.clear();
@@ -193,7 +196,7 @@ public final class RoadRenderer {
     jobs.clear();
     roadSections.clear();
     for (var s : regions.values()) s.close();
-    regions.clear();
+    regions.clear();for(var s:dormant.values())s.close();dormant.clear();retainedBytes=0;
     signalBatches.clear();
     signalTypesUsed.clear();
     visible.clear();
@@ -202,20 +205,35 @@ public final class RoadRenderer {
     averageCpuMs = 0;
   }
 
-  private static void remove(UUID id) {
-    RoadTerrainModels.remove(id);
-    signalBatches.remove(id);
-    for (var key : roadSections.getOrDefault(id, Set.of())) {
-      var s = regions.get(key);
-      if (s == null) continue;
-      s.pieces.remove(id);
-      s.dirty = true; s.revision++;
-      if (s.pieces.isEmpty()) {
-        s.close();
-        regions.remove(key);
-      }
-    }
-    roadSections.remove(id);
+  /** Encoding is distinct from the selected surface backend; never bind the other layout. */
+  static void shaderMode(boolean extended){
+    if(extendedEncoding==extended){if(lastBudget!=com.sora.splineroads.config.RoadClientConfig.INACTIVE_VBO_CACHE_MIB.get())trimDormant();return;}
+    extendedEncoding=extended;if(pendingUpload!=null){pendingUpload.cancel();pendingUpload=null;}clearPreviewBuffer();
+    for(var e:regions.entrySet())if(!dormant.containsKey(e.getKey())){var next=new GpuSection(e.getKey());next.pieces.putAll(e.getValue().pieces);next.bounds=e.getValue().bounds;next.revision=e.getValue().revision;dormant.put(e.getKey(),next);}
+    var old=regions;regions=dormant;dormant=old;visible.clear();
+    for(var section:regions.values())section.checkedLightAt=Long.MIN_VALUE/2;
+    trimDormant();
+  }
+  private static long gpuBytes(GpuSection s){return (s.nearVertices+s.farVertices)*64L;}
+  private static void trimDormant(){
+    lastBudget=com.sora.splineroads.config.RoadClientConfig.INACTIVE_VBO_CACHE_MIB.get();long limit=lastBudget*1048576L;
+    retainedBytes=0;for(var s:dormant.values())retainedBytes+=gpuBytes(s);
+    if(retainedBytes<=limit)return;var ordered=new ArrayList<>(dormant.values());ordered.sort(Comparator.comparingLong(s->s.lastUsed));
+    for(var s:ordered){if(retainedBytes<=limit)break;retainedBytes-=gpuBytes(s);s.close();s.nearVertices=s.farVertices=s.surfaceVertices=0;s.lighting.clear();s.dirty=true;}
+  }
+  private static void remove(UUID id){
+    RoadTerrainModels.remove(id);signalBatches.remove(id);
+    for(var map:List.of(regions,dormant))for(var key:roadSections.getOrDefault(id,Set.of())){var s=map.get(key);if(s==null)continue;
+      s.pieces.remove(id);s.dirty=true;s.revision++;if(map==dormant){s.close();s.nearVertices=s.farVertices=s.surfaceVertices=0;}
+      if(s.pieces.isEmpty()){s.close();map.remove(key);}}
+    roadSections.remove(id);trimDormant();
+  }
+  private static void installPieces(Map<Section,GpuSection> map,UUID id,Set<Section> old,Map<Section,Prepared> pieces,boolean inactive){
+    for(var key:old)if(!pieces.containsKey(key)){var s=map.get(key);if(s==null)continue;s.pieces.remove(id);s.dirty=true;s.revision++;
+      if(inactive){s.close();s.nearVertices=s.farVertices=s.surfaceVertices=0;}if(s.pieces.isEmpty()){s.close();map.remove(key);}}
+    pieces.forEach((key,p)->{var s=inactive?map.get(key):map.computeIfAbsent(key,GpuSection::new);if(s==null)return;
+      s.pieces.put(id,p);s.bounds=s.bounds==null?p.bounds():s.bounds.minmax(p.bounds());s.dirty=true;s.revision++;
+      if(inactive){s.close();s.nearVertices=s.farVertices=s.surfaceVertices=0;}});
   }
 
   private static double buildDistance(UUID id){var road=ClientRoads.INDEX.roads.get(id);if(road==null)return -1;var a=road.mesh.min();var b=road.mesh.max();double x=Math.max(a.x(),Math.min(b.x(),cameraPosition.x()))-cameraPosition.x(),y=Math.max(a.y(),Math.min(b.y(),cameraPosition.y()))-cameraPosition.y(),z=Math.max(a.z(),Math.min(b.z(),cameraPosition.z()))-cameraPosition.z();return x*x+y*y+z*z;}
@@ -234,21 +252,9 @@ public final class RoadRenderer {
         var pieces=result.regions();
         RoadTerrainModels.install(entry.getKey(),result.terrain());
         signalBatches.remove(entry.getKey());
-        // Keep the old GPU buffers for regions that are being replaced in place.
-        for(var key:roadSections.getOrDefault(entry.getKey(),Set.of()))if(!pieces.containsKey(key)) {
-          var previous=regions.get(key);if(previous==null)continue;
-          previous.pieces.remove(entry.getKey());previous.dirty=true;previous.revision++;
-          if(previous.pieces.isEmpty()){previous.close();regions.remove(key);}
-        }
-        roadSections.put(entry.getKey(), pieces.keySet());
-        pieces.forEach(
-            (key, piece) -> {
-              var s = regions.computeIfAbsent(key, GpuSection::new);
-              s.pieces.put(entry.getKey(), piece);
-              AABB extent = piece.bounds();
-              s.bounds = s.bounds == null ? extent : s.bounds.minmax(extent);
-              s.dirty = true; s.revision++;
-            });
+        var old=roadSections.getOrDefault(entry.getKey(),Set.of());
+        installPieces(regions,entry.getKey(),old,pieces,false);installPieces(dormant,entry.getKey(),old,pieces,true);
+        roadSections.put(entry.getKey(),pieces.keySet());trimDormant();
       } catch (CompletionException e) {
         ClientRoads.error = "道路网格构建失败：" + e.getCause().getMessage();
       }
@@ -276,7 +282,6 @@ public final class RoadRenderer {
       }
       int version = versions.getOrDefault(id, 0);
       long generation = epoch;
-      var terrainAssets=RoadTerrainModels.assets();
       jobs.put(
           id,
           new Job(
@@ -296,10 +301,9 @@ public final class RoadRenderer {
                                 .map(com.sora.splineroads.world.RoadIndex.Built::renderMesh)
                                 .toList());
                     if (built.record.junction() != null) surface = RoadSurface.custom(surface,reduced,built.record.junction().get().paint());
-                    var terrain=terrainAssets==null?null:RoadTerrainMesh.source(surface);
-                    if(terrainAssets!=null)surface=RoadTerrainMesh.remainder(surface);
+                    var terrain=RoadTerrainMesh.source(surface);
                     var result=new LinkedHashMap<Section,Prepared>();
-                    RoadRenderMesh.sections(surface,built.record.structures()).forEach((key,piece)->result.put(key,Prepared.of(piece)));
+                    RoadRenderMesh.layers(surface,built.record.structures()).forEach((key,piece)->result.put(key,Prepared.of(piece)));
                     return new MeshResult(result,terrain);
                   },
                   WORKER)));
@@ -347,10 +351,11 @@ public final class RoadRenderer {
               (float) (origin.x() - camera.x),
               (float) (origin.y() - camera.y),
               (float) (origin.z() - camera.z));
-      visible.add(s);
+      visible.add(s);s.lastUsed=++useClock;
       if (s.distant) lastDistant++;
-      lastVertices += s.distant ? s.farVertices : s.nearVertices;
+      lastVertices += (s.distant ? s.farVertices : s.nearVertices)-(RoadTerrainModels.enabled()?s.surfaceVertices:0);
     }
+    if(!shadowPass){
     if(pendingUpload!=null && (!visible.contains(pendingUpload.section)
         ||pendingUpload.revision!=pendingUpload.section.revision)) {pendingUpload.cancel();pendingUpload=null;}
     if(pendingUpload==null) {
@@ -365,11 +370,12 @@ public final class RoadRenderer {
       try {uploads=pendingUpload.step(deadline);if(pendingUpload.complete)pendingUpload=null;}
       catch(RuntimeException failure){pendingUpload.cancel();pendingUpload=null;ClientRoads.error="道路网格上传失败："+failure.getMessage();}
     }
+    }
     cameraPosition = new V(camera.x, camera.y, camera.z);
     var pose = event.getPoseStack();
     var buffers = mc.renderBuffers().bufferSource();
     if (!visible.isEmpty()) buffers.endBatch();
-    draw(visible, SURFACE, null, event);
+    if(!RoadTerrainModels.enabled()){draw(visible,SURFACE,null,event);drawLayer(visible,MARKING,null,event,true);}
     draw(visible, MARKING, RoadSurface.Texture.PLAIN, event);
     for (var entry : MATERIALS.entrySet()) if(entry.getKey()!=RoadSurface.Texture.CB_NOISE_GLASS)draw(visible, entry.getValue(), entry.getKey(), event);
     cameraPosition = new V(camera.x, camera.y, camera.z);
@@ -564,22 +570,24 @@ public final class RoadRenderer {
                 lastUploads,
                 dirty.size() + jobs.size()));
     event.getLeft().add("SR surface: "+RoadTerrainModels.status());
+    event.getLeft().add("SR inactive VBO cache: "+(retainedBytes/1048576)+" MiB estimated");
   }
 
   private static void draw(
       List<GpuSection> visible,
       RenderType type,
       RoadSurface.Texture texture,
-      RenderLevelStageEvent event) {
+      RenderLevelStageEvent event) {drawLayer(visible,type,texture,event,false);}
+  private static void drawLayer(List<GpuSection> visible,RenderType type,RoadSurface.Texture texture,RenderLevelStageEvent event,boolean paint){
     if (visible.isEmpty()) return;
     boolean present=false;
-    for(var s:visible){var list=texture==null?s.pavement:(s.distant?s.far:s.near).get(texture);if(list!=null&&!list.isEmpty()){present=true;break;}}
+    for(var s:visible){var list=paint?s.paint:texture==null?s.pavement:(s.distant?s.far:s.near).get(texture);if(list!=null&&!list.isEmpty()){present=true;break;}}
     if(!present)return;
     type.setupRenderState();
     ShaderInstance shader = RenderSystem.getShader();
     boolean applied = false;
     for (var s : visible) {
-      var buffers = texture == null ? s.pavement : (s.distant ? s.far : s.near).get(texture);
+      var buffers = paint?s.paint:texture == null ? s.pavement : (s.distant ? s.far : s.near).get(texture);
       if (buffers == null || buffers.isEmpty()) continue;
       if (!applied) {
         setupShader(shader, event);
@@ -650,13 +658,13 @@ public final class RoadRenderer {
     record Batch(int kind,RoadSurface.Texture texture){}
     Upload(GpuSection s){
       section=s;revision=s.revision;pieces=List.copyOf(s.pieces.values());staged=new GpuSection(s.key);
-      batches.add(new Batch(0,null));
+      batches.add(new Batch(0,null));batches.add(new Batch(3,RoadSurface.Texture.PLAIN));
       for(int kind:new int[]{1,2})for(var texture:RoadSurface.Texture.values()){
         boolean present=false;for(var p:pieces)if((kind==1?p.near:p.far).containsKey(texture)){present=true;break;}
         if(present)batches.add(new Batch(kind,texture));
       }
     }
-    List<RoadSurface.Face> faces(Prepared p,Batch b){return b.kind==0?p.piece.pavement():(b.kind==1?p.near:p.far).getOrDefault(b.texture,List.of());}
+    List<RoadSurface.Face> faces(Prepared p,Batch b){return b.kind==0?p.piece.pavement():b.kind==3?p.paint:(b.kind==1?p.near:p.far).getOrDefault(b.texture,List.of());}
     int step(long deadline){
       cameraPosition=section.key.origin();int uploads=0,packed=0;
       while(batchIndex<batches.size()){
@@ -683,7 +691,8 @@ public final class RoadRenderer {
           uploads++;
         } else builder.end().release();
         if(buffer!=null){
-          if(batch.kind==0){staged.pavement.add(buffer);staged.nearVertices+=vertices;staged.farVertices+=vertices;}
+          if(batch.kind==0){staged.pavement.add(buffer);staged.nearVertices+=vertices;staged.farVertices+=vertices;staged.surfaceVertices+=vertices;}
+          else if(batch.kind==3){staged.paint.add(buffer);staged.nearVertices+=vertices;staged.farVertices+=vertices;staged.surfaceVertices+=vertices;}
           else if(batch.kind==1){staged.near.computeIfAbsent(batch.texture,k->new ArrayList<>()).add(buffer);staged.nearVertices+=vertices;}
           else {staged.far.computeIfAbsent(batch.texture,k->new ArrayList<>()).add(buffer);staged.farVertices+=vertices;}
         }
@@ -692,8 +701,8 @@ public final class RoadRenderer {
         // One bounded upload per frame; buffer packing still observes the time budget.
         if(uploads>=1&&batchIndex<batches.size())return uploads;
       }
-      section.close();section.pavement.addAll(staged.pavement);section.near.putAll(staged.near);section.far.putAll(staged.far);
-      section.nearVertices=staged.nearVertices;section.farVertices=staged.farVertices;
+      section.close();section.pavement.addAll(staged.pavement);section.paint.addAll(staged.paint);section.near.putAll(staged.near);section.far.putAll(staged.far);
+      section.nearVertices=staged.nearVertices;section.farVertices=staged.farVertices;section.surfaceVertices=staged.surfaceVertices;
       section.lighting.clear();section.lighting.putAll(staged.lighting);
       section.bounds=null;for(var p:pieces)section.bounds=section.bounds==null?p.bounds:section.bounds.minmax(p.bounds);
       section.dirty=false;section.checkedLightAt=Minecraft.getInstance().level.getGameTime()-Math.floorMod(section.key.hashCode(),20);

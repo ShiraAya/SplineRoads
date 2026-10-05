@@ -9,6 +9,7 @@ public final class RoadClientConfig {
   public static final ForgeConfigSpec.EnumValue<SurfaceBackend> SURFACE_BACKEND;
   public static final ForgeConfigSpec.IntValue TERRAIN_SECTIONS_PER_FRAME;
   public static final ForgeConfigSpec.IntValue VBO_UPLOAD_MICROS;
+  public static final ForgeConfigSpec.IntValue INACTIVE_VBO_CACHE_MIB,TERRAIN_CACHE_MIB;
   static {
     var b=new ForgeConfigSpec.Builder();b.push("rendering");
     SURFACE_BACKEND=b.comment("AUTO: terrain ONLY while an Iris/Oculus shader pack is actually rendering; otherwise VBO.",
@@ -21,6 +22,8 @@ public final class RoadClientConfig {
         .defineInRange("terrainSectionsPerFrame",4,1,32);
     VBO_UPLOAD_MICROS=b.comment("Soft render-thread budget for infrastructure VBO upload (microseconds).")
         .defineInRange("vboUploadMicros",900,200,5000);
+    INACTIVE_VBO_CACHE_MIB=b.comment("Estimated MiB budget for dormant vertex-encoding VBOs. 0 disables retention; shared CPU geometry is not duplicated.").defineInRange("inactiveVboCacheMiB",64,0,512);
+    TERRAIN_CACHE_MIB=b.comment("Estimated MiB budget for unloaded/inactive terrain tiles (256 bytes/quad). 0 disables retention.").defineInRange("terrainCacheMiB",64,0,512);
     b.pop();SPEC=b.build();
   }
   private RoadClientConfig(){}
