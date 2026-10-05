@@ -1,3 +1,5 @@
+> 当前排期补充：必须先处理完《问题2》全部 P1，之后才可开始《问题3》的四项 terrain 缺陷及多线程专项 P2。读取 `docs/PRIORITIES.md` 和 `docs/issues/problem3-second-priority.md`。Q2-06 等旧 P1 显示问题不降级。
+
 # SR 下一阶段需求：以用户最新明确说明为准
 
 ## 当前最高优先级：《问题2.docx》全文

@@ -112,7 +112,9 @@ public final class RoadBlocks {
     public static final net.minecraft.world.level.block.state.properties.BooleanProperty PERMEABLE =
         net.minecraft.world.level.block.state.properties.BooleanProperty.create("water_permeable");
     @Override public boolean canPlaceLiquid(BlockGetter w,BlockPos p,BlockState s,net.minecraft.world.level.material.Fluid f){
-      return s.getValue(PERMEABLE)&&!s.getValue(SEALED)&&!s.getValue(WATERLOGGED)&&f==net.minecraft.world.level.material.Fluids.WATER;
+      // PERMEABLE is set only for exterior/open structure cells. SEALED controls
+      // shell light blocking; using it as a blanket water ban drained the exterior.
+      return s.getValue(PERMEABLE)&&!s.getValue(WATERLOGGED)&&f==net.minecraft.world.level.material.Fluids.WATER;
     }
     @Override public boolean placeLiquid(net.minecraft.world.level.LevelAccessor w,BlockPos p,BlockState s,net.minecraft.world.level.material.FluidState f){
       if(!canPlaceLiquid(w,p,s,f.getType()))return false;

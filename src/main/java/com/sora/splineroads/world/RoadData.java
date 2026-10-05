@@ -2,6 +2,8 @@ package com.sora.splineroads.world;
 
 import com.sora.splineroads.SplineRoads;
 import com.sora.splineroads.core.RoadGeometry;
+import com.sora.splineroads.core.RoadConnectionChecks;
+import com.sora.splineroads.core.RoadWaterPolicy;
 import com.sora.splineroads.core.LanePoints;
 import com.sora.splineroads.core.RoadGantry;
 import com.sora.splineroads.core.RoadLaneLines;
@@ -1147,7 +1149,7 @@ public final class RoadData extends SavedData {
             && index.at(key).stream().anyMatch(id -> !removedIds.contains(id)))
           throw new IllegalArgumentException("通行空间与另一条道路相交");
         BlockState target =
-            roadBody ? collisionState(key, state, body.get(key), sidewalks.get(key)) : walkway ? sidewalks.get(key) : dry.contains(key)?SplineRoads.TUNNEL_AIR.get().defaultBlockState():Blocks.AIR.defaultBlockState();
+            roadBody ? collisionState(key, state, body.get(key), sidewalks.get(key),dry.contains(key)) : walkway ? sidewalks.get(key) : dry.contains(key)?SplineRoads.TUNNEL_AIR.get().defaultBlockState():Blocks.AIR.defaultBlockState();
         if (state.equals(target) && !(target.is(SplineRoads.FILLED_COLLIDER.get())
             && level.getBlockEntity(p) instanceof RoadFillEntity fill
             && !fill.fill().equals(sidewalks.getOrDefault(key,terrainFill.getOrDefault(key,Blocks.AIR.defaultBlockState()))))) continue;
@@ -1281,6 +1283,10 @@ public final class RoadData extends SavedData {
     return collisionState(key,previous,roads,null);
   }
   private BlockState collisionState(long key, BlockState previous, List<RoadIndex.Built> roads,BlockState sidewalk) {
+    var pos=BlockPos.of(key);
+    return collisionState(key,previous,roads,sidewalk,roads.stream().anyMatch(r->r.record.settings().structure()==Structure.TUNNEL&&r.clearanceAt(pos)));
+  }
+  private BlockState collisionState(long key, BlockState previous, List<RoadIndex.Built> roads,BlockState sidewalk,boolean dryInterior) {
     BlockPos p = BlockPos.of(key);
     BlockState terrain =
         sidewalk!=null ? sidewalk : RoadBlocks.isCollider(previous)||previous.equals(sidewalkPlaced.get(key))
@@ -1326,14 +1332,17 @@ public final class RoadData extends SavedData {
       var retained=RoadBlocks.Fill.of(terrain);double top=retained==RoadBlocks.Fill.NONE?1:retained.top();
       if(p.getY()+top<=walkTop+1e-6){fill=retained;generic=fill==RoadBlocks.Fill.NONE&&terrain.canOcclude();}
     }
-    // Open structural cells keep the surrounding water up to the rendered solid.
-    // Decks, retained terrain and every tunnel cell still exclude fluids.
+    // Keep water only in exterior partial-shell cells, never in an interior clearance
+    // cell or the actual road slab. The caller supplies the union of ALL tunnel air
+    // reservations, including tunnels not owning this particular body cell.
     boolean deckHere=roads.stream().anyMatch(r->{var c=r.column(p);return c!=null
         &&p.getY()+1>c.minTop()-r.record.settings().thickness()+1e-7&&p.getY()<c.maxTop()-1e-7;});
-    boolean permeable=!deckHere&&!generic&&fill==RoadBlocks.Fill.NONE
-        &&roads.stream().noneMatch(r->r.record.settings().structure()==Structure.TUNNEL||r.shellAt(p));
-    boolean water=permeable&&(terrain.getFluidState().is(net.minecraft.tags.FluidTags.WATER)
-        ||previous.getFluidState().is(net.minecraft.tags.FluidTags.WATER));
+    boolean tunnelOwner=roads.stream().anyMatch(r->r.record.settings().structure()==Structure.TUNNEL);
+    boolean shell=roads.stream().anyMatch(r->r.shellAt(p));
+    boolean permeable=RoadWaterPolicy.permeable(deckHere,generic||fill!=RoadBlocks.Fill.NONE,tunnelOwner,shell,dryInterior);
+    boolean originalWater=terrainOriginal.getOrDefault(key,Blocks.AIR.defaultBlockState()).getFluidState().is(net.minecraft.tags.FluidTags.WATER);
+    boolean water=RoadWaterPolicy.waterlogged(permeable,terrain.getFluidState().is(net.minecraft.tags.FluidTags.WATER),
+        previous.getFluidState().is(net.minecraft.tags.FluidTags.WATER),originalWater);
     return (generic?SplineRoads.FILLED_COLLIDER:SplineRoads.COLLIDER)
         .get()
         .defaultBlockState()
@@ -1341,7 +1350,7 @@ public final class RoadData extends SavedData {
         .setValue(RoadBlocks.Road.LIT, roads.stream().anyMatch(r -> r.lightAt(p)))
         .setValue(RoadBlocks.Road.PERMEABLE,permeable)
         .setValue(RoadBlocks.Road.WATERLOGGED,water)
-        .setValue(RoadBlocks.Road.SEALED, roads.stream().anyMatch(r -> r.shellAt(p)));
+        .setValue(RoadBlocks.Road.SEALED, shell);
   }
 
   /** Fill the unused part of a deck cell without replacing the independent road collision. */
