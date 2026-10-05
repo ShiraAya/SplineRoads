@@ -44,7 +44,8 @@ public final class RoadQueries {
       if (p.sample().distance() > mesh.length() - 1e-7
           && point.sub(mesh.last().center()).dot(forwardB) > 1e-7) return false;
     }
-    return Math.abs(p.lateral()) <= p.sample().halfWidth() + margin
+    return LaneDeck.present(mesh,p.sample(),p.lateral(),margin)
+        && Math.abs(p.lateral()) <= p.sample().halfWidth() + margin
         && Math.abs(point.y() - p.sample().center().y()) <= heightTolerance;
   }
 
@@ -65,12 +66,10 @@ public final class RoadQueries {
     double best = limit;
     for (int i = 1; i < mesh.samples().size(); i++) {
       Sample a = mesh.samples().get(i - 1), b = mesh.samples().get(i);
-      V l = a.at(a.halfWidth(), 0),
-          r = a.at(-a.halfWidth(), 0),
-          ll = b.at(b.halfWidth(), 0),
-          rr = b.at(-b.halfWidth(), 0);
-      best = Math.min(best, triangle(origin, direction, l, r, rr));
-      best = Math.min(best, triangle(origin, direction, l, rr, ll));
+      for(var strip:LaneDeck.strips(mesh,a,b)) {
+        best=Math.min(best,triangle(origin,direction,strip.al(),strip.ar(),strip.br()));
+        best=Math.min(best,triangle(origin,direction,strip.al(),strip.br(),strip.bl()));
+      }
     }
     return best < limit ? best : Double.POSITIVE_INFINITY;
   }

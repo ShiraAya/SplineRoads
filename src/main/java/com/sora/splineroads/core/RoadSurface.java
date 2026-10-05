@@ -82,12 +82,9 @@ public final class RoadSurface {
         Mesh mesh=RoadRenderMesh.pavement(original);
         for (int i = 1; i < mesh.samples().size(); i++) {
           Sample a = mesh.samples().get(i - 1), b = mesh.samples().get(i);
-          V l = a.at(a.halfWidth(), 0),
-              r = a.at(-a.halfWidth(), 0),
-              ll = b.at(b.halfWidth(), 0),
-              rr = b.at(-b.halfWidth(), 0);
-          add(List.of(l,r,rr));
-          add(List.of(l,rr,ll));
+          for(var strip:LaneDeck.strips(mesh,a,b)) {
+            add(List.of(strip.al(),strip.ar(),strip.br()));add(List.of(strip.al(),strip.br(),strip.bl()));
+          }
         }
       }
     }
@@ -284,24 +281,23 @@ public final class RoadSurface {
     var deck = RoadRenderMesh.pavement(mesh).samples();
     for (int i = 1; i < deck.size(); i++) {
       Sample a = deck.get(i - 1), b = deck.get(i);
-      V l = a.at(a.halfWidth(), 0),
-          r = a.at(-a.halfWidth(), 0),
-          ll = b.at(b.halfWidth(), 0),
-          rr = b.at(-b.halfWidth(), 0);
-      for (var triangle : List.of(List.of(l, r, rr), List.of(l, rr, ll)))
-        for (var poly : visible(triangle, owners, .025)) {
-          pavement.add(new Face(poly, 0xDCDCDC));
-          pavement.add(
-              new Face(poly.stream().map(v -> v.add(new V(0, -thickness, 0))).toList(), 0xB9B9AD,false,Texture.CONCRETE));
-        }
-      wall(pavement, ll, l, thickness, joined);
-      wall(pavement, r, rr, thickness, joined);
+      for(var strip:LaneDeck.strips(mesh,a,b)) {
+        V l=strip.al(),r=strip.ar(),ll=strip.bl(),rr=strip.br();
+        for(var triangle:List.of(List.of(l,r,rr),List.of(l,rr,ll)))
+          if(area(triangle)>1e-9)for(var poly:visible(triangle,owners,.025)){
+            pavement.add(new Face(poly,0xDCDCDC));
+            pavement.add(new Face(poly.stream().map(v->v.add(new V(0,-thickness,0))).toList(),0xB9B9AD,false,Texture.CONCRETE));
+          }
+        if(strip.highWall())wall(pavement,ll,l,thickness,joined);
+        if(strip.lowWall())wall(pavement,r,rr,thickness,joined);
+      }
     }
-    if (!mesh.closed()) {
-      Sample a = mesh.first(), b = mesh.last();
-      wall(pavement, a.at(a.halfWidth(), 0), a.at(-a.halfWidth(), 0), thickness, joined);
-      wall(pavement, b.at(-b.halfWidth(), 0), b.at(b.halfWidth(), 0), thickness, joined);
+    if(!mesh.closed())for(boolean start:new boolean[]{true,false}){
+      Sample a=start?mesh.first():mesh.last();
+      for(var span:LaneDeck.spans(mesh,a))if(span.high()-span.low()>1e-7)
+        wall(pavement,a.at(start?span.high():span.low(),0),a.at(start?span.low():span.high(),0),thickness,joined);
     }
+
     List<Mesh> union = new ArrayList<>(neighbors);
     union.add(mesh);
     Grid paving = new Grid(union);
@@ -321,6 +317,15 @@ public final class RoadSurface {
       else for(var poly:visible(paint.points(),owners,.025))paintOnRoad(markings,new RoadJunction.Paint(poly,paint.color()),paving);
     }
 
+    if(LaneDeck.hasOpenings(mesh)) {
+      Grid holes=new Grid(List.of());var points=mesh.samples();
+      for(int i=1;i<points.size();i++)for(var q:LaneDeck.holeQuads(mesh,points.get(i-1),points.get(i))) {
+        holes.add(List.of(q.get(0),q.get(1),q.get(2)));holes.add(List.of(q.get(0),q.get(2),q.get(3)));
+      }
+      var clipped=new ArrayList<Face>();
+      for(var face:markings)for(var poly:visible(face.points(),holes,.03))clipped.add(new Face(poly,face.color(),face.emissive(),face.texture()));
+      markings=clipped;
+    }
     return new Geometry(List.copyOf(pavement), List.copyOf(markings));
   }
 

@@ -9,7 +9,8 @@ import java.util.*;
  * Slot IDs never renumber when an outer lane is absent. An absent slot remains a REPLACE target.
  */
 public final class LaneSections {
-  public record Cut(UUID connection,int lane,int sign,double begin,double end,double transition,UUID replacement) {
+  public record Cut(UUID connection,int lane,int sign,double begin,double end,double transition,UUID replacement,boolean temporary) {
+    public Cut(UUID connection,int lane,int sign,double begin,double end,double transition,UUID replacement){this(connection,lane,sign,begin,end,transition,replacement,false);}
     public Cut(UUID connection,int lane,int sign,double begin,double end,double transition){this(connection,lane,sign,begin,end,transition,null);}
     public Cut {
       if(connection==null||lane<0||lane>31||(sign!=1&&sign!=-1)||!RoadGeometry.finite(begin,end,transition)
@@ -37,10 +38,10 @@ public final class LaneSections {
       var c=layout.catalog();int per=c.lanes()/2;
       if(event.sign()!=lane.sign())throw new IllegalArgumentException("分离方向与所选车道的实际行驶方向不一致");
       boolean outer=c.twoWay()?event.lane()==per-1||event.lane()==c.lanes()-1:event.lane()==0||event.lane()==c.lanes()-1;
-      if(!outer)throw new IllegalArgumentException(c.twoWay()?"双向整车道分离请选择该方向最外侧车道，不能挖走内部车道或中央隔离":"整车道分离须选择单向主线的一侧边缘车道");
+      if(!outer&&event.kind()!=Kind.TEMPORARY)throw new IllegalArgumentException(c.twoWay()?"双向整车道分离请选择该方向最外侧车道，不能挖走内部车道或中央隔离":"整车道分离须选择单向主线的一侧边缘车道");
       double remainder=event.sign()>0?raw.length()-event.station():event.station();
       if(remainder<.02)continue; // A free road end already has no downstream continuation.
-      if(layout.catalog().lanes()==1)throw new IllegalArgumentException("单车道内部一分二请选择普通分流（原车道直行）；整车道分离会清空主路");
+      if(layout.catalog().lanes()==1&&event.kind()!=Kind.TEMPORARY)throw new IllegalArgumentException("单车道内部一分二请选择普通分流（原车道直行）；整车道分离会清空主路");
       Event replacement=null;
       for(Event candidate:ordered)if(event.kind()==Kind.DEPART&&candidate.kind()==Kind.REPLACE&&candidate.lane()==event.lane()&&candidate.sign()==event.sign()
           &&candidate.sign()*(candidate.station()-event.station())>1e-4){replacement=candidate;break;}
@@ -53,7 +54,7 @@ public final class LaneSections {
           &&event.sign()*(event.station()-old.begin())>=0&&event.sign()*(event.station()-old.end())<-.01)
         throw new IllegalArgumentException("同一车道空位内重复整车道分离；Y 分叉请使用普通分流（原车道直行）");
       if(replacement!=null&&!used.add(replacement.connection()))throw new IllegalArgumentException("补入车道同时匹配多个分离接头");
-      cuts.add(new Cut(event.connection(),event.lane(),event.sign(),event.station(),end,event.transition(),replacement==null?null:replacement.connection()));
+      cuts.add(new Cut(event.connection(),event.lane(),event.sign(),event.station(),end,event.transition(),replacement==null?null:replacement.connection(),event.kind()==Kind.TEMPORARY));
     }
     for(Event event:ordered)if(event.kind()==Kind.REPLACE&&!used.contains(event.connection()))
       throw new IllegalArgumentException("补入模式需要同一车道上游已经整车道分离形成空位；普通汇入请选并入现有车道");
@@ -70,6 +71,7 @@ public final class LaneSections {
 
     double[] removal=new double[count];
     for(Cut cut:raw.settings().options().lanePoints().cuts()){
+      if(cut.temporary())continue;
       if(cut.lane()>=count){if(cut.removed(s.distance())>.001)throw new IllegalArgumentException("分离车道穿过了车道数变化接缝，请在同一断面路段内设置接头");continue;}
       removal[cut.lane()]=Math.max(removal[cut.lane()],cut.removed(s.distance()));
     }

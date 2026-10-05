@@ -106,9 +106,11 @@ public final class RoadClearance {
     var out=new ArrayList<Triangle>();var samples=mesh.samples();
     for(int i=1;i<samples.size();i++){
       var a=samples.get(i-1);var b=samples.get(i);
-      V al=a.at(a.halfWidth(),0),ar=a.at(-a.halfWidth(),0),bl=b.at(b.halfWidth(),0),br=b.at(-b.halfWidth(),0);
-      for(var t:List.of(new Triangle(al,ar,br,a.distance(),a.distance(),b.distance()),new Triangle(al,br,bl,a.distance(),b.distance(),b.distance())))
-        if(Math.abs(t.det())>EPS)out.add(t);
+      for(var strip:LaneDeck.strips(mesh,a,b)) {
+        V al=strip.al(),ar=strip.ar(),bl=strip.bl(),br=strip.br();
+        for(var t:List.of(new Triangle(al,ar,br,a.distance(),a.distance(),b.distance()),new Triangle(al,br,bl,a.distance(),b.distance(),b.distance())))
+          if(Math.abs(t.det())>EPS)out.add(t);
+      }
     }return out;
   }
   private static List<V> intersection(List<V> subject,List<V> clip){

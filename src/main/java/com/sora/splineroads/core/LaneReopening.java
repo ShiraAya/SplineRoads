@@ -27,7 +27,8 @@ public final class LaneReopening {
       if(RoadProfile.layout(raw,s).catalog().lanes()!=count)throw new IllegalArgumentException("自动恢复暂不跨车道数变化接缝，请在同一稳定断面内设置分离范围");
       var lane=LanePoints.lane(raw,s.distance(),slot);samples.add(new Sample(lane.position(),s.left(),s.distance(),lane.width()/2+SIDE_MARGIN));
     }
-    var bounds=RoadRibbon.mesh(samples,raw.settings());return new Mesh(List.copyOf(samples),raw.settings(),bounds.min(),bounds.max(),raw.length(),raw.closed(),null);
+    var clean=raw.settings().options(raw.settings().options().lanePoints(LanePoints.Data.EMPTY));
+    var bounds=RoadRibbon.mesh(samples,clean);return new Mesh(List.copyOf(samples),clean,bounds.min(),bounds.max(),raw.length(),raw.closed(),null);
   }
   /** Conservative prism envelope also catches piers and tilted/offset beams after structure planning.
    * The mesh's slab thickness describes the entire prism, not a paper-thin top. */

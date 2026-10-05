@@ -74,7 +74,7 @@ public final class LaneRamps {
       target=b;
       var md=(old==null?LanePoints.Data.EMPTY:LaneTopology.metadata(old)).link(actual).openings(List.of());
       var settings=base.options(base.options().lanePoints(md));
-      for(var candidate:LaneRampPaths.candidates(a,b,settings,link.options()))try{
+      for(var candidate:routeCandidates(a,b,settings,link.options(),source,p))try{
         var baseMesh=fitHostContacts(LaneRampAlignment.fit(candidate.mesh(),lane.width(),targetLaneWidth,link.options().transition()),context,actual);
         for(Mesh mesh:heightCandidates(baseMesh,context,id,actual,errors,candidate.path()))try{
           if(data!=null&&!data.withinHeight(mesh))throw new IllegalArgumentException("上跨／下穿超出世界高度范围");
@@ -92,6 +92,28 @@ public final class LaneRamps {
     }catch(IllegalArgumentException e){if(offset==link.targetOffset())error=e.getMessage();}
     if(!errors.isEmpty()&&target!=null)error=LaneRampPaths.failure(a,target,link.options(),errors);
     throw new IllegalArgumentException(error+(link.to().road()!=null?"；已检查 B 点前后 "+(int)targetReach(link.options())+" 格的同车道范围":""));
+  }
+  /** Try a same-slot lead before a lateral turn, giving an inner lane enough room
+   * to rise/drop BEFORE crossing its neighbours. These are automatic candidates,
+   * not manually editable control points and not a clearance exemption. */
+  private static List<LaneRampPaths.Candidate> routeCandidates(LaneRampPaths.Port a,LaneRampPaths.Port b,Settings settings,LanePoints.Options options,RoadRecord source,LanePoints.Point point){
+    var result=new ArrayList<LaneRampPaths.Candidate>();String error="无法建立匝道候选";
+    try{result.addAll(LaneRampPaths.candidates(a,b,settings,options));}catch(IllegalArgumentException e){error=e.getMessage();}
+    if(options.departure()==LanePoints.Departure.TEMPORARY){
+      var raw=source.rawMesh();var lane=LanePoints.lane(raw,point);
+      for(double length:new double[]{64,96,128}){
+        double end=lane.station()+lane.sign()*length;if(end<=0||end>=raw.length())continue;
+        var last=LanePoints.lane(raw,end,point.lane());var lead=new ArrayList<Sample>();
+        for(double d=0;d<=length;d+=.5){var q=LanePoints.lane(raw,lane.station()+lane.sign()*d,point.lane());lead.add(new Sample(q.position(),q.direction().left(),d,settings.width()/2));}
+        var before=lead.get(lead.size()-2).center();double grade=(last.position().y()-before.y())/Math.max(.001,last.position().sub(before).horizontalLength());
+        var next=new LaneRampPaths.Port(last.position(),last.direction(),a.outside(),a.extraWidth(),grade);
+        try{for(var c:LaneRampPaths.candidates(next,b,settings,options)){
+          var samples=new ArrayList<>(lead);samples.addAll(c.mesh().samples().subList(1,c.mesh().samples().size()));
+          try{var mesh=RoadRibbon.mesh(samples,settings);RoadRibbon.checkSelfIntersections(mesh,4);result.add(new LaneRampPaths.Candidate(c.path(),mesh));}catch(IllegalArgumentException ignored){}
+        }}catch(IllegalArgumentException ignored){}
+      }
+    }
+    if(result.isEmpty())throw new IllegalArgumentException(error);return result;
   }
   private static LaneRampPaths.Port approach(RoadRecord road,LanePoints.Point point,double offset,boolean source,Settings settings,double transition){
     var selected=LanePoints.lane(mesh(road),point);double station=selected.station()+selected.sign()*offset;

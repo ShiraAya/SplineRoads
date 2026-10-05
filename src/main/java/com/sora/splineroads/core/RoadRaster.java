@@ -35,26 +35,16 @@ public final class RoadRaster {
     public Local(Mesh mesh, List<RoadStructures.Part> parts) {
       resolution = mesh.max().y() - mesh.min().y() - mesh.settings().thickness() > 1e-5 ? 8 : 4;
       int count = 0;
-      for (Mesh piece : mesh.length() <= 256 ? List.of(mesh) : RoadRibbon.split(mesh, 96)) {
+      for (Mesh piece : LaneDeck.rasterPieces(mesh,96)) {
         var points = piece.samples();
         for (int i = 1; i < points.size(); i++) {
           Sample a = points.get(i - 1), b = points.get(i);
-          Segment segment =
-              new Segment(
-                  a.at(a.halfWidth(), 0),
-                  a.at(-a.halfWidth(), 0),
-                  b.at(b.halfWidth(), 0),
-                  b.at(-b.halfWidth(), 0),
-                  mesh.settings().thickness());
-          var vertices = List.of(segment.l, segment.r, segment.ll, segment.rr);
-          add(
-              decks,
-              segment,
-              vertices.stream().mapToDouble(V::x).min().orElseThrow(),
-              vertices.stream().mapToDouble(V::z).min().orElseThrow(),
-              vertices.stream().mapToDouble(V::x).max().orElseThrow(),
-              vertices.stream().mapToDouble(V::z).max().orElseThrow());
-          count++;
+          for(var strip:LaneDeck.strips(piece,a,b)) {
+          Segment segment=new Segment(strip.al(),strip.ar(),strip.bl(),strip.br(),mesh.settings().thickness());
+          var vertices=List.of(segment.l,segment.r,segment.ll,segment.rr);
+          add(decks,segment,vertices.stream().mapToDouble(V::x).min().orElseThrow(),vertices.stream().mapToDouble(V::z).min().orElseThrow(),
+              vertices.stream().mapToDouble(V::x).max().orElseThrow(),vertices.stream().mapToDouble(V::z).max().orElseThrow());count++;
+          }
         }
       }
       segmentCount = count;
@@ -171,7 +161,7 @@ public final class RoadRaster {
     if (mesh.length() <= 256) return rasterPart(mesh, only, resolution);
     // Rasterize long roads in bounded strips without retaining millions of sub-block tiles.
     Map<Cell, List<Box>> result = new HashMap<>();
-    for (Mesh part : RoadRibbon.split(mesh, 96)) {
+    for (Mesh part : LaneDeck.rasterPieces(mesh,96)) {
       if (only != null
           && (only.x() + 1 < part.min().x()
               || only.x() > part.max().x()
@@ -194,11 +184,10 @@ public final class RoadRaster {
     double step = 1.0 / resolution;
     for (int i = 1; i < points.size(); i++) {
       Sample a = points.get(i - 1), b = points.get(i);
-      V l = a.at(a.halfWidth(), 0),
-          r = a.at(-a.halfWidth(), 0),
-          ll = b.at(b.halfWidth(), 0),
-          rr = b.at(-b.halfWidth(), 0);
-      for(var poly:List.of(List.of(l,r,rr,ll)))for(int j=1;j<poly.size()-1;j++)triangle(tiles,poly.get(0),poly.get(j),poly.get(j+1),mesh.settings().thickness(),resolution,only);
+      for(var strip:LaneDeck.strips(mesh,a,b)) {
+        triangle(tiles,strip.al(),strip.ar(),strip.br(),mesh.settings().thickness(),resolution,only);
+        triangle(tiles,strip.al(),strip.br(),strip.bl(),mesh.settings().thickness(),resolution,only);
+      }
       if (tiles.size() > 1500000) throw new IllegalArgumentException("碰撞面积过大，请将道路分为多段");
     }
     return collect(tiles, resolution, only);

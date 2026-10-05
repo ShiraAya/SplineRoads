@@ -36,6 +36,7 @@ public final class RoadRenderMesh {
   }
 
   private static Mesh pavementUncached(Mesh mesh) {
+    if(LaneDeck.hasOpenings(mesh))return mesh;
     var samples = mesh.samples();
     List<Sample> out = new ArrayList<>();
     out.add(mesh.first());
@@ -75,6 +76,7 @@ public final class RoadRenderMesh {
   }
 
   private static Mesh simplify(Mesh mesh, double spacing, double error) {
+    if(LaneDeck.hasOpenings(mesh))return mesh;
     List<Sample> out = new ArrayList<>();
     out.add(mesh.first());
     double d = 0;
