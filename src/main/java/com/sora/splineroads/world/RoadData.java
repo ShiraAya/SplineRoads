@@ -929,6 +929,7 @@ public final class RoadData extends SavedData {
       removed.addAll(confirmedLaneDeletes);
       built.removeIf(b->confirmedLaneDeletes.contains(b.record.id()));
       if(built.stream().noneMatch(r->r.record.junction()!=null))normalizeTransitions(built, removed, player,deleting);
+      timing.stage("normalize_transitions");
       List<RoadIndex.Built> requested = new ArrayList<>(built);
       for (UUID id : removed) if (index.roads.containsKey(id)) requested.add(index.roads.get(id));
       // Re-plan neighboring elevated structures when adding a ground road or a junction.
@@ -943,7 +944,9 @@ public final class RoadData extends SavedData {
       var supportGroups=new HashSet<UUID>();
       for(var r:built)if(r.record.junction()!=null)supportGroups.add(r.record.assembly());
       for(var old:index.roads.values())if(old.record.junction()!=null&&supportGroups.contains(old.record.assembly())&&!removed.contains(old.record.id())&&built.stream().noneMatch(r->r.record.id().equals(old.record.id()))){built.add(old.structures(List.of()));removed.add(old.record.id());}
+      timing.stage("affected_structures");
       AttachedPoints.reconcile(this,built,removed,deleting,deletedPoints);
+      timing.stage("attached_points");
       LaneTopology.reconcile(this,built,removed);
       timing.stage("topology");
       built.sort(Comparator.comparing(r -> r.record.id()));
@@ -980,7 +983,9 @@ public final class RoadData extends SavedData {
         return descriptor!=null&&descriptor.getLongArray("Points").length>=5;
       });
       if(largeAssembly){workChunks.multiInterchange();editCellLimit=Math.max(editCellLimit,RoadLimits.MAX_MULTI_INTERCHANGE_EDIT_CELLS);}
+      timing.stage("caps_and_dependencies");
       workChunks.roads(terrainRoads);
+      timing.stage("terrain_chunk_access");
       Map<BlockPos, List<net.minecraft.world.phys.AABB>> terrainCache = new HashMap<>();
       // Keep saved origins; anchor newly added sections to the already-built connected road.
       List<RoadIndex.Built> spacingReferences = new ArrayList<>(index.roads.values());
@@ -992,6 +997,7 @@ public final class RoadData extends SavedData {
         spacingReferences.removeIf(o -> o.record.id().equals(r.record.id()));
         spacingReferences.add(next);
       }
+      timing.stage("furniture_phase");
       for (int i = 0; i < built.size(); i++) {
         var r = built.get(i);
         RoadRecord planned = StructurePlanner.plan(level, r, planning, terrainFill, terrainCache);
@@ -999,6 +1005,7 @@ public final class RoadData extends SavedData {
         built.set(i, next);
         planning.set(planning.indexOf(r), next);
       }
+      timing.stage("structure_plan");
       // Terrain-derived raised medians can change a lane center after planning. Resolve
       // dependent ports again before any world write; never save an off-center marker.
       for(int pass=0;(LaneTopology.needsRefresh(this,planning,built.stream().map(b->b.record.id()).toList())||LaneCrossSections.needsRestoreRefresh(planning,built.stream().map(b->b.record.id()).toList()));pass++){
@@ -1007,6 +1014,7 @@ public final class RoadData extends SavedData {
         planning.clear();for(var old:index.roads.values())if(!removed.contains(old.record.id()))planning.add(old);planning.addAll(built);
         for(int i=0;i<built.size();i++){var r=built.get(i);var next=r.planned(StructurePlanner.plan(level,r,planning,terrainFill,terrainCache));built.set(i,next);planning.set(planning.indexOf(r),next);}
       }
+      timing.stage("dependent_replanning");
       var noseCaps =
           RoadNoses.connectors(
               built.stream().map(r -> r.mesh).toList(),
@@ -1027,7 +1035,7 @@ public final class RoadData extends SavedData {
         }
       }
       if(!deleting)checkJoints(built, removed);
-      timing.stage("structures");
+      timing.stage("caps_shell_and_joint_validation");
       final List<RoadIndex.Built> committed = built;
       final Set<UUID> removedIds = removed;
       Set<Long> touched = new it.unimi.dsi.fastutil.longs.LongOpenHashSet();

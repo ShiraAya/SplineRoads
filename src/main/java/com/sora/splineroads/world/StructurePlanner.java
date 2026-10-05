@@ -33,6 +33,9 @@ final class StructurePlanner {
     // slabs independently so lamp arms/posts cannot tunnel through an upper walkway.
     var sidewalkSolids=new RoadSolidOverlap.Index(obstacles.stream().flatMap(r->r.record.structures().stream())
         .filter(p->p.material().name().startsWith("WALK_")).toList());
+    // Piers may stand outside their owning road's deck bounds and record endpoints
+    // are not reliable geometric identity. Check their actual local shaft positions.
+    var pierSpacing=new RoadPierSpacing(obstacles.stream().flatMap(r->r.record.structures().stream()).toList());
     var ground = new RoadStructures.Ground() {
               public boolean furnitureClear(V point) {
                 return LanePoints.opening(built.mesh,point)||RoadSignals.furnitureClear(point, approaches);
@@ -99,6 +102,7 @@ final class StructurePlanner {
               }
 
               public boolean blocked(RoadStructures.Part part) {
+                if(pierSpacing.tooClose(part))return true;
                 if(!RoadSidewalks.smoothPart(part)&&sidewalkSolids.intersects(part))return true;
                 if(LaneTopology.metadata(built.record).link()!=null&&RoadInteractions.selfSupportBlocked(part,built.mesh))return true;
                 // Rails use the exact deck opening test above. The pier's vehicle-clearance
@@ -122,15 +126,6 @@ final class StructurePlanner {
                 }
                 for (var other : obstacles) {
                   if(box.maxX<other.mesh.min().x()-2||box.minX>other.mesh.max().x()+2||box.maxZ<other.mesh.min().z()-2||box.minZ>other.mesh.max().z()+2)continue;
-                  // Existing piers also impose a minimum spacing across separate connected road
-                  // records.
-                  if (part.pier() && RoadInteractions.connected(built.record,other.record)
-                      && Math.abs(built.mesh.first().center().y()-other.mesh.first().center().y())<2)
-                    for (var old : other.record.structures())
-                      if (old.pier() && old.material()==RoadStructures.Material.CONCRETE
-                          && old.height()>2 && part.material()==RoadStructures.Material.CONCRETE
-                          && old.a().y()<part.a().y()+part.height() && old.a().y()+old.height()>part.a().y()
-                          && old.a().sub(part.a()).horizontalLength() < 8) return true;
                   if (box.maxY < other.mesh.min().y() - .05 || box.minY > other.mesh.max().y() + Math.max(4.25,com.sora.splineroads.core.RoadInfrastructure.clearance(other.record.settings())))
                     continue;
                   if(RoadSidewalks.smoothPart(part)){
