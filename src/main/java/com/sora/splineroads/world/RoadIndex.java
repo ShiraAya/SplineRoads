@@ -40,13 +40,13 @@ public final class RoadIndex {
             if (!(key instanceof Long value) || effectiveClearance() == 0) return false;
             BlockPos p = BlockPos.of(value);
             var c = clearanceColumns().get(new BlockPos(p.getX(), 0, p.getZ()).asLong());
-            return c != null && p.getY() >= clearMin(c) && p.getY() < clearEnd(c);
+            return c != null && p.getY() >= clearMin(c) && p.getY() < clearEnd(c,new BlockPos(p.getX(),0,p.getZ()).asLong());
           }
 
           public int size() {
             if (effectiveClearance() == 0) return 0;
             int n = 0;
-            for (var c : clearanceColumns().values()) n += clearEnd(c) - clearMin(c);
+            for (var e : clearanceColumns().entrySet()) n += Math.max(0,clearEnd(e.getValue(),e.getKey())-clearMin(e.getValue()));
             return n;
           }
 
@@ -62,7 +62,7 @@ public final class RoadIndex {
                   var e = source.next();
                   p = BlockPos.of(e.getKey());
                   y = clearMin(e.getValue());
-                  end = clearEnd(e.getValue());
+                  end = clearEnd(e.getValue(),e.getKey());
                 }
                 return y < end;
               }
@@ -80,7 +80,6 @@ public final class RoadIndex {
     }
 
     private final Map<Long,Column> nearbyClearance=bounded(1024);
-    private volatile RoadRaster.Local tunnelClearance;
     private Map<Long,Column> dryColumns;
     private Map<Long,Column> clearanceColumns(){
       ensureRaster();
@@ -94,15 +93,20 @@ public final class RoadIndex {
         }
         return dryColumns;
       }
-      if(dryColumns==null){
-        var m=new Mesh(mesh.samples().stream().map(s->new Sample(s.center(),s.left(),s.distance(),s.halfWidth()+1.65)).toList(),mesh.settings(),mesh.min(),mesh.max(),mesh.length(),mesh.closed(),mesh.controlPoint());
-        var result=new HashMap<Long,Column>();
-        RoadRaster.raster(m).forEach((cell,boxes)->{long key=new BlockPos(cell.x(),0,cell.z()).asLong();for(var box:boxes){double lo=cell.y()+box.y0()+record.settings().thickness(),hi=cell.y()+box.y1();var old=result.get(key);result.put(key,old==null?new Column(lo,hi):new Column(Math.min(lo,old.minTop()),Math.max(hi,old.maxTop())));}});dryColumns=result;
-      }return dryColumns;
+      // Do not mark the 1.65-block lining/exterior apron as invisible air clearance.
+      // Wall and roof blocks already belong to shellCells/cellData and get their own exact body.
+      return columnData;
     }
     private double effectiveClearance(){return Math.max(record.clearance(),RoadInfrastructure.clearance(record.settings()));}
 
-    private int clearEnd(Column c) {
+    private final Map<Long,Integer> tunnelEnds=bounded(2048);
+    private int clearEnd(Column c,long key) {
+      if(record.settings().structure()==Structure.TUNNEL) {
+        var previous=tunnelEnds.get(key);if(previous!=null)return previous;
+        var p=BlockPos.of(key);
+        int result=(int)Math.ceil(RoadInfrastructure.excavationTop(mesh,p.getX(),p.getZ(),c.maxTop())-1e-7);
+        tunnelEnds.put(key,result);return result;
+      }
       return (int) Math.ceil(c.maxTop() + effectiveClearance() - 1e-7);
     }
 
@@ -260,17 +264,7 @@ public final class RoadIndex {
       if(nearbyClearance.containsKey(key))c=nearbyClearance.get(key);
       else {
         if(record.settings().structure()==Structure.TUNNEL) {
-          var local=tunnelClearance;
-          if(local==null) {
-            var expanded=new Mesh(mesh.samples().stream().map(a->new Sample(a.center(),a.left(),a.distance(),a.halfWidth()+1.65)).toList(),
-                mesh.settings(),mesh.min(),mesh.max(),mesh.length(),mesh.closed(),mesh.controlPoint());
-            tunnelClearance=local=new RoadRaster.Local(expanded,List.of());
-          }
-          c=null;
-          for(var e:local.deckColumn(p.getX(),p.getZ()).entrySet())for(var box:e.getValue()) {
-            double low=e.getKey().y()+box.y0()+record.settings().thickness(),high=e.getKey().y()+box.y1();
-            c=c==null?new Column(low,high):new Column(Math.min(c.minTop(),low),Math.max(c.maxTop(),high));
-          }
+          c=column(p);
         } else {
           c=column(p);
           for(var e:prepareCollision().structureColumn(p.getX(),p.getZ(),a->a.material().name().startsWith("WALK_")).entrySet()) {
@@ -280,7 +274,7 @@ public final class RoadIndex {
         }
         nearbyClearance.put(key,c);
       }
-      return c!=null&&p.getY()>=clearMin(c)&&p.getY()<clearEnd(c);
+      return c!=null&&p.getY()>=clearMin(c)&&p.getY()<clearEnd(c,key);
     }
     public double walkTopAt(BlockPos p) {
       if(rasterized)return walkTops.getOrDefault(p.asLong(),Double.NEGATIVE_INFINITY);

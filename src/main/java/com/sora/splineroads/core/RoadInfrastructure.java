@@ -104,7 +104,7 @@ public final class RoadInfrastructure {
       Sample a=sample(mesh,d),b=sample(mesh,d+2);
       for(int side:new int[]{-1,1}){
         longitudinal(out,a,b,side*(a.halfWidth()+.75),side*(b.halfWidth()+.75),-mesh.settings().thickness(),1.6,
-            c.headroom()+mesh.settings().thickness(),Material.TUNNEL);
+            Math.max(wallTop(c,a.halfWidth()),wallTop(c,b.halfWidth()))+mesh.settings().thickness(),Material.TUNNEL);
         longitudinal(out,a,b,side*(a.halfWidth()-.05),side*(b.halfWidth()-.05),.8,.12,.18,Material.SIGN_WHITE);
       }
       int bands=Math.max(16,(int)Math.ceil(Math.max(a.halfWidth(),b.halfWidth())/3));
@@ -135,7 +135,7 @@ public final class RoadInfrastructure {
     // End collars surround the opening; never put a solid cap across the travel lanes.
     for(double d:new double[]{.6,Math.max(.6,mesh.length()-.6)}){
       Sample s=sample(mesh,d);double w=s.halfWidth()+.65;
-      for(int side:new int[]{-1,1})post(out,at(s,side*w,-mesh.settings().thickness()),1.3,c.headroom()+mesh.settings().thickness(),Material.TUNNEL);
+      for(int side:new int[]{-1,1})post(out,at(s,side*w,-mesh.settings().thickness()),1.3,wallTop(c,s.halfWidth())+mesh.settings().thickness(),Material.TUNNEL);
       int bands=16;
       for(int i=0;i<bands;i++){
         double u=-1+2.0*i/bands,v=-1+2.0*(i+1)/bands;
@@ -146,6 +146,26 @@ public final class RoadInfrastructure {
       Sample a=sample(mesh,d),b=sample(mesh,d+1.2);
       for(int side:new int[]{-1,1})longitudinal(out,a,b,side*(a.halfWidth()-.2),side*(b.halfWidth()-.2),c.headroom()-.5,.3,.25,Material.LAMP);
     }
+  }
+  /** The arch spans beyond the pavement, so its height at the INNER wall is above
+   * headroom. Stop at that real roof band, not at the outer spring line. */
+  private static double wallTop(Config c,double half){return ceiling(c,half,Math.max(0,half-.05))+.03;}
+
+  /** A conservative column-specific interior ceiling, not a full-height rectangular
+   * excavation outside the tunnel. Shell volume is handled by its own collision body.
+   * Projection uses the existing spatial index. The lateral cell radius preserves all
+   * interior air under an arch while no longer clearing to the centre height at its sides. */
+  public static double excavationTop(Mesh mesh,int x,int z,double deckTop){
+    var c=mesh.settings().options().infrastructure();
+    var q=RoadQueries.horizontal(mesh,new V(x+.5,deckTop,z+.5));
+    double half=q.sample().halfWidth(),lateral=Math.max(0,Math.abs(q.lateral())-.75);
+    double rise=ceiling(c,half,lateral);
+    for(double dx:new double[]{0,1})for(double dz:new double[]{0,1}) {
+      var corner=RoadQueries.horizontal(mesh,new V(x+dx,deckTop,z+dz));
+      half=Math.max(half,corner.sample().halfWidth());
+    }
+    rise=Math.max(rise,ceiling(c,half,lateral));
+    return deckTop+rise+.02;
   }
   /** Height of the actual planar roof band at a lateral position. */
   public static double ceiling(Config c,double half,double lateral){
