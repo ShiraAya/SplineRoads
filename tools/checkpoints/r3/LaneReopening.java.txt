@@ -54,3 +54,4 @@ public final class LaneReopening {
       throw new IllegalArgumentException("车道恢复范围仍有匝道净空冲突，已取消建造");
   }
   private LaneReopening(){}
+}
