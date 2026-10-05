@@ -7,7 +7,7 @@ permissions:
   contents: read
 jobs:
   apply:
-    if: github.repository == 'ShiraAya/SplineRoads' && github.event.head_commit.message == 'WIP: stage reviewed R3 source for guarded checkpoint'
+    if: github.repository == 'ShiraAya/SplineRoads' && startsWith(github.event.head_commit.message, 'WIP')
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -20,7 +20,7 @@ jobs:
           java-version: '17'
       - name: Apply exact reviewed source hashes
         run: python3 tools/checkpoints/apply_r3.py
-      - name: Save source BEFORE long tests without overwriting concurrent work
+      - name: Save source before long tests
         run: |
           git fetch origin chat/sr-0402
           test "$(git rev-parse FETCH_HEAD)" = "${{ github.sha }}"
