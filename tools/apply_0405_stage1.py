@@ -1,0 +1,17 @@
+# One-use, hash-checked source changes based on 0.40.4. Do not rerun on another revision.
+from pathlib import Path
+import hashlib
+CORE='src/main/java/com/sora/splineroads/core/'
+expected={CORE+'TactilePaths.java':'3c4bf0df1792bfdfefe1953fb7ecf83857e6760d6af6fa1e24bb728bede80fca',CORE+'RoadProfile.java':'f309979610e1eff2fb873c524c588aeaf738f01e9ded1fbda7bd62a5889b9340',CORE+'RoadStructures.java':'1820a9be5e2e2db89500262814f1b3ed8d625a797cf198b7481046f24d1e8742','src/validation/java/com/sora/splineroads/VisibilityMedian407Validation.java':'eafecf9d2efd4c999cd173f33b77290b46f236d29e507e6ed228dfabb46ca5d5'}
+for name,sha in expected.items():
+ assert hashlib.sha256(Path(name).read_bytes()).hexdigest()==sha, name+' changed; refusing overwrite'
+def replace(name,old,new):
+ p=Path(name);s=p.read_text();assert s.count(old)==1,(name,old);p.write_text(s.replace(old,new))
+replace(CORE+'TactilePaths.java','    var paving=new ArrayList<>(RoadSidewalks.cornerPaving(spec,approaches,edge,sign));','    // A reflex boundary already has an outward-safe parallel curve. A separate\n    // fillet between mouth rays cuts inside the actual Bezier sidewalk and forces\n    // the row inward to find support. Use the paved boundary offset below instead.\n    if(angle*first.normal().dot(u.left())<0)return false;\n    var paving=new ArrayList<>(RoadSidewalks.cornerPaving(spec,approaches,edge,sign));')
+replace(CORE+'TactilePaths.java','for(double inset:new double[]{0,.5,1,2}){','// If the tangent at the authored row is not supported, use the actual corner\n    // boundary below. Do not invent a narrower inset row and weave inward then out.\n    for(double inset:new double[]{0}){')
+replace(CORE+'RoadProfile.java','    var reserved=LaneSections.layout(mesh,sample);if(reserved!=null)return reserved;\n    var base=RoadTransitions.layout(mesh,sample);\n    if(!base.catalog().twoWay()||!RoadStreetscape.raised(mesh,sample))return base;','    var reserved=LaneSections.layout(mesh,sample);\n    var base=reserved!=null?reserved:RoadTransitions.layout(mesh,sample);\n    if(mesh.settings().structure()==Structure.TUNNEL)return TunnelMedian.apply(base);\n    if(reserved!=null||!base.catalog().twoWay()||!RoadStreetscape.raised(mesh,sample))return base;')
+replace(CORE+'RoadStructures.java','double terrainBlend = raised ? 0 : 1;','double terrainBlend = raised || mesh.settings().structure()==Structure.TUNNEL ? 0 : 1;')
+replace('src/validation/java/com/sora/splineroads/VisibilityMedian407Validation.java','if(a==Style.O4_GREEN)check(actual.stream().anyMatch(p->p.material()==Material.GREEN),"selected green median lost");','check(actual.stream().noneMatch(p->p.material()==Material.GREEN||p.material()==Material.SOIL),"tunnel must never contain a planted median");\n      if(a==Style.O4_GREEN)check(actual.stream().anyMatch(p->p.material()==Material.STEEL),"green selection must become rail in tunnel");')
+after={CORE+'TactilePaths.java':'e2213be75b008b0985a15f13b54d3f57f888c9140378afe17802769b2985f4a8',CORE+'RoadProfile.java':'e2b7409a3ae7f7d3f394890b4140490c430d2582e72d571df2d0e581e19aa7bf',CORE+'RoadStructures.java':'ff88f2f4ebd1560dbfae2e81f5efc18af135d21a7ee6451261e539636c22e1cb','src/validation/java/com/sora/splineroads/VisibilityMedian407Validation.java':'a752b2875b52e062ec3f0ef59313a0049182371a9fd26dc170e9181776448227'}
+for name,sha in after.items():assert hashlib.sha256(Path(name).read_bytes()).hexdigest()==sha,name+' unexpected output'
+print('PASS: exact pre-reviewed source bytes applied, no unrelated production changes')

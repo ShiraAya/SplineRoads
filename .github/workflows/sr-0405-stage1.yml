@@ -1,0 +1,54 @@
+name: SR 0.40.5 stage1 saved corrections
+on:
+  push:
+    branches: [chat/sr-0402]
+    paths: [.github/workflows/sr-0405-stage1.yml]
+permissions:
+  contents: write
+concurrency:
+  group: sr-0405-stage1
+  cancel-in-progress: false
+jobs:
+  save-and-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: chat/sr-0402
+          fetch-depth: 1
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Apply guarded exact changes and save before long tests
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          python tools/apply_0405_stage1.py
+          rm .github/workflows/sr-0405-stage1.yml
+          git config user.name 'SR checkpoint automation'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git add src .github/workflows/sr-0405-stage1.yml
+          git commit -m 'fix: map tunnel green to rail and keep tactile corners on authored rows'
+          git push origin HEAD:refs/heads/chat/sr-0402
+      - name: Validate actual core and tunnel policy
+        run: |
+          set -euo pipefail
+          mkdir -p build/checkpoint-logs
+          bash tools/test_ramp39.sh build/stage409/core 2>&1 | tee build/checkpoint-logs/core.txt
+          javac --release 17 -encoding UTF-8 -cp build/stage409/core/classes -d build/stage409/core/classes src/validation/java/com/sora/splineroads/TactileTunnel409Validation.java src/validation/java/com/sora/splineroads/VisibilityMedian407Validation.java
+          java -Xmx1500m -XX:ActiveProcessorCount=2 -Dfile.encoding=UTF-8 -cp build/stage409/core/classes:src/main/resources com.sora.splineroads.TactileTunnel409Validation | tee build/checkpoint-logs/tactile.txt
+          java -Xmx1500m -XX:ActiveProcessorCount=2 -Dfile.encoding=UTF-8 -cp build/stage409/core/classes:src/main/resources com.sora.splineroads.VisibilityMedian407Validation | tee build/checkpoint-logs/median.txt
+      - name: Preserve saved source even if a test fails
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr-0405-stage1-${{ github.sha }}
+          path: build/checkpoint-logs/
+          retention-days: 14
