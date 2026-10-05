@@ -78,7 +78,12 @@ public final class LaneRamps {
         var baseMesh=fitHostContacts(LaneRampAlignment.fit(candidate.mesh(),lane.width(),targetLaneWidth,link.options().transition()),context,actual);
         for(Mesh mesh:heightCandidates(baseMesh,context,id,actual,errors,candidate.path()))try{
           if(data!=null&&!data.withinHeight(mesh))throw new IllegalArgumentException("上跨／下穿超出世界高度范围");
-          validate(mesh,context,id,actual);var start=RoadRibbon.start(mesh);var end=RoadRibbon.end(mesh);
+          var finalContext=actual.options().departure()==LanePoints.Departure.TEMPORARY?
+              LaneCrossSections.staged(all,id,actual,mesh):context;
+          validate(mesh,finalContext,id,actual);
+          if(actual.options().departure()==LanePoints.Departure.TEMPORARY)
+            LaneReopening.validateRestored(host(finalContext,actual.from()).mesh(),p.lane(),mesh,id);
+          var start=RoadRibbon.start(mesh);var end=RoadRibbon.end(mesh);
           var record=new RoadRecord(id,owner,RampJunctions.at(start.position()),RampJunctions.at(end.position()),start,end,settings,false,4).alignment(null,mesh);
           if(old!=null)record=record.furniturePhase(old.furniturePhase());
           return new Generated(record,candidate.path());
@@ -110,12 +115,12 @@ public final class LaneRamps {
     var sourceIds=contactRoads(all,link.from());var targetIds=contactRoads(all,link.to());
     var source=sourceIds.stream().map(all::get).filter(Objects::nonNull).map(LaneRamps::mesh).toList();
     var target=targetIds.stream().map(all::get).filter(Objects::nonNull).map(LaneRamps::mesh).toList();
-    double from=mesh.samples().get(contactEnd(mesh,all,sourceIds,true)).distance();
+    double from=link.options().separatesLane()?0:mesh.samples().get(contactEnd(mesh,all,sourceIds,true)).distance();
     double to=mesh.samples().get(contactEnd(mesh,all,targetIds,false)).distance();
     if(from>=to)return mesh;
     double ease=Math.min(200,Math.max(2,(to-from)/3));var samples=new ArrayList<Sample>();
     for(var sample:mesh.samples()){
-      double ws=source.isEmpty()?0:1-Settings.smooth(Math.max(0,Math.min(1,(sample.distance()-from)/ease)));
+      double ws=source.isEmpty()||link.options().separatesLane()?0:1-Settings.smooth(Math.max(0,Math.min(1,(sample.distance()-from)/ease)));
       double wt=target.isEmpty()?0:1-Settings.smooth(Math.max(0,Math.min(1,(to-sample.distance())/ease)));
       double dy=(ws>0?ws*hostHeightDelta(sample,source):0)+(wt>0?wt*hostHeightDelta(sample,target):0);
       samples.add(new Sample(sample.center().add(new V(0,dy,0)),sample.left(),sample.distance(),sample.halfWidth()));
@@ -146,11 +151,21 @@ public final class LaneRamps {
       if(other!=null&&link.to().equals(other.to()))sharedEnd=mesh.samples().get(contactEnd(mesh,Map.of(road.id(),road),Set.of(road.id()),false)).distance();
       if(sharedStart>mesh.length()*.9||sharedEnd<mesh.length()*.1)throw new IllegalArgumentException("同一车道点的两条匝道几乎全程重合，请使用不同汇入方向");
       for(var c:contacts(mesh,old)){
-        if(sourceHosts.contains(road.id())&&c.to()<=sourceLimit+.01||targetHosts.contains(road.id())&&c.from()>=targetLimit-.01)continue;
+        boolean sourceJoin=sourceHosts.contains(road.id())&&c.to()<=sourceLimit+.01;
+        if(sourceJoin&&link.options().separatesLane())sourceJoin=separationThroat(c,road,link);
+        if(sourceJoin||targetHosts.contains(road.id())&&c.from()>=targetLimit-.01)continue;
         if(c.to()<=sharedStart+.01||c.from()>=sharedEnd-.01)continue;
         out.add(new Obstacle(road.id(),c));
       }
     }return out;
+  }
+  /** Only the selected slot joins; opposite traffic is not exempt merely because it has the same host ID. */
+  private static boolean separationThroat(RoadClearance.Contact contact,RoadRecord road,LanePoints.Link link){
+    if(!road.id().equals(link.from().road()))return false;
+    var raw=road.rawMesh();var point=LaneTopology.point(road,link.from().point());var start=LanePoints.lane(raw,point);
+    var q=RoadQueries.horizontal(raw,contact.ours());var lane=LanePoints.lane(raw,q.sample().distance(),point.lane());
+    return start.sign()*(lane.station()-start.station())>=-.25&&
+        Math.abs(contact.ours().sub(lane.position()).dot(q.sample().left()))<=lane.width()/2+.55;
   }
   private static List<Mesh> heightCandidates(Mesh base,Map<UUID,RoadRecord> all,UUID id,LanePoints.Link link,Map<LanePoints.Path,String> errors,LanePoints.Path path){
     var mode=link.options().elevation();var out=new ArrayList<Mesh>();
@@ -159,7 +174,7 @@ public final class LaneRamps {
     if(mode==LanePoints.Elevation.KEEP)return List.of(base);
     if(mode==LanePoints.Elevation.AUTO&&clear)return List.of(base);
     if(contacts.isEmpty())return List.of(base);
-    double from=base.samples().get(contactEnd(base,all,contactRoads(all,link.from()),true)).distance();
+    double from=link.options().separatesLane()?0:base.samples().get(contactEnd(base,all,contactRoads(all,link.from()),true)).distance();
     double to=base.samples().get(contactEnd(base,all,contactRoads(all,link.to()),false)).distance();
     for(boolean over:mode==LanePoints.Elevation.UNDER?new boolean[]{false}:mode==LanePoints.Elevation.OVER?new boolean[]{true}:new boolean[]{true,false}){
       var constraints=new ArrayList<LaneRampHeights.Constraint>();
@@ -224,6 +239,9 @@ public final class LaneRamps {
     tool.getOrCreateTag().put("LanePreview",checked);
     var reply=new CompoundTag();reply.putString("Kind","laneRampCheck");reply.putString("ResolvedPath",generated.path().name());reply.putLong("Request",t.getLong("Request"));reply.put("Road",r.header());reply.putUUID("Token",checked.getUUID("Token"));reply.putDouble("TargetOffset",LaneTopology.metadata(r).link().targetOffset());
     var changed=new ListTag();for(var next:staging.values())if(next.id().equals(id)||all.containsKey(next.id())&&!next.equals(all.get(next.id())))changed.add(next.header());reply.put("ChangedRoads",changed);
+    if(options.departure()==LanePoints.Departure.TEMPORARY)for(var cut:LaneTopology.metadata(staging.get(from.road())).cuts())if(cut.connection().equals(id)){
+      reply.putBoolean("TemporaryClosure",true);reply.putDouble("ReopenAfter",cut.sign()*(cut.end()-cut.begin())-cut.transition());reply.putDouble("RestoredAfter",cut.sign()*(cut.end()-cut.begin()));break;
+    }
     return reply;
   }
   public static String build(ServerPlayer player,ItemStack tool,CompoundTag t){

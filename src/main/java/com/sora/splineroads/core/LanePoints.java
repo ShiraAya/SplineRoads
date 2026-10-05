@@ -20,7 +20,7 @@ public final class LanePoints {
     public static Ref junction(UUID junction){return new Ref(null,null,junction);}
   }
   public enum Path { AUTO("自动"),RIGHT("右转"),LEFT_LOOP("左转回环"),DIRECT("直接连接"),LEFT("定向左转");public final String label;Path(String label){this.label=label;} }
-  public enum Departure { BRANCH("保留原车道分流"), DETACH("整车道分离"), EXTRA("额外扩出"); public final String label; Departure(String label){this.label=label;} }
+  public enum Departure { BRANCH("普通分流（原车道直行）"), DETACH("整车道分离"), EXTRA("额外扩出"), TEMPORARY("保留车道分离"); public final String label; Departure(String label){this.label=label;} }
   public enum Arrival { MERGE("并入现有车道"), REPLACE("补入车道空位"), EXTRA("额外扩入"); public final String label; Arrival(String label){this.label=label;} }
   public enum Elevation { AUTO("自动避让"), OVER("上跨既有道路"), UNDER("下穿既有道路"), KEEP("保持原高程"); public final String label; Elevation(String label){this.label=label;} }
   public enum Landing { FLEXIBLE("同车道弹性落点"), EXACT("精确锁定 B"); public final String label; Landing(String label){this.label=label;} }
@@ -30,6 +30,7 @@ public final class LanePoints {
     public Options(Path path,boolean sourceExtra,boolean targetExtra,double radius,double transition){this(path,sourceExtra?Departure.EXTRA:Departure.BRANCH,targetExtra?Arrival.EXTRA:Arrival.MERGE,radius,transition,Elevation.AUTO,Landing.FLEXIBLE);}
     public Options {if(path==null||departure==null||arrival==null||elevation==null||landing==null||!RoadGeometry.finite(radius,transition)||radius<8||radius>256||transition<8||transition>256)throw new IllegalArgumentException("半径与过渡长度须为 8–256 格，且连接模式有效");}
     public boolean sourceExtra(){return departure==Departure.EXTRA;}
+    public boolean separatesLane(){return departure==Departure.DETACH||departure==Departure.TEMPORARY;}
     public boolean targetExtra(){return arrival==Arrival.EXTRA;}
     public Options withoutApproaches(){return new Options(path,Departure.BRANCH,Arrival.MERGE,radius,transition,elevation,landing);}
   }

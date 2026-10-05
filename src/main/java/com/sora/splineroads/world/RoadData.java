@@ -56,7 +56,7 @@ public final class RoadData extends SavedData {
 
   private static boolean rSign(RoadStructures.Part p){return p.material()==RoadStructures.Material.SIGN_GREEN||p.material()==RoadStructures.Material.SIGN_BLUE;}
   public static RoadData load(CompoundTag root) {
-    if (root.getInt("Version") > 34)
+    if (root.getInt("Version") > 35)
       throw new IllegalStateException("Spline Roads save is newer than this mod");
     long loadStarted=System.nanoTime();
     RoadData data = new RoadData();
@@ -91,7 +91,7 @@ public final class RoadData extends SavedData {
 
   @Override
   public CompoundTag save(CompoundTag root) {
-    root.putInt("Version", 34);
+    root.putInt("Version", 35);
     var cleanup=new ListTag();retiredSignsByChunk.forEach((chunk,parts)->{var t=new CompoundTag();t.putLong("Chunk",chunk);t.putByteArray("Parts",RoadRecord.packStructures(parts));cleanup.add(t);});root.put("RetiredSignCleanup",cleanup);
     ListTag logical=new ListTag();streets.values().forEach(r->logical.add(r.save()));root.put("LogicalStreets",logical);
     ListTag roads = new ListTag();
@@ -1001,7 +1001,7 @@ public final class RoadData extends SavedData {
       }
       // Terrain-derived raised medians can change a lane center after planning. Resolve
       // dependent ports again before any world write; never save an off-center marker.
-      for(int pass=0;LaneTopology.needsRefresh(this,planning,built.stream().map(b->b.record.id()).toList());pass++){
+      for(int pass=0;(LaneTopology.needsRefresh(this,planning,built.stream().map(b->b.record.id()).toList())||LaneCrossSections.needsRestoreRefresh(planning,built.stream().map(b->b.record.id()).toList()));pass++){
         if(pass>=3)throw new IllegalArgumentException("断面与车道点未能稳定，请调整道路样式后重试");
         LaneTopology.reconcile(this,built,removed);
         planning.clear();for(var old:index.roads.values())if(!removed.contains(old.record.id()))planning.add(old);planning.addAll(built);

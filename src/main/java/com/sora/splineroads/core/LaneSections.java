@@ -23,13 +23,15 @@ public final class LaneSections {
     }
     private static double smooth(double t){return Settings.smooth(Math.max(0,Math.min(1,t)));}
   }
-  public enum Kind { DEPART, REPLACE }
-  public record Event(UUID connection,Kind kind,int lane,int sign,double station,double transition){}
+  public enum Kind { DEPART, REPLACE, TEMPORARY }
+  public record Event(UUID connection,Kind kind,int lane,int sign,double station,double transition,double returnStation){
+    public Event(UUID connection,Kind kind,int lane,int sign,double station,double transition){this(connection,kind,lane,sign,station,transition,Double.NaN);}
+  }
   /** Derive from the complete live link set, so deleting a branch restores authored pavement. */
   public static List<Cut> derive(Mesh mesh,List<Event> events){
     var raw=reference(mesh);var cuts=new ArrayList<Cut>();var used=new HashSet<UUID>();
     var ordered=new ArrayList<>(events);ordered.sort(Comparator.comparingDouble(e->e.station()*e.sign()));
-    for(Event event:ordered)if(event.kind()==Kind.DEPART){
+    for(Event event:ordered)if(event.kind()!=Kind.REPLACE){
       var lane=LanePoints.lane(raw,event.station(),event.lane());
       var layout=RoadProfile.layout(raw,RoadStructures.sample(raw,event.station()));
       var c=layout.catalog();int per=c.lanes()/2;
@@ -38,14 +40,18 @@ public final class LaneSections {
       if(!outer)throw new IllegalArgumentException(c.twoWay()?"双向整车道分离请选择该方向最外侧车道，不能挖走内部车道或中央隔离":"整车道分离须选择单向主线的一侧边缘车道");
       double remainder=event.sign()>0?raw.length()-event.station():event.station();
       if(remainder<.02)continue; // A free road end already has no downstream continuation.
-      if(layout.catalog().lanes()==1)throw new IllegalArgumentException("单车道内部一分二请选择保留原车道分流；整车道分离会清空主路");
+      if(layout.catalog().lanes()==1)throw new IllegalArgumentException("单车道内部一分二请选择普通分流（原车道直行）；整车道分离会清空主路");
       Event replacement=null;
-      for(Event candidate:ordered)if(candidate.kind()==Kind.REPLACE&&candidate.lane()==event.lane()&&candidate.sign()==event.sign()
+      for(Event candidate:ordered)if(event.kind()==Kind.DEPART&&candidate.kind()==Kind.REPLACE&&candidate.lane()==event.lane()&&candidate.sign()==event.sign()
           &&candidate.sign()*(candidate.station()-event.station())>1e-4){replacement=candidate;break;}
-      double end=replacement==null?(event.sign()>0?raw.length()+2*event.transition():-2*event.transition()):replacement.station();
+      double end=event.kind()==Kind.TEMPORARY&&Double.isFinite(event.returnStation())?event.returnStation():
+          replacement==null?(event.sign()>0?raw.length()+2*event.transition():-2*event.transition()):replacement.station();
+      if(event.kind()==Kind.TEMPORARY&&Double.isFinite(event.returnStation())&&
+          (end<0||end>raw.length()||event.sign()*(end-event.station())<2*event.transition()))
+        throw new IllegalArgumentException("保留车道分离没有足够空间完成封闭及安全恢复");
       for(Cut old:cuts)if(old.lane()==event.lane()&&old.sign()==event.sign()
           &&event.sign()*(event.station()-old.begin())>=0&&event.sign()*(event.station()-old.end())<-.01)
-        throw new IllegalArgumentException("同一车道空位内重复整车道分离；Y 分叉请使用保留原车道分流");
+        throw new IllegalArgumentException("同一车道空位内重复整车道分离；Y 分叉请使用普通分流（原车道直行）");
       if(replacement!=null&&!used.add(replacement.connection()))throw new IllegalArgumentException("补入车道同时匹配多个分离接头");
       cuts.add(new Cut(event.connection(),event.lane(),event.sign(),event.station(),end,event.transition(),replacement==null?null:replacement.connection()));
     }

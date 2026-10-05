@@ -52,7 +52,12 @@ public final class LaneRampScreen extends Screen {
     build=addRenderableWidget(Button.builder(Component.literal(payload.hasUUID("Id")?"保存匝道":"建造 A → B"),b->submit()).bounds(x+125,y+185,110,20).build());build.active=token!=null&&!pending;
     addRenderableWidget(Button.builder(Component.literal("返回实景"),b->onClose()).bounds(x+243,y+185,99,20).build());
   }
-  private void invalidate(){token=null;checkedMesh=null;checkedRoads=List.of();pending=false;if(build!=null)build.active=false;if(previewButton!=null)previewButton.active=true;ClientRoads.preview=null;ClientRoads.nodePreviews=List.of();request=++sequence;status="设置已改变，请重新预览。";}
+  private void invalidate(){token=null;checkedMesh=null;checkedRoads=List.of();pending=false;if(build!=null)build.active=false;if(previewButton!=null)previewButton.active=true;ClientRoads.preview=null;ClientRoads.nodePreviews=List.of();request=++sequence;status=switch(departure){
+      case TEMPORARY -> "保留车道分离：直连匝道，主路暂时关闭该车道；净空安全后渐变恢复。请预览。";
+      case DETACH -> "整车道分离：直连匝道，主路下游取消该车道。请预览。";
+      case BRANCH -> "普通分流：原车道继续直行；不是先关闭再恢复。请预览。";
+      case EXTRA -> "额外扩出：保持既有车道，另拓出匝道。请预览。";
+    };}
   private CompoundTag command(String action){var t=new CompoundTag();t.putString("Action",action);t.put("From",payload.getCompound("From").copy());t.put("To",payload.getCompound("To").copy());if(payload.hasUUID("Id")){t.putUUID("Id",payload.getUUID("Id"));t.putInt("Signature",payload.getInt("Signature"));}t.put("Options",LanePointCodec.options(new LanePoints.Options(path,departure,arrival,Double.parseDouble(radiusText),Double.parseDouble(transitionText),elevation,landing)));t.putLong("Request",request);return t;}
   private void preview(){try{invalidate();var t=command("laneRampPreview");pending=true;previewButton.active=false;RoadNetwork.CHANNEL.sendToServer(new RoadNetwork.Action(t));status="正在检查方向、汇入范围与净空…";}catch(IllegalArgumentException e){failed(e.getMessage());}}
   public void checked(CompoundTag t){
@@ -60,7 +65,8 @@ public final class LaneRampScreen extends Screen {
     if(t.contains("Error")){failed(t.getString("Error"));return;}
     try{var r=RoadRecord.load(t.getCompound("Road"));checkedMesh=r.mesh();var views=new ArrayList<RoadGeometry.Mesh>();for(Tag value:t.getList("ChangedRoads",Tag.TAG_COMPOUND))views.add(RoadRecord.load((CompoundTag)value).mesh());checkedRoads=views.isEmpty()?List.of(checkedMesh):List.copyOf(views);ClientRoads.preview=checkedMesh;ClientRoads.nodePreviews=checkedRoads;token=t.getUUID("Token");build.active=true;previewButton.active=true;
       double offset=t.getDouble("TargetOffset");String landing=payload.getCompound("To").hasUUID("Junction")?"":String.format(Locale.ROOT," 汇入口：沿 B 行驶方向 %+.1f 格。",offset);
-      status=String.format(Locale.ROOT,"预览有效：%s，长 %.1f 格。%s 右键空气返回并建造。",t.contains("ResolvedPath")?LanePoints.Path.valueOf(t.getString("ResolvedPath")).label:path.label,r.mesh().length(),landing);
+      String closure=t.getBoolean("TemporaryClosure")?String.format(Locale.ROOT," 主路从A暂时关闭此车道，下游 %.1f 格开始恢复、%.1f 格恢复完整。",t.getDouble("ReopenAfter"),t.getDouble("RestoredAfter")):"";
+      status=String.format(Locale.ROOT,"预览有效：%s，长 %.1f 格。%s%s 右键空气返回并建造。",t.contains("ResolvedPath")?LanePoints.Path.valueOf(t.getString("ResolvedPath")).label:path.label,r.mesh().length(),landing,closure);
       if(Minecraft.getInstance().screen==this)Minecraft.getInstance().setScreen(null);
     }catch(IllegalArgumentException e){failed(e.getMessage());}
   }
