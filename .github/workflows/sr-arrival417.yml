@@ -1,0 +1,68 @@
+name: SR P1 arrival checkpoint
+on:
+  push:
+    branches: [chat/sr-0402]
+    paths: ['tools/patches/arrival417-stage1.zlib.b64', '.github/workflows/sr-arrival417.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: write
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: save
+        name: Save reviewed source before tests
+        run: |
+          python - <<'PY'
+          import base64,zlib,hashlib,subprocess
+          from pathlib import Path
+          p=zlib.decompress(base64.b64decode(Path('tools/patches/arrival417-stage1.zlib.b64').read_text()))
+          assert hashlib.sha256(p).hexdigest()=='022538071b589a901caa71977ba4788cd24b34830e10a4d510ef602f91bc8f0a'
+          subprocess.run(['git','apply','--check','--unidiff-zero','-'],input=p,check=True)
+          subprocess.run(['git','apply','--unidiff-zero','-'],input=p,check=True)
+          PY
+          git diff --check
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git add src build.gradle
+          git commit -m 'WIP: P1 exact lane protection and upstream target closure (0.40.9)'
+          git push origin HEAD:refs/heads/chat/sr-0402
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  verify:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Prior regressions and real Forge build
+        run: bash tools/check_tunnel415.sh
+      - name: Retain exact source even on failure
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr-arrival417-source-logs
+          path: build/checkpoint-logs/
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr-arrival417-jar
+          path: build/libs/*.jar
+          retention-days: 14
