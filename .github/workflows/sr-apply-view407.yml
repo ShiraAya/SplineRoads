@@ -1,0 +1,63 @@
+name: Apply reviewed visibility and median checkpoint once
+on:
+  push:
+    branches: [chat/sr-0402]
+    paths: ['tools/checkpoints/apply_view407.py', '.github/workflows/sr-apply-view407.yml']
+permissions:
+  contents: write
+concurrency:
+  group: sr-apply-view407
+  cancel-in-progress: false
+jobs:
+  apply:
+    if: github.repository == 'ShiraAya/SplineRoads' && github.ref == 'refs/heads/chat/sr-0402'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: chat/sr-0402
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Apply only the hash-pinned reviewed source and save before long validation
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ github.sha }}"
+          python tools/checkpoints/apply_view407.py
+          rm .github/workflows/sr-apply-view407.yml
+          git config user.name 'ShiraAya'
+          git config user.email '173142163+ShiraAya@users.noreply.github.com'
+          git add src/main build.gradle .github/workflows/sr-apply-view407.yml
+          git commit -m 'fix: retain distant road covers and unify directional tunnel median transitions'
+          git push origin HEAD:chat/sr-0402
+      - name: Core and new targeted regression
+        run: |
+          set -euo pipefail
+          mkdir -p build/checkpoint-logs
+          bash tools/test_tunnel406.sh 2>&1 | tee build/checkpoint-logs/regression.txt
+          javac --release 17 -encoding UTF-8 -cp build/tunnel406/core/classes -d build/tunnel406/core/classes src/validation/java/com/sora/splineroads/VisibilityMedian407Validation.java
+          java -Dfile.encoding=UTF-8 -Xmx1500m -XX:ActiveProcessorCount=2 -cp build/tunnel406/core/classes:src/main/resources com.sora.splineroads.VisibilityMedian407Validation | tee build/checkpoint-logs/visibility-median.txt
+      - name: Real Forge compile and reobfuscated jar
+        run: |
+          set -euo pipefail
+          bash gradlew --no-daemon --stacktrace --max-workers=2 compileJava compileGameTestJava jar 2>&1 | tee build/checkpoint-logs/forge.txt
+      - name: Preserve exact source and validation state
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr-view407-source-logs-${{ github.run_id }}
+          path: build/checkpoint-logs/
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr-view407-jar-${{ github.run_id }}
+          path: build/libs/*.jar
+          retention-days: 14
