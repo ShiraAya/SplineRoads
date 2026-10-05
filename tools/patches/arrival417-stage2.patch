@@ -1,0 +1,62 @@
+diff --git a/src/main/java/com/sora/splineroads/client/LaneRampScreen.java b/src/main/java/com/sora/splineroads/client/LaneRampScreen.java
+index 0e46a1f..2b821e9 100644
+--- a/src/main/java/com/sora/splineroads/client/LaneRampScreen.java
++++ b/src/main/java/com/sora/splineroads/client/LaneRampScreen.java
+@@ -69 +69,2 @@ public final class LaneRampScreen extends Screen {
+-      status=String.format(Locale.ROOT,"预览有效：%s，长 %.1f 格。%s%s 右键空气返回并建造。",t.contains("ResolvedPath")?LanePoints.Path.valueOf(t.getString("ResolvedPath")).label:path.label,r.mesh().length(),landing,closure);
++      String targetClosure=t.getBoolean("TargetClosure")?String.format(Locale.ROOT," 目标车道在汇入口前 %.1f 格开始封闭，到匝道完整接入后开放；其他车道保持通行。",t.getDouble("TargetClosedBefore")):"";
++      status=String.format(Locale.ROOT,"预览有效：%s，长 %.1f 格。%s%s%s 右键空气返回并建造。",t.contains("ResolvedPath")?LanePoints.Path.valueOf(t.getString("ResolvedPath")).label:path.label,r.mesh().length(),landing,closure,targetClosure);
+diff --git a/src/main/java/com/sora/splineroads/core/LaneReopening.java b/src/main/java/com/sora/splineroads/core/LaneReopening.java
+index 8e0e54e..f863268 100644
+--- a/src/main/java/com/sora/splineroads/core/LaneReopening.java
++++ b/src/main/java/com/sora/splineroads/core/LaneReopening.java
+@@ -30 +30,6 @@ public final class LaneReopening {
+-    return Math.max(0,Math.min(raw.length(),begin));
++    begin=Math.max(0,Math.min(raw.length(),begin));
++    double available=sign*(end-begin),span=Math.min(transition,available/2);
++    // At a free road start there is no upstream lane to taper: the slot starts
++    // closed. LaneCrossSections rejects this fallback if a preceding road exists.
++    if(available>.02&&first-sign*begin<span-.01)begin=sign>0?-transition:raw.length()+transition;
++    return begin;
+diff --git a/src/main/java/com/sora/splineroads/core/LaneSections.java b/src/main/java/com/sora/splineroads/core/LaneSections.java
+index 2a48ab3..1af4390 100644
+--- a/src/main/java/com/sora/splineroads/core/LaneSections.java
++++ b/src/main/java/com/sora/splineroads/core/LaneSections.java
+@@ -17 +17 @@ public final class LaneSections {
+-      if(connection==null||lane<0||lane>31||(sign!=1&&sign!=-1)||!RoadGeometry.finite(begin,end,transition)
++      if(arrival&&!temporary||connection==null||lane<0||lane>31||(sign!=1&&sign!=-1)||!RoadGeometry.finite(begin,end,transition)
+@@ -35,0 +36 @@ public final class LaneSections {
++    Set<UUID> provisional=new HashSet<>();for(var e:events)if(e.kind()==Kind.ARRIVE&&!Double.isFinite(e.returnStation()))provisional.add(e.connection());
+@@ -66 +67 @@ public final class LaneSections {
+-      if(begin<0||begin>raw.length()||event.station()<0||event.station()>raw.length())throw new IllegalArgumentException("汇入封闭范围超出实际宿主路段");
++      if(begin<-event.transition()-.001||begin>raw.length()+event.transition()+.001||event.station()<0||event.station()>raw.length())throw new IllegalArgumentException("汇入封闭范围超出实际宿主路段");
+@@ -68 +69 @@ public final class LaneSections {
+-      for(var old:cuts)if(old.lane()==cut.lane()&&Math.min(Math.max(old.begin(),old.end()),Math.max(cut.begin(),cut.end()))-Math.max(Math.min(old.begin(),old.end()),Math.min(cut.begin(),cut.end()))>.01)
++      for(var old:cuts)if(!provisional.contains(cut.connection())&&!provisional.contains(old.connection())&&old.lane()==cut.lane()&&Math.min(Math.max(old.begin(),old.end()),Math.max(cut.begin(),cut.end()))-Math.max(Math.min(old.begin(),old.end()),Math.min(cut.begin(),cut.end()))>.01)
+diff --git a/src/main/java/com/sora/splineroads/world/LaneCrossSections.java b/src/main/java/com/sora/splineroads/world/LaneCrossSections.java
+index e98fcf6..a021749 100644
+--- a/src/main/java/com/sora/splineroads/world/LaneCrossSections.java
++++ b/src/main/java/com/sora/splineroads/world/LaneCrossSections.java
+@@ -55,0 +56,5 @@ public final class LaneCrossSections {
++      if(begin<0||begin>raw.length()){
++        var upstream=lane.sign()>0?target.a():target.b();
++        if(all.values().stream().anyMatch(r->!r.id().equals(target.id())&&LaneTopology.metadata(r).link()==null&&(r.a().equals(upstream)||r.b().equals(upstream))))
++          throw new IllegalArgumentException("目标车道上游封闭需要跨入相邻实际路段，当前不能静默封闭该路段；请后移汇入点或延长主路");
++      }
+diff --git a/src/main/java/com/sora/splineroads/world/LaneRamps.java b/src/main/java/com/sora/splineroads/world/LaneRamps.java
+index 68a4b13..d1267e8 100644
+--- a/src/main/java/com/sora/splineroads/world/LaneRamps.java
++++ b/src/main/java/com/sora/splineroads/world/LaneRamps.java
+@@ -54 +54 @@ public final class LaneRamps {
+-    Settings base=edited!=null?edited:old!=null?old.settings():new Settings(Mode.CURVE,style,Math.max(4,lane.width()),source.settings().thickness(),.35,90).structure(Structure.AUTO).options(RoadProfile.Options.DEFAULT.traffic(source.settings().options().leftTraffic()));
++    Settings base=edited!=null?edited:old!=null?old.settings():new Settings(Mode.CURVE,style,Math.max(4,lane.width()),source.settings().thickness(),.35,90).structure(Structure.AUTO).options(RoadProfile.Options.DEFAULT.traffic(source.settings().options().leftTraffic()).lanePoints(LanePoints.Data.EMPTY.link(link)));
+diff --git a/src/main/java/com/sora/splineroads/world/LaneTopology.java b/src/main/java/com/sora/splineroads/world/LaneTopology.java
+index 018a804..0877f5f 100644
+--- a/src/main/java/com/sora/splineroads/world/LaneTopology.java
++++ b/src/main/java/com/sora/splineroads/world/LaneTopology.java
+@@ -141 +141 @@ public final class LaneTopology {
+-    for(var r:new ArrayList<>(all.values())){var l=metadata(r).link();if(l==null)continue;var from=migrations.getOrDefault(l.from(),l.from());var to=migrations.getOrDefault(l.to(),l.to());if(!from.equals(l.from())||!to.equals(l.to()))all.put(r.id(),r.withLanePoints(metadata(r).link(new LanePoints.Link(from,to,l.options(),l.junctionMouth(),l.targetOffset()))));}
++    for(var r:new ArrayList<>(all.values())){var l=metadata(r).link();if(l==null)continue;var from=migrations.getOrDefault(l.from(),l.from());var to=migrations.getOrDefault(l.to(),l.to());if(!from.equals(l.from())||!to.equals(l.to()))all.put(r.id(),r.withLanePoints(metadata(r).link(new LanePoints.Link(from,to,l.options(),l.junctionMouth(),l.targetOffset(),l.protectedMerge()))));}
+@@ -225 +225 @@ public final class LaneTopology {
+-    next=next.withAttachments(r.settings().options().attachments()).furniturePhase(r.furniturePhase());var options=next.settings().options().infrastructure(r.settings().options().infrastructure()).laneLines(r.settings().options().laneLines()).hideArrows(r.settings().options().hideArrows());next=next.settings(next.settings().options(options));LaneRamps.validate(next.mesh(),all,id,l);all.put(id,next);visiting.remove(id);done.add(id);
++    next=next.withAttachments(r.settings().options().attachments()).furniturePhase(r.furniturePhase());var options=next.settings().options().infrastructure(r.settings().options().infrastructure()).laneLines(r.settings().options().laneLines()).hideArrows(r.settings().options().hideArrows());next=next.settings(next.settings().options(options));LaneRamps.validate(next.mesh(),all,id,metadata(next).link());all.put(id,next);visiting.remove(id);done.add(id);
