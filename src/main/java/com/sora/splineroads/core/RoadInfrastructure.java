@@ -107,7 +107,7 @@ public final class RoadInfrastructure {
             Math.max(wallTop(c,a.halfWidth()),wallTop(c,b.halfWidth()))+mesh.settings().thickness(),Material.TUNNEL);
         longitudinal(out,a,b,side*(a.halfWidth()-.05),side*(b.halfWidth()-.05),.8,.12,.18,Material.SIGN_WHITE);
       }
-      int bands=Math.max(16,(int)Math.ceil(Math.max(a.halfWidth(),b.halfWidth())/3));
+      int bands=roofBands(a.halfWidth(),b.halfWidth());
       for(int i=0;i<bands;i++){
         double u=-1+2.0*i/bands,v=-1+2.0*(i+1)/bands;
         double wa=a.halfWidth()+1.55,wb=b.halfWidth()+1.55;
@@ -153,17 +153,13 @@ public final class RoadInfrastructure {
    * Projection uses the existing spatial index. The lateral cell radius preserves all
    * interior air under an arch while no longer clearing to the centre height at its sides. */
   public static double excavationTop(Mesh mesh,int x,int z,double deckTop){
-    var c=mesh.settings().options().infrastructure();
-    var q=RoadQueries.horizontal(mesh,new V(x+.5,deckTop,z+.5));
-    double half=q.sample().halfWidth(),lateral=Math.max(0,Math.abs(q.lateral())-.75);
-    double rise=ceiling(c,half,lateral);
-    for(double dx:new double[]{0,1})for(double dz:new double[]{0,1}) {
-      var corner=RoadQueries.horizontal(mesh,new V(x+dx,deckTop,z+dz));
-      half=Math.max(half,corner.sample().halfWidth());
-    }
-    rise=Math.max(rise,ceiling(c,half,lateral));
-    return deckTop+rise+.02;
+    double top=RoadTunnelSpace.ceiling(mesh,x,z);
+    // A rounded raster boundary without actual interior needs no air reservation.
+    return Double.isFinite(top)?top:deckTop;
   }
+  static int roofBands(double halfA,double halfB){return Math.max(16,(int)Math.ceil(Math.max(halfA,halfB)/3));}
+  static double roofHeight(Config c,double half,double u){return roof(c,half,u);}
+
   /** Height of the actual planar roof band at a lateral position. */
   public static double ceiling(Config c,double half,double lateral){
     int bands=Math.max(16,(int)Math.ceil(half/3));

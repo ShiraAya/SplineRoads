@@ -17,9 +17,9 @@ done
 python - <<'PY'
 from pathlib import Path
 s=Path('src/main/java/com/sora/splineroads/world/RoadData.java').read_text()
-assert 'collisionState(key, state, body.get(key), sidewalks.get(key),dry.contains(key))' in s
-assert 'collisionState(source, Blocks.AIR.defaultBlockState(), body.get(source),sidewalks.get(source),dry.contains(source))' in s
-assert 'boolean dryInterior=index.inChunk(new net.minecraft.world.level.ChunkPos(pos).toLong()).stream()' in s
+assert 'collisionState(key, state, body.get(key), sidewalks.get(key),dry.contains(key),finalByChunk' in s
+assert 'collisionState(source, Blocks.AIR.defaultBlockState(), body.get(source),sidewalks.get(source),dry.contains(source),finalByChunk' in s
+assert 'var nearby=index.inChunk(new net.minecraft.world.level.ChunkPos(pos).toLong()).stream()' in s
 assert 'import com.sora.splineroads.core.RoadConnectionChecks;' in s and 'import com.sora.splineroads.core.RoadWaterPolicy;' in s
 tube=Path('src/main/java/com/sora/splineroads/world/TunnelAir.java').read_text()
 assert 'canPlaceLiquid' in tube and 'placeLiquid' in tube and tube.count('return false;')==2

@@ -21,6 +21,8 @@ public final class RoadBlocks {
         ||existing.getValue(Road.FILL)!=Fill.NONE||i==null||fill.hasBlockEntity()||fill.isAir()
         ||!Block.isShapeFullBlock(fill.getCollisionShape(level,p)))return false;
     if(gantryCell(i,p))return Shapes.joinIsNotEmpty(Shapes.block(),i.shape(p),BooleanOp.ONLY_FIRST);
+    var nearby=i.inChunk(new net.minecraft.world.level.ChunkPos(p).toLong()).stream().map(i.roads::get).filter(java.util.Objects::nonNull).toList();
+    if(TunnelTerrainSpace.safe(p,nearby))return Shapes.joinIsNotEmpty(Shapes.block(),i.shape(p),BooleanOp.ONLY_FIRST);
     boolean deck=false;
     for(var id:i.at(p.asLong())){
       var road=i.roads.get(id);var c=road.column(p);

@@ -1085,9 +1085,11 @@ public final class RoadData extends SavedData {
         touchedChunks.add(new net.minecraft.world.level.ChunkPos(BlockPos.of(key)).toLong());
       workChunks.load(touchedChunks);
       Map<Long,List<BlockPos>> touchedByChunk=new HashMap<>();
+      Map<Long,List<RoadIndex.Built>> finalByChunk=new HashMap<>();
       for(long key:touched){var pos=BlockPos.of(key);touchedByChunk.computeIfAbsent(net.minecraft.world.level.ChunkPos.asLong(pos.getX()>>4,pos.getZ()>>4),k->new ArrayList<>()).add(pos);}
       for (var r : finalRoads) {
         if (Collections.disjoint(r.chunks, touchedChunks)) continue;
+        for(long chunk:r.chunks)if(touchedChunks.contains(chunk))finalByChunk.computeIfAbsent(chunk,k->new ArrayList<>()).add(r);
         if(r.rasterized()) {
           for (long key : r.cells.keySet())if (touched.contains(key))body.computeIfAbsent(key,k->new ArrayList<>()).add(r);
           for (long key : r.clearanceCells)if(touched.contains(key)){air.add(key);if(r.record.settings().structure()==Structure.TUNNEL)dry.add(key);}
@@ -1149,10 +1151,10 @@ public final class RoadData extends SavedData {
             && index.at(key).stream().anyMatch(id -> !removedIds.contains(id)))
           throw new IllegalArgumentException("通行空间与另一条道路相交");
         BlockState target =
-            roadBody ? collisionState(key, state, body.get(key), sidewalks.get(key),dry.contains(key)) : walkway ? sidewalks.get(key) : dry.contains(key)?SplineRoads.TUNNEL_AIR.get().defaultBlockState():Blocks.AIR.defaultBlockState();
+            roadBody ? collisionState(key, state, body.get(key), sidewalks.get(key),dry.contains(key),finalByChunk.getOrDefault(new net.minecraft.world.level.ChunkPos(p).toLong(),List.of())) : walkway ? sidewalks.get(key) : dry.contains(key)?SplineRoads.TUNNEL_AIR.get().defaultBlockState():Blocks.AIR.defaultBlockState();
         if (state.equals(target) && !(target.is(SplineRoads.FILLED_COLLIDER.get())
             && level.getBlockEntity(p) instanceof RoadFillEntity fill
-            && !fill.fill().equals(sidewalks.getOrDefault(key,terrainFill.getOrDefault(key,Blocks.AIR.defaultBlockState()))))) continue;
+            && !fill.fill().equals(retainedSource(key,state,sidewalks.get(key))))) continue;
         if (!RoadBlocks.isCollider(state) && !state.is(SplineRoads.TUNNEL_AIR.get()) && !state.equals(sidewalkPlaced.get(key)) && state.getDestroySpeed(level, p) < 0)
           throw new IllegalArgumentException("无法清除不可破坏方块：" + p.toShortString());
         if(state.hasBlockEntity() && !RoadBlocks.isCollider(state))
@@ -1164,7 +1166,7 @@ public final class RoadData extends SavedData {
         if(move.to()==null){
           if(move.from()==null||finalRoads.stream().anyMatch(r->r.record.a().equals(move.from())||r.record.b().equals(move.from())))throw new IllegalArgumentException("仍在使用的端点不能清理");
           long key=move.from().asLong();
-          writes.put(key,body.containsKey(key)?collisionState(key,Blocks.AIR.defaultBlockState(),body.get(key),sidewalks.get(key),dry.contains(key)):dry.contains(key)?SplineRoads.TUNNEL_AIR.get().defaultBlockState():Blocks.AIR.defaultBlockState());
+          writes.put(key,body.containsKey(key)?collisionState(key,Blocks.AIR.defaultBlockState(),body.get(key),sidewalks.get(key),dry.contains(key),finalByChunk.getOrDefault(new net.minecraft.world.level.ChunkPos(move.from()).toLong(),List.of())):dry.contains(key)?SplineRoads.TUNNEL_AIR.get().defaultBlockState():Blocks.AIR.defaultBlockState());
           continue;
         }
         BlockState state = level.getBlockState(move.to());
@@ -1196,7 +1198,7 @@ public final class RoadData extends SavedData {
           writes.put(
               source,
               body.containsKey(source)
-                  ? collisionState(source, Blocks.AIR.defaultBlockState(), body.get(source),sidewalks.get(source),dry.contains(source))
+                  ? collisionState(source, Blocks.AIR.defaultBlockState(), body.get(source),sidewalks.get(source),dry.contains(source),finalByChunk.getOrDefault(new net.minecraft.world.level.ChunkPos(BlockPos.of(source)).toLong(),List.of()))
                   : dry.contains(source)?SplineRoads.TUNNEL_AIR.get().defaultBlockState():Blocks.AIR.defaultBlockState());
         writes.put(move.to().asLong(), SplineRoads.NODE.get().defaultBlockState());
       }
@@ -1238,7 +1240,7 @@ public final class RoadData extends SavedData {
           }
           if(ground)terrainOriginal.put(key,old);
         }
-        BlockState fill=sidewalks.getOrDefault(key,terrainFill.getOrDefault(key,old));
+        BlockState fill=retainedSource(key,old,sidewalks.get(key));
         boolean retained=RoadBlocks.isCollider(target)&&(target.is(SplineRoads.FILLED_COLLIDER.get())||target.getValue(RoadBlocks.Road.FILL)!=RoadBlocks.Fill.NONE);
         if(retained&&!fill.isAir()&&!RoadBlocks.isCollider(fill))terrainFill.put(key,fill);
         else terrainFill.remove(key);
@@ -1284,11 +1286,12 @@ public final class RoadData extends SavedData {
   }
   private BlockState collisionState(long key, BlockState previous, List<RoadIndex.Built> roads,BlockState sidewalk) {
     var pos=BlockPos.of(key);
-    boolean dryInterior=index.inChunk(new net.minecraft.world.level.ChunkPos(pos).toLong()).stream()
-        .map(index.roads::get).anyMatch(r->r!=null&&r.record.settings().structure()==Structure.TUNNEL&&r.clearanceAt(pos));
-    return collisionState(key,previous,roads,sidewalk,dryInterior);
+    var nearby=index.inChunk(new net.minecraft.world.level.ChunkPos(pos).toLong()).stream()
+        .map(index.roads::get).filter(Objects::nonNull).toList();
+    boolean dryInterior=nearby.stream().anyMatch(r->r.record.settings().structure()==Structure.TUNNEL&&r.clearanceAt(pos));
+    return collisionState(key,previous,roads,sidewalk,dryInterior,nearby);
   }
-  private BlockState collisionState(long key, BlockState previous, List<RoadIndex.Built> roads,BlockState sidewalk,boolean dryInterior) {
+  private BlockState collisionState(long key, BlockState previous, List<RoadIndex.Built> roads,BlockState sidewalk,boolean dryInterior,List<RoadIndex.Built> nearby) {
     BlockPos p = BlockPos.of(key);
     BlockState terrain =
         sidewalk!=null ? sidewalk : RoadBlocks.isCollider(previous)||previous.equals(sidewalkPlaced.get(key))
@@ -1314,18 +1317,17 @@ public final class RoadData extends SavedData {
               .orElse(0);
       if (fill.top() > lowest + 1e-7) fill = RoadBlocks.Fill.NONE;
     }
-    // Keep the original full terrain beside a diagonal lining. The thicker lining
-    // separates exterior boundary voxels from the exact interior road footprint.
-    // Never fill a driving corridor belonging to this or another road.
+    // Preserve only full original terrain that does not enter ANY final travel volume.
+    // A global maximum arch height falsely classified roof/portal exterior as interior.
+    // Use the final neighboring roads, not only owners of this exact structural cell.
     boolean exteriorShell=roads.stream().anyMatch(r->r.shellAt(p));
-    if(exteriorShell)for(var r:roads){
-      var c=r.column(p);
-      if(c!=null&&p.getY()+1>c.minTop()+1e-7
-          &&p.getY()<c.maxTop()+Math.max(4.25,RoadInfrastructure.clearance(r.record.settings()))){exteriorShell=false;break;}
-    }
-    if(exteriorShell&&!terrain.hasBlockEntity()&&terrain.getFluidState().isEmpty()){
-      fill=RoadBlocks.Fill.of(terrain);
-      generic=fill==RoadBlocks.Fill.NONE&&!terrain.isAir()&&terrain.canOcclude();
+    if(exteriorShell&&TunnelTerrainSpace.safe(p,nearby)){
+      BlockState original=terrain;
+      if(original.isAir()&&RoadBlocks.isCollider(previous))original=terrainOriginal.getOrDefault(key,Blocks.AIR.defaultBlockState());
+      if(!original.hasBlockEntity()&&original.getFluidState().isEmpty()){
+        fill=RoadBlocks.Fill.of(original);
+        generic=fill==RoadBlocks.Fill.NONE&&!original.isAir()&&original.canOcclude();
+      }
     }
     // Retain the full original terrain under/along a diagonal sidewalk cell.
     // The continuous SR surface sits above it; only actual elevated voids stay empty.
@@ -1353,6 +1355,15 @@ public final class RoadData extends SavedData {
         .setValue(RoadBlocks.Road.PERMEABLE,permeable)
         .setValue(RoadBlocks.Road.WATERLOGGED,water)
         .setValue(RoadBlocks.Road.SEALED, shell);
+  }
+
+  /** Preserve the material, including uncommon full terrain, when repairing a shell
+   * cell whose old collision state deliberately contained no visible infill. */
+  private BlockState retainedSource(long key,BlockState previous,BlockState sidewalk){
+    if(sidewalk!=null)return sidewalk;
+    var fill=terrainFill.getOrDefault(key,previous);
+    return RoadBlocks.isCollider(fill)||fill.isAir()&&RoadBlocks.isCollider(previous)
+        ?terrainOriginal.getOrDefault(key,Blocks.AIR.defaultBlockState()):fill;
   }
 
   /** Fill the unused part of a deck cell without replacing the independent road collision. */
