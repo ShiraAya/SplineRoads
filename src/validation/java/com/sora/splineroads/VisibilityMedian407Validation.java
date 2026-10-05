@@ -47,7 +47,8 @@ public final class VisibilityMedian407Validation {
       var firstPaint=RoadSurface.build(first,List.of(),List.of()).markings();var lastPaint=RoadSurface.build(last,List.of(),List.of()).markings();
       for(double d=.37;d<LENGTH;d+=2)check(paintCross(firstPaint,d).equals(paintCross(lastPaint,LENGTH-d)),"mirrored central paint differs "+a+"/"+b+" @"+d+" "+paintCross(firstPaint,d)+" vs "+paintCross(lastPaint,LENGTH-d));
       var actual=RoadInfrastructure.plan(first,GROUND);for(var part:x)check(actual.contains(part),"tunnel generator bypasses selected median transition");
-      if(a==Style.O4_GREEN)check(actual.stream().anyMatch(p->p.material()==Material.GREEN),"selected green median lost");
+      check(actual.stream().noneMatch(p->p.material()==Material.GREEN||p.material()==Material.SOIL),"tunnel must never contain a planted median");
+      if(a==Style.O4_GREEN)check(actual.stream().anyMatch(p->p.material()==Material.STEEL),"green selection must become rail in tunnel");
       if(a==Style.O4_RAIL)check(actual.stream().anyMatch(p->p.material()==Material.STEEL),"selected rail replaced by narrow generic bar");
       cases++;
     }

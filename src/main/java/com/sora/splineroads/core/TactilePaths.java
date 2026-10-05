@@ -115,12 +115,18 @@ public final class TactilePaths {
     V u=first.mouth().left().left().mul(-1),v=last.mouth().left().left();
     double den=cross(u,v),dot=Math.max(-1,Math.min(1,u.dot(v))),angle=Math.atan2(den,dot),turn=Math.abs(angle);
     if(turn<Math.toRadians(3)||turn>Math.toRadians(175)||Math.abs(den)<1e-8)return false;
+    // A reflex boundary already has an outward-safe parallel curve. A separate
+    // fillet between mouth rays cuts inside the actual Bezier sidewalk and forces
+    // the row inward to find support. Use the paved boundary offset below instead.
+    if(angle*first.normal().dot(u.left())<0)return false;
     var paving=new ArrayList<>(RoadSidewalks.cornerPaving(spec,approaches,edge,sign));
     for(var e:List.of(first,last))paving.addAll(RoadSidewalks.parts(approaches.get(e.arm()),e.config()).stream().filter(part->part.material().name().startsWith("WALK_")).toList());
     // Keep the corner inside the narrower walk. Blend the wider row on its approach,
     // where space is available, rather than making an offset hook at the corner mouth.
     double common=Math.min(first.offset(),last.offset());
-    for(double inset:new double[]{0,.5,1,2}){
+    // If the tangent at the authored row is not supported, use the actual corner
+    // boundary below. Do not invent a narrower inset row and weave inward then out.
+    for(double inset:new double[]{0}){
       double offset=common-inset;if(offset<.65)continue;
       V p=first.mouth().at(first.side()*(first.mouth().halfWidth()+offset),0),q=last.mouth().at(last.side()*(last.mouth().halfWidth()+offset),0);
       V hit=p.add(u.mul(cross(q.sub(p),v)/den));

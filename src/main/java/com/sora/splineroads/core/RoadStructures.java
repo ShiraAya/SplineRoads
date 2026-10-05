@@ -436,7 +436,7 @@ public final class RoadStructures {
     var lb = RoadProfile.layout(mesh, b);
     boolean raised = mesh.settings().structure()!=Structure.TUNNEL&&bridgeAt(mesh,sample(mesh,(a.distance()+b.distance())/2),ground);
     double green = Math.min(RoadTransitions.green(mesh, a), RoadTransitions.green(mesh, b));
-    double terrainBlend = raised ? 0 : 1;
+    double terrainBlend = raised || mesh.settings().structure()==Structure.TUNNEL ? 0 : 1;
     green *= terrainBlend;
     double median = Math.min(la.median(), lb.median());
     if (median >= .35 && (green < .12 || median <= .5)) {

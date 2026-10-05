@@ -594,9 +594,10 @@ public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,
   }
 
   public static Layout layout(Mesh mesh, Sample sample) {
-    var reserved=LaneSections.layout(mesh,sample);if(reserved!=null)return reserved;
-    var base=RoadTransitions.layout(mesh,sample);
-    if(!base.catalog().twoWay()||!RoadStreetscape.raised(mesh,sample))return base;
+    var reserved=LaneSections.layout(mesh,sample);
+    var base=reserved!=null?reserved:RoadTransitions.layout(mesh,sample);
+    if(mesh.settings().structure()==Structure.TUNNEL)return TunnelMedian.apply(base);
+    if(reserved!=null||!base.catalog().twoWay()||!RoadStreetscape.raised(mesh,sample))return base;
     return RaisedRoadProfile.apply(base);
   }
 
