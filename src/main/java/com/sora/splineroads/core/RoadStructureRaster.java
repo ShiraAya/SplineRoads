@@ -11,6 +11,8 @@ public final class RoadStructureRaster {
       Map<RoadRaster.Cell,Double> walkTops, int rasterizedParts) {}
 
   public static Result build(List<RoadStructures.Part> parts) {
+    boolean tagged=parts.stream().anyMatch(p->p.luminous()||p.material()==RoadStructures.Material.TUNNEL||p.material().name().startsWith("WALK_"));
+    if(!tagged)return new Result(RoadRaster.structures(parts,null),Set.of(),Set.of(),Map.of(),parts.size());
     Map<RoadRaster.Cell,List<RoadRaster.Box>> cells=new HashMap<>();
     Set<RoadRaster.Cell> lights=new HashSet<>(),shells=new HashSet<>();
     Map<RoadRaster.Cell,Double> walkTops=new HashMap<>();
