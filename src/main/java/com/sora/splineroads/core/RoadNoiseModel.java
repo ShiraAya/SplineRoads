@@ -9,6 +9,14 @@ import java.util.*;
 /** CityBuild green type-1 barrier, including its original inward-curved cap and UVs. */
 public final class RoadNoiseModel {
   public static final double HEIGHT=2.5043584;
+  public static final double BASE_HEIGHT=.5;
+  /** Keep the authored panel/UVs untouched, lift the complete panel onto a real solid base. */
+  public static List<Part> assembly(Part panel){
+    var up=new V(0,BASE_HEIGHT,0);
+    var base=new Part(panel.a(),panel.b(),panel.width(),BASE_HEIGHT,false,RoadStructures.Material.CONCRETE,panel.frameA(),panel.frameB());
+    var raised=new Part(panel.a().add(up),panel.b().add(up),panel.width(),panel.height(),false,panel.material(),panel.frameA(),panel.frameB(),panel.model());
+    return List.of(base,raised);
+  }
   private record Quad(List<V> points,List<UV> uv,boolean distant,boolean glass) {}
   private static final List<Quad> MODEL=load();
   private static List<Quad> load(){

@@ -8,17 +8,22 @@ final class RoadInteractions {
   static boolean connected(RoadRecord a,RoadRecord b){return a.a().equals(b.a())||a.a().equals(b.b())||a.b().equals(b.a())||a.b().equals(b.b());}
   static boolean influences(RoadIndex.Built a,RoadIndex.Built b){
     if(connected(a.record,b.record))return true;
-    if(!RoadIndex.overlapXZ(a.mesh,b.mesh,3))return false;
+    double walkway=Math.max(walkExtent(a.mesh),walkExtent(b.mesh));
+    if(!RoadIndex.overlapXZ(a.mesh,b.mesh,3+walkway))return false;
     // Any existing elevated road depends on a new lower corridor, including
     // saved ramp decks. Rebuild its supports and the lower road's lamps.
     // Same-height independent neighbours keep their saved furniture.
     for(var s:b.mesh.samples()){
       var q=RoadQueries.horizontal(a.mesh,s.center());double dy=s.center().y()-q.sample().center().y();
-      if(dy>3&&dy<RoadStructures.MAX_DROP&&s.center().sub(q.sample().center()).horizontalLength()<s.halfWidth()+q.sample().halfWidth()+1)return true;
+      if(dy>3&&dy<RoadStructures.MAX_DROP&&s.center().sub(q.sample().center()).horizontalLength()<s.halfWidth()+q.sample().halfWidth()+1+walkway)return true;
       if(dy<-.25&&dy>-10
-          &&s.center().sub(q.sample().center()).horizontalLength()<s.halfWidth()+q.sample().halfWidth()+3)return true;
+          &&s.center().sub(q.sample().center()).horizontalLength()<s.halfWidth()+q.sample().halfWidth()+3+walkway)return true;
     }
     return false;
+  }
+  private static double walkExtent(Mesh mesh){
+    var walk=mesh.settings().options().sidewalk();
+    return walk.enabled()&&walk.smooth()&&mesh.settings().structure()!=Structure.TUNNEL&&RoadProfile.catalog(mesh.settings().style()).type()==RoadProfile.Type.ORDINARY?walk.width():0;
   }
   private static boolean near(Mesh a,Mesh b){
     for(var s:a.samples()){

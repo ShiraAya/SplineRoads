@@ -267,7 +267,9 @@ public final class RoadStructures {
         while(end+1<run.size()&&panelLength<1.999&&run.get(end).b().distance(run.get(end+1).a())<1e-6&&(run.get(end+1).raised()||mesh.settings().structure()==Structure.BRIDGE)){end++;panelLength+=run.get(end).a().distance(run.get(end).b());}
         // Original CB module is two metres long. Side sign mirrors its inward cap.
         var part=new Part(first.a(),run.get(end).b(),.7,RoadNoiseModel.HEIGHT,false,Material.CB_NOISE).frames(sample(mesh,first.distance()).left().mul(side*.35),sample(mesh,run.get(end).distance()+.5).left().mul(side*.35));
-        if(!ground.blocked(part))out.add(part);else for(int j=i;j<=end;j++)ordinary.add(run.get(j));i=end+1;
+        var assembly=RoadNoiseModel.assembly(part);
+        // Validate and keep/remove the footing and panel as one unit, never half a wall.
+        if(assembly.stream().noneMatch(ground::blocked))out.addAll(assembly);else for(int j=i;j<=end;j++)ordinary.add(run.get(j));i=end+1;
       }
       run=ordinary;
     }

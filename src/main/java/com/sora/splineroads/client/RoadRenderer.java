@@ -64,7 +64,7 @@ public final class RoadRenderer {
     MATERIALS.put(RoadSurface.Texture.CB_NOISE_GLASS,RoadRenderTypes.glass(ResourceLocation.fromNamespaceAndPath("splineroads","textures/road/cb_noise.png")));
     MATERIALS.put(RoadSurface.Texture.CB_NOISE,RoadRenderTypes.surface(ResourceLocation.fromNamespaceAndPath("splineroads","textures/road/cb_noise.png"),true));
     MATERIALS.put(RoadSurface.Texture.CB_SIGNS,RoadRenderTypes.surface(ResourceLocation.fromNamespaceAndPath("splineroads","textures/road/cb_sign_atlas.png"),true));
-    for(var finish:com.sora.splineroads.core.RoadSidewalks.Finish.values())MATERIALS.put(RoadSurface.Texture.valueOf("WALK_"+finish.name()),RoadRenderTypes.surface(ResourceLocation.fromNamespaceAndPath("minecraft","textures/block/"+finish.id.substring(10)+".png"),true));
+    for(var finish:com.sora.splineroads.core.RoadSidewalks.Finish.values())MATERIALS.put(RoadSurface.Texture.valueOf("WALK_"+finish.name()),RoadRenderTypes.solid(ResourceLocation.fromNamespaceAndPath("minecraft","textures/block/"+finish.id.substring(10)+".png")));
   }
   private static RenderType signalType(String name) {
     return RoadRenderTypes.surface(ResourceLocation.fromNamespaceAndPath(

@@ -29,6 +29,10 @@ final class StructurePlanner {
             .map(r -> r.mesh).toList());
     var supportMeshes=built.record.junction()==null?List.of(built.mesh):all.stream().filter(r->Objects.equals(r.record.assembly(),built.record.assembly())).map(r->r.mesh).toList();
     var obstacles=all.stream().filter(r->!r.record.id().equals(built.record.id())&&supportMeshes.stream().anyMatch(m->RoadIndex.overlapXZ(r.mesh,m,82))).toList();
+    // Road deck columns exclude smooth sidewalks outside the deck. Index their actual
+    // slabs independently so lamp arms/posts cannot tunnel through an upper walkway.
+    var sidewalkSolids=new RoadSolidOverlap.Index(obstacles.stream().flatMap(r->r.record.structures().stream())
+        .filter(p->p.material().name().startsWith("WALK_")).toList());
     var ground = new RoadStructures.Ground() {
               public boolean furnitureClear(V point) {
                 return LanePoints.opening(built.mesh,point)||RoadSignals.furnitureClear(point, approaches);
@@ -95,6 +99,7 @@ final class StructurePlanner {
               }
 
               public boolean blocked(RoadStructures.Part part) {
+                if(!RoadSidewalks.smoothPart(part)&&sidewalkSolids.intersects(part))return true;
                 if(LaneTopology.metadata(built.record).link()!=null&&RoadInteractions.selfSupportBlocked(part,built.mesh))return true;
                 // Rails use the exact deck opening test above. The pier's vehicle-clearance
                 // envelope would otherwise erase rails for several blocks around every seam.
