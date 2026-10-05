@@ -15,14 +15,14 @@ jobs:
       commit: ${{ steps.save.outputs.commit }}
     steps:
       - uses: actions/checkout@v4
-      - name: Save final level-end consistency guard before long test
+      - name: Save final dry-volume entry-point guard before verification
         id: save
         run: |
           test "$(git ls-remote origin refs/heads/chat/sr-0402 | cut -f1)" = "$GITHUB_SHA"
-          python tools/apply_problem2_final.py
+          python tools/apply_problem2_water_guard.py
           git diff --check
-          git add src/main/java src/validation/java/com/sora/splineroads/Problem2GeometryValidation.java
-          git -c user.name='SR checkpoint' -c user.email='sr-checkpoint@users.noreply.github.com' commit -m 'fix: align linked seam preview with explicit level-end and bridge/tunnel fitting rules'
+          git add src/main/java/com/sora/splineroads/world/RoadData.java tools/check_problem2_batch1.sh
+          git -c user.name='SR checkpoint' -c user.email='sr-checkpoint@users.noreply.github.com' commit -m 'fix: retain tunnel dry volumes during node cleanup and legacy collider repair'
           git push origin HEAD:refs/heads/chat/sr-0402
           test "$(git ls-remote origin refs/heads/chat/sr-0402 | cut -f1)" = "$(git rev-parse HEAD)"
           echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
