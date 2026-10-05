@@ -39,9 +39,7 @@ final class RoadInteractions {
     for(var sample:mesh.samples()){double y=sample.center().y();if(hi<=y-mesh.settings().thickness()+.04||lo>=y+4.25)continue;double t=length<1e-9?0:Math.max(0,Math.min(1,(sample.center().x()-part.a().x())*d.x()/length+(sample.center().z()-part.a().z())*d.z()/length));V at=part.a().add(d.mul(t));if(at.sub(sample.center()).horizontalLength()<part.halfExtent()+sample.halfWidth()+.3)return true;}return false;
   }
   static boolean invades(Part p,Mesh m){
-    double lo=Math.min(p.a().y(),p.b().y())-p.verticalFrame(),hi=Math.max(p.a().y(),p.b().y())+p.height()+p.verticalFrame();
-    var q=RoadQueries.horizontal(m,p.a().add(p.b()).mul(.5));double y=q.sample().center().y();
-    return hi>y-m.settings().thickness()+.04 && lo<y+4.25 && RoadSidewalks.overlapsDeck(p,m);
+    return RoadClearance.structureInvades(p,m,4.25);
   }
   static List<Part> openPortal(RoadIndex.Built tube,List<Part> parts,List<RoadIndex.Built> roads){
     if(tube.record.settings().structure()!=Structure.TUNNEL)return parts;

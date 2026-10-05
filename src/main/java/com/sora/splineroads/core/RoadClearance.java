@@ -102,6 +102,28 @@ public final class RoadClearance {
     }
     return List.copyOf(out);
   }
+  /** Exact swept road travel-volume vs an actual framed structural prism.
+   * The old shell check combined the entire part's vertical bounds with one midpoint
+   * road elevation: a long sloped beam could be rejected where it never touches road.
+   * Boundary-only contact is not an obstruction. LaneDeck preserves real cut slots. */
+  public static boolean structureInvades(RoadStructures.Part part,Mesh road,double headroom){
+    var base=part.base();if(base.size()<3)return false;
+    var index=grid(road);
+    for(int i=1;i<base.size()-1;i++){
+      var t=new Triangle(base.get(0),base.get(i),base.get(i+1),0,0,0);
+      if(Math.abs(t.det())<EPS)continue;
+      for(var q:index.near(t)){
+        var polygon=intersection(t.polygon(),q.polygon());if(area(polygon)<AREA_EPS)continue;
+        double min=Double.POSITIVE_INFINITY,max=Double.NEGATIVE_INFINITY;
+        for(var point:polygon){double gap=t.height(point)-q.height(point);min=Math.min(min,gap);max=Math.max(max,gap);}
+        // The gap is affine over each clipped triangle. Its range intersects exactly
+        // when the prism enters the live deck/travel interval, not just its XZ bounds.
+        if(min<headroom-EPS&&max>-road.settings().thickness()+.04-part.height()+EPS)return true;
+      }
+    }
+    return false;
+  }
+
   private static List<Triangle> triangles(Mesh mesh){
     var out=new ArrayList<Triangle>();var samples=mesh.samples();
     for(int i=1;i<samples.size();i++){

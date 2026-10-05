@@ -205,6 +205,7 @@ public final class RoadData extends SavedData {
       var bh =
           constructionHint(level, b, false, replace, na.constructionNode().position(), levelEnds);
       boolean linkedA = ah.linked(), linkedB = bh.linked();
+      var seamA=ah;var seamB=bh;
       if (settings.mode() != Mode.AUTO) {
         Node ma =
             previous == null
@@ -229,6 +230,7 @@ public final class RoadData extends SavedData {
       CompoundTag joins=new CompoundTag();jointPayload(joins,a,b,replace);
       settings = joinSections(settings,joins);
       var plan = RoadTunnelFit.plan(ah, bh, settings);
+      RoadConnectionChecks.require(plan,seamA,seamB);
       RoadRecord record =
           new RoadRecord(
               replace == null ? UUID.randomUUID() : replace,
@@ -1029,14 +1031,13 @@ public final class RoadData extends SavedData {
         built.set(entry.getKey(), old.structures(parts));
       }
       workChunks.roads(built);
-      // Shells are real solids: a new tunnel cannot seal another road's travel corridor.
-      for(var tube:built)if(tube.record.settings().structure()==Structure.TUNNEL){
-        for(var other:planning){
-          if(other.record.id().equals(tube.record.id())||!RoadIndex.overlapXZ(tube.mesh,other.mesh,2))continue;
-          for(var part:tube.record.structures())if(part.material()==RoadStructures.Material.TUNNEL&&RoadInteractions.invades(part,other.mesh))
-            throw new IllegalArgumentException("隧道墙顶侵入另一条道路的通行空间，请调整高度或走线");
-        }
-      }
+      // Check the FINAL list (nose caps may have replaced entries since planning).
+      // Replaying an unchanged saved conflict must not prevent removing an unrelated road.
+      var shellFinal=new ArrayList<RoadIndex.Built>();
+      for(var old:index.roads.values())if(!removed.contains(old.record.id()))shellFinal.add(old);
+      shellFinal.addAll(built);
+      var shellChanged=new HashSet<UUID>();for(var changed:built)shellChanged.add(changed.record.id());
+      TunnelShellValidation.check(shellFinal,shellChanged,index.roads);
       if(!deleting)checkJoints(built, removed);
       timing.stage("caps_shell_and_joint_validation");
       final List<RoadIndex.Built> committed = built;
