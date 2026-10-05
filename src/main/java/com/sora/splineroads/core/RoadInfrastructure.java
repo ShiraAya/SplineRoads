@@ -148,10 +148,9 @@ public final class RoadInfrastructure {
    * headroom. Stop at that real roof band, not at the outer spring line. */
   private static double wallTop(Config c,double half){return ceiling(c,half,Math.max(0,half-.05))+.03;}
 
-  /** A conservative column-specific interior ceiling, not a full-height rectangular
-   * excavation outside the tunnel. Shell volume is handled by its own collision body.
-   * Projection uses the existing spatial index. The lateral cell radius preserves all
-   * interior air under an arch while no longer clearing to the centre height at its sides. */
+  /** Maximum of the actual faceted roof above this cell's interior footprint.
+   * Shell volume is handled separately; no centre-height padding or extrapolation
+   * outside a portal may turn exterior terrain into a reserved air cell. */
   public static double excavationTop(Mesh mesh,int x,int z,double deckTop){
     double top=RoadTunnelSpace.ceiling(mesh,x,z);
     // A rounded raster boundary without actual interior needs no air reservation.

@@ -24,7 +24,7 @@ public final class RoadTransitions {
 
     public static Section of(Settings s) {
       var o = s.options();
-      return new Section(s.style(), s.width(), o.cycle(), o.cycleRail(), o.curb(), o.outerRail(),o.sidewalk(),o.cycleAsphalt(),null,o.streetscape());
+      return new Section(s.style(), s.width(), o.cycle(), o.cycleRail(), o.curb(), o.outerRail(),o.sidewalk(),o.cycleAsphalt(),o.ends().port(),o.streetscape());
     }
 
     public Settings settings(boolean left) {
@@ -95,7 +95,10 @@ public final class RoadTransitions {
     Section chosen=order.compare(x,y)>=0?x:y;
     var wx=a.options().sidewalk();var wy=b.options().sidewalk();
     var walk=(wx.enabled()&&(!wy.enabled()||wx.width()>=wy.width())?wx:wy).tactile(wx.enabled()&&wy.enabled()&&wx.tactile()&&wy.tactile());
-    return new Section(chosen.style(),chosen.width(),chosen.cycle(),chosen.cycleRail(),chosen.curb(),chosen.outerRail(),walk,chosen.cycleAsphalt(),null,chosen.streetscape());
+    var shared=new Section(chosen.style(),chosen.width(),chosen.cycle(),chosen.cycleRail(),chosen.curb(),chosen.outerRail(),walk,chosen.cycleAsphalt(),chosen.port(),chosen.streetscape());
+    // The common material must be supported by BOTH sides. Keep the authored lane
+    // axes in an exact port; replacing GREEN by a nominal RAIL section would widen lanes.
+    return a.structure()==Structure.TUNNEL||b.structure()==Structure.TUNNEL?TunnelMedian.seam(shared):shared;
   }
 
   public static Settings join(Settings s, Settings a, Settings b) {

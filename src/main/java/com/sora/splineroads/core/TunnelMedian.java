@@ -14,5 +14,15 @@ final class TunnelMedian {
         base.cycleWidth(),base.curbWidth(),base.shoulderWidth(),base.outside(),
         base.dividers(),base.medianCenter());
   }
+  static RoadTransitions.Section seam(RoadTransitions.Section section){
+    var layout=section.layout(false);var c=layout.catalog();
+    if(!c.twoWay()||c.median()!=Median.GREEN)return section;
+    var rail=RoadProfile.choose(c.type(),c.lanes(),true,Median.RAIL,c.shoulder());
+    var old=section.port();
+    var port=new RoadTransitions.Port(layout.motorMin(),layout.motorMax(),layout.median(),layout.dividers(),
+        old==null?layout.curbWidth():old.curbLeft(),old==null?layout.curbWidth():old.curbRight());
+    return new RoadTransitions.Section(rail,section.width(),section.cycle(),section.cycleRail(),section.curb(),
+        section.outerRail(),section.sidewalk(),section.cycleAsphalt(),port,section.streetscape());
+  }
   private TunnelMedian(){}
 }
