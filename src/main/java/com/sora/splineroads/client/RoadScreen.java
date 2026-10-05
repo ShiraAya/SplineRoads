@@ -463,9 +463,13 @@ public final class RoadScreen extends Screen {
                   b.linked());
         }
         var plan = com.sora.splineroads.core.RoadTunnelFit.plan(a, b, s);
-        com.sora.splineroads.core.RoadConnectionChecks.require(plan,
-            payload.contains("AutoA")?RoadData.readHint(payload.getCompound("AutoA")):null,
-            payload.contains("AutoB")?RoadData.readHint(payload.getCompound("AutoB")):null);
+        var seamA=payload.contains("AutoA")?RoadData.readHint(payload.getCompound("AutoA")):null;
+        var seamB=payload.contains("AutoB")?RoadData.readHint(payload.getCompound("AutoB")):null;
+        if(payload.getBoolean("LevelEnds")) {
+          seamA=com.sora.splineroads.core.RoadConnectionChecks.atLevel(seamA,BlockPos.of(payload.getLong("A")).getY());
+          seamB=com.sora.splineroads.core.RoadConnectionChecks.atLevel(seamB,BlockPos.of(payload.getLong("B")).getY());
+        }
+        com.sora.splineroads.core.RoadConnectionChecks.require(plan,seamA,seamB);
         int caps =
             (payload.getCompound("AutoA").getBoolean("Linked") ? 0 : 1)
                 | (payload.getCompound("AutoB").getBoolean("Linked") ? 0 : 2);

@@ -43,6 +43,13 @@ public final class Problem2GeometryValidation {
       if(adjust==RoadTunnelFit.Adjustment.START)check(plan.end().position().distance(b.node().position())<1e-8,"fixed B retained");
       if(adjust==RoadTunnelFit.Adjustment.END)check(plan.start().position().distance(a.node().position())<1e-8,"fixed A retained");
     }
+    for(double y:List.of(2.0,100.0,341.0))for(double angle:List.of(0.0,.4)){
+      V d=new V(Math.sin(angle),0,Math.cos(angle));var original=new RoadPlanner.Hint(new Node(new V(0,y+.5,0),RoadPlanner.yaw(d),.1),true,true,true);
+      var a=RoadConnectionChecks.atLevel(original,y);var b=RoadConnectionChecks.atLevel(new RoadPlanner.Hint(new Node(d.mul(100).add(new V(0,y+.5,0)),RoadPlanner.yaw(d),.1),true,true,true),y);
+      var plan=RoadPlanner.plan(RoadPlanner.Hint.free(a.node()),RoadPlanner.Hint.free(b.node()),settings());RoadConnectionChecks.require(plan,a,b);checks++;
+      check(a.node().position().y()==y&&a.node().grade()==0&&a.gradeLocked()&&a.linked(),"client level normalization matches server contract");fixtures++;
+    }
+    check(RoadConnectionChecks.atLevel(null,0)==null,"missing seam remains free");
     System.out.println("Problem2GeometryValidation: "+fixtures+" geometry fixtures, "+checks+" checks; old false-positive reproduced, exact prism and shared linked-seam preflight PASS. No game/client run.");
   }
 }

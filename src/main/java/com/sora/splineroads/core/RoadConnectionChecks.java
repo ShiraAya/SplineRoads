@@ -6,6 +6,11 @@ import com.sora.splineroads.core.RoadGeometry.*;
  * A manually selected shape is not automatically a valid seam. Do not merely show a
  * green client mesh then discover the same geometry is invalid only on the server. */
 public final class RoadConnectionChecks {
+  /** Same level-ends normalization as the server construction hint, without world APIs. */
+  public static RoadPlanner.Hint atLevel(RoadPlanner.Hint h,double y){
+    if(h==null)return null;
+    var n=h.node();return new RoadPlanner.Hint(new Node(new V(n.position().x(),y,n.position().z()),n.yaw(),0),h.headingLocked(),true,h.linked());
+  }
   public static void require(RoadPlanner.Plan plan,RoadPlanner.Hint a,RoadPlanner.Hint b){
     if(plan.mesh().closed()||plan.settings().laneRamp()||plan.settings().style().ramp())return;
     var adjust=plan.settings().options().infrastructure().adjustment();
