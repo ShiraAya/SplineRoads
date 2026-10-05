@@ -224,13 +224,14 @@ public final class RoadIndex {
         }
       });
       deckCells.putAll(cellData);
-      RoadRaster.structures(record.structures(),null).forEach((c,b)->cellData.compute(new BlockPos(c.x(),c.y(),c.z()).asLong(),(key,existing)->{
+      var furniture=RoadStructureRaster.build(record.structures());
+      furniture.cells().forEach((c,b)->cellData.compute(BlockPos.asLong(c.x(),c.y(),c.z()),(key,existing)->{
         var combined=new ArrayList<RoadRaster.Box>(existing==null?List.of():existing);combined.addAll(b);return combined;
       }));
-      if(deferred)for(var part:record.structures())if(part.luminous())RoadRaster.structures(List.of(part),null).keySet().forEach(c->lightCells.add(new BlockPos(c.x(),c.y(),c.z()).asLong()));
-      for(var part:record.structures())if(part.material()==RoadStructures.Material.TUNNEL)RoadRaster.structures(List.of(part),null).keySet().forEach(c->shellCells.add(new BlockPos(c.x(),c.y(),c.z()).asLong()));
+      if(deferred)for(var c:furniture.lights())lightCells.add(BlockPos.asLong(c.x(),c.y(),c.z()));
+      for(var c:furniture.shells())shellCells.add(BlockPos.asLong(c.x(),c.y(),c.z()));
       walkTops.clear();
-      for(var part:record.structures())if(part.material().name().startsWith("WALK_"))RoadRaster.structures(List.of(part),null).forEach((c,boxes)->{long key=new BlockPos(c.x(),c.y(),c.z()).asLong();walkTops.merge(key,boxes.stream().mapToDouble(b->c.y()+b.y1()).max().orElse(c.y()),Math::max);});
+      furniture.walkTops().forEach((c,top)->walkTops.put(BlockPos.asLong(c.x(),c.y(),c.z()),top));
       nearbyCells.clear();rasterized=true;
     }
 

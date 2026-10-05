@@ -73,13 +73,14 @@ final class StructurePlanner {
                                 || state.is(net.minecraft.tags.BlockTags.LOGS)
                                 || state.is(SplineRoads.NODE.get())
                                 || !state.getFluidState().isEmpty()) continue;
-                            for (var box : state.getCollisionShape(level, p).toAabbs())
+                            var shape=state.getCollisionShape(level,p);
+                            for (var box : shape.toAabbs())
                               out.add(box.move(p));
                             // A full cube hides all lower surfaces in this column for every x/z
                             // query.
                             if (y < key.getY()
                                 && net.minecraft.world.level.block.Block.isShapeFullBlock(
-                                    state.getCollisionShape(level, p))) break;
+                                    shape)) break;
                           }
                           out.sort(Comparator.comparingDouble((AABB box) -> box.maxY).reversed());
                           return out;
