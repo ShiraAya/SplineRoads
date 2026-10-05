@@ -1,0 +1,62 @@
+name: SR checkpoint validation
+
+on:
+  push:
+    branches: [chat/sr-0402]
+    paths:
+      - 'src/**'
+      - 'tools/**'
+      - 'build.gradle'
+      - 'settings.gradle'
+      - 'gradle.properties'
+      - 'gradle/**'
+      - 'gradlew'
+      - '.github/workflows/sr-checkpoint.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sr-checkpoint-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Core regression and transition tests
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p build/checkpoint-logs
+          bash tools/test_transition402.sh 2>&1 | tee build/checkpoint-logs/transitions.txt
+          bash tools/test_hotfix401.sh 2>&1 | tee build/checkpoint-logs/regression.txt
+      - name: Real Forge compile and reobfuscated JAR
+        shell: bash
+        run: |
+          set -o pipefail
+          bash gradlew --no-daemon --stacktrace --max-workers=2 compileJava compileGameTestJava jar 2>&1 | tee build/checkpoint-logs/forge.txt
+      - name: Preserve build logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sr-checkpoint-logs-${{ github.sha }}
+          path: build/checkpoint-logs/
+          retention-days: 14
+      - name: Preserve candidate JAR after successful compilation
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sr-candidate-jar-${{ github.sha }}
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 14
