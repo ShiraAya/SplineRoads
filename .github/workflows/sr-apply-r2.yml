@@ -7,7 +7,8 @@ permissions:
   contents: read
 jobs:
   apply-reviewed-source:
-    if: github.repository == 'ShiraAya/SplineRoads' && github.event.head_commit.message == 'chore: stage reviewed R2 edits for guarded source checkpoint'
+    if: >-
+      github.repository == 'ShiraAya/SplineRoads' && github.event.head_commit.message == 'chore: stage reviewed R2 edits for guarded source checkpoint'
     permissions:
       contents: write
     runs-on: ubuntu-latest
