@@ -1,30 +1,18 @@
 name: SR checkpoint validation
-
 on:
   push:
     branches: [chat/sr-0402]
-    paths:
-      - 'src/**'
-      - 'tools/**'
-      - 'build.gradle'
-      - 'settings.gradle'
-      - 'gradle.properties'
-      - 'gradle/**'
-      - 'gradlew'
-      - '.github/workflows/sr-checkpoint.yml'
+    paths: ['src/**', 'tools/**', 'build.gradle', 'settings.gradle', 'gradle.properties', 'gradle/**', 'gradlew', '.github/workflows/sr-checkpoint.yml']
   workflow_dispatch:
-
 permissions:
   contents: read
-
 concurrency:
   group: sr-checkpoint-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
@@ -33,28 +21,30 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Core, transition and bidirectional regression
-        shell: bash
+      - name: R1 transitions and R2-R4 core/model/cache regression
         run: |
           set -euo pipefail
           mkdir -p build/checkpoint-logs
           bash tools/test_transition402.sh 2>&1 | tee build/checkpoint-logs/transitions.txt
-          bash tools/test_bidirectional402.sh 2>&1 | tee build/checkpoint-logs/regression.txt
+          bash tools/test_warm404.sh 2>&1 | tee build/checkpoint-logs/regression.txt
       - name: Real Forge compile and reobfuscated JAR
-        shell: bash
         run: |
           set -euo pipefail
           bash gradlew --no-daemon --stacktrace --max-workers=2 compileJava compileGameTestJava jar 2>&1 | tee build/checkpoint-logs/forge.txt
-      - name: Preserve build logs
+      - name: Preserve exact committed source
         if: always()
-        uses: actions/upload-artifact@v4
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: sr-checkpoint-logs-${{ github.sha }}
           path: build/checkpoint-logs/
           retention-days: 14
-      - name: Preserve candidate JAR after successful compilation
+      - uses: actions/upload-artifact@v4
         if: success()
-        uses: actions/upload-artifact@v4
         with:
           name: sr-candidate-jar-${{ github.sha }}
           path: build/libs/*.jar
