@@ -1,0 +1,20 @@
+name: Any-lane transfer byte check
+on:
+  push:
+    branches: [chat/sr-0402]
+    paths: ['.github/workflows/sr-any405-transfer.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/upload-artifact@v4
+        with:
+          name: any405-transfer-${{ github.run_id }}
+          path: tools/checkpoints/any405.payload
+          retention-days: 7
