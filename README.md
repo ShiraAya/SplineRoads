@@ -1,26 +1,25 @@
-# Spline Roads 0.40.4-alpha
+# Spline Roads 0.40.5-alpha
 
-Minecraft Java 1.20.1 / Forge47.4.20 / Java17。以用户修正编译后的SR.zip为基线，在chat/sr-0402连续保存。
+Minecraft Java1.20.1 / Forge47.4.20 / Java17。以用户修正编译后的SR.zip为基线，在chat/sr-0402逐阶段保存。
 
-**TEMPORARY保留车道分离适用于任意所选车道，包括内侧/中间/外侧与单车道；DETACH整车道分离原有适用范围不变。** 不是一次同时选择所有车道。主路原槽位暂时关闭，实际匝道及结构让出通行空间后渐变恢复；其他车道不因此被挪走。跨多个实际路段自动恢复及跨车道数变化接缝仍未支持，单纯缺少净空不会强行建造。
+**隧道中央仅黄线/护栏：选绿化自动转护栏，不在隧道里生成土和树叶。** 保留断面预留宽度与车道轴，不在洞口突然挪动行车线。这个用户最新要求覆盖0.40.4洞内绿化的错误实现；原混凝土中央分隔不是被判定为错误的设计。
 
-0.40.3已修正隧道侧墙/拱肩缺口与开挖空气预留；0.40.4修正独立渲染距离策略、隧道中央过渡、实体人行道材质深度模式，增加上层人行道结构碰撞和隔音墙混凝土基座。完整状态见 [13项问题状态](docs/issues/2026-10-05-resolution-status.md)。这不是13项全部修复完成版。
+本版另修路口盲道的反角内凸与错误内缩折返；桥墩按实际主柱近邻/高度判断并使用原候选挪动，不再只靠连接ID和道路首点高差。原过渡、任意所选槽位TEMPORARY临时取消后恢复、DETACH原适用范围、隧道壳体/空气与双渲染后端缓存修复保留。
 
-[本轮修改与验证](docs/checkpoints/2026-10-05-visibility-furniture.md) / [任意车道与隧道检查点](docs/checkpoints/2026-10-05-any-lane-tunnels.md) / [进度](PROGRESS.md)。历史apply脚本是一次性迁移，不可重新运行到最新源码。
+[本轮细节](docs/checkpoints/2026-10-05-0405-tactile-piers.md) / [13项问题状态](docs/issues/2026-10-05-resolution-status.md) / [当前进度](PROGRESS.md)。一次性apply脚本保留为历史，不可对最新源码重跑。
 
-实际生产提交已通过GitHub Actions的compileJava、compileGameTestJava、jar/reobfJar，且已下载校验源码/JAR。**没有真实Minecraft客户端、GPU/光影、真实世界写入/存盘重进、多人或FPS验收。GameTest类编译不是实机测试。**
+生产提交42479eb8的GitHub Actions run37331140199已经完整构建success。最终带附加连续性测试/文档的提交仍须以对应CI和下载核对记录为准。**没有实际Minecraft客户端、光影/GPU、真实世界放置/保存重进或多人验收。** 计数是循环几何检查，不等于同数实机案例。
 
-存档版本36、协议54。客户端与服务端同步更新；先备份世界并在副本测试，勿用旧版读取新版保存的世界。新结构可能需要道路编辑更新来重新生成，旧开挖地形不保证自动填回。
+存档36、协议54不变；客户端服务端同步更新，先备份世界。已存设施可用道路编辑更新重新规划；旧开挖地形不保证自动填回。
 
 ```powershell
 .\gradlew.bat compileJava compileGameTestJava jar
 ```
 
 ```bash
-bash tools/test_transition402.sh
-bash tools/test_tunnel406.sh
+bash tools/check_release0405.sh
 ```
 
-本次针对性回归见只读.github/workflows/sr-checkpoint.yml，工具目录测试适配器不进入生产JAR。
+该脚本同时运行原回归、新盲道/护栏/桥墩测试和完整Forge构建。工具适配器不进入生产JAR。
 
-AUTO仍为无光影VBO、实际启用光影terrain。额外休眠缓存inactiveVboCacheMiB与terrainCacheMiB默认各64MiB估算预算；不等于总显存/RAM上限。有效缓存复用，改路/资源/格式/世界改变及淘汰仍正确失效，不承诺光影管线切换时游戏自身无区块重建。
+建造性能本版完成更细阶段计时，可加JVM参数`-Dsr.profile=true`；世界/GPU写入没有移到后台线程，尚未完成完整并行提速，未测实际FPS。U02当前新沥青资产来源仍缺少用户原文件，资源许可保持。AUTO无光影VBO、实际光影terrain及有界缓存行为不变。
