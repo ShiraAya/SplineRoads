@@ -587,8 +587,7 @@ public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,
     var reserved=LaneSections.layout(mesh,sample);if(reserved!=null)return reserved;
     var base=RoadTransitions.layout(mesh,sample);
     if(!base.catalog().twoWay()||!RoadStreetscape.raised(mesh,sample))return base;
-    var c=base.catalog();double median=1;
-    return new Layout(new Catalog(c.type(),c.lanes(),true,Median.RAIL,c.shoulder()),(base.motorMax()-base.motorMin()-median)/c.lanes(),median,base.motorMin(),base.motorMax(),base.cycleWidth(),base.curbWidth(),base.shoulderWidth(),base.outside(),null);
+    return RaisedRoadProfile.apply(base);
   }
 
   /** Physical raised curb excludes the shoulder and fades out with the curb option. */
