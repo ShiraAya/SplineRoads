@@ -1,0 +1,40 @@
+{
+  "production_commit": "3be551cafc56700b63883586d888beda17f217c4",
+  "workflow_trigger": "0828db40955d834d154e3c72f08873384217da90",
+  "workflow_run": 37357489262,
+  "job": 111923543411,
+  "version": "0.40.8-alpha",
+  "save_version": 36,
+  "network_protocol": 54,
+  "source_zip_sha256": "602a80af1548776e3ab8b0b01c819cb2dc6d342d8161d2f89f1d442031833375",
+  "jar_sha256": "75be25ca84a9f3580830b5444ceed76dc4a6f585cc4d6e1afe65c48d153b7363",
+  "changed_java": [
+    "src/main/java/com/sora/splineroads/core/RoadInfrastructure.java",
+    "src/main/java/com/sora/splineroads/core/RoadTransitions.java",
+    "src/main/java/com/sora/splineroads/core/RoadTunnelSpace.java",
+    "src/main/java/com/sora/splineroads/core/TunnelMedian.java",
+    "src/main/java/com/sora/splineroads/world/RoadBlocks.java",
+    "src/main/java/com/sora/splineroads/world/RoadData.java",
+    "src/main/java/com/sora/splineroads/world/RoadRecord.java",
+    "src/main/java/com/sora/splineroads/world/TunnelTerrainSpace.java"
+  ],
+  "unchanged_java_count": 163,
+  "unchanged_resource_files": 427,
+  "unchanged_license_notice_files": 6,
+  "artifact_zip_sha256": {
+    "SR_0408_Final_Source_Logs.zip": "f495e19aadaf149509e11c72e95ffef35ad8fe4047261b120455c4fabec36c6d",
+    "SR_0408_Final_Compiled.zip": "764d7df9773ae0ecdb29c14a5ad2d82e445faca93501e5f7601d4b8ad7342f74"
+  },
+  "compile_tasks": ["compileJava", "compileGameTestJava", "jar", "reobfJar"],
+  "source_bytes_match_review": true,
+  "archive_crc_pass": true,
+  "test_adapters_in_jar": false,
+  "Minecraft_client_world_IO_water_ticks_binary_save_GPU_multiplayer": "NOT TESTED",
+  "priority_scope": "P1 Q2-03/04/05/07 confirmed code paths only; P2 terrain and threading untouched",
+  "note": "Old source docs at earlier checkpoint are historical. Final handoff docs may be in a later documentation-only commit.",
+  "github_artifact_digests_match": true,
+  "artifacts": {
+    "SR_0408_Final_Source_Logs.zip": {"id": 11365113222, "sha256": "f495e19aadaf149509e11c72e95ffef35ad8fe4047261b120455c4fabec36c6d"},
+    "SR_0408_Final_Compiled.zip": {"id": 11365602101, "sha256": "764d7df9773ae0ecdb29c14a5ad2d82e445faca93501e5f7601d4b8ad7342f74"}
+  }
+}

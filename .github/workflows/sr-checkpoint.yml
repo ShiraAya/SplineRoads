@@ -21,8 +21,8 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: P1 focused checks, prior regressions and complete Forge build
-        run: bash tools/check_problem2_batch1.sh
+      - name: P1 tunnel/seam checks, prior regressions and complete Forge build
+        run: bash tools/check_tunnel415.sh
       - name: Retain original solid material and visibility binding checks
         run: |
           python - <<'PY'
