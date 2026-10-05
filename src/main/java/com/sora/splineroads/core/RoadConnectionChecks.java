@@ -8,12 +8,14 @@ import com.sora.splineroads.core.RoadGeometry.*;
 public final class RoadConnectionChecks {
   public static void require(RoadPlanner.Plan plan,RoadPlanner.Hint a,RoadPlanner.Hint b){
     if(plan.mesh().closed()||plan.settings().laneRamp()||plan.settings().style().ramp())return;
-    endpoint("A",plan.mesh().first(),plan.start().grade(),a);
-    endpoint("B",plan.mesh().last(),plan.end().grade(),b);
+    var adjust=plan.settings().options().infrastructure().adjustment();
+    boolean fit=RoadTunnelFit.enabled(plan.settings());
+    endpoint("A",plan.mesh().first(),plan.start().grade(),a,fit&&adjust!=RoadTunnelFit.Adjustment.END);
+    endpoint("B",plan.mesh().last(),plan.end().grade(),b,fit&&adjust!=RoadTunnelFit.Adjustment.START);
   }
-  private static void endpoint(String name,Sample actual,double grade,RoadPlanner.Hint required){
+  private static void endpoint(String name,Sample actual,double grade,RoadPlanner.Hint required,boolean fitMayMove){
     if(required==null||!required.linked())return;
-    if(actual.center().distance(required.node().position())>1e-6)
+    if(!fitMayMove&&actual.center().distance(required.node().position())>1e-6)
       throw new IllegalArgumentException(name+" 端接点高程/位置不一致；预览不允许建造，请调整端点");
     V forward=actual.left().left().mul(-1).horizontalUnit();
     if(required.headingLocked()&&forward.dot(required.node().direction())<.99999999

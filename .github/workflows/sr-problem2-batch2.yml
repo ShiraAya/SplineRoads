@@ -1,8 +1,8 @@
-name: SR problem2 P1 stage1 apply and validate
+name: SR P1 stage2 water and build validation
 on:
   push:
     branches: [chat/sr-0402]
-    paths: [.github/workflows/sr-problem2-batch1.yml]
+    paths: [.github/workflows/sr-problem2-batch2.yml]
 permissions:
   contents: read
 jobs:
@@ -15,16 +15,14 @@ jobs:
       commit: ${{ steps.save.outputs.commit }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-      - name: Apply fixed, hash-verified P1 source and preserve before long build
+      - name: Preserve exact candidate before long tests
         id: save
         run: |
           test "$(git ls-remote origin refs/heads/chat/sr-0402 | cut -f1)" = "$GITHUB_SHA"
-          python tools/apply_problem2_batch1.py
+          python tools/apply_problem2_batch2.py
           git diff --check
-          git add src/main/java
-          git -c user.name='SR checkpoint' -c user.email='sr-checkpoint@users.noreply.github.com' commit -m 'WIP: shared seam preflight and exact differential tunnel shell checks (Q2-08/09)'
+          git add src/main/java build.gradle src/main/resources/META-INF/mods.toml AGENTS.md docs/CURRENT_REQUIREMENTS.md
+          git -c user.name='SR checkpoint' -c user.email='sr-checkpoint@users.noreply.github.com' commit -m 'WIP: preserve exterior tunnel water, retain automatic endpoint fitting and correct preflight imports'
           git push origin HEAD:refs/heads/chat/sr-0402
           test "$(git ls-remote origin refs/heads/chat/sr-0402 | cut -f1)" = "$(git rev-parse HEAD)"
           echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
@@ -32,8 +30,6 @@ jobs:
     needs: preserve
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    permissions:
-      contents: read
     steps:
       - uses: actions/checkout@v4
         with:
@@ -43,9 +39,9 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Existing regression suite and real Forge build
-        run: bash tools/check_release0406.sh
-      - name: Exact source snapshot even if build fails
+      - name: All previous and new P1 tests plus actual Forge build
+        run: bash tools/check_problem2_batch1.sh
+      - name: Exact source and logs even on failure
         if: always()
         run: |
           mkdir -p build/checkpoint-logs
@@ -54,12 +50,13 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: sr-problem2-stage1-source-logs
+          name: sr-problem2-stage2-source-logs
           path: build/checkpoint-logs/
           retention-days: 14
       - uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: sr-problem2-stage1-jar
+          name: sr-problem2-stage2-jar
           path: build/libs/*.jar
+          if-no-files-found: error
           retention-days: 14
