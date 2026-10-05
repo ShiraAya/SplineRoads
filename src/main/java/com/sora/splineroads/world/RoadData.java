@@ -998,7 +998,7 @@ public final class RoadData extends SavedData {
         spacingReferences.add(next);
       }
       timing.stage("furniture_phase");
-      var structureLookup=new RoadPlanningIndex(planning);
+      var structureLookup=new RoadPlanningIndex(planning,built.size());
       timing.stage("structure_candidate_index");
       for (int i = 0; i < built.size(); i++) {
         var r = built.get(i);
@@ -1014,7 +1014,7 @@ public final class RoadData extends SavedData {
         if(pass>=3)throw new IllegalArgumentException("断面与车道点未能稳定，请调整道路样式后重试");
         LaneTopology.reconcile(this,built,removed);
         planning.clear();for(var old:index.roads.values())if(!removed.contains(old.record.id()))planning.add(old);planning.addAll(built);
-        structureLookup=new RoadPlanningIndex(planning);
+        structureLookup=new RoadPlanningIndex(planning,built.size());
         for(int i=0;i<built.size();i++){var r=built.get(i);var next=r.planned(StructurePlanner.plan(level,r,planning,terrainFill,terrainCache,structureLookup));built.set(i,next);int slot=planning.indexOf(r);planning.set(slot,next);structureLookup.replace(slot,next);}
       }
       timing.stage("dependent_replanning");
