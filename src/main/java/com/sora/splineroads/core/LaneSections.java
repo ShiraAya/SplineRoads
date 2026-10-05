@@ -14,7 +14,7 @@ public final class LaneSections {
     public Cut(UUID connection,int lane,int sign,double begin,double end,double transition,UUID replacement){this(connection,lane,sign,begin,end,transition,replacement,false);}
     public Cut(UUID connection,int lane,int sign,double begin,double end,double transition){this(connection,lane,sign,begin,end,transition,null);}
     public Cut {
-      if(connection==null||lane<0||lane>31||(sign!=1&&sign!=-1)||!RoadGeometry.finite(begin,end,transition)
+      if(arrival&&!temporary||connection==null||lane<0||lane>31||(sign!=1&&sign!=-1)||!RoadGeometry.finite(begin,end,transition)
           ||transition<2||transition>256||sign*(end-begin)<-.0001)
         throw new IllegalArgumentException("车道分离区间无效");
     }
@@ -33,6 +33,7 @@ public final class LaneSections {
   /** Derive from the complete live link set, so deleting a branch restores authored pavement. */
   public static List<Cut> derive(Mesh mesh,List<Event> events){
     var raw=reference(mesh);var cuts=new ArrayList<Cut>();var used=new HashSet<UUID>();
+    Set<UUID> provisional=new HashSet<>();for(var e:events)if(e.kind()==Kind.ARRIVE&&!Double.isFinite(e.returnStation()))provisional.add(e.connection());
     var ordered=new ArrayList<>(events);ordered.sort(Comparator.comparingDouble(e->e.station()*e.sign()));
     for(Event event:ordered)if(event.kind()!=Kind.REPLACE&&event.kind()!=Kind.ARRIVE){
       var lane=LanePoints.lane(raw,event.station(),event.lane());
@@ -63,9 +64,9 @@ public final class LaneSections {
       if(lane.sign()!=event.sign())throw new IllegalArgumentException("汇入车道封闭方向与行驶方向不一致");
       double begin=Double.isFinite(event.returnStation())?event.returnStation():(event.sign()>0?0:raw.length());
       if(event.sign()*(event.station()-begin)<.02)continue; // Free start: no upstream target traffic.
-      if(begin<0||begin>raw.length()||event.station()<0||event.station()>raw.length())throw new IllegalArgumentException("汇入封闭范围超出实际宿主路段");
+      if(begin<-event.transition()-.001||begin>raw.length()+event.transition()+.001||event.station()<0||event.station()>raw.length())throw new IllegalArgumentException("汇入封闭范围超出实际宿主路段");
       var cut=new Cut(event.connection(),event.lane(),event.sign(),begin,event.station(),event.transition(),null,true,true);
-      for(var old:cuts)if(old.lane()==cut.lane()&&Math.min(Math.max(old.begin(),old.end()),Math.max(cut.begin(),cut.end()))-Math.max(Math.min(old.begin(),old.end()),Math.min(cut.begin(),cut.end()))>.01)
+      for(var old:cuts)if(!provisional.contains(cut.connection())&&!provisional.contains(old.connection())&&old.lane()==cut.lane()&&Math.min(Math.max(old.begin(),old.end()),Math.max(cut.begin(),cut.end()))-Math.max(Math.min(old.begin(),old.end()),Math.min(cut.begin(),cut.end()))>.01)
         throw new IllegalArgumentException("目标车道的汇入封闭与既有分离/汇入区间冲突，不能覆盖其他连接");
       cuts.add(cut);
     }

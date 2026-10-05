@@ -138,7 +138,7 @@ public final class LaneTopology {
       for(var p:metadata(all.get(r.id())).points())if(md.points().stream().noneMatch(x->x.id().equals(p.id())))points.add(p);
       all.put(r.id(),r.withLanePoints(md.points(points)));
     }
-    for(var r:new ArrayList<>(all.values())){var l=metadata(r).link();if(l==null)continue;var from=migrations.getOrDefault(l.from(),l.from());var to=migrations.getOrDefault(l.to(),l.to());if(!from.equals(l.from())||!to.equals(l.to()))all.put(r.id(),r.withLanePoints(metadata(r).link(new LanePoints.Link(from,to,l.options(),l.junctionMouth(),l.targetOffset()))));}
+    for(var r:new ArrayList<>(all.values())){var l=metadata(r).link();if(l==null)continue;var from=migrations.getOrDefault(l.from(),l.from());var to=migrations.getOrDefault(l.to(),l.to());if(!from.equals(l.from())||!to.equals(l.to()))all.put(r.id(),r.withLanePoints(metadata(r).link(new LanePoints.Link(from,to,l.options(),l.junctionMouth(),l.targetOffset(),l.protectedMerge()))));}
     LaneCrossSections.reconcile(all,scope);
     var ends=endpointOwners(all.values());
     for(var r:new ArrayList<>(all.values()))if(independent(r)&&scope.contains(r.id()))all.put(r.id(),automatic(r,ends));
@@ -222,7 +222,7 @@ public final class LaneTopology {
     if(existing==null&&!r.alignment().isEmpty()&&portsMatch(r,all)){LaneRamps.validate(r.mesh(),all,id,l);visiting.remove(id);done.add(id);return;}if(existing!=null&&portsMatch(r,all)&&Objects.equals(l,metadata(existing.record).link())&&samePort(data,all,l.from())&&samePort(data,all,l.to())&&(!l.options().sourceExtra()||sameGeometry(data,all,l.from()))&&(!(l.options().targetExtra()||l.targetOffset()!=0)||sameGeometry(data,all,l.to()))){if(!sameDeck(r,existing.record))LaneRamps.validate(r.mesh(),all,id,l);visiting.remove(id);done.add(id);return;}
     RoadRecord next;try{next=LaneRamps.generate(data,all,r.id(),r.owner(),l);}catch(IllegalArgumentException e){throw new IllegalArgumentException("本次修改需要重建关联匝道 "+id+"，但该连接无法成立："+e.getMessage(),e);}var moved=new ArrayList<LanePoints.Point>();for(var p:metadata(r).points())if(!p.automatic())moved.add(LanePoints.snap(next.mesh(),p));next=next.withLanePoints(metadata(next).points(moved));
     // Preserve attached points/paint and user road options on dependent connectors.
-    next=next.withAttachments(r.settings().options().attachments()).furniturePhase(r.furniturePhase());var options=next.settings().options().infrastructure(r.settings().options().infrastructure()).laneLines(r.settings().options().laneLines()).hideArrows(r.settings().options().hideArrows());next=next.settings(next.settings().options(options));LaneRamps.validate(next.mesh(),all,id,l);all.put(id,next);visiting.remove(id);done.add(id);
+    next=next.withAttachments(r.settings().options().attachments()).furniturePhase(r.furniturePhase());var options=next.settings().options().infrastructure(r.settings().options().infrastructure()).laneLines(r.settings().options().laneLines()).hideArrows(r.settings().options().hideArrows());next=next.settings(next.settings().options(options));LaneRamps.validate(next.mesh(),all,id,metadata(next).link());all.put(id,next);visiting.remove(id);done.add(id);
   }
   static void assignPriorities(Map<UUID,RoadRecord> all){
     var depths=new HashMap<UUID,Integer>();var active=new HashSet<UUID>();

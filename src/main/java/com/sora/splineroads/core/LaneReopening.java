@@ -27,7 +27,12 @@ public final class LaneReopening {
       if(hi>sign*end+.10)throw new IllegalArgumentException("匝道/结构在汇入点后仍侵入目标车道，不能在 B 强行开放");
     }
     double begin=(Math.min(sign*end-2*transition,first-transition-END_MARGIN))*sign;
-    return Math.max(0,Math.min(raw.length(),begin));
+    begin=Math.max(0,Math.min(raw.length(),begin));
+    double available=sign*(end-begin),span=Math.min(transition,available/2);
+    // At a free road start there is no upstream lane to taper: the slot starts
+    // closed. LaneCrossSections rejects this fallback if a preceding road exists.
+    if(available>.02&&first-sign*begin<span-.01)begin=sign>0?-transition:raw.length()+transition;
+    return begin;
   }
   private static double lastBlocked(Mesh sweep,Mesh obstacle,double begin,int sign,double last){
     for(var c:RoadClearance.contacts(sweep,obstacle))if(c.blocked()){

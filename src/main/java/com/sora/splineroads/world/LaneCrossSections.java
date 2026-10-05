@@ -53,6 +53,11 @@ public final class LaneCrossSections {
       var point=LaneTopology.point(target,link.to().point());var raw=target.rawMesh();var lane=LanePoints.lane(raw,point);
       double end=lane.station()+lane.sign()*link.targetOffset();
       double begin=candidate==null?Double.NaN:LaneReopening.closeBeforeStation(raw,point.lane(),end,candidate,parts,link.options().transition());
+      if(begin<0||begin>raw.length()){
+        var upstream=lane.sign()>0?target.a():target.b();
+        if(all.values().stream().anyMatch(r->!r.id().equals(target.id())&&LaneTopology.metadata(r).link()==null&&(r.a().equals(upstream)||r.b().equals(upstream))))
+          throw new IllegalArgumentException("目标车道上游封闭需要跨入相邻实际路段，当前不能静默封闭该路段；请后移汇入点或延长主路");
+      }
       events.computeIfAbsent(target.id(),key->new ArrayList<>()).add(new LaneSections.Event(connection,LaneSections.Kind.ARRIVE,point.lane(),lane.sign(),end,link.options().transition(),begin));
     }
     if(link.options().arrival()==LanePoints.Arrival.REPLACE&&(hosts==null||hosts.contains(link.to().road()))){
