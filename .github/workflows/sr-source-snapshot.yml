@@ -1,0 +1,24 @@
+name: SR source checkpoint snapshot
+on:
+  push:
+    branches: [chat/sr-0402]
+    paths: ['.github/workflows/sr-source-snapshot.yml']
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Archive exact committed tree
+        run: |
+          mkdir -p snapshot
+          git archive --format=zip --output=snapshot/SR-source.zip HEAD
+          git rev-parse HEAD > snapshot/COMMIT.txt
+          sha256sum snapshot/SR-source.zip > snapshot/SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sr-source-${{ github.sha }}
+          path: snapshot/
+          retention-days: 14
