@@ -28,6 +28,13 @@ public final class TunnelTerrain415Validation {
     check(!TunnelTerrainSpace.safe(crest,List.of(tube,other)),"final snapshot protects non-owner road above tunnel");
     check(TunnelTerrainSpace.safe(crest,List.of(tube)),"removing conflicting neighbor allows terrain again");
     check(!TunnelTerrainSpace.safe(new BlockPos(-21,120,32),List.of(tube)),"cannot fill arbitrary non-shell air");
+    var otherTube=road(Structure.TUNNEL,104);
+    check(!TunnelTerrainSpace.safe(crest,List.of(tube,otherTube))&&!TunnelTerrainSpace.safe(crest,List.of(otherTube,tube)),"neighbor tunnel dry interior protects crown independent of list order");
+    var ordinary=tube.record.settings().structure(Structure.GROUND);
+    var shared=RoadTransitions.common(ordinary,tube.record.settings());
+    var joined=RoadTransitions.ends(ordinary,shared,shared);
+    var decoded=RoadRecord.readSettings(RoadRecord.writeSettings(joined));
+    check(decoded.options().ends().start().equals(shared)&&decoded.options().ends().end().equals(shared),"seam material and exact port survive production codec with NBT-map adapter");
     int saved=0,denied=0;for(long key:tube.cells.keySet()){
       var p=BlockPos.of(key);if(!tube.shellAt(p))continue;
       boolean safe=TunnelTerrainSpace.safe(p,List.of(tube));boolean interior=RoadTunnelSpace.intersects(tube.mesh,p.getX(),p.getY(),p.getZ(),1);

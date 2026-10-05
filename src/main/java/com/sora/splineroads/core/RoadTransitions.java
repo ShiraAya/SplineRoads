@@ -91,7 +91,8 @@ public final class RoadTransitions {
             .thenComparing(Section::cycleAsphalt)
             .thenComparing(Section::curb)
             .thenComparing(Section::cycleRail)
-            .thenComparing(s -> s.outerRail().name());
+            .thenComparing(s -> s.outerRail().name())
+            .thenComparing(s -> s.port()==null?"":s.port().toString());
     Section chosen=order.compare(x,y)>=0?x:y;
     var wx=a.options().sidewalk();var wy=b.options().sidewalk();
     var walk=(wx.enabled()&&(!wy.enabled()||wx.width()>=wy.width())?wx:wy).tactile(wx.enabled()&&wy.enabled()&&wx.tactile()&&wy.tactile());

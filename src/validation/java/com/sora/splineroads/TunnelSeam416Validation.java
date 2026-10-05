@@ -27,6 +27,10 @@ public final class TunnelSeam416Validation {
         double end=atStart?0:192;near(RoadTransitions.green(x,RoadStructures.sample(x,end)),0,"ground greenery does not taper to rail at portal");near(RoadTransitions.green(x,RoadStructures.sample(x,96)),1,"far ground lost its greenery");
         check(RoadTransitions.green(x,RoadStructures.sample(x,atStart?18:174))>0&&RoadTransitions.green(x,RoadStructures.sample(x,atStart?18:174))<1,"no continuous material taper");
         var r=RoadTransitions.Section.of(common.settings(false));check(r.equals(common),"port lost when reusing shared section");
+        var plain=common.settings(false).options(common.settings(false).options().ends(RoadTransitions.Ends.NONE));
+        var xy=RoadTransitions.common(common.settings(false),plain);var yx=RoadTransitions.common(plain,common.settings(false));
+        check(xy.equals(yx),"port tie-break changed with neighbor enumeration order");
+        check(xy.port()!=null&&xy.port().equals(common.port()),"explicit planned lane axes lost to equal nominal section");
       }
     }
     System.out.println("TunnelSeam416Validation: "+cases+" real ground/tunnel endpoint pairs, "+checks+" checks PASS; no world placement/GPU.");
