@@ -21,12 +21,14 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: R1 transitions and R2-R4 core/model/cache regression
+      - name: Transitions and any-lane tunnel core model cache regression
         run: |
           set -euo pipefail
           mkdir -p build/checkpoint-logs
           bash tools/test_transition402.sh 2>&1 | tee build/checkpoint-logs/transitions.txt
-          bash tools/test_warm404.sh 2>&1 | tee build/checkpoint-logs/regression.txt
+          bash tools/test_tunnel406.sh 2>&1 | tee build/checkpoint-logs/regression.txt
+          javac --release 17 -encoding UTF-8 -cp build/tunnel406/core/classes -d build/tunnel406/core/classes src/validation/java/com/sora/splineroads/CurvedAny405Validation.java
+          java -Dfile.encoding=UTF-8 -Xmx1500m -XX:ActiveProcessorCount=2 -cp build/tunnel406/core/classes:src/main/resources com.sora.splineroads.CurvedAny405Validation | tee build/checkpoint-logs/curved-any.txt
       - name: Real Forge compile and reobfuscated JAR
         run: |
           set -euo pipefail
