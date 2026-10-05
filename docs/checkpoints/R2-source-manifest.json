@@ -1,0 +1,17 @@
+{
+  "review_base": "c7d9458e3ba9616c8750de49ac1dd473eeee954c",
+  "scope": "Only reviewed R2 source changes. R3 and R4 are not implemented.",
+  "files": [
+    {"path":"src/main/java/com/sora/splineroads/core/LaneRampApproach.java","before_sha256":"e8a645a80e0d6e8eda36ffd5d8ea9a91aaf3e6900c29f1052a0fbedbc1d8fbd3","after_sha256":"817132ad431c54f086384e8819b78193952064644404c7a36484a91918a256ba","after_git_blob":"fa9b69828dfb67d6d76e2a3a225be5f230b3e4da"},
+    {"path":"src/main/java/com/sora/splineroads/core/LaneSections.java","before_sha256":"91d03342f8aae6390d44d7b1d303c4bb4a00d2ce45f6741b57c95c57971e811c","after_sha256":"1b3ae0f4dd22df765aa4ff0947f3cd7d1131ee079c7e4e184a450c96de7b49db","after_git_blob":"a7ed56ea1cfe8e1555a05da943d6d0d2d1d03f12"},
+    {"path":"src/main/java/com/sora/splineroads/core/RaisedRoadProfile.java","before_sha256":"a38f32dcea798060865db81cdbe41685d3d98a65739c0959d606999756b6a091","after_sha256":"132cf6d37f27de3ece31992e6e00fad12c66ae092eb52c11caa99edc5835ee7b","after_git_blob":"d47ddce8e57cce21ee55ecf4f28ec3942abcafed"},
+    {"path":"src/main/java/com/sora/splineroads/core/RoadJunction.java","before_sha256":"b7dbc204defbcc12af6ab5650acec70a013d682e273843bc9a394a3068a62090","after_sha256":"cd28e66773ef1e084e07d9f0e56518d76a26054930f36c520040065b31b5b8b6","after_git_blob":"c650ddd322c0228b0e3f4d45492848c6aecd28a9"},
+    {"path":"src/main/java/com/sora/splineroads/core/RoadLaneLines.java","before_sha256":"0b7571aeeb3f6b89e921de633a33d5f05f1037c38eca471d757ed560451b8ffb","after_sha256":"7aa5ec3539e8591633d021d75182aeebd238b5fb6aa3074308a82d99644b9486","after_git_blob":"635de272b6287cb33482f1d2e439e37e1f278a12"},
+    {"path":"src/main/java/com/sora/splineroads/core/RoadProfile.java","before_sha256":"b83f674e15aa56bd89c95b90dd187532bffae6fc3e612d8c7e7be1b23ef8108b","after_sha256":"f309979610e1eff2fb873c524c588aeaf738f01e9ded1fbda7bd62a5889b9340","after_git_blob":"15e3c2a5111132dcff6eddcdd11a41a964c3f74f"},
+    {"path":"src/main/java/com/sora/splineroads/core/RoadSignals.java","before_sha256":"4521952818a3d239ee100d12f4553e147919bbb859db24f7c49c0606994546c8","after_sha256":"7a701646b65692892a4d35c1fd135220daed0c0eda08d241841e539585520c1b","after_git_blob":"a8fa192526c7587dabf6d4805cb388395a46ee7b"},
+    {"path":"src/main/java/com/sora/splineroads/core/RoadStreetscape.java","before_sha256":"a95d8211580f5fdb982f1125068ab4f3e6e1d348a4bcea8f3454a2ea34ec9e8f","after_sha256":"8f6b699eb94b7f78f6d22a3c09f8789522520832bad73890484878e6cddfc9c4","after_git_blob":"0ea6640f5c77444934714a0b636dd13272c0ddd1"},
+    {"path":"src/main/java/com/sora/splineroads/core/RoadStructures.java","before_sha256":"757db159b891fc4c7f453e930d580a5bb7aabb2c402a0f407ee9482f854d4c84","after_sha256":"b5e94f64677ee04964162092c28aca46534fe9f59b2b79fc510a14f291db5ae2","after_git_blob":"3ff938245dc42cd2c6447cc5a0f2ddc4f2903a5b"},
+    {"path":"src/main/java/com/sora/splineroads/core/RoadSurface.java","before_sha256":"67e661477dc22cdf085163b6db82db3b7b1e9b2d7ed41a5d8dfabc58073e341c","after_sha256":"7660342d52c4b3348f31d7caeb524fbbb4762f7cfafe0231faa15021ab2e3f47","after_git_blob":"da92f110be5b0c4cf3dc5d268a5a15d7c96628fd"},
+    {"path":"src/main/java/com/sora/splineroads/world/LaneRamps.java","before_sha256":"d217e222d8f3851bdbb497f2f70e3fab014a5335aa418e9f188516afb5d800c5","after_sha256":"4afc61d5a34e88e429dee05ad50fedfd54c3ae8ab8099b1494facb578fe6b8a7","after_git_blob":"b000f01a05bde246a2150b6d21d49288d4f944ce"}
+  ]
+}

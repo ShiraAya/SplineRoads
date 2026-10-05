@@ -1,23 +1,13 @@
-# SR 当前进度：R1 过渡标线源码检查点
+# SR current checkpoint: R1 saved and compiled; R2 reviewed transfer staged
 
-工作分支：`chat/sr-0402`。本轮基准提交：`83aa2347b43ec9997ac1fc4020328e130f10c03a`（用户已导入源码）。开始时间：2026-10-05T11:08:54Z。
+Branch: chat/sr-0402. Session started 2026-10-05T11:08:54Z. Imported source baseline: 83aa2347b43ec9997ac1fc4020328e130f10c03a.
 
-已核对 GitHub 的 src/tools/构建入口与 SR.zip 本地校验副本；本次修改不依赖此前无法核实的临时成果。
+R1 source commit: dbb0e73970d90f7f084904093008f8928dd8766f. CI commit: c7d9458e3ba9616c8750de49ac1dd473eeee954c. GitHub Actions run 37302132380 completed core regression and REAL JDK17 Forge compileJava/compileGameTestJava/jar successfully. This is now more than adapter compilation, but still not Minecraft/GPU runtime testing.
 
-## 已实施
+R2 changes are preserved as an exact guarded transformation, 11 input/output hashes and new tests in this checkpoint. Read docs/checkpoints/R2_READY.md. Production source is updated ONLY when the one-shot apply-and-validate workflow creates the subsequent successful source commit; a staging commit is not implementation completion.
 
-R1：高架断面调整保留过渡分界线身份，不再按中途切换的目录车道数重造列表。生产改动是 `RoadProfile.java` 与新增 `RaisedRoadProfile.java`，另新增回归入口 `Transition402Validation`、`tools/test_transition402.sh`。细节见 `docs/checkpoints/2026-10-05-R1.md`。
+Local R2 tests passed: 144 asymmetric physical cut cases / 17520 assertions; 16 production planner/record/delete cases / 208 checks using explicit test NBT/world adapters. Original core/model regression passed. Full R2 Forge compilation is pending the workflow.
 
-原核心复现跨中央隔离分界线索引变号 1 次、列表数量变化 1 次；修改后均为 0。646 个有效过渡组合通过，544 个不支持的跨级请求仍拒绝。原核心回归已本轮重跑通过。
+R3 保留车道分离（暂时取消，实际净空允许后恢复）未实现。R4 VBO/terrain warm cache 未实现。Do not reinterpret these as unconfirmed requirements or complete tasks.
 
-## 未完成与边界
-
-- R1 尚未做原存档/客户端/GPU 实测。
-- R2 双向整车道分离：未实施。
-- R3 保留车道分离（暂时取消/封闭后恢复）：未实施，需求已明确。
-- R4 VBO/terrain 有界缓存复用：未实施。
-- 完整 Forge 编译未完成：本地 Gradle 下载域名 DNS 失败，编译任务尚未开始。
-
-不是整版发布，版本号/存档格式/协议暂不改。用户原编译修复和无关道路局部事务规则保留。下一阶段先处理 LaneSections 的双向断面及中央设施坐标，再扩展临时封闭语义；每个小阶段单独提交。不得以删除检查代替实现。
-
-每次写入前核对分支头，保存后回读远端提交；约 45 分钟开始收尾，50 分钟的可观察检查点停止并交接。
+Next: verify one-shot workflow and actual source commit, then R3. Stop/wrap near 45 minutes and save/hand off at observable 50 minutes. No main writes, no forced overwrite, no old temporary results counted as new evidence.
