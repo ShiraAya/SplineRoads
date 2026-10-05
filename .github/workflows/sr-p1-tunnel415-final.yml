@@ -2,7 +2,7 @@ name: SR P1 tunnel and seam final validation
 on:
   push:
     branches: [chat/sr-0402]
-    paths: [tools/changes/tunnel415-stage2.json]
+    paths: [tools/changes/tunnel415-stage3.json]
 permissions:
   contents: read
 jobs:
@@ -16,17 +16,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
-      - name: Save exact candidate before build
+      - name: Save exact final candidate before build
         id: save
         env:
           EXPECTED: ${{ github.sha }}
         run: |
           test "$(git ls-remote origin refs/heads/chat/sr-0402 | cut -f1)" = "$EXPECTED"
-          python3 tools/changes/apply_tunnel415_stage2.py
+          python3 tools/changes/apply_tunnel415_stage3.py
           git config user.name 'SR checkpoint'
           git config user.email 'sr-checkpoint@users.noreply.github.com'
-          git add src/main/java src/main/resources/META-INF/mods.toml build.gradle
-          git commit -m 'fix: preserve tunnel exterior terrain and share supported median seam at portal (0.40.8)'
+          git add src/main/java/com/sora/splineroads/core/RoadTransitions.java src/validation/java/com/sora/splineroads/TunnelSeam416Validation.java tools/tunnel415-validation
+          git commit -m 'fix: deterministic exact-port seam selection with neighbor and codec regressions'
           git push origin HEAD:refs/heads/chat/sr-0402
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
   verify:
