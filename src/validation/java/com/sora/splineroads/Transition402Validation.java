@@ -79,6 +79,17 @@ public final class Transition402Validation {
                   }
                   test(a, b, atStart, reversed);
                 }
+    // Explicit narrowing ends exercise a real lane DROP, not only common() choosing
+    // the larger shared section. Both physical road orders and driving sides are tested.
+    for (var group : groups) for (int n = 0; n < group.length - 1; n++)
+      for (boolean atStart : new boolean[] {false, true})
+        for (boolean left : new boolean[] {false, true})
+          for (boolean reversed : new boolean[] {false, true})
+            for (var structure : List.of(Structure.GROUND, Structure.BRIDGE)) {
+              var a = settings(group[n + 1], structure, left);
+              var b = settings(group[n], structure, left);
+              test(a, b, atStart, reversed, RoadTransitions.Section.of(b));
+            }
     for (var pair : List.of(new Style[] {Style.O4_YELLOW, Style.O6_GREEN},
         new Style[] {Style.O4_RAIL, Style.H6_RAIL}, new Style[] {Style.O2_DASHED, Style.O4_YELLOW}))
       for (boolean reversed : new boolean[] {false, true})
@@ -88,7 +99,10 @@ public final class Transition402Validation {
   }
 
   private static void test(Settings a, Settings b, boolean atStart, boolean reversed) {
-    var common = RoadTransitions.common(a, b);
+    test(a, b, atStart, reversed, RoadTransitions.common(a, b));
+  }
+
+  private static void test(Settings a, Settings b, boolean atStart, boolean reversed, RoadTransitions.Section common) {
     var road = mesh(RoadTransitions.ends(a, atStart ? common : null, atStart ? null : common), reversed);
     int lanes = Math.max(RoadProfile.catalog(a.style()).lanes(), RoadProfile.catalog(b.style()).lanes());
     boolean two = RoadProfile.catalog(a.style()).twoWay(); int dividerCount = two ? lanes - 2 : lanes - 1;
@@ -113,7 +127,9 @@ public final class Transition402Validation {
     straight = mesh(straight.settings().structure(a.structure()), reversed);
     var seam = RoadProfile.layout(straight, straight.first());
     near(at.motorMin(), seam.motorMin(), "seam min"); near(at.motorMax(), seam.motorMax(), "seam max");
-    check(at.dividers().size() == seam.dividers().size(), "seam divider count");
-    for (int i = 0; i < at.dividers().size(); i++) near(at.dividers().get(i), seam.dividers().get(i), "seam divider");
+    for (double line : seam.dividers()) check(at.dividers().stream().anyMatch(v -> Math.abs(v - line) < 1e-7), "live seam divider missing");
+    for (double line : at.dividers()) check(seam.dividers().stream().anyMatch(v -> Math.abs(v - line) < 1e-7)
+        || Math.abs(line - seam.motorMin()) < 1e-7 || Math.abs(line - seam.motorMax()) < 1e-7,
+        "disappearing seam divider did not converge to outside edge");
   }
 }

@@ -1,11 +1,33 @@
-# SR checkpoint: R1 + R2 source implemented and compiled
+# SR 当前进度：R1/R2 生产源码已远端保存，真实 Forge 构建通过
 
-R1: dbb0e73970d90f7f084904093008f8928dd8766f. R2: this source commit.
+本轮开始：2026-10-05T11:08:54Z。工作分支：`chat/sr-0402`。
+用户最新 SR.zip 基准已经导入，提交 `83aa2347b43ec9997ac1fc4020328e130f10c03a`；本轮保留其中编译修复。
 
-The 11 production edits match docs/checkpoints/R2-source-manifest.json exactly. Core transition, bidirectional geometry/planner, previous hotfix regression, and real JDK17 Forge compileJava/compileGameTestJava/jar all succeeded before this commit. See Actions run 37303723828 and its preserved logs. No Minecraft/GPU/world placement tests were run.
+## 可恢复的生产提交
 
-R2 supports outermost lane of each direction; opposing lane axes and world median stay fixed. Internal arbitrary lane cuts and cross-segment reservations remain unsupported.
+- R1 过渡标线：`dbb0e73970d90f7f084904093008f8928dd8766f`。
+- R2 双向最外侧整车道分离：`9c0cb386dc3971d257b1f0cf286b01fb390f3b02`。
+- 当前文档/测试提交没有追加生产改动；只加强真实缩窄接缝的测试并移除已完成的一次性写入工作流。
 
-R3 temporary closure/reopening and R4 VBO/terrain warm cache are NOT implemented. Next stage R3, per docs/CURRENT_REQUIREMENTS.md. Preserve user compile fixes; no broad safety bypasses.
+两项修改已真正进入 GitHub 的 src/main/java，不是仅在临时目录、补丁文件或待办文档中。已回读分支头与 LaneSections blob。R2 文件逐个与预审哈希匹配，普通 main 分支未改，未强推覆盖。
 
-Earlier staging history: docs/checkpoints/R2-staging-progress.md. Session start 2026-10-05T11:08:54Z; wrap near 45 minutes and pause at the observable 50-minute checkpoint.
+## 本轮实际验证
+
+R2 Actions `37303723828` 的生产 core/model 回归，以及 Temurin JDK17 + Forge 1.20.1-47.4.20 的 compileJava、compileGameTestJava、jar/reobfJar 均成功；实际日志及 JAR 已下载核对。内部版本号仍是 0.40.1-alpha 的测试检查点，不是完整 0.40.2。
+
+R1 最初 646 组过渡已在 Actions 验证；增强版增加真实缩窄端点，本地 966 组合 + 544 拒绝通过，当前常规 CI 会复跑增强版。R2：144 非对称断面场景/17520 断言 + 16 规划/记录/删除场景/208 检查通过。模型层的 NBT/world 仍为明确测试适配器，不是实景运行。
+
+详细范围、产物 SHA256 和边界见 `docs/checkpoints/2026-10-05-R2.md`。
+
+## 还没有完成
+
+- R1/R2 未做 Minecraft 客户端/GPU、真实保存重进、多人验收。
+- R2 仅支持每方向最外侧；任意内部槽位及跨实际路段组合预留不在本次实现范围。
+- **R3 保留车道分离**（主路暂时取消/封闭该车道，匝道不妨碍正常行驶后恢复）未实现；需求已明确，不是未确认。
+- **R4 VBO/terrain 有界热缓存复用**未实现。
+
+## 下一轮准确入口
+
+先读 AGENTS.md、本文件、docs/CURRENT_REQUIREMENTS.md 和当前分支头。下一阶段实现 R3，重点是 LanePoints.Options 新语义、LaneCrossSections 的可逆临时区间、LaneRamps 最终三维候选与恢复位置的共同校验，以及原车道/匝道预览、保存、编辑、删除一致性。现有 BRANCH 不可偷偷改成临时封闭而毁坏旧存档。
+
+保持 source edit → 小步提交 → 远端回读 → 真实 CI 的链路；约45分钟收尾，50分钟可观察检查点保存后暂停。不要为等全功能或最终补丁打包而扣留可保存源码。

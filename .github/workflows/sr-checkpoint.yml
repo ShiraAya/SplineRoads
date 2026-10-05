@@ -33,17 +33,17 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Core regression and transition tests
+      - name: Core, transition and bidirectional regression
         shell: bash
         run: |
-          set -o pipefail
+          set -euo pipefail
           mkdir -p build/checkpoint-logs
           bash tools/test_transition402.sh 2>&1 | tee build/checkpoint-logs/transitions.txt
-          bash tools/test_hotfix401.sh 2>&1 | tee build/checkpoint-logs/regression.txt
+          bash tools/test_bidirectional402.sh 2>&1 | tee build/checkpoint-logs/regression.txt
       - name: Real Forge compile and reobfuscated JAR
         shell: bash
         run: |
-          set -o pipefail
+          set -euo pipefail
           bash gradlew --no-daemon --stacktrace --max-workers=2 compileJava compileGameTestJava jar 2>&1 | tee build/checkpoint-logs/forge.txt
       - name: Preserve build logs
         if: always()
