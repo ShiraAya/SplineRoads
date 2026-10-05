@@ -21,37 +21,17 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Transitions and any-lane tunnel core model cache regression
+      - name: All prior regressions plus corrected tunnel tactile and shaft cases; real Forge build
+        run: bash tools/check_release0405.sh
+      - name: Retain original solid material and visibility binding checks
         run: |
-          set -euo pipefail
-          mkdir -p build/checkpoint-logs
-          bash tools/test_transition402.sh 2>&1 | tee build/checkpoint-logs/transitions.txt
-          bash tools/test_tunnel406.sh 2>&1 | tee build/checkpoint-logs/regression.txt
-          javac --release 17 -encoding UTF-8 -cp build/tunnel406/core/classes -d build/tunnel406/core/classes src/validation/java/com/sora/splineroads/CurvedAny405Validation.java
-          java -Dfile.encoding=UTF-8 -Xmx1500m -XX:ActiveProcessorCount=2 -cp build/tunnel406/core/classes:src/main/resources com.sora.splineroads.CurvedAny405Validation | tee build/checkpoint-logs/curved-any.txt
-      - name: Horizontal visibility and symmetric tunnel median regression
-        run: |
-          set -euo pipefail
-          javac --release 17 -encoding UTF-8 -cp build/tunnel406/core/classes -d build/tunnel406/core/classes src/validation/java/com/sora/splineroads/VisibilityMedian407Validation.java src/validation/java/com/sora/splineroads/TunnelMedian407Probe.java
-          java -Dfile.encoding=UTF-8 -Xmx1500m -XX:ActiveProcessorCount=2 -cp build/tunnel406/core/classes:src/main/resources com.sora.splineroads.VisibilityMedian407Validation | tee build/checkpoint-logs/visibility-median.txt
-          java -Dfile.encoding=UTF-8 -cp build/tunnel406/core/classes:src/main/resources com.sora.splineroads.TunnelMedian407Probe | tee build/checkpoint-logs/tunnel-median-probe.txt
-      - name: Furniture solids and original material binding regression
-        run: |
-          set -euo pipefail
-          javac --release 17 -encoding UTF-8 -cp build/tunnel406/core/classes -d build/tunnel406/core/classes src/validation/java/com/sora/splineroads/Furniture408Validation.java src/validation/java/com/sora/splineroads/Lamp408Validation.java
-          java -Dfile.encoding=UTF-8 -Xmx1500m -XX:ActiveProcessorCount=2 -cp build/tunnel406/core/classes:src/main/resources com.sora.splineroads.Furniture408Validation | tee build/checkpoint-logs/furniture.txt
-          java -Dfile.encoding=UTF-8 -Xmx1500m -XX:ActiveProcessorCount=2 -cp build/tunnel406/core/classes:src/main/resources com.sora.splineroads.Lamp408Validation | tee build/checkpoint-logs/lamps.txt
-          python - <<'PY_CHECK'
+          python - <<'PY'
           from pathlib import Path
           renderer=Path('src/main/java/com/sora/splineroads/client/RoadRenderer.java').read_text()
           assert 'RoadRenderTypes.solid(ResourceLocation.fromNamespaceAndPath("minecraft","textures/block/"+finish.id.substring(10)+".png"))' in renderer
           assert 'RoadVisibility.within' in renderer and 'event.getFrustum().isVisible' in renderer
           print('PASS: real solid sidewalk binding, bounded visibility and frustum preserved; no GPU test implied')
-          PY_CHECK
-      - name: Real Forge compile and reobfuscated JAR
-        run: |
-          set -euo pipefail
-          bash gradlew --no-daemon --stacktrace --max-workers=2 compileJava compileGameTestJava jar 2>&1 | tee build/checkpoint-logs/forge.txt
+          PY
       - name: Preserve exact committed source
         if: always()
         run: |

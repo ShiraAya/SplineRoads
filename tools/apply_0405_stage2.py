@@ -20,13 +20,5 @@ assert hashlib.sha256(Path(W+'StructurePlanner.java').read_bytes()).hexdigest()=
 assert hashlib.sha256(Path(W+'RoadData.java').read_bytes()).hexdigest()=='27960ef6ea22cce2d18f83afbfe75fb5ee4336c2e5b302e53a52f0cc32ae5773'
 for name in ['build.gradle','src/main/resources/META-INF/mods.toml']:
  p=Path(name);s=p.read_text();assert '0.40.4-alpha' in s;p.write_text(s.replace('0.40.4-alpha','0.40.5-alpha'))
-p=Path('.github/workflows/sr-checkpoint.yml');s=p.read_text();anchor='      - name: Real Forge compile and reobfuscated JAR\n';assert s.count(anchor)==1
-extra='''      - name: Corrected tunnel policy tactile rows and actual shaft spacing
-        run: |
-          set -euo pipefail
-          javac --release 17 -encoding UTF-8 -cp build/tunnel406/core/classes -d build/tunnel406/core/classes src/validation/java/com/sora/splineroads/TactileTunnel409Validation.java src/validation/java/com/sora/splineroads/PierSpacing410Validation.java
-          java -Dfile.encoding=UTF-8 -Xmx1500m -XX:ActiveProcessorCount=2 -cp build/tunnel406/core/classes:src/main/resources com.sora.splineroads.TactileTunnel409Validation | tee build/checkpoint-logs/tactile-409.txt
-          java -Dfile.encoding=UTF-8 -Xmx1500m -XX:ActiveProcessorCount=2 -cp build/tunnel406/core/classes:src/main/resources com.sora.splineroads.PierSpacing410Validation | tee build/checkpoint-logs/piers-410.txt
-'''
-p.write_text(s.replace(anchor,extra+anchor))
+# Persistent workflows are written by the connected repository API, not by this runner token.
 print('PASS: exact pre-reviewed shaft integration and transaction clocks saved; no world threading or safety bypass')
