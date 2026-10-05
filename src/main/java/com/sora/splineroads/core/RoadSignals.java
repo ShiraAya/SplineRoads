@@ -57,7 +57,7 @@ public final class RoadSignals {
       int direction, boolean ramp) {
     var l = RoadProfile.layout(road, at);
     int side = l.outside() * direction;
-    double inner = ramp ? l.outer(-side) + side * .1 : side * (l.median() / 2 + .1);
+    double inner = ramp ? l.outer(-side) + side * .1 : l.medianCenter() + side * (l.median() / 2 + .1);
     double outer = l.outer(side) - side * .1;
     V forward = at.left().left().mul(-direction);
     V middle = at.at((inner + outer) / 2, 0);

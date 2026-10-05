@@ -32,8 +32,10 @@ public final class LaneSections {
     for(Event event:ordered)if(event.kind()==Kind.DEPART){
       var lane=LanePoints.lane(raw,event.station(),event.lane());
       var layout=RoadProfile.layout(raw,RoadStructures.sample(raw,event.station()));
-      if(layout.catalog().twoWay())throw new IllegalArgumentException("整车道分离仅支持单向主线；双向道路请使用保留原车道分流");
-      if(event.lane()!=0&&event.lane()!=layout.catalog().lanes()-1)throw new IllegalArgumentException("整车道分离须选择单向主线的一侧边缘车道");
+      var c=layout.catalog();int per=c.lanes()/2;
+      if(event.sign()!=lane.sign())throw new IllegalArgumentException("分离方向与所选车道的实际行驶方向不一致");
+      boolean outer=c.twoWay()?event.lane()==per-1||event.lane()==c.lanes()-1:event.lane()==0||event.lane()==c.lanes()-1;
+      if(!outer)throw new IllegalArgumentException(c.twoWay()?"双向整车道分离请选择该方向最外侧车道，不能挖走内部车道或中央隔离":"整车道分离须选择单向主线的一侧边缘车道");
       double remainder=event.sign()>0?raw.length()-event.station():event.station();
       if(remainder<.02)continue; // A free road end already has no downstream continuation.
       if(layout.catalog().lanes()==1)throw new IllegalArgumentException("单车道内部一分二请选择保留原车道分流；整车道分离会清空主路");
@@ -59,25 +61,39 @@ public final class LaneSections {
   private record Section(double shift,double half,RoadProfile.Layout layout){}
   private static Section section(Mesh raw,Sample s){
     var layout=RoadProfile.layout(raw,s);var c=layout.catalog();int count=c.lanes();
-    if(c.twoWay())throw new IllegalArgumentException("整车道分离当前仅支持单向道路；双向道路请先拆分为单向主线或使用保留车道分流");
+
     double[] removal=new double[count];
     for(Cut cut:raw.settings().options().lanePoints().cuts()){
       if(cut.lane()>=count){if(cut.removed(s.distance())>.001)throw new IllegalArgumentException("分离车道穿过了车道数变化接缝，请在同一断面路段内设置接头");continue;}
       removal[cut.lane()]=Math.max(removal[cut.lane()],cut.removed(s.distance()));
     }
-    int low=0,high=count-1;double trimLow=0,trimHigh=0;
-    while(low<count&&removal[low]>.000001){trimLow+=layout.laneWidth()*removal[low];low++;}
-    while(high>=low&&removal[high]>.000001){trimHigh+=layout.laneWidth()*removal[high];high--;}
-    for(int i=low;i<=high;i++)if(removal[i]>.000001)throw new IllegalArgumentException("不能在保留两侧车道时挖走内部车道；请先通过普通分流接头将它引至外侧");
-    double motorWidth=layout.motorMax()-layout.motorMin()-trimLow-trimHigh;
-    if(motorWidth<layout.laneWidth()*.99)throw new IllegalArgumentException("整车道分离后至少须保留一条主路车道；单车道 Y 分叉请选择保留原车道分流");
+    double trimLow=0,trimHigh=0;
+    if(c.twoWay()) {
+      int per=count/2;
+      for(int i=0;i<count;i++)if(removal[i]>.000001) {
+        if(i!=per-1&&i!=count-1)throw new IllegalArgumentException("双向整车道分离只支持各方向最外侧车道");
+        if(count!=RoadProfile.catalog(raw.settings().style()).lanes())
+          throw new IllegalArgumentException("分离区间不能跨越车道数变化接缝，请在同一稳定断面内设置接头");
+        if(i<per)trimLow+=layout.laneWidth()*removal[i];else trimHigh+=layout.laneWidth()*removal[i];
+      }
+      if(layout.medianEdge(-1)-layout.motorMin()-trimLow<-.001||
+          layout.motorMax()-layout.medianEdge(1)-trimHigh<-.001)
+        throw new IllegalArgumentException("分离范围超出相应半幅机动车道");
+    } else {
+      int low=0,high=count-1;
+      while(low<count&&removal[low]>.000001){trimLow+=layout.laneWidth()*removal[low];low++;}
+      while(high>=low&&removal[high]>.000001){trimHigh+=layout.laneWidth()*removal[high];high--;}
+      for(int i=low;i<=high;i++)if(removal[i]>.000001)throw new IllegalArgumentException("不能在保留两侧车道时挖走内部车道；请先通过普通分流接头将它引至外侧");
+    }
+    double motorWidth=layout.motorMax()-layout.motorMin()-layout.median()-trimLow-trimHigh;
+    if(motorWidth<layout.laneWidth()*.99)throw new IllegalArgumentException("整车道分离后至少保留一条主路通行车道，不能挖空整条道路");
     double shift=(trimLow-trimHigh)/2,half=s.halfWidth()-(trimLow+trimHigh)/2;
     double min=layout.motorMin()+trimLow-shift,max=layout.motorMax()-trimHigh-shift;
     int retained=count;for(double value:removal)if(value>=.5)retained--;
     var dividers=new ArrayList<Double>();for(double d:layout.dividers())dividers.add(Math.max(min,Math.min(max,d-shift)));
-    var catalog=new RoadProfile.Catalog(c.type(),Math.max(1,retained),false,c.median(),c.shoulder());
+    var catalog=c.twoWay()?c:new RoadProfile.Catalog(c.type(),Math.max(1,retained),false,c.median(),c.shoulder());
     return new Section(shift,half,new RoadProfile.Layout(catalog,layout.laneWidth(),layout.median(),min,max,
-      layout.cycleWidth(),layout.curbWidth(),layout.shoulderWidth(),layout.outside(),List.copyOf(dividers)));
+      layout.cycleWidth(),layout.curbWidth(),layout.shoulderWidth(),layout.outside(),List.copyOf(dividers),layout.medianCenter()-shift));
   }
   public static Mesh apply(Mesh mesh){
     if(mesh.settings().options().lanePoints().cuts().isEmpty()||mesh.reference()!=null)return mesh;

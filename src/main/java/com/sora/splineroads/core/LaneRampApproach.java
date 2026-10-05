@@ -24,7 +24,7 @@ public final class LaneRampApproach {
     for(int i=0;i<=n;i++){
       double d=length*i/n,at=from+sign*d;var s=RoadStructures.sample(host,at);var l=LanePoints.lane(host,at,lane);
       var layout=RoadProfile.layout(host,s);double lateral=l.position().sub(s.center()).dot(s.left());
-      int side=layout.catalog().twoWay()?(lateral<0?-1:1):layout.outside();
+      int side=layout.catalog().twoWay()?(lateral<layout.medianCenter()?-1:1):layout.outside();
       double offset=s.halfWidth()+width/2-.15-side*lateral+side*motorCenter;
       double grow=Settings.smooth(Math.min(1,(source?d:length-d)/taper(transition)));
       V position=l.position().add(s.left().mul(side*offset*grow));

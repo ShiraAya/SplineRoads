@@ -527,7 +527,17 @@ public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,
       double curbWidth,
       double shoulderWidth,
       int outside,
-      List<Double> transitionDividers) {
+      List<Double> transitionDividers, double medianCenter) {
+    public Layout(Catalog catalog, double laneWidth, double median, double motorMin, double motorMax,
+        double cycleWidth, double curbWidth, double shoulderWidth, int outside, List<Double> dividers) {
+      this(catalog,laneWidth,median,motorMin,motorMax,cycleWidth,curbWidth,shoulderWidth,outside,dividers,0);
+    }
+    public double medianEdge(int side) { return medianCenter + side * median / 2; }
+    public int lanesOnSide(int side) {
+      if(!catalog.twoWay())return catalog.lanes();
+      double span=side<0?medianEdge(-1)-motorMin:motorMax-medianEdge(1);
+      return Math.max(0,(int)Math.floor(span/Math.max(.001,laneWidth)+.5));
+    }
     public double outer(int side) {
       return side < 0 ? motorMin : motorMax;
     }
@@ -546,7 +556,7 @@ public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,
       if (catalog.twoWay())
         for (int sign : new int[] {-1, 1})
           for (int n = 1; n < catalog.lanes() / 2; n++)
-            out.add(sign * (median / 2 + n * laneWidth));
+            out.add(medianCenter + sign * (median / 2 + n * laneWidth));
       else for (int n = 1; n < catalog.lanes(); n++) out.add(motorMin + n * laneWidth);
       return out;
     }

@@ -265,11 +265,20 @@ public final class RoadJunction {
         continue;
       var l = RoadProfile.layout(mesh, s);
       var c = l.catalog();
+      if(mesh.reference()!=null) {
+        var raw=LaneSections.reference(mesh);
+        int slots=RoadProfile.layout(raw,RoadStructures.sample(raw,d)).catalog().lanes();
+        for(int slot=0;slot<slots;slot++)if(LaneSections.active(mesh,d,slot)) {
+          var lane=LanePoints.lane(raw,d,slot);
+          arrow(out,lane.position(),lane.direction(),s.left().mul(lane.sign()));
+        }
+        continue;
+      }
       for (int i = 0; i < c.lanes(); i++) {
         double lateral;
         if (c.twoWay()) {
           int per = c.lanes() / 2, side = i < per ? -1 : 1;
-          lateral = side * (l.median() / 2 + (i % per + .5) * l.laneWidth());
+          lateral = l.medianCenter() + side * (l.median() / 2 + (i % per + .5) * l.laneWidth());
         } else lateral = l.motorMin() + (i + .5) * l.laneWidth();
         int sign = c.twoWay() && (lateral < 0 ? -1 : 1) != l.outside() ? -1 : 1;
         arrow(out, s.at(lateral, 0), s.left().left().mul(-sign), s.left().mul(sign));

@@ -19,9 +19,9 @@ public final class RoadLaneLines {
   public static List<Line> lines(Mesh m){
     var s=RoadStructures.sample(m,m.length()/2);var l=RoadProfile.layout(m,s);var out=new ArrayList<Line>();
     for(int side:new int[]{-1,1})out.add(new Line("edge:"+side,side<0?"左侧边缘线":"右侧边缘线",side*(s.halfWidth()-.2)));
-    if(l.catalog().median()==RoadProfile.Median.DOUBLE_YELLOW&&l.median()<.12){out.add(new Line("center:-1","中央黄线（左）",-.14));out.add(new Line("center:1","中央黄线（右）",.14));}
-    else if(l.catalog().median()==RoadProfile.Median.DASHED_YELLOW)out.add(new Line("center:0","中央虚线",0));
-    else if(l.catalog().twoWay())for(int side:new int[]{-1,1})out.add(new Line("median:"+side,side<0?"中央隔离左边线":"中央隔离右边线",side*(l.median()/2+.12)));
+    if(l.catalog().median()==RoadProfile.Median.DOUBLE_YELLOW&&l.median()<.12){out.add(new Line("center:-1","中央黄线（左）",l.medianCenter()-.14));out.add(new Line("center:1","中央黄线（右）",l.medianCenter()+.14));}
+    else if(l.catalog().median()==RoadProfile.Median.DASHED_YELLOW)out.add(new Line("center:0","中央虚线",l.medianCenter()));
+    else if(l.catalog().twoWay())for(int side:new int[]{-1,1})out.add(new Line("median:"+side,side<0?"中央隔离左边线":"中央隔离右边线",l.medianCenter()+side*(l.median()/2+.12)));
     var d=l.dividers();for(int i=0;i<d.size();i++)out.add(new Line("divider:"+i,"车道分界线 "+(i+1),d.get(i)));
     for(int side:l.outsideSides())if(l.shoulderWidth()>0||l.cycleWidth()>0)out.add(new Line("shoulder:"+side,side<0?"左侧路肩/非机动车线":"右侧路肩/非机动车线",l.outer(side)));
     out.sort(Comparator.comparingDouble(Line::offset));return List.copyOf(out);

@@ -308,11 +308,11 @@ public final class RoadStructures {
       var q = RoadQueries.horizontal(lower, p);
       var s = q.sample();
       if (s.distance() < 2 || s.distance() > lower.length() - 2
-          || Math.abs(q.lateral()) + margin > RoadProfile.layout(lower, s).median() / 2)
+          || Math.abs(q.lateral()-RoadProfile.layout(lower,s).medianCenter()) + margin > RoadProfile.layout(lower, s).median() / 2)
         return false;
       for (var road : neighbors) {
         if (road == lower || road.settings().style() != Style.UNMARKED) continue;
-        if (RoadQueries.contains(road, s.center(), 2, .2)) return false;
+        if (RoadQueries.contains(road, s.at(RoadProfile.layout(lower,s).medianCenter(),0), 2, .2)) return false;
       }
     }
     return true;
@@ -384,7 +384,8 @@ public final class RoadStructures {
   }
 
   private static boolean medianOpen(Mesh mesh, Ground ground, double distance) {
-    V center = sample(mesh, distance).center();
+    var at=sample(mesh,distance);
+    V center=at.at(RoadProfile.layout(mesh,at).medianCenter(),0);
     return !ground.joined(center) && !ground.furnitureClear(center);
   }
 
@@ -428,21 +429,21 @@ public final class RoadStructures {
     green *= terrainBlend;
     double median = Math.min(la.median(), lb.median());
     if (median >= .35 && (green < .12 || median <= .5)) {
-      barrier(out, a.center(), b.center(), highway, raised, d);
+      barrier(out, a.at(la.medianCenter(),0), b.at(lb.medianCenter(),0), highway, raised, d);
     }
     if (green >= .12 && median > .5) {
       double soilWidth = Math.max(.08, (median - .3) * green);
       add(
           out,
-          new Part(a.center(), b.center(), soilWidth, .3, false, Material.SOIL)
+          new Part(a.at(la.medianCenter(),0), b.at(lb.medianCenter(),0), soilWidth, .3, false, Material.SOIL)
               .frames(
                   a.left().mul(Math.max(.04, (la.median() - .3) * green / 2)),
                   b.left().mul(Math.max(.04, (lb.median() - .3) * green / 2))));
       add(
           out,
           new Part(
-              a.center().add(new V(0, .3, 0)),
-              b.center().add(new V(0, .3, 0)),
+              a.at(la.medianCenter(),0).add(new V(0, .3, 0)),
+              b.at(lb.medianCenter(),0).add(new V(0, .3, 0)),
               Math.max(.06, (median - .5) * green),
               .55 * green,
               false,
@@ -450,8 +451,8 @@ public final class RoadStructures {
       add(
           out,
           new Part(
-              a.center().add(new V(0, .3 + .52 * green, 0)),
-              b.center().add(new V(0, .3 + .52 * green, 0)),
+              a.at(la.medianCenter(),0).add(new V(0, .3 + .52 * green, 0)),
+              b.at(lb.medianCenter(),0).add(new V(0, .3 + .52 * green, 0)),
               Math.max(.04, (median - .85) * green),
               .25 * green,
               false,
@@ -460,8 +461,8 @@ public final class RoadStructures {
         add(
             out,
             new Part(
-                a.at(side * (soilWidth / 2 + .1), 0),
-                b.at(side * (soilWidth / 2 + .1), 0),
+                a.at(la.medianCenter()+side * (soilWidth / 2 + .1), 0),
+                b.at(lb.medianCenter()+side * (soilWidth / 2 + .1), 0),
                 .2,
                 .35,
                 false,

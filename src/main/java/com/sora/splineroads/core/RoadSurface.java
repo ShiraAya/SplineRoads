@@ -146,7 +146,7 @@ public final class RoadSurface {
     if(key.equals("center:-1")||key.equals("center:1")){
       var other=RoadAttachments.line(mesh,(a.distance()+b.distance())/2,key.equals("center:-1")?"center:1":"center:-1");
       if(p==RoadLaneLines.Pattern.DEFAULT&&other.pattern().mixed())return true;
-      if(p.mixed()&&other.pattern()==RoadLaneLines.Pattern.DEFAULT){x=0;y=0;}
+      if(p.mixed()&&other.pattern()==RoadLaneLines.Pattern.DEFAULT){x=RoadProfile.layout(mesh,a).medianCenter();y=RoadProfile.layout(mesh,b).medianCenter();}
     }
     if(p==RoadLaneLines.Pattern.DEFAULT)return false;
     if(p==RoadLaneLines.Pattern.NONE||p.dashed()&&!painted(mesh,(a.distance()+b.distance())/2))return true;
@@ -191,29 +191,29 @@ public final class RoadSurface {
         boolean dash = painted(mesh,(a.distance()+b.distance())/2);
         var median = la.catalog().median();
         if (median == RoadProfile.Median.DOUBLE_YELLOW && la.median() < .12) {
-          if(!overrideLine(markings,mesh,a,b,"center:-1",-(.14+la.median()/2),-(.14+lb.median()/2),dividers))stripe(
+          if(!overrideLine(markings,mesh,a,b,"center:-1",la.medianCenter()-(.14+la.median()/2),lb.medianCenter()-(.14+lb.median()/2),dividers))stripe(
               markings,
               a,
               b,
-              -(.14 + la.median() / 2),
-              -(.14 + lb.median() / 2),
+              la.medianCenter()-(.14 + la.median() / 2),
+              lb.medianCenter()-(.14 + lb.median() / 2),
               .1,
               true,
               dividers);
-          if(!overrideLine(markings,mesh,a,b,"center:1",.14+la.median()/2,.14+lb.median()/2,dividers))stripe(markings, a, b, .14 + la.median() / 2, .14 + lb.median() / 2, .1, true, dividers);
+          if(!overrideLine(markings,mesh,a,b,"center:1",la.medianCenter()+.14+la.median()/2,lb.medianCenter()+.14+lb.median()/2,dividers))stripe(markings, a, b, la.medianCenter()+.14 + la.median() / 2, lb.medianCenter()+.14 + lb.median() / 2, .1, true, dividers);
         } else if (median == RoadProfile.Median.DASHED_YELLOW) {
-          if(!overrideLine(markings,mesh,a,b,"center:0",0,0,dividers)&&dash)stripe(markings, a, b, 0, 0, .12, true, dividers);
+          if(!overrideLine(markings,mesh,a,b,"center:0",la.medianCenter(),lb.medianCenter(),dividers)&&dash)stripe(markings, a, b, la.medianCenter(), lb.medianCenter(), .12, true, dividers);
         }
         else if (la.median() >= .12
             || median == RoadProfile.Median.RAIL
             || median == RoadProfile.Median.GREEN)
           for (int side : new int[] {-1, 1})
-            if(!overrideLine(markings,mesh,a,b,"median:"+side,side*(la.median()/2+.12),side*(lb.median()/2+.12),dividers))stripe(
+            if(!overrideLine(markings,mesh,a,b,"median:"+side,la.medianCenter()+side*(la.median()/2+.12),lb.medianCenter()+side*(lb.median()/2+.12),dividers))stripe(
                 markings,
                 a,
                 b,
-                side * (la.median() / 2 + .12),
-                side * (lb.median() / 2 + .12),
+                la.medianCenter()+side * (la.median() / 2 + .12),
+                lb.medianCenter()+side * (lb.median() / 2 + .12),
                 .12,
                 false,
                 dividers);
@@ -259,7 +259,7 @@ public final class RoadSurface {
           var bb = lb.dividers();
           for (int j = 0; j < Math.min(aa.size(),bb.size()); j++)
             if ((aa.get(j)>la.motorMin()+.12&&aa.get(j)<la.motorMax()-.12||bb.get(j)>lb.motorMin()+.12&&bb.get(j)<lb.motorMax()-.12) && !overrideLine(markings,mesh,a,b,"divider:"+j,aa.get(j),bb.get(j),dividers) && (dash || RoadSignals.solid(approaches, (a.distance() + b.distance()) / 2,
-                (aa.get(j) + bb.get(j)) / 2)))
+                (aa.get(j) + bb.get(j)-la.medianCenter()-lb.medianCenter()) / 2)))
               stripe(markings, a, b, aa.get(j), bb.get(j), .12, false, dividers);
         }
         continue;

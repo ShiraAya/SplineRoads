@@ -40,7 +40,13 @@ public final class RoadStreetscape {
   }
   public static Mesh resolve(Mesh mesh,Ground ground){
     var options=mesh.settings().options();var next=options.streetscape(options.streetscape().raisedSpans(classify(mesh,ground)));
-    return new Mesh(mesh.samples(),mesh.settings().options(next),mesh.min(),mesh.max(),mesh.length(),mesh.closed(),mesh.controlPoint(),mesh.controls());
+    Mesh reference=mesh.reference();
+    if(reference!=null) {
+      var ro=reference.settings().options();
+      var rs=reference.settings().options(ro.streetscape(ro.streetscape().raisedSpans(next.streetscape().raisedSpans())));
+      reference=new Mesh(reference.samples(),rs,reference.min(),reference.max(),reference.length(),reference.closed(),reference.controlPoint(),reference.controls(),reference.reference());
+    }
+    return new Mesh(mesh.samples(),mesh.settings().options(next),mesh.min(),mesh.max(),mesh.length(),mesh.closed(),mesh.controlPoint(),mesh.controls(),reference);
   }
   public static boolean raised(Mesh mesh,Sample sample){return mesh.settings().structure()==Structure.BRIDGE||mesh.settings().structure()==Structure.AUTO&&mesh.settings().options().streetscape().raisedSpans().stream().anyMatch(s->sample.distance()>=s.from()&&sample.distance()<s.to());}
   public static boolean walkLampAllowed(RoadProfile.Options o,Structure structure,Style style){return RoadProfile.catalog(style).type()==RoadProfile.Type.ORDINARY&&RoadProfile.catalog(style).twoWay()&&structure!=Structure.BRIDGE&&structure!=Structure.TUNNEL&&o.sidewalk().enabled()&&o.cycle()&&o.streetscape().separator()!=Separator.LINE;}
@@ -70,7 +76,7 @@ public final class RoadStreetscape {
         addLamp(out,mesh,ground,at,side*offset,curb>0?.2:0,3,side,sound);continue;
       }
       boolean center=raised?o.cycle():l.catalog().median()==RoadProfile.Median.GREEN&&l.median()>=1.4;
-      if(center)addLamp(out,mesh,ground,at,0,raised?0:.3,1,1,false);
+      if(center)addLamp(out,mesh,ground,at,l.medianCenter(),raised?0:.3,1,1,false);
       for(int side:l.outsideSides()){
         boolean paved=walkSide(walk,side),cycle=o.cycle()&&l.cycleWidth()>1;
         if(raised){

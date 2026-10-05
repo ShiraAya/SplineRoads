@@ -16,19 +16,19 @@ final class RaisedRoadProfile {
 
     var dividers = new ArrayList<Double>();
     for (double divider : base.dividers()) {
-      int side = divider < 0 ? -1 : 1;
-      double outer = side * base.outer(side);
+      int side = divider < base.medianCenter() ? -1 : 1;
+      double outer = side * (base.outer(side) - base.medianCenter());
       double oldSpan = outer - base.median() / 2;
-      double fraction = (Math.abs(divider) - base.median() / 2) / Math.max(1e-9, oldSpan);
+      double fraction = (Math.abs(divider - base.medianCenter()) - base.median() / 2) / Math.max(1e-9, oldSpan);
       // A disappearing divider converges on ITS outside edge. List order and size are
       // stable across the 50% catalog switch; negative and positive carriageways never pair.
-      dividers.add(side * (median / 2 + Math.max(0, Math.min(1, fraction)) * (outer - median / 2)));
+      dividers.add(base.medianCenter() + side * (median / 2 + Math.max(0, Math.min(1, fraction)) * (outer - median / 2)));
     }
     double width = base.motorMax() - base.motorMin();
     double laneScale = (width - median) / Math.max(1e-9, width - base.median());
     return new Layout(new Catalog(c.type(), c.lanes(), true, Median.RAIL, c.shoulder()),
         base.laneWidth() * laneScale, median, base.motorMin(), base.motorMax(),
-        base.cycleWidth(), base.curbWidth(), base.shoulderWidth(), base.outside(), List.copyOf(dividers));
+        base.cycleWidth(), base.curbWidth(), base.shoulderWidth(), base.outside(), List.copyOf(dividers), base.medianCenter());
   }
 
   private RaisedRoadProfile() {}
