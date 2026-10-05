@@ -21,7 +21,16 @@ jobs:
           python - <<'PY'
           import base64,zlib,hashlib,subprocess
           from pathlib import Path
-          p=zlib.decompress(base64.b64decode(Path('tools/patches/arrival417-stage1.zlib.b64').read_text()))
+          path=Path('tools/patches/arrival417-stage1.zlib.b64')
+          text=path.read_text()
+          # Correct only two independently downloaded/compared transport transcription errors.
+          # Original patch hash below is unchanged; never bypass integrity checking.
+          if hashlib.sha256(text.encode()).hexdigest()=='34294b868481e288b000d82ab276aa06d9bb71e7fac6d1ae4dcdc4d3dca12833':
+              assert text[875:876]=='C' and text[2498:2500]=='/n'
+              text=text[:2498]+'7'+text[2500:]
+              text=text[:875]+'D'+text[876:]
+              path.write_text(text)
+          p=zlib.decompress(base64.b64decode(text))
           assert hashlib.sha256(p).hexdigest()=='022538071b589a901caa71977ba4788cd24b34830e10a4d510ef602f91bc8f0a'
           subprocess.run(['git','apply','--check','--unidiff-zero','-'],input=p,check=True)
           subprocess.run(['git','apply','--unidiff-zero','-'],input=p,check=True)
@@ -29,7 +38,7 @@ jobs:
           git diff --check
           git config user.name 'SR checkpoint'
           git config user.email 'sr-checkpoint@users.noreply.github.com'
-          git add src build.gradle
+          git add src build.gradle tools/patches/arrival417-stage1.zlib.b64
           git commit -m 'WIP: P1 exact lane protection and upstream target closure (0.40.9)'
           git push origin HEAD:refs/heads/chat/sr-0402
           echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
