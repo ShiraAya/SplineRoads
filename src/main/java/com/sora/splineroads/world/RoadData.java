@@ -998,12 +998,14 @@ public final class RoadData extends SavedData {
         spacingReferences.add(next);
       }
       timing.stage("furniture_phase");
+      var structureLookup=new RoadPlanningIndex(planning);
+      timing.stage("structure_candidate_index");
       for (int i = 0; i < built.size(); i++) {
         var r = built.get(i);
-        RoadRecord planned = StructurePlanner.plan(level, r, planning, terrainFill, terrainCache);
+        RoadRecord planned = StructurePlanner.plan(level, r, planning, terrainFill, terrainCache,structureLookup);
         var next = r.planned(planned);
         built.set(i, next);
-        planning.set(planning.indexOf(r), next);
+        int slot=planning.indexOf(r);planning.set(slot,next);structureLookup.replace(slot,next);
       }
       timing.stage("structure_plan");
       // Terrain-derived raised medians can change a lane center after planning. Resolve
@@ -1012,7 +1014,8 @@ public final class RoadData extends SavedData {
         if(pass>=3)throw new IllegalArgumentException("断面与车道点未能稳定，请调整道路样式后重试");
         LaneTopology.reconcile(this,built,removed);
         planning.clear();for(var old:index.roads.values())if(!removed.contains(old.record.id()))planning.add(old);planning.addAll(built);
-        for(int i=0;i<built.size();i++){var r=built.get(i);var next=r.planned(StructurePlanner.plan(level,r,planning,terrainFill,terrainCache));built.set(i,next);planning.set(planning.indexOf(r),next);}
+        structureLookup=new RoadPlanningIndex(planning);
+        for(int i=0;i<built.size();i++){var r=built.get(i);var next=r.planned(StructurePlanner.plan(level,r,planning,terrainFill,terrainCache,structureLookup));built.set(i,next);int slot=planning.indexOf(r);planning.set(slot,next);structureLookup.replace(slot,next);}
       }
       timing.stage("dependent_replanning");
       var noseCaps =

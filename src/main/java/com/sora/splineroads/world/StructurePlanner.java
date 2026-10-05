@@ -16,19 +16,18 @@ final class StructurePlanner {
       List<RoadIndex.Built> all,
       Map<Long, BlockState> originals,
       Map<BlockPos, List<AABB>> terrainCache) {
-    var nearby =
-        all.stream()
-            .filter(
-                b ->
-                    !b.record.id().equals(built.record.id())
-                        && RoadIndex.overlapXZ(b.mesh, built.mesh, 3))
-            .toList();
+    return plan(level,built,all,originals,terrainCache,new RoadPlanningIndex(all));
+  }
+
+  static RoadRecord plan(ServerLevel level,RoadIndex.Built built,List<RoadIndex.Built> all,
+      Map<Long,BlockState> originals,Map<BlockPos,List<AABB>> terrainCache,RoadPlanningIndex lookup) {
+    var nearby=lookup.near(built.mesh,3,built.record.id());
     var approaches = built.record.assembly() == null ? List.<RoadSignals.Approach>of()
         : RoadSignals.approaches(built.mesh, nearby.stream()
             .filter(r -> built.record.assembly().equals(r.record.assembly()))
             .map(r -> r.mesh).toList());
     var supportMeshes=built.record.junction()==null?List.of(built.mesh):all.stream().filter(r->Objects.equals(r.record.assembly(),built.record.assembly())).map(r->r.mesh).toList();
-    var obstacles=all.stream().filter(r->!r.record.id().equals(built.record.id())&&supportMeshes.stream().anyMatch(m->RoadIndex.overlapXZ(r.mesh,m,82))).toList();
+    var obstacles=lookup.nearAny(supportMeshes,82,built.record.id());
     // Road deck columns exclude smooth sidewalks outside the deck. Index their actual
     // slabs independently so lamp arms/posts cannot tunnel through an upper walkway.
     var sidewalkSolids=new RoadSolidOverlap.Index(obstacles.stream().flatMap(r->r.record.structures().stream())
