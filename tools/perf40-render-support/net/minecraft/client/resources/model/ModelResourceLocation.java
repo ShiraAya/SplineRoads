@@ -1,0 +1,2 @@
+// TEST ADAPTER ONLY. Not shipped in the mod JAR. No actual Forge/GL emulation.
+package net.minecraft.client.resources.model;public class ModelResourceLocation extends net.minecraft.resources.ResourceLocation {private final String variant;public ModelResourceLocation(String n,String p,String v){super(n,p);variant=v;}public String getVariant(){return variant;}@Override public boolean equals(Object o){return super.equals(o)&&o instanceof ModelResourceLocation r&&variant.equals(r.variant);}@Override public int hashCode(){return super.hashCode()*31+variant.hashCode();}}

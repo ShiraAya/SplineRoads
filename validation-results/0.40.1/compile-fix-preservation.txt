@@ -1,0 +1,1 @@
+PASS: RoadData.java compared byte-for-byte with the uploaded compile-fixed baseline. Only the intentional needsRefresh call-site substitution differs.

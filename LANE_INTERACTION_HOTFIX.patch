@@ -1,0 +1,863 @@
+diff --git a/LANE_INTERACTION_HOTFIX.md b/LANE_INTERACTION_HOTFIX.md
+new file mode 100644
+index 0000000..33a12f2
+--- /dev/null
++++ b/LANE_INTERACTION_HOTFIX.md
+@@ -0,0 +1,69 @@
++# 车道点响应、右转与俯视界面修复（hotfix2）
++
++基于 hotfix1（`c944836`），继续以 `SR_Codex_LanePoint_Ramp_Constraints_v2` 为准。本次对应用户反馈的放点延迟、积压点击后补生成、右转被误拒绝，以及图四的车道点界面草图。
++
++## 交互与数据更新
++
++原来的每次放点都进入整条道路的规划、碰撞、方块写入及全量同步流程。服务端处理和道路同步变慢时，连续点击产生的修改会延迟集中出现。
++
++现在无匝道引用的手动点创建、换车道、删除仅更新点数据，保留道路采样、碰撞、设施与渲染缓存。客户端只接收点数据增量；尚未加载道路或版本不一致时回退到完整道路快照。修改已被匝道使用的点时，仍使用原有整体事务重建依赖，失败保留原数据。
++
++工具打开编辑器后等待客户端确认。在此之前到达的额外点击直接忽略，不加入待办队列；匹配确认后正常接受下一次操作。确认凭据按玩家和单次交互区分，失效后可恢复操作。点数据采用与加载过程一致的顺序，保持保存、重进后精确一致。
++
++## 右转路径
++
++截图中的问题不是把整个坐标系左右取反。原实现总在圆弧前后各预留完整过渡直线，使本来能放入圆弧的布局被拒绝；自动模式又覆盖成最后一个左转回环候选的错误，造成误导。
++
++- 根据两端行驶方向、圆弧切点和可用空间缩短可选直线接头，保持用户指定半径。
++- 两端启用额外扩出时，保留明确设置的扩出过渡，不用缩短它来强行放入。
++- 同圆心的右转圆弧直接生成单段圆弧；消除方向角接近 0／360° 的浮点误差造成的多绕一圈。
++- 自动失败时优先报告对应行驶方向的错误；预览成功返回实际选择的路径。
++- 路径改为四个独立按钮，直接选择自动、右转、左转回环、直接连接；调整窗口后保留选择。
++
++实际空间不足、逆行方向、坡度或碰撞不合格仍会拒绝建造。
++
++## 按草图调整车道点界面
++
++- 中央为所在道路的局部俯视图，显示实际车道、标线、方向、分隔带及人行道。
++- 直接点击机动车道选择；蓝色方块和高亮车道显示当前选择，非机动车道、分隔带、人行道不能选作机动车道。
++- 保持纵向锚点，应用后吸附目标车道中轴线，允许切换到反向车道。
++- 关闭在右上，应用在左下，删除在右下；所属车道、引用数量与说明位于图下。
++- 俯视图在后台生成，打开界面无需等待图片计算。自动点仍只读；依赖删除确认、提交状态与服务器校验保留。
++
++## 实测与范围
++
++证据、截图及保存的道路数据见 `validation-evidence/lane-interaction-hotfix2/`。
++
++同一进程、同一条 200 格六车道路上的客户端场景测得：
++
++| 操作 | 实测耗时 |
++| --- | ---: |
++| 原整路替换流程，单次 | 1275.88 ms |
++| 新流程，连续创建 12 个无引用点合计 | 23.07 ms |
++| 服务端实际道具点击到客户端打开车道点界面 | 94.20 ms |
++
++这是测试环境下的观测值，不是所有存档、机器或网络延迟的保证。12 次批量测试测量服务端数据更新；94.20 ms 项目包含真实客户端收包、打开界面和确认。
++
++- `validateLaneInteraction`：254 项检查通过，覆盖不同旋转角度／间距的紧凑右转、端点方向、半径、绕行长度，以及多种断面俯视图的命中区域与反向箭头。
++- `validateLaneRampV2`：2595 项检查通过；`validateLanePointSnap`：742 项检查通过；`validateEndpointV2`：通过。
++- `runGameTestServer`：17 项世界测试全部通过，包含无引用点不改世界／碰撞、旧版本道路更新、NBT 往返、右转实建、引用联动及端点 V2 行为。
++- 实际 Forge 客户端 `lane-response`：连续点击防积压、错误确认凭据拒绝、正常再次点击、增量同步与实际界面响应通过；被忽略的点没有在后续操作中补生成。
++- `lane-right-tight`：按截图关系重建西向转北向布局，自动和指定右转均通过预览，实际建造通过碰撞／引用校验；四个路径按钮可点击，窗口调整保留右转选择。
++- `lane-point-map`：真实鼠标点击反向车道、无效区域点击、窗口调整、应用数据包通过；点 ID 和纵向锚点保持，车道从 5 切换到 0。
++- 完全退出、重新启动客户端并打开同一世界，`lane-interaction-reload` 通过：道路 ID、点数据、匝道引用和已应用的车道选择与保存前一致。
++
++本轮未收到用户实际世界存档。右转使用截图关系重建；旧道路兼容使用版本 30／31 的直线、曲线及偏移点夹具。测试不代表所有地形、道路样式及远程服务器网络情况均已穷举。
++
++## 安装和复现
++
++Minecraft 1.20.1、Forge 47.4.20、Java 17；模组版本仍为 0.38.0-alpha。道路存档格式仍为 **32**，网络协议从 49 升至 **50**。服务端与客户端同时换用 `splineroads-0.38.0-alpha-lane-interaction-hotfix2.jar`，移除旧 SR JAR。
++
++```sh
++./gradlew validateLaneInteraction validateLaneRampV2 validateLanePointSnap validateEndpointV2
++./gradlew runGameTestServer -ProadTestNamespaces=splineroads_lane_v2,splineroads_endpoint_v2
++./gradlew runClient -ProadVisualTest -ProadVisualCases=lane-response,lane-right-tight,lane-point-map
++./gradlew runClient -ProadVisualTest -ProadVisualCases=lane-interaction-reload -ProadVisualReload=<前一步生成的世界目录名>
++./gradlew jar
++```
++
++测试源码不进入安装 JAR。补丁 `LANE_INTERACTION_HOTFIX.patch` 相对 hotfix1，修改清单为 `LANE_INTERACTION_HOTFIX_CHANGED_FILES.txt`。此前端点／车道 V2 约束与历史验证记录保留。
+diff --git a/LANE_POINT_HOTFIX.md b/LANE_POINT_HOTFIX.md
+index a615c2f..8ddf8ed 100644
+--- a/LANE_POINT_HOTFIX.md
++++ b/LANE_POINT_HOTFIX.md
+@@ -1,5 +1,7 @@
+ # 车道点与匝道取消操作修复（hotfix1）
+ 
++本文件保留 hotfix1 的历史变更和验证。当前交互、右转、界面修复及协议 50 说明见 `LANE_INTERACTION_HOTFIX.md`。
++
+ 本补丁基于上一版 lane-ramp-v2（Git `3390bfa`）。继续以 `SR_Codex_LanePoint_Ramp_Constraints_v2`、`SR_Codex_Endpoint_Constraints_v2` 为相应功能的主约束，并补充本轮明确要求：车道点必须吸附所属车道中轴线；匝道连接器使用 Shift＋右键清除选点。
+ 
+ ## 修复结果
+diff --git a/LANE_RAMP_V2_ACCEPTANCE.md b/LANE_RAMP_V2_ACCEPTANCE.md
+index d0bb5d3..e1e5022 100644
+--- a/LANE_RAMP_V2_ACCEPTANCE.md
++++ b/LANE_RAMP_V2_ACCEPTANCE.md
+@@ -8,7 +8,7 @@
+ 2. 成功建造才占用，两端均计数，允许多个有效引用。手动点允许换反向车道，依赖事务重建；失败回滚。共享端点移动按位置迁移，变形后按原车道重定位。删除依赖需要明确确认。
+ 3. 可接入有空间的普通路口与环岛，新增实际支臂，排除自动立交内部。新匝道类别随源路、宽度随所选车道，默认无自行车道／人行道。不支持的道路仍可创建车道点，并提示连接器不可用。
+ 
+-本表记录 V2 首次交付的验证。后续旧路更新、中轴线吸附及取消交互的修复与新增复验见 `LANE_POINT_HOTFIX.md`。
++本表记录 V2 首次交付的验证。后续旧路更新、中轴线吸附及取消交互的修复与新增复验见 `LANE_POINT_HOTFIX.md`；车道点响应、连续点击、右转和俯视界面的修复及客户端验证见 `LANE_INTERACTION_HOTFIX.md`。
+ 
+ ## 运行记录
+ 
+diff --git a/LANE_RAMP_V2_CHANGELOG.md b/LANE_RAMP_V2_CHANGELOG.md
+index 363b291..edd59ea 100644
+--- a/LANE_RAMP_V2_CHANGELOG.md
++++ b/LANE_RAMP_V2_CHANGELOG.md
+@@ -1,21 +1,22 @@
+ # SR 0.38.0-alpha · 车道点／匝道 V2 升级
+ 
+-本次以 `SR_Codex_LanePoint_Ramp_Constraints_v2` 为准，并纳入用户后续要求的中轴线吸附与 Shift＋右键取消，保留已交付的端点 V2 功能。Minecraft 1.20.1、Forge 47.4.20、Java 17。模组版本仍为 0.38.0-alpha；道路存档格式升至 32，通信协议升至 49，客户端与服务端需要使用同一份新版 JAR。旧格式道路可读取，旧入口不会自动转换为车道点。
++本次以 `SR_Codex_LanePoint_Ramp_Constraints_v2` 为准，并纳入用户后续要求的中轴线吸附与 Shift＋右键取消，保留已交付的端点 V2 功能。Minecraft 1.20.1、Forge 47.4.20、Java 17。模组版本仍为 0.38.0-alpha；当前道路存档格式为 32，通信协议为 50，客户端与服务端需要使用同一份新版 JAR。旧格式道路可读取，旧入口不会自动转换为车道点。最新交互修复及实测见 `LANE_INTERACTION_HOTFIX.md`。
+ 
+ ## 点和道具
+ 
+ - 端点创建器有独立的红色定位图标；车道点工具使用同一套原生像素模型风格的蓝色图标。可运行 `python3 tools/generate_point_items.py` 重现资源。
+ - 附属点显示红色，车道点显示蓝色并带通行方向箭头。普通端点、附属点、车道点和路口中心保持独立身份。
+ - 车道点固定吸附所属车道的中轴线，保存沿路定位锚点；横向点击偏移不作为点坐标，UI 不提供任意 XYZ 移动。自由尽头逐机动车道生成自动点。正常续接的内部端点、路口连接端不生成自动点。
+-- 车道点工具右键机动车道创建手动点，再点打开编辑器。可切换至相反方向车道；自动点禁止玩家删除和切换。
++- 车道点工具右键机动车道创建手动点并打开编辑器，再点已有点可重新打开。界面中央显示道路俯视图，直接点击机动车道选择，应用后切换至对应中轴线；可选择相反方向车道。自动点禁止玩家删除和切换。
++- 无匝道引用的点创建、换车道、删除只更新点数据，不重建整路；界面打开前的重复点击直接忽略，避免积压后补生成。
+ - 重合时默认选择手动点；车道点工具 Shift 选择自动点，仅有自动点时 Shift＋右键可创建独立手动点。匝道连接器的 Shift＋右键始终用于清除选点。匝道工具不创建点、不转换附属点。
+ 
+ ## 匝道连接器
+ 
+-先选蓝色汇出 A，再选蓝色汇入 B 或路口中心。Shift＋右键清除临时选点与预览；点击空气、方块或点均可。重复点击 A 保留选择并提示另选 B。打开界面后设置路径、两端扩出、半径及过渡长度，点击校验／预览，再提交建造。调整窗口大小会保留路径、两端开关及数值，并要求重新预览。
++先选蓝色汇出 A，再选蓝色汇入 B 或路口中心。Shift＋右键清除临时选点与预览；点击空气、方块或点均可。重复点击 A 保留选择并提示另选 B。打开界面后直接选择“自动／右转／左转回环／直接连接”四个按钮之一，再设置两端扩出、半径及过渡长度，点击校验／预览后提交建造。预览成功显示实际采用的路径。调整窗口大小会保留路径、两端开关及数值，并要求重新预览。
+ 
+ - 自动：比较通过方向、坡度、路面体积和外部净空校验的候选，选择较短路径。
+-- 右转：同向接头、右向圆弧及公切线。
++- 右转：同向接头、右向圆弧及公切线；空间较紧时缩短可选的直线接头，不擅自缩小半径或两端额外扩出的过渡。修复同圆心圆弧和方向角浮点边界导致的误拒绝。
+ - 左转回环：长右向回环加汇入调整；跨越自身入口时生成抬升过渡。检查路面体积、桥下净空，并避让自身下层道路的支撑。
+ - 直接连接：大致同向（两端方向夹角不超过约 41.4°）的平滑连接，支持侧向偏移及不同高度，保留两端真实车道方向。
+ - 两端“额外扩出”独立开关，默认关闭。启用时从原选中车道平滑移至该行驶方向的车道外侧，再完成连接；关闭时不另选外侧车道。
+diff --git a/README.md b/README.md
+index 3850e6f..12dd956 100644
+--- a/README.md
++++ b/README.md
+@@ -1,6 +1,6 @@
+ > 端点 V2 修复版：更新内容见 [ENDPOINT_V2_CHANGELOG.md](ENDPOINT_V2_CHANGELOG.md)，逐项验证与限制见 [ENDPOINT_V2_ACCEPTANCE.md](ENDPOINT_V2_ACCEPTANCE.md)。
+ 
+-本源码包含端点 V2 与车道点／匝道 V2 更新，以及 [旧路更新／中轴线吸附修复](LANE_POINT_HOTFIX.md)。使用方法见 [车道点／匝道更新说明](LANE_RAMP_V2_CHANGELOG.md)，逐项验证及剩余验证范围见 [验收记录](LANE_RAMP_V2_ACCEPTANCE.md)。协议 49；客户端与服务端应安装同一份新版 JAR。
++本源码包含端点 V2 与车道点／匝道 V2 更新，以及 [旧路更新／中轴线吸附修复](LANE_POINT_HOTFIX.md)、[车道点响应／右转／俯视界面修复（hotfix2）](LANE_INTERACTION_HOTFIX.md)。使用方法见 [车道点／匝道更新说明](LANE_RAMP_V2_CHANGELOG.md)，逐项验证及剩余验证范围见 [验收记录](LANE_RAMP_V2_ACCEPTANCE.md)。协议 50；客户端与服务端应安装同一份新版 JAR。
+ 
+ # Spline Roads 0.38.0-alpha
+ 
+@@ -21,11 +21,11 @@ Minecraft Java 1.20.1 · Forge 47.4.20 · Java 17。
+ 
+ ## 安装与旧存档
+ 
+-将 `splineroads-0.38.0-alpha.jar` 放入 `mods`，移除旧 SR JAR；多人游戏客户端和服务端同时更新。
++将 `splineroads-0.38.0-alpha-lane-interaction-hotfix2.jar` 放入 `mods`，移除旧 SR JAR；多人游戏客户端和服务端同时更新。
+ 
+-旧路口和已保存设施不会在加载时全部重建。对需要应用新铺装、盲道、斑马线或路灯布局的已有道路／路口，打开相应编辑器并保存一次。匝道连接器右键不会选择、预览或建造；已有独立匝道可用道路删除器移除。
++旧路口和已保存设施不会在加载时全部重建。对需要应用新铺装、盲道、斑马线或路灯布局的已有道路／路口，打开相应编辑器并保存一次。匝道连接器右键依次选择 A、B，界面中预览并建造；Shift＋右键清除选点与预览。已有独立匝道可用道路删除器移除。
+ 
+-存档格式 30；网络协议 46。
++当前存档格式 32；网络协议 50。兼容读取旧道路，版本 30／31 车道点按中轴线锚点迁移；新版保存后不要交给旧 JAR 读取。
+ 
+ ## 编译与验证
+ 
+diff --git a/build.gradle b/build.gradle
+index 9eeb21e..2625d11 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -451,3 +451,12 @@ tasks.register('validateLanePointSnap', JavaExec) {
+     jvmArgs '-Xmx1G', '-XX:ActiveProcessorCount=2'
+ }
+ tasks.named('check') { dependsOn 'validateLanePointSnap' }
++
++tasks.register('validateLaneInteraction', JavaExec) {
++    group = 'verification'
++    dependsOn validationClasses
++    classpath = sourceSets.validation.runtimeClasspath
++    mainClass = 'com.sora.splineroads.LaneInteractionValidation'
++    jvmArgs '-Xmx1G', '-XX:ActiveProcessorCount=2'
++}
++tasks.named('check') { dependsOn 'validateLaneInteraction' }
+diff --git a/src/gametest/java/com/sora/splineroads/world/LaneRampV2GameTests.java b/src/gametest/java/com/sora/splineroads/world/LaneRampV2GameTests.java
+index b839f42..bbcf54e 100644
+--- a/src/gametest/java/com/sora/splineroads/world/LaneRampV2GameTests.java
++++ b/src/gametest/java/com/sora/splineroads/world/LaneRampV2GameTests.java
+@@ -14,6 +14,27 @@ public final class LaneRampV2GameTests {
+  static RoadRecord ramp(GameTestHelper h,RoadRecord a,LanePoints.Point p,RoadRecord b,LanePoints.Point q,LanePoints.Path path,boolean source,boolean target){var d=RoadData.get(h.getLevel());System.out.println("LANE BUILD "+path+" "+p.position()+" -> "+q.position());var link=new LanePoints.Link(LanePoints.Ref.lane(a.id(),p.id()),LanePoints.Ref.lane(b.id(),q.id()),new LanePoints.Options(path,source,target,24,32),null);var r=LaneRamps.generate(d,LaneTopology.records(d),UUID.randomUUID(),new UUID(0,0),link);if(path==LanePoints.Path.LEFT_LOOP)for(var sample:r.mesh().samples())for(int xx=-1;xx<=1;xx++)for(int zz=-1;zz<=1;zz++){var foot=BlockPos.containing(sample.center().x()+xx,200,sample.center().z()+zz);h.getLevel().getChunkAt(foot);h.getLevel().setBlock(foot,net.minecraft.world.level.block.Blocks.STONE.defaultBlockState(),2);}LaneRamps.build(d,h.getLevel(),null,r);return current(d,r);}
+  static void check(GameTestHelper h,boolean v,String message){h.assertTrue(v,message);}
+  @GameTest(template="empty",templateNamespace="splineroads_lane_v2",timeoutTicks=24000)
++ public static void pointOnlyChangesPreserveWorldAndCollision(GameTestHelper h){
++  var l=h.getLevel();var d=RoadData.get(l);var host=road(h,198000,198000,0,200,220,Style.O6_RAIL);
++  var initial=d.index.roads.get(host.id());var collision=initial.prepareCollision();long revision=d.index.revision();var shapes=initial.mesh.samples();var structures=initial.record.structures();
++  long start=System.nanoTime();var points=new ArrayList<LanePoints.Point>();
++  for(int i=0;i<12;i++)points.add(manual(h,current(d,host),10+i*12,2));
++  double millis=(System.nanoTime()-start)/1e6;System.out.println("POINT METADATA: 12 creations in "+millis+" ms");
++  var latest=d.index.roads.get(host.id());check(h,d.index.revision()==revision,"point creation does not invalidate geometry or chunk shapes");check(h,latest.prepareCollision()==collision,"point creation reuses exact collision index");check(h,latest.mesh.samples()==shapes&&latest.record.structures().equals(structures),"all road samples and furniture remain unchanged");
++  var p=points.get(3);var command=new CompoundTag();command.putUUID("Id",host.id());command.putUUID("Point",p.id());command.putInt("Signature",latest.record.header().hashCode());command.putInt("Lane",5);LanePointTool.edit(l,null,command);
++  var moved=LaneTopology.point(current(d,host),p.id());check(h,moved.anchor().equals(p.anchor())&&moved.lane()==5,"unreferenced opposite-lane edit preserves anchor");check(h,d.index.revision()==revision,"unreferenced lane edit remains metadata only");
++  command.putInt("Signature",current(d,host).header().hashCode());command.putBoolean("Delete",true);LanePointTool.edit(l,null,command);check(h,d.index.revision()==revision&&LaneTopology.metadata(current(d,host)).points().stream().noneMatch(v->v.id().equals(p.id())),"unreferenced delete immediately removes only the marker");
++  var saved=d.save(new CompoundTag());var again=RoadData.load(saved);check(h,LaneTopology.metadata(current(d,host)).equals(LaneTopology.metadata(again.index.roads.get(host.id()).record)),"point metadata persists without a road rebuild");h.succeed();
++ }
++ @GameTest(template="empty",templateNamespace="splineroads_lane_v2",timeoutTicks=24000)
++ public static void tightRightTurnCanPreviewAndBuild(GameTestHelper h){
++  var l=h.getLevel();var d=RoadData.get(l);int x=199000,z=199000;
++  var a=road(h,x+100,z,-100,0,220,Style.O1_ONE);var b=road(h,x-140,z-40,0,-100,220,Style.O1_ONE);
++  var p=LaneTopology.metadata(current(d,a)).points().stream().filter(v->v.origin()==LanePoints.Origin.AUTOMATIC_END).findFirst().orElseThrow();var q=LaneTopology.metadata(current(d,b)).points().stream().filter(v->v.origin()==LanePoints.Origin.AUTOMATIC_START).findFirst().orElseThrow();
++  var r=ramp(h,current(d,a),p,current(d,b),q,LanePoints.Path.RIGHT,false,false);check(h,r.mesh().length()<240&&!d.index.roads.get(r.id()).cells.isEmpty(),"short genuine right turn builds real collision");
++  check(h,LaneTopology.metadata(r).link().from().point().equals(p.id())&&LaneTopology.metadata(r).link().to().point().equals(q.id()),"right turn keeps exact selected points");h.succeed();
++ }
++ @GameTest(template="empty",templateNamespace="splineroads_lane_v2",timeoutTicks=24000)
+  public static void legacyCurvedRoadCannotPoisonUpdatesOrPlacement(GameTestHelper h){
+   var l=h.getLevel();var d=RoadData.get(l);int x=196000,z=196000;
+   var a=Revision32GameTests.marker(h,x,220,z,0);var b=Revision32GameTests.marker(h,x+100,220,z+180,-90);
+diff --git a/src/gametest/java/com/sora/splineroads/world/Visual38Suite.java b/src/gametest/java/com/sora/splineroads/world/Visual38Suite.java
+index 5f783fa..b759013 100644
+--- a/src/gametest/java/com/sora/splineroads/world/Visual38Suite.java
++++ b/src/gametest/java/com/sora/splineroads/world/Visual38Suite.java
+@@ -54,6 +54,7 @@ public final class Visual38Suite {
+    if(wait-->0)return;
+    if(!ClientRoads.error.isEmpty())throw new IllegalStateException(ClientRoads.error);
+    if(!ClientRoads.INDEX.roads.containsKey(current.road())||!ready()){wait=1;return;}
++   if(interactionTick(mc))return;
+    if(CASES.get(index).equals("editor")&&mc.screen==null){
+     var road=ClientRoads.INDEX.roads.get(current.road()).record;var payload=new CompoundTag();payload.putString("Kind","road");payload.putUUID("Id",road.id());payload.putLong("A",road.a().asLong());payload.putLong("B",road.b().asLong());payload.put("StartNode",RoadRecord.writeNode(road.start()));payload.put("EndNode",RoadRecord.writeNode(road.end()));payload.put("Settings",RoadRecord.writeSettings(road.settings()));payload.putBoolean("ExtraPage",view==1);payload.putInt("OptionsPage",1);
+     mc.setScreen(new com.sora.splineroads.client.RoadScreen(payload));require(ClientRoads.preview!=null,"ordinary road editor still previews");wait=30;return;
+@@ -67,14 +68,17 @@ public final class Visual38Suite {
+     var link=LaneTopology.metadata(ClientRoads.INDEX.roads.get(current.road()).record).link();var payload=new CompoundTag();payload.put("From",LanePointCodec.ref(link.from()));payload.put("To",LanePointCodec.ref(link.to()));
+     var screen=new com.sora.splineroads.client.LaneRampScreen(payload);mc.setScreen(screen);
+     var buttons=screen.children().stream().filter(v->v instanceof net.minecraft.client.gui.components.Button).map(v->(net.minecraft.client.gui.components.Button)v).toList();
+-    require(buttons.get(0).getMessage().getString().equals("路径：自动"),"connector UI default is auto");buttons.get(0).onPress();require(buttons.get(0).getMessage().getString().equals("路径：右转"),"UI exposes right path");buttons.get(0).onPress();require(buttons.get(0).getMessage().getString().equals("路径：左转回环"),"UI exposes loop");buttons.get(0).onPress();require(buttons.get(0).getMessage().getString().equals("路径：直接连接"),"UI exposes direct path");buttons.get(0).onPress();buttons.get(0).onPress();buttons.get(0).onPress();
+-    buttons.get(1).onPress();require(buttons.get(2).getMessage().getString().endsWith("关"),"UI expansion switches are independent");
++    require(buttons.get(0).getMessage().getString().equals("● 自动"),"connector UI default is auto");
++    for(var choice:LanePoints.Path.values()){var button=screen.children().stream().filter(v->v instanceof net.minecraft.client.gui.components.Button b&&b.getMessage().getString().endsWith(choice.label)).map(v->(net.minecraft.client.gui.components.Button)v).findFirst().orElseThrow();button.onPress();require(field(screen,"path")==choice,"UI exposes each explicit path");}
++    screen.children().stream().filter(v->v instanceof net.minecraft.client.gui.components.Button b&&b.getMessage().getString().endsWith("左转回环")).map(v->(net.minecraft.client.gui.components.Button)v).findFirst().orElseThrow().onPress();
++    buttons=screen.children().stream().filter(v->v instanceof net.minecraft.client.gui.components.Button).map(v->(net.minecraft.client.gui.components.Button)v).toList();buttons.get(4).onPress();require(buttons.get(5).getMessage().getString().endsWith("关"),"UI expansion switches are independent");
+     var fields=screen.children().stream().filter(v->v instanceof net.minecraft.client.gui.components.EditBox).map(v->(net.minecraft.client.gui.components.EditBox)v).toList();fields.get(0).setValue("40");fields.get(1).setValue("48");screen.resize(mc,mc.getWindow().getGuiScaledWidth(),mc.getWindow().getGuiScaledHeight());
+-    var resized=screen.children().stream().filter(v->v instanceof net.minecraft.client.gui.components.Button).map(v->(net.minecraft.client.gui.components.Button)v).toList();require(resized.get(0).getMessage().getString().equals("路径：左转回环")&&resized.get(1).getMessage().getString().endsWith("开")&&resized.get(2).getMessage().getString().endsWith("关"),"screen resize preserves path and independent switch labels");
++    var resized=screen.children().stream().filter(v->v instanceof net.minecraft.client.gui.components.Button).map(v->(net.minecraft.client.gui.components.Button)v).toList();require(resized.get(2).getMessage().getString().equals("● 左转回环")&&resized.get(4).getMessage().getString().endsWith("开")&&resized.get(5).getMessage().getString().endsWith("关"),"screen resize preserves path and independent switch labels");
+     var values=screen.children().stream().filter(v->v instanceof net.minecraft.client.gui.components.EditBox).map(v->((net.minecraft.client.gui.components.EditBox)v).getValue()).toList();require(values.equals(List.of("40","48")),"screen resize preserves numeric inputs");Files.writeString(OUT.resolve("lane-ramp-ui-controls.txt"),"All four path controls, independent expansion switches and resize state passed using real screen widgets.");wait=30;return;
+    }
+    String name=CASES.get(index)+(view==0?"-overview.png":"-detail.png");
+    try(var shot=Screenshot.takeScreenshot(mc.getMainRenderTarget())){shot.writeToFile(OUT.resolve(name));}System.out.println("SR038 SCREENSHOT "+name);
++   if(CASES.get(index).equals("lane-point-map")&&view==1&&pointUiStage==2){var screen=(com.sora.splineroads.client.LanePointScreen)mc.screen;((net.minecraft.client.gui.components.Button)field(screen,"apply")).onPress();pointUiStage=3;wait=15;return;}
+    if(++view<2){camera(mc);wait=45;return;}current=null;index++;
+   }catch(Throwable e){finished=true;e.printStackTrace();try{Files.createDirectories(OUT);Files.writeString(OUT.resolve("failure.txt"),e.toString());}catch(Exception ignored){}mc.stop();}
+  }
+@@ -92,7 +96,11 @@ public final class Visual38Suite {
+    case "lane-direct","lane-left","lane-point-ui","point-items"->laneScene(l,data,label);
+    case "lane-junction"->laneJunction(l,data);
+    case "lane-hotfix"->laneHotfix(l,data);
++   case "lane-response"->laneResponse(l,data);
++   case "lane-right-tight"->laneRightTight(l,data);
++   case "lane-point-map"->lanePointMap(l,data);
+    case "lane-hotfix-reload"->laneHotfixReload(l,data);
++   case "lane-interaction-reload"->laneInteractionReload(l,data);
+    case "lane-reload","lane-ramp-ui"->laneReload(l,data);
+    case "green-v2"->green(l,data);
+    case "oneway-junction"->oneway(l,data);
+@@ -108,6 +116,58 @@ public final class Visual38Suite {
+  }
+  // This fixture runs several player commands in one server task; simulate the normal five-tick input interval.
+  static void advanceCommandClock(ServerLevel l){l.getServer().getWorldData().overworldData().setGameTime(l.getGameTime()+5);}
++ static int responseStage,pointUiStage;static long clientPointRevision;static volatile long pointRequestStart;static UUID uiPoint;static int uiOriginalLane;
++ static Object field(Object object,String name)throws Exception{var f=object.getClass().getDeclaredField(name);f.setAccessible(true);return f.get(object);}
++ static void rawPointClick(net.minecraft.server.level.ServerPlayer p,V at){var stack=new net.minecraft.world.item.ItemStack(SplineRoads.LANE_POINT.get());p.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,stack);aim(p,at);var hit=new net.minecraft.world.phys.BlockHitResult(new net.minecraft.world.phys.Vec3(at.x(),at.y(),at.z()),net.minecraft.core.Direction.UP,BlockPos.containing(at.x(),at.y()-.05,at.z()),false);p.gameMode.useItemOn(p,p.serverLevel(),stack,net.minecraft.world.InteractionHand.MAIN_HAND,hit);}
++ static long manualCount(RoadRecord r){return LaneTopology.metadata(r).points().stream().filter(p->!p.automatic()).count();}
++ static Scene laneResponse(ServerLevel l,RoadData data)throws Exception{
++  var player=l.getServer().getPlayerList().getPlayers().get(0);int x=6000;var a=marker(l,x,-60,0,0);var b=marker(l,x,-60,200,0);var r=data.connect(l,player,a,b,settings(Style.O6_RAIL,true,false),null);
++  long oldStart=System.nanoTime();data.replaceAssembly(l,player,List.of(new RoadIndex.Built(r)),Set.of(r.id()),Set.of(a,b));double oldMs=(System.nanoTime()-oldStart)/1e6;
++  r=data.index.roads.get(r.id()).record;var first=LanePoints.lane(r.mesh(),70,5).position();long start=System.nanoTime();rawPointClick(player,first);UUID token=LanePointTool.pendingToken(player);
++  rawPointClick(player,LanePoints.lane(r.mesh(),90,5).position());rawPointClick(player,LanePoints.lane(r.mesh(),110,5).position());
++  require(manualCount(data.index.roads.get(r.id()).record)==1,"queued clicks before UI acknowledgement do not create hidden extra points");LanePointTool.acknowledge(player,UUID.randomUUID());require(token.equals(LanePointTool.pendingToken(player)),"unrelated acknowledgement cannot release pending interaction");LanePointTool.acknowledge(player,token);
++  rawPointClick(player,LanePoints.lane(r.mesh(),130,5).position());LanePointTool.acknowledge(player,LanePointTool.pendingToken(player));require(manualCount(data.index.roads.get(r.id()).record)==2,"acknowledged new click creates exactly one point");double pointMs=(System.nanoTime()-start)/1e6;
++  var snapshot=data.index.roads.get(r.id());long revision=data.index.revision();start=System.nanoTime();for(int i=0;i<12;i++)LanePointTool.create(l,player,r.id(),LanePoints.lane(snapshot.mesh,10+i*12,2).position());double batchMs=(System.nanoTime()-start)/1e6;
++  require(data.index.revision()==revision&&snapshot.mesh.samples()==data.index.roads.get(r.id()).mesh.samples(),"point batch does not rebuild or invalidate road geometry");
++  Files.writeString(OUT.resolve("lane-response-timing.txt"),"Same six-lane 200-block host, same process. Legacy full replacement: "+oldMs+" ms; two acknowledged tool creations + ignored burst: "+pointMs+" ms; 12 metadata creations: "+batchMs+" ms.\n");
++  responseStage=0;return new Scene(r.id(),first,first.add(new V(12,55,40)),first,first.add(new V(12,24,20)));
++ }
++ static Scene laneRightTight(ServerLevel l,RoadData data){
++  var player=l.getServer().getPlayerList().getPlayers().get(0);int x=6800;
++  var a=marker(l,x+140,-60,0,90);var b=marker(l,x,-60,0,90);var source=data.connect(l,player,a,b,settings(Style.O6_RAIL,true,false),null);
++  var c=marker(l,x-140,-60,120,180);var d=marker(l,x-140,-60,-120,180);var target=data.connect(l,player,c,d,settings(Style.O6_RAIL,true,false),null);
++  var pa=LaneTopology.metadata(data.index.roads.get(source.id()).record).points().stream().filter(p->p.origin()==LanePoints.Origin.AUTOMATIC_END&&p.lane()==5).findFirst().orElseThrow();
++  var pb=LanePointTool.create(l,player,target.id(),LanePoints.lane(target.mesh(),160,5).position());
++  var stack=new net.minecraft.world.item.ItemStack(SplineRoads.RAMP_CONNECTOR.get());var tool=(LaneRampTool)stack.getItem();player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,stack);
++  aim(player,pa.position());tool.use(l,player,net.minecraft.world.InteractionHand.MAIN_HAND);aim(player,pb.position());tool.use(l,player,net.minecraft.world.InteractionHand.MAIN_HAND);
++  var command=new CompoundTag();command.putString("Action","laneRampPreview");command.put("From",stack.getTag().getCompound("LaneFrom").copy());command.put("To",stack.getTag().getCompound("LaneTo").copy());command.putLong("Request",1);
++  for(var mode:List.of(LanePoints.Path.AUTO,LanePoints.Path.RIGHT)){command.put("Options",LanePointCodec.options(new LanePoints.Options(mode,false,false,24,32)));var reply=LaneRamps.preview(player,stack,command);require(reply.getString("ResolvedPath").equals("RIGHT"),"auto and manual resolve the pictured layout to genuine RIGHT");}
++  var preview=stack.getTag().getCompound("LanePreview");UUID id=RoadRecord.load(preview.getCompound("Road")).id();command.putString("Action","laneRamp");command.putUUID("Token",preview.getUUID("Token"));advanceCommandClock(l);com.sora.splineroads.net.RoadNetwork.perform(player,command);var built=data.index.roads.get(id);require(built!=null&&!built.cells.isEmpty(),"actual right-turn ramp construction succeeds");
++  V at=built.mesh.min().add(built.mesh.max()).mul(.5);return new Scene(id,at,at.add(new V(12,130,30)),at,at.add(new V(18,100,35)));
++ }
++ static Scene lanePointMap(ServerLevel l,RoadData data){
++  var player=l.getServer().getPlayerList().getPlayers().get(0);var a=marker(l,7300,-60,0,0);var b=marker(l,7300,-60,140,0);var r=data.connect(l,player,a,b,settings(Style.O6_RAIL,true,false),null);
++  var p=LanePointTool.create(l,player,r.id(),LanePoints.lane(r.mesh(),70,5).position());uiPoint=p.id();uiOriginalLane=p.lane();pointUiStage=0;
++  return new Scene(r.id(),p.position(),p.position().add(new V(12,45,35)),p.position(),p.position().add(new V(12,25,20)));
++ }
++ static boolean interactionTick(Minecraft mc)throws Exception{
++  String label=CASES.get(index);
++  if(label.equals("lane-response")&&view==1){
++   if(responseStage==0){clientPointRevision=ClientRoads.INDEX.revision();responseStage=1;UUID id=current.road();mc.getSingleplayerServer().execute(()->{var l=mc.getSingleplayerServer().overworld();var p=l.getServer().getPlayerList().getPlayers().get(0);var r=RoadData.get(l).index.roads.get(id).record;pointRequestStart=System.nanoTime();rawPointClick(p,LanePoints.lane(r.mesh(),180,5).position());});return true;}
++   if(responseStage==1){if(!(mc.screen instanceof com.sora.splineroads.client.LanePointScreen)){if(pointRequestStart!=0&&System.nanoTime()-pointRequestStart>5_000_000_000L)throw new AssertionError("point UI response timed out");return true;}
++    double millis=(System.nanoTime()-pointRequestStart)/1e6;require(millis<1500,"loaded road point UI responds under 1.5 seconds in this client");require(ClientRoads.INDEX.revision()==clientPointRevision,"small point delta does not invalidate client geometry");require(manualCount(ClientRoads.INDEX.roads.get(current.road()).record)==15,"all and only accepted points are visible before opening UI");Files.writeString(OUT.resolve("lane-response-roundtrip.txt"),"Server item click to actual client LanePointScreen: "+millis+" ms. 15 accepted points visible; rejected queued clicks did not reappear; client geometry revision unchanged.\n");responseStage=2;mc.setScreen(null);camera(mc);wait=30;return true;}
++  }
++  if(label.equals("lane-point-map")&&view==1){
++   if(pointUiStage==0){var r=ClientRoads.INDEX.roads.get(current.road()).record;var p=LaneTopology.point(r,uiPoint);var t=new CompoundTag();t.putString("Kind","lanePoint");t.put("Road",r.header());t.putUUID("Id",r.id());t.putUUID("Point",p.id());t.putInt("Signature",r.header().hashCode());t.putBoolean("Supported",true);mc.setScreen(new com.sora.splineroads.client.LanePointScreen(t));pointUiStage=1;wait=30;return true;}
++   if(pointUiStage==1){var screen=(com.sora.splineroads.client.LanePointScreen)mc.screen;var map=(LanePointPreview.Image)field(screen,"image");if(map==null)return true;int vx=(int)field(screen,"viewX"),vy=(int)field(screen,"viewY");var target=map.markers().get(0);screen.mouseClicked(vx+target.x(),vy+target.y(),0);require((int)field(screen,"lane")==0,"actual mouse click selects the opposite lane");screen.mouseClicked(vx+2,vy+map.height()-2,0);require((int)field(screen,"lane")==0,"non-motor region click cannot change selected lane");screen.mouseClicked(vx+target.x(),vy+target.y(),0);screen.resize(mc,mc.getWindow().getGuiScaledWidth(),mc.getWindow().getGuiScaledHeight());require((int)field(screen,"lane")==0,"resize preserves chosen lane");pointUiStage=2;wait=30;return true;}
++   if(pointUiStage==3){if(mc.screen!=null)return true;var p=LaneTopology.point(ClientRoads.INDEX.roads.get(current.road()).record,uiPoint);require(p.lane()==0,"Apply persisted mouse-selected lane through actual packet");Files.writeString(OUT.resolve("lane-point-map-widgets.txt"),"Actual lane click, invalid-region click, resize and Apply packet passed. Point ID unchanged; selected lane=0 (opposite to original lane 5).\n");var saved=mc.getSingleplayerServer().submit(()->RoadData.get(mc.getSingleplayerServer().overworld()).save(new CompoundTag())).join();NbtIo.writeCompressed(saved,OUT.resolve("lane-interaction-final-roads.nbt").toFile());current=null;index++;return true;}
++  }
++  if(label.equals("lane-right-tight")&&view==1&&mc.screen==null){var link=LaneTopology.metadata(ClientRoads.INDEX.roads.get(current.road()).record).link();var t=new CompoundTag();t.put("From",LanePointCodec.ref(link.from()));t.put("To",LanePointCodec.ref(link.to()));var screen=new com.sora.splineroads.client.LaneRampScreen(t);mc.setScreen(screen);
++   for(var choice:LanePoints.Path.values()){var button=screen.children().stream().filter(v->v instanceof net.minecraft.client.gui.components.Button b&&b.getMessage().getString().endsWith(choice.label)).map(v->(net.minecraft.client.gui.components.Button)v).findFirst().orElseThrow();button.onPress();require(field(screen,"path")==choice,"each explicit path button is selectable");}
++   screen.children().stream().filter(v->v instanceof net.minecraft.client.gui.components.Button b&&b.getMessage().getString().endsWith("右转")).map(v->(net.minecraft.client.gui.components.Button)v).findFirst().orElseThrow().onPress();screen.resize(mc,mc.getWindow().getGuiScaledWidth(),mc.getWindow().getGuiScaledHeight());require(field(screen,"path")==LanePoints.Path.RIGHT,"right choice retained after resize");wait=30;return true;}
++  return false;
++ }
++
+  static Scene laneHotfix(ServerLevel l,RoadData data){
+   var player=l.getServer().getPlayerList().getPlayers().get(0);int x=4800;
+   var a=marker(l,x,-60,0,0);var b=marker(l,x+100,-60,180,-90);
+@@ -129,6 +189,11 @@ public final class Visual38Suite {
+   }
+   player.setShiftKeyDown(true);tool.use(l,player,net.minecraft.world.InteractionHand.MAIN_HAND);player.setShiftKeyDown(false);V at=p.position();return new Scene(host.id(),at,at.add(new V(12,70,40)),at,at.add(new V(14,24,22)));
+  }
++ static Scene laneInteractionReload(ServerLevel l,RoadData data)throws Exception{
++  var previous=RoadData.load(NbtIo.readCompressed(OUT.resolve("lane-interaction-final-roads.nbt").toFile()));require(previous.index.roads.keySet().equals(data.index.roads.keySet()),"all road IDs survive restart");
++  for(var e:previous.index.roads.entrySet())require(LaneTopology.metadata(e.getValue().record).equals(LaneTopology.metadata(data.index.roads.get(e.getKey()).record)),"point-only updates and real right-turn references persist exactly");
++  var host=data.index.roads.values().stream().filter(b->Math.abs(b.record.start().position().x()-7300.5)<1).findFirst().orElseThrow();var p=LaneTopology.metadata(host.record).points().stream().filter(v->!v.automatic()).findFirst().orElseThrow();require(p.lane()==0,"clicked opposite lane survives program restart");return new Scene(host.record.id(),p.position(),p.position().add(new V(12,45,35)),p.position(),p.position().add(new V(12,25,20)));
++ }
+  static Scene laneHotfixReload(ServerLevel l,RoadData data)throws Exception{
+   var previous=RoadData.load(NbtIo.readCompressed(OUT.resolve("lane-point-ui-roads.nbt").toFile()));require(data.index.roads.keySet().equals(previous.index.roads.keySet()),"restart preserves all old road and ramp identities");
+   for(var entry:previous.index.roads.entrySet()){var before=entry.getValue().record;var after=data.index.roads.get(entry.getKey()).record;require(LaneTopology.metadata(before).equals(LaneTopology.metadata(after)),"restart retains exact point IDs, anchors and ramp references");for(var p:LaneTopology.metadata(after).points())require(p.anchor()!=null&&p.position().distance(LanePoints.lane(after.mesh(),p).position())<1e-7,"restart retains exact lane center positions");}
+@@ -161,7 +226,7 @@ public final class Visual38Suite {
+   require(data.index.roads.get(r.id()).record.settings().options().attachments().points().size()==2,"two points remain on one road");V at=new V(x+50,-59,z);return new Scene(r.id(),at,at.add(new V(10,50,62)),new V(x+30.5,-58,z+4.5),new V(x+40,-42,z+22));
+  }
+  static void aim(net.minecraft.server.level.ServerPlayer p,V at){p.setGameMode(GameType.CREATIVE);p.teleportTo(p.serverLevel(),at.x(),at.y()+3,at.z(),0,90);p.setXRot(90);p.setYRot(0);}
+- static void click(net.minecraft.server.level.ServerPlayer p,Item item,V at){var stack=new net.minecraft.world.item.ItemStack(item);p.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,stack);aim(p,at);var hit=new net.minecraft.world.phys.BlockHitResult(new net.minecraft.world.phys.Vec3(at.x(),at.y(),at.z()),net.minecraft.core.Direction.UP,BlockPos.containing(at.x(),at.y()-.05,at.z()),false);p.gameMode.useItemOn(p,p.serverLevel(),stack,net.minecraft.world.InteractionHand.MAIN_HAND,hit);}
++ static void click(net.minecraft.server.level.ServerPlayer p,Item item,V at){var stack=new net.minecraft.world.item.ItemStack(item);p.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,stack);aim(p,at);var hit=new net.minecraft.world.phys.BlockHitResult(new net.minecraft.world.phys.Vec3(at.x(),at.y(),at.z()),net.minecraft.core.Direction.UP,BlockPos.containing(at.x(),at.y()-.05,at.z()),false);p.gameMode.useItemOn(p,p.serverLevel(),stack,net.minecraft.world.InteractionHand.MAIN_HAND,hit);LanePointTool.acknowledge(p,LanePointTool.pendingToken(p));}
+  static Scene laneScene(ServerLevel l,RoadData data,String label){
+   int x=label.equals("lane-left")?2600:label.equals("lane-point-ui")?3200:label.equals("point-items")?3600:2000;var player=l.getServer().getPlayerList().getPlayers().get(0);var a=marker(l,x,-60,80,180);var b=marker(l,x,-60,0,180);var host=data.connect(l,player,a,b,settings(Style.O1_ONE,false,false),null);
+   if(label.equals("lane-point-ui")||label.equals("point-items")){
+diff --git a/src/main/java/com/sora/splineroads/client/ClientRoads.java b/src/main/java/com/sora/splineroads/client/ClientRoads.java
+index ae12408..fefa8d5 100644
+--- a/src/main/java/com/sora/splineroads/client/ClientRoads.java
++++ b/src/main/java/com/sora/splineroads/client/ClientRoads.java
+@@ -113,6 +113,14 @@ public final class ClientRoads {
+           INDEX.neighbors(built).forEach(b -> changed.add(b.record.id()));
+           RoadRenderer.changed(changed);
+         }
++      } else if (type.equals("lanePoints")) {
++        var old=INDEX.roads.get(t.getUUID("Id"));
++        if(old!=null&&old.record.header().hashCode()==t.getInt("Signature"))
++          INDEX.lanePoints(old.record.id(),LanePointCodec.read(t.getCompound("Points")));
++        else {
++          var request=new CompoundTag();request.putString("Action","lanePointResync");request.putUUID("Id",t.getUUID("Id"));
++          com.sora.splineroads.net.RoadNetwork.CHANNEL.sendToServer(new com.sora.splineroads.net.RoadNetwork.Action(request));
++        }
+       } else if (type.equals("delete")) {
+         remove(t.getUUID("Id"));
+         if (draft != null && draft.hasUUID("Id") && draft.getUUID("Id").equals(t.getUUID("Id"))) {
+@@ -157,7 +165,11 @@ public final class ClientRoads {
+     Minecraft mc = Minecraft.getInstance();
+     String kind = t.getString("Kind");
+     if(kind.equals("laneRampReset")){preview=null;error="";if(mc.screen instanceof LaneRampScreen)mc.setScreen(null);return;}
+-    if(kind.equals("lanePoint")){mc.setScreen(new LanePointScreen(t));return;}
++    if(kind.equals("lanePoint")){
++      mc.setScreen(new LanePointScreen(t));
++      if(t.hasUUID("Interaction")){var ack=new CompoundTag();ack.putString("Action","lanePointReady");ack.putUUID("Interaction",t.getUUID("Interaction"));com.sora.splineroads.net.RoadNetwork.CHANNEL.sendToServer(new com.sora.splineroads.net.RoadNetwork.Action(ack));}
++      return;
++    }
+     if(kind.equals("laneRamp")){mc.setScreen(new LaneRampScreen(t));return;}
+     if(kind.equals("laneRampCheck")){if(mc.screen instanceof LaneRampScreen s)s.checked(t);return;}
+     if(kind.equals("armRoad")){Minecraft.getInstance().setScreen(new RoadScreen(t));return;}
+diff --git a/src/main/java/com/sora/splineroads/client/LanePointScreen.java b/src/main/java/com/sora/splineroads/client/LanePointScreen.java
+index 4307993..febc8f8 100644
+--- a/src/main/java/com/sora/splineroads/client/LanePointScreen.java
++++ b/src/main/java/com/sora/splineroads/client/LanePointScreen.java
+@@ -1,21 +1,94 @@
+ package com.sora.splineroads.client;
++
+ import com.sora.splineroads.core.*;
++import com.sora.splineroads.core.RoadGeometry.Mesh;
+ import com.sora.splineroads.world.*;
+ import com.sora.splineroads.net.RoadNetwork;
+ import net.minecraft.client.gui.GuiGraphics;
+-import net.minecraft.client.gui.components.*;
++import net.minecraft.client.gui.components.Button;
+ import net.minecraft.client.gui.screens.Screen;
+ import net.minecraft.nbt.*;
+ import net.minecraft.network.chat.Component;
++import java.util.concurrent.*;
+ 
++/** Click the actual motor lane; only the lane changes, never the longitudinal anchor. */
+ public final class LanePointScreen extends Screen {
+-  private final CompoundTag payload;private final RoadRecord road;private final LanePoints.Point point;private int lane,x,y;private String status="";private Button apply;private boolean confirm;
+-  public LanePointScreen(CompoundTag t){super(Component.literal("蓝色车道点"));payload=t.copy();road=RoadRecord.load(t.getCompound("Road"));point=LaneTopology.point(road,t.getUUID("Point"));lane=point.lane();}
+-  @Override protected void init(){x=(width-340)/2;y=(height-250)/2;var change=addRenderableWidget(Button.builder(Component.literal(LanePoints.label(road.mesh(),lane)),b->{lane=(lane+1)%RoadProfile.catalog(road.settings().style()).lanes();b.setMessage(Component.literal(LanePoints.label(road.mesh(),lane)));}).bounds(x+12,y+68,316,20).build());change.active=!point.automatic();
+-    apply=addRenderableWidget(Button.builder(Component.literal("应用车道并重建依赖"),b->send(false)).bounds(x+12,y+98,184,20).build());apply.active=!point.automatic();var remove=addRenderableWidget(Button.builder(Component.literal("删除手动点"),b->{if(!payload.getList("Dependencies",Tag.TAG_STRING).isEmpty()&&!confirm){minecraft.setScreen(new LaneDeleteConfirmScreen(this,payload.getList("Dependencies",Tag.TAG_STRING),()->{confirm=true;send(true);}));return;}send(true);}).bounds(x+204,y+98,124,20).build());remove.active=!point.automatic();addRenderableWidget(Button.builder(Component.literal("关闭"),b->onClose()).bounds(x+232,y+217,96,20).build());}
+-  private String dependencies(){var list=payload.getList("Dependencies",Tag.TAG_STRING);return java.util.stream.IntStream.range(0,list.size()).mapToObj(i->list.getString(i).substring(0,8)).collect(java.util.stream.Collectors.joining(", "));}
+-  private void send(boolean delete){var t=new CompoundTag();t.putUUID("Id",payload.getUUID("Id"));t.putUUID("Point",payload.getUUID("Point"));t.putInt("Signature",payload.getInt("Signature"));t.putString("Action","lanePoint");t.putBoolean("Delete",delete);t.putInt("Lane",lane);if(confirm)t.put("ConfirmDependencies",payload.getList("Dependencies",Tag.TAG_STRING).copy());RoadNetwork.CHANNEL.sendToServer(new RoadNetwork.Action(t));apply.active=false;}
+-  public void failed(String s){status=s;apply.active=!point.automatic();}
++  private static final ExecutorService PREVIEW=Executors.newSingleThreadExecutor(r->{var t=new Thread(r,"SR lane point view");t.setDaemon(true);return t;});
++  private final CompoundTag payload;
++  private final RoadRecord road;
++  private final Mesh mesh;
++  private final LanePoints.Point point;
++  private int lane,x,y,w,h,viewX,viewY,viewW,viewH,requestedLane;
++  private String status="";
++  private Button apply,remove;
++  private boolean confirm,pending;
++  private LanePointPreview.Image image;
++  private CompletableFuture<LanePointPreview.Image> drawing;
++
++  public LanePointScreen(CompoundTag t){
++    super(Component.literal("蓝色车道点"));payload=t.copy();road=RoadRecord.load(t.getCompound("Road"));
++    point=LaneTopology.point(road,t.getUUID("Point"));lane=point.lane();mesh=road.mesh();
++  }
++  @Override protected void init(){
++    w=Math.min(460,width-16);h=Math.min(310,height-16);x=(width-w)/2;y=(height-h)/2;
++    viewX=x+12;viewY=y+36;viewW=w-24;viewH=h-110;
++    if(image!=null&&(image.width()!=viewW||image.height()!=viewH))image=null;
++    if(drawing!=null){drawing.cancel(false);drawing=null;}
++    addRenderableWidget(Button.builder(Component.literal("关闭"),b->onClose()).bounds(x+w-56,y+8,44,20).build());
++    apply=addRenderableWidget(Button.builder(Component.literal("应用"),b->send(false)).bounds(x+12,y+h-30,88,20).build());
++    remove=addRenderableWidget(Button.builder(Component.literal("删除"),b->{
++      if(!payload.getList("Dependencies",Tag.TAG_STRING).isEmpty()&&!confirm){minecraft.setScreen(new LaneDeleteConfirmScreen(this,payload.getList("Dependencies",Tag.TAG_STRING),()->{confirm=true;send(true);}));return;}
++      send(true);
++    }).bounds(x+w-100,y+h-30,88,20).build());
++    buttons();requestView();
++  }
++  private void buttons(){apply.active=!point.automatic()&&!pending&&lane!=point.lane();remove.active=!point.automatic()&&!pending;}
++  private void requestView(){
++    if(drawing!=null)return;requestedLane=lane;int chosen=lane,vw=viewW,vh=viewH;
++    drawing=CompletableFuture.supplyAsync(()->LanePointPreview.render(mesh,point,vw,vh,chosen),PREVIEW);
++  }
++  @Override public void tick(){
++    super.tick();
++    if(drawing!=null&&drawing.isDone()){
++      try{image=drawing.join();}catch(CompletionException e){status="道路视图加载失败："+e.getCause().getMessage();}
++      drawing=null;if(requestedLane!=lane)requestView();
++    }
++  }
++  @Override public boolean mouseClicked(double mx,double my,int button){
++    if(button==0&&!point.automatic()&&!pending&&image!=null&&mx>=viewX&&my>=viewY&&mx<viewX+viewW&&my<viewY+viewH){
++      int selected=image.laneAt((int)(mx-viewX),(int)(my-viewY));
++      if(selected>=0){lane=selected;status="";buttons();requestView();}else status="请点击机动车道；隔离带和人行道不能选作车道。";
++      return true;
++    }
++    return super.mouseClicked(mx,my,button);
++  }
++  private void send(boolean delete){
++    if(pending||point.automatic()||!delete&&lane==point.lane())return;
++    var t=new CompoundTag();t.putUUID("Id",payload.getUUID("Id"));t.putUUID("Point",payload.getUUID("Point"));t.putInt("Signature",payload.getInt("Signature"));
++    t.putString("Action","lanePoint");t.putBoolean("Delete",delete);t.putInt("Lane",lane);
++    if(confirm)t.put("ConfirmDependencies",payload.getList("Dependencies",Tag.TAG_STRING).copy());
++    pending=true;status="正在提交…";buttons();RoadNetwork.CHANNEL.sendToServer(new RoadNetwork.Action(t));
++  }
++  public void failed(String s){status=s;pending=false;buttons();}
++  @Override public void onClose(){if(drawing!=null)drawing.cancel(false);super.onClose();}
+   @Override public boolean isPauseScreen(){return false;}
+-  @Override public void render(GuiGraphics g,int mx,int my,float dt){renderBackground(g);g.fill(x,y,x+340,y+250,0xf015222e);g.drawString(font,"蓝色车道点 · "+(point.automatic()?"自动尽头":"手动创建"),x+12,y+12,0x66b5ff,false);g.drawWordWrap(font,Component.literal(point.automatic()?"自动点不能删除或换车道；未被使用时正常接路后移除。":"点固定吸附车道中轴线；换车道保留沿路位置，可选择反向车道。"),x+12,y+33,316,0xcbd9e5);g.drawWordWrap(font,Component.literal(payload.getBoolean("Supported")?"有效引用："+payload.getList("Dependencies",Tag.TAG_STRING).size()+" 条；只有建造成功才占用。":"此道路可保留车道点，但匝道连接器不支持其类型／立交归属。"),x+12,y+132,316,0xffcf8c);g.drawWordWrap(font,Component.literal(status),x+12,y+162,316,0xffbb88);super.render(g,mx,my,dt);}
++  @Override public void render(GuiGraphics g,int mx,int my,float dt){
++    renderBackground(g);g.fill(x,y,x+w,y+h,0xf015222e);
++    g.drawString(font,"蓝色车道点 · "+(point.automatic()?"自动尽头":"手动创建"),x+12,y+14,0x66b5ff,false);
++    g.fill(viewX-1,viewY-1,viewX+viewW+1,viewY+viewH+1,0xff647a87);
++    g.fill(viewX,viewY,viewX+viewW,viewY+viewH,0xff28382e);
++    if(image!=null){
++      for(int row=0;row<viewH;row++)for(int col=0;col<viewW;){int start=col,color=image.pixels()[row*viewW+col];while(col<viewW&&image.pixels()[row*viewW+col]==color)col++;g.fill(viewX+start,viewY+row,viewX+col,viewY+row+1,color);}
++      for(var marker:image.markers())if(marker.lane()==lane){int px=viewX+marker.x(),py=viewY+marker.y();g.fill(px-5,py-5,px+6,py+6,0xffbce7ff);g.fill(px-3,py-3,px+4,py+4,0xff2384ff);}
++      int hover=image.laneAt(mx-viewX,my-viewY);
++      String label=hover>=0?LanePoints.label(mesh,hover):"道路实景俯视 · 沿路方向 ↑";
++      g.fill(viewX+3,viewY+3,viewX+9+font.width(label),viewY+16,0xdd15222e);g.drawString(font,label,viewX+6,viewY+6,0xe7f2f9,false);
++    }else g.drawCenteredString(font,"正在加载道路视图…",viewX+viewW/2,viewY+viewH/2,0xcbd9e5);
++    int infoY=viewY+viewH+7;
++    String selected="所属："+LanePoints.label(mesh,lane)+"   匝道引用："+payload.getList("Dependencies",Tag.TAG_STRING).size()+" 条";
++    g.drawString(font,selected,x+12,infoY,0x99ccff,false);
++    String hint=!status.isEmpty()?status:point.automatic()?"自动尽头点只能查看，不能换车道或删除。":payload.getBoolean("Supported")?"点击车道选择；应用后保持沿路位置并吸附中轴线。":"可选择车道；此类道路不支持匝道连接器。";
++    g.drawWordWrap(font,Component.literal(hint),x+12,infoY+14,w-24,0xffcf8c);
++    super.render(g,mx,my,dt);
++  }
+ }
+diff --git a/src/main/java/com/sora/splineroads/client/LaneRampScreen.java b/src/main/java/com/sora/splineroads/client/LaneRampScreen.java
+index 77136f0..79bff24 100644
+--- a/src/main/java/com/sora/splineroads/client/LaneRampScreen.java
++++ b/src/main/java/com/sora/splineroads/client/LaneRampScreen.java
+@@ -13,7 +13,7 @@ public final class LaneRampScreen extends Screen {
+   private final CompoundTag payload;private LanePoints.Path path=LanePoints.Path.AUTO;private boolean sourceExtra,targetExtra;private EditBox radius,transition;private Button build;private UUID token;private long request;private int x,y;private String status="设置后点击预览；校验通过才能建造。";
+   public LaneRampScreen(CompoundTag t){super(Component.literal("匝道连接器"));payload=t.copy();}
+   @Override protected void init(){String savedRadius=radius==null?"24":radius.getValue(),savedTransition=transition==null?"32":transition.getValue();invalidate();x=(width-354)/2;y=(height-250)/2;
+-    addRenderableWidget(Button.builder(Component.literal("路径："+path.label),b->{path=LanePoints.Path.values()[(path.ordinal()+1)%LanePoints.Path.values().length];b.setMessage(Component.literal("路径："+path.label));invalidate();}).bounds(x+12,y+51,330,20).build());
++    for(var choice:LanePoints.Path.values())addRenderableWidget(Button.builder(Component.literal((choice==path?"● ":"")+choice.label),b->{path=choice;invalidate();rebuildWidgets();}).bounds(x+12+choice.ordinal()*84,y+51,78,20).build());
+     addRenderableWidget(Button.builder(Component.literal("汇出端额外扩出："+(sourceExtra?"开":"关")),b->{sourceExtra=!sourceExtra;b.setMessage(Component.literal("汇出端额外扩出："+(sourceExtra?"开":"关")));invalidate();}).bounds(x+12,y+81,160,20).build());
+     addRenderableWidget(Button.builder(Component.literal("汇入端额外扩出："+(targetExtra?"开":"关")),b->{targetExtra=!targetExtra;b.setMessage(Component.literal("汇入端额外扩出："+(targetExtra?"开":"关")));invalidate();}).bounds(x+182,y+81,160,20).build());
+     radius=new EditBox(font,x+72,y+114,90,20,Component.literal("半径"));radius.setValue(savedRadius);radius.setMaxLength(6);radius.setResponder(s->invalidate());addRenderableWidget(radius);transition=new EditBox(font,x+252,y+114,90,20,Component.literal("过渡长度"));transition.setValue(savedTransition);transition.setMaxLength(6);transition.setResponder(s->invalidate());addRenderableWidget(transition);
+@@ -21,7 +21,7 @@ public final class LaneRampScreen extends Screen {
+   private void invalidate(){token=null;if(build!=null)build.active=false;ClientRoads.preview=null;request++;status="设置已改变，请重新预览。";}
+   private CompoundTag command(String action){var t=new CompoundTag();t.putString("Action",action);t.put("From",payload.getCompound("From").copy());t.put("To",payload.getCompound("To").copy());t.put("Options",LanePointCodec.options(new LanePoints.Options(path,sourceExtra,targetExtra,Double.parseDouble(radius.getValue()),Double.parseDouble(transition.getValue()))));t.putLong("Request",request);return t;}
+   private void preview(){try{invalidate();var t=command("laneRampPreview");RoadNetwork.CHANNEL.sendToServer(new RoadNetwork.Action(t));status="正在检查方向、路口接入口与净空…";}catch(IllegalArgumentException e){failed(e.getMessage());}}
+-  public void checked(CompoundTag t){if(t.getLong("Request")!=request)return;if(t.contains("Error")){failed(t.getString("Error"));return;}try{var r=RoadRecord.load(t.getCompound("Road"));ClientRoads.preview=r.mesh();token=t.getUUID("Token");build.active=true;status=String.format(java.util.Locale.ROOT,"预览有效：长 %.1f 格，单向 1 车道。可建造后查看路面及接头。",r.mesh().length());}catch(IllegalArgumentException e){failed(e.getMessage());}}
++  public void checked(CompoundTag t){if(t.getLong("Request")!=request)return;if(t.contains("Error")){failed(t.getString("Error"));return;}try{var r=RoadRecord.load(t.getCompound("Road"));ClientRoads.preview=r.mesh();token=t.getUUID("Token");build.active=true;status=String.format(java.util.Locale.ROOT,"预览有效：%s，长 %.1f 格，单向 1 车道。",t.contains("ResolvedPath")?LanePoints.Path.valueOf(t.getString("ResolvedPath")).label:path.label,r.mesh().length());}catch(IllegalArgumentException e){failed(e.getMessage());}}
+   private void submit(){try{if(token==null)return;var t=command("laneRamp");t.putUUID("Token",token);build.active=false;RoadNetwork.CHANNEL.sendToServer(new RoadNetwork.Action(t));}catch(IllegalArgumentException e){failed(e.getMessage());}}
+   public void failed(String s){status=s;build.active=false;token=null;ClientRoads.preview=null;}
+   @Override public void onClose(){ClientRoads.preview=null;super.onClose();}
+diff --git a/src/main/java/com/sora/splineroads/core/LanePointPreview.java b/src/main/java/com/sora/splineroads/core/LanePointPreview.java
+new file mode 100644
+index 0000000..7eab5fc
+--- /dev/null
++++ b/src/main/java/com/sora/splineroads/core/LanePointPreview.java
+@@ -0,0 +1,53 @@
++package com.sora.splineroads.core;
++
++import com.sora.splineroads.core.RoadGeometry.*;
++import java.util.*;
++
++/** Actual road surface and lane hit regions, viewed from above at the point's station. */
++public final class LanePointPreview {
++  public record Marker(int lane,int x,int y,int dx,int dy) {}
++  public record Image(int width,int height,int[] pixels,int[] lanes,List<Marker> markers) {
++    public int laneAt(int x,int y){return x<0||y<0||x>=width||y>=height?-1:lanes[y*width+x];}
++  }
++  public static Image render(Mesh mesh,LanePoints.Point point,int width,int height,int selected) {
++    double station=LanePoints.lane(mesh,point).station();var sample=RoadStructures.sample(mesh,station);
++    V origin=sample.center(),forward=sample.left().left().mul(-1),right=forward.left();
++    var layout=RoadProfile.layout(mesh,sample);
++    double halfWidth=sample.halfWidth()+(mesh.settings().options().sidewalk().enabled()?mesh.settings().options().sidewalk().width():0)+3;
++    double halfLength=Math.max(5,halfWidth*(height-20)/Math.max(1,width-20));
++    var painter=new JunctionPreview.Painter(new V(-halfWidth,0,-halfLength),new V(halfWidth,0,halfLength),width,height);
++    var hit=new JunctionPreview.Painter(new V(-halfWidth,0,-halfLength),new V(halfWidth,0,halfLength),width,height);
++    Arrays.fill(hit.pixels,-1);Arrays.fill(painter.pixels,0xff28382e);
++    java.util.function.Function<V,V> project=v->{var d=v.sub(origin);return new V(d.dot(right),v.y(),-d.dot(forward));};
++    double window=Math.hypot(halfWidth,halfLength)+6,lo=Math.max(0,station-window),hi=Math.min(mesh.length(),station+window);
++    var samples=new ArrayList<Sample>();samples.add(RoadStructures.sample(mesh,lo));
++    for(var s:mesh.samples())if(s.distance()>lo&&s.distance()<hi)samples.add(s);
++    samples.add(RoadStructures.sample(mesh,hi));
++    // Keep original stations and total length: actual taper widths and painted intervals stay exact.
++    var visible=new Mesh(samples,mesh.settings(),mesh.min(),mesh.max(),mesh.length(),false,mesh.controlPoint());
++    for(var part:RoadSidewalks.parts(visible,mesh.settings().options().sidewalk()))
++      painter.polygon(part.base().stream().map(project).toList(),part.material()==RoadStructures.Material.TACTILE?0xffdbc449:0xff929a99);
++    var surface=RoadSurface.build(visible,List.of(),List.of());
++    for(var face:surface.pavement())painter.polygon(face.points().stream().map(project).toList(),0xff000000|face.color());
++    for(int lane=0;lane<layout.catalog().lanes();lane++)for(int i=1;i<samples.size();i++) {
++      var a=LanePoints.lane(mesh,samples.get(i-1).distance(),lane);var b=LanePoints.lane(mesh,samples.get(i).distance(),lane);
++      V al=samples.get(i-1).left().mul(a.width()/2),bl=samples.get(i).left().mul(b.width()/2);
++      var quad=List.of(a.position().sub(al),a.position().add(al),b.position().add(bl),b.position().sub(bl)).stream().map(project).toList();
++      hit.polygon(quad,lane);if(lane==selected)painter.polygon(quad,0xff36566b);
++    }
++    for(var face:surface.markings())painter.marking(face.points().stream().map(project).toList(),0xff000000|face.color());
++    // Direction arrows belong to the selected station, including opposite carriageways.
++    var markers=new ArrayList<Marker>();
++    for(int lane=0;lane<layout.catalog().lanes();lane++) {
++      var lanePoint=LanePoints.lane(mesh,station,lane);V center=project.apply(lanePoint.position()),direction=lanePoint.direction();
++      V arrow=lanePoint.position().add(direction.mul(3)),tip=arrow.add(direction.mul(1.4));
++      painter.line(project.apply(arrow.sub(direction)),project.apply(tip),0xfff4f1df);
++      painter.line(project.apply(tip),project.apply(tip.sub(direction).add(direction.left().mul(.6))),0xfff4f1df);
++      painter.line(project.apply(tip),project.apply(tip.sub(direction).sub(direction.left().mul(.6))),0xfff4f1df);
++      V end=project.apply(lanePoint.position().add(direction));
++      markers.add(new Marker(lane,painter.x(center),painter.y(center),painter.x(end)-painter.x(center),painter.y(end)-painter.y(center)));
++    }
++    return new Image(width,height,painter.pixels,hit.pixels,List.copyOf(markers));
++  }
++  private LanePointPreview(){}
++}
+diff --git a/src/main/java/com/sora/splineroads/core/LaneRampPaths.java b/src/main/java/com/sora/splineroads/core/LaneRampPaths.java
+index 1a181dc..922d907 100644
+--- a/src/main/java/com/sora/splineroads/core/LaneRampPaths.java
++++ b/src/main/java/com/sora/splineroads/core/LaneRampPaths.java
+@@ -9,19 +9,39 @@ public final class LaneRampPaths {
+   public record Candidate(LanePoints.Path path,Mesh mesh){}
+   private record Frame(V p,V d){}
+   public static List<Candidate> candidates(Port a,Port b,Settings settings,LanePoints.Options options){
+-    List<Candidate> out=new ArrayList<>();String error="空间不足，无法生成同向接头";
++    List<Candidate> out=new ArrayList<>();var errors=new EnumMap<LanePoints.Path,String>(LanePoints.Path.class);
+     for(var kind:options.path()==LanePoints.Path.AUTO?List.of(LanePoints.Path.DIRECT,LanePoints.Path.RIGHT,LanePoints.Path.LEFT_LOOP):List.of(options.path()))for(double lift:kind==LanePoints.Path.LEFT_LOOP?new double[]{0,6,8,10,12,16}:new double[]{0})try{
+       out.add(new Candidate(kind,generate(a,b,settings,options,kind,lift)));
+-    }catch(IllegalArgumentException e){error=e.getMessage();}
+-    if(out.isEmpty())throw new IllegalArgumentException(error);
++    }catch(IllegalArgumentException e){errors.put(kind,e.getMessage());}
++    if(out.isEmpty())throw new IllegalArgumentException(failure(a,b,options,errors));
+     out.sort(Comparator.comparingDouble(c->c.mesh().length()));return List.copyOf(out);
+   }
++  public static String failure(Port a,Port b,LanePoints.Options options,Map<LanePoints.Path,String> errors){
++    var preferred=options.path();
++    if(preferred==LanePoints.Path.AUTO){double turn=positive(angle(b.direction())-angle(a.direction()));preferred=a.direction().dot(b.direction())>.75?LanePoints.Path.DIRECT:turn<=Math.PI?LanePoints.Path.RIGHT:LanePoints.Path.LEFT_LOOP;}
++    String error=errors.get(preferred);if(error==null)return "自动未找到可用路径："+String.join("；",errors.values());
++    return (options.path()==LanePoints.Path.AUTO?"自动 / ":"")+preferred.label+"："+error;
++  }
+   private static Mesh generate(Port a,Port b,Settings settings,LanePoints.Options o,LanePoints.Path kind,double lift){
+     if(a.position().sub(b.position()).horizontalLength()>2048)throw new IllegalArgumentException("匝道端点距离不能超过 2048 格");
+     double transition=o.transition();V pa=a.position(),pb=b.position();List<Frame> frames=new ArrayList<>();
+     if(o.sourceExtra()) {pa=pa.add(a.direction().mul(transition)).add(a.outside().mul(a.extraWidth()));bezier(frames,a.position(),a.direction(),pa,a.direction(),transition/3);}
+     if(o.targetExtra())pb=pb.sub(b.direction().mul(transition)).add(b.outside().mul(b.extraWidth()));
+-    if(kind!=LanePoints.Path.DIRECT){if(!o.sourceExtra()){V lead=pa.add(a.direction().mul(transition));line(frames,pa,lead,a.direction());pa=lead;}if(!o.targetExtra())pb=pb.sub(b.direction().mul(transition));}
++    double leadA=transition,leadB=transition;
++    if(kind==LanePoints.Path.RIGHT){
++      double turn=positive(angle(b.direction())-angle(a.direction()));
++      if(turn>Math.PI+1e-5)throw new IllegalArgumentException("所选车道方向需要左转，右转样式不能反转车道方向");
++      double cross=a.direction().x()*b.direction().z()-a.direction().z()*b.direction().x();
++      if(cross>1e-6){
++        V delta=pb.sub(pa);double tangent=o.radius()*Math.tan(turn/2);
++        double availableA=(delta.x()*b.direction().z()-delta.z()*b.direction().x())/cross-tangent;
++        double availableB=(a.direction().x()*delta.z()-a.direction().z()*delta.x())/cross-tangent;
++        // Retain the requested radius and explicit extra-lane tapers; shorten only optional straight leads.
++        if(!o.sourceExtra())leadA=Math.min(transition,Math.max(0,availableA));
++        if(!o.targetExtra())leadB=Math.min(transition,Math.max(0,availableB));
++      }
++    }
++    if(kind!=LanePoints.Path.DIRECT){if(!o.sourceExtra()){V lead=pa.add(a.direction().mul(leadA));if(leadA>1e-6)line(frames,pa,lead,a.direction());pa=lead;}if(!o.targetExtra())pb=pb.sub(b.direction().mul(leadB));}
+     if(kind==LanePoints.Path.DIRECT){
+       V delta=pb.sub(pa);if(delta.dot(a.direction())<2||delta.dot(b.direction())<2||a.direction().dot(b.direction())<.75)throw new IllegalArgumentException("直接连接需要两端大致同向且前方有过渡空间；请尝试自动或回环");
+       bezier(frames,pa,a.direction(),pb,b.direction(),Math.max(4,Math.min(delta.horizontalLength()*.42,Math.max(o.radius(),transition))));
+@@ -29,11 +49,16 @@ public final class LaneRampPaths {
+       // Right uses an external tangent (RSR); the left loop uses an internal
+       // tangent (RSL) with a long right arc and a small left alignment arc.
+       double r=o.radius();V ca=pa.add(a.direction().left().mul(r)),cb=pb.add(b.direction().left().mul(kind==LanePoints.Path.LEFT_LOOP?-r:r));
+-      V delta=cb.sub(ca);if(delta.horizontalLength()<.1)throw new IllegalArgumentException("回环圆心重合，请调整半径或点位");V tangent=delta.horizontalUnit();if(kind==LanePoints.Path.LEFT_LOOP){double length=delta.horizontalLength();if(length<=2*r)throw new IllegalArgumentException("回环内公切线空间不足，请扩大间距");double theta=angle(tangent)+Math.asin(2*r/length);tangent=new V(Math.cos(theta),0,Math.sin(theta));}
++      V delta=cb.sub(ca);
++      if(kind==LanePoints.Path.RIGHT&&delta.horizontalLength()<1e-6){
++        arc(frames,ca,r,angle(a.direction()),positive(angle(b.direction())-angle(a.direction())));
++      }else{
++      if(delta.horizontalLength()<1e-6)throw new IllegalArgumentException("回环圆心重合，请调整半径或点位");V tangent=delta.horizontalUnit();if(kind==LanePoints.Path.LEFT_LOOP){double length=delta.horizontalLength();if(length<=2*r)throw new IllegalArgumentException("回环内公切线空间不足，请扩大间距");double theta=angle(tangent)+Math.asin(2*r/length);tangent=new V(Math.cos(theta),0,Math.sin(theta));}
+       double aa=angle(a.direction()),bb=angle(b.direction()),tt=angle(tangent),turnA=positive(tt-aa),turnB=positive(kind==LanePoints.Path.LEFT_LOOP?tt-bb:bb-tt),turn=kind==LanePoints.Path.LEFT_LOOP?turnA-turnB:turnA+turnB;
+-      if(kind==LanePoints.Path.RIGHT&&turn>Math.PI+1e-5)throw new IllegalArgumentException("当前布局需要回环，不能冒充右转");
++      if(kind==LanePoints.Path.RIGHT&&turn>Math.PI+1e-5)throw new IllegalArgumentException("当前半径或扩出过渡放不进右转空间，请减小半径、关闭扩出或调整选点");
+       if(kind==LanePoints.Path.LEFT_LOOP&&turn<Math.PI+1e-5)throw new IllegalArgumentException("当前布局没有左转回环空间，请移动点位或改用其他样式");
+       arc(frames,ca,r,aa,turnA);V ta=ca.sub(tangent.left().mul(r)),tb=cb.sub(tangent.left().mul(kind==LanePoints.Path.LEFT_LOOP?-r:r));line(frames,ta,tb,tangent);if(kind==LanePoints.Path.LEFT_LOOP)arcLeft(frames,cb,r,tt,turnB);else arc(frames,cb,r,tt,turnB);
++      }
+     }
+     if(kind!=LanePoints.Path.DIRECT&&!o.targetExtra())line(frames,pb,b.position(),b.direction());
+     if(o.targetExtra())bezier(frames,pb,b.direction(),b.position(),b.direction(),transition/3);
+@@ -51,7 +76,7 @@ public final class LaneRampPaths {
+   }
+   public static void checkVolume(Mesh mesh){var p=mesh.samples();double width=mesh.settings().width(),clearance=4+mesh.settings().thickness();for(int i=0;i<p.size();i+=3)for(int j=i+3;j<p.size();j+=3){var a=p.get(i);var b=p.get(j);if(b.distance()-a.distance()<width*3)continue;double horizontal=a.center().sub(b.center()).horizontalLength();if(horizontal<width+.35&&Math.abs(a.center().y()-b.center().y())<clearance-.05)throw new IllegalArgumentException("回环路面体积净空不足，请增大半径、间距或过渡长度");}}
+   private static double angle(V d){return Math.atan2(d.z(),d.x());}
+-  private static double positive(double a){double v=a%(2*Math.PI);return v<0?v+2*Math.PI:v;}
++  private static double positive(double a){double v=a%(2*Math.PI);if(v<0)v+=2*Math.PI;return v<1e-10||2*Math.PI-v<1e-10?0:v;}
+   private static void add(List<Frame> f,V p,V d){if(!f.isEmpty()&&f.get(f.size()-1).p().sub(p).horizontalLength()<1e-6)return;if(f.size()>=RoadLimits.MAX_SAMPLES)throw new IllegalArgumentException("匝道过长");f.add(new Frame(p,d));}
+   private static void arc(List<Frame> f,V c,double r,double start,double turn){int n=Math.max(1,(int)Math.ceil(r*turn/.65));for(int i=0;i<=n;i++){double t=start+turn*i/n;V d=new V(Math.cos(t),0,Math.sin(t));add(f,c.sub(d.left().mul(r)),d);}}
+   private static void arcLeft(List<Frame> f,V c,double r,double start,double turn){int n=Math.max(1,(int)Math.ceil(r*turn/.65));for(int i=0;i<=n;i++){double t=start-turn*i/n;V d=new V(Math.cos(t),0,Math.sin(t));add(f,c.add(d.left().mul(r)),d);}}
+diff --git a/src/main/java/com/sora/splineroads/net/RoadNetwork.java b/src/main/java/com/sora/splineroads/net/RoadNetwork.java
+index c14404b..a71d28e 100644
+--- a/src/main/java/com/sora/splineroads/net/RoadNetwork.java
++++ b/src/main/java/com/sora/splineroads/net/RoadNetwork.java
+@@ -18,7 +18,7 @@ import net.minecraftforge.network.*;
+ import net.minecraftforge.network.simple.SimpleChannel;
+ 
+ public final class RoadNetwork {
+-  private static final String PROTOCOL = "49";
++  private static final String PROTOCOL = "50";
+   public static final SimpleChannel CHANNEL =
+       NetworkRegistry.newSimpleChannel(
+           ResourceLocation.fromNamespaceAndPath(SplineRoads.ID, "roads"),
+@@ -193,6 +193,22 @@ public final class RoadNetwork {
+       if (!Collections.disjoint(built.chunks, watching(player).chunks)) road(player, r);
+   }
+ 
++  /** Ordered, small point delta; a client still loading the host gets a full latest snapshot. */
++  public static void broadcastLanePoints(ServerLevel level, RoadRecord before, RoadRecord after) {
++    var built = RoadData.get(level).index.roads.get(after.id());
++    for (var player : level.players()) {
++      var state = watching(player);
++      if (Collections.disjoint(built.chunks, state.chunks)) continue;
++      if (state.sent.get(before.id()) == before && !state.pending.containsKey(before.id())) {
++        var t = new CompoundTag();
++        t.putString("Type", "lanePoints");t.putString("Dimension", state.dimension);
++        t.putUUID("Id", before.id());t.putInt("Signature", before.header().hashCode());
++        t.put("Points", LanePointCodec.write(LaneTopology.metadata(after)));
++        send(player, t);state.sent.put(after.id(), after);
++      } else road(player, after);
++    }
++  }
++
+   public static void broadcastDelete(ServerLevel level, UUID id) {
+     CompoundTag t = new CompoundTag();
+     t.putString("Type", "delete");
+@@ -224,6 +240,16 @@ public final class RoadNetwork {
+   }
+ 
+   private static void act(ServerPlayer player, CompoundTag t) {
++    if(t.getString("Action").equals("lanePointReady")) {
++      if(t.hasUUID("Interaction")) LanePointTool.acknowledge(player,t.getUUID("Interaction"));
++      return;
++    }
++    if(t.getString("Action").equals("lanePointResync")) {
++      var b=RoadData.get(player.serverLevel()).index.roads.get(t.getUUID("Id"));
++      var state=watching(player);
++      if(b!=null&&!Collections.disjoint(b.chunks,state.chunks)){state.sent.remove(b.record.id());road(player,b.record);}
++      return;
++    }
+     if(t.getString("Action").equals("interchangePreview")||t.getString("Action").equals("laneRampPreview")){
+       try{perform(player,t);}catch(IllegalArgumentException e){
+         CompoundTag reply=new CompoundTag();reply.putString("Kind",t.getString("Action").equals("laneRampPreview")?"laneRampCheck":"corridorCheck");reply.putLong("Request",t.getLong("Request"));reply.putString("Dimension",player.level().dimension().location().toString());reply.putString("Error",e.getMessage()==null?"预览参数无效":e.getMessage());open(player,reply);
+diff --git a/src/main/java/com/sora/splineroads/world/LanePointTool.java b/src/main/java/com/sora/splineroads/world/LanePointTool.java
+index e4d8d68..eb75ae7 100644
+--- a/src/main/java/com/sora/splineroads/world/LanePointTool.java
++++ b/src/main/java/com/sora/splineroads/world/LanePointTool.java
+@@ -15,16 +15,32 @@ import java.util.*;
+ 
+ public final class LanePointTool extends Item {
+   public LanePointTool(){super(new Properties().stacksTo(1));}
++  private record Pending(UUID token,long expires) {}
++  private static final Map<ServerPlayer,Pending> OPENING=new WeakHashMap<>();
++  static UUID pendingToken(ServerPlayer p){var v=OPENING.get(p);return v==null?null:v.token();}
++  public static void acknowledge(ServerPlayer p,UUID token){var v=OPENING.get(p);if(v!=null&&v.token().equals(token))OPENING.remove(p);}
++  private static void open(ServerPlayer p,RoadRecord r,LanePoints.Point point){
++    var t=payload(RoadData.get(p.serverLevel()),r,point);UUID token=UUID.randomUUID();
++    OPENING.put(p,new Pending(token,p.serverLevel().getGameTime()+100));t.putUUID("Interaction",token);RoadNetwork.open(p,t);
++  }
+   public record Pick(RoadRecord road,LanePoints.Point point,double distance){}
+   public static Pick pick(ServerPlayer player){Vec3 eye=player.getEyePosition(),end=eye.add(player.getLookAngle().scale(96));double stop=player.pick(96,0,false).getLocation().distanceTo(eye)+.7;List<Pick> hits=new ArrayList<>();for(var b:RoadData.get(player.serverLevel()).index.roads.values())for(var p:LaneTopology.metadata(b.record).points()){V v=p.position();var hit=new AABB(v.x()-.26,v.y()+.03,v.z()-.26,v.x()+.26,v.y()+.55,v.z()+.26).clip(eye,end);if(hit.isPresent()&&hit.get().distanceTo(eye)<stop)hits.add(new Pick(b.record,p,hit.get().distanceTo(eye)));}hits.sort(Comparator.comparingDouble(Pick::distance));if(hits.isEmpty())return null;double nearest=hits.get(0).distance();return hits.stream().filter(h->h.distance()<nearest+.15).min(Comparator.comparingInt(h->h.point().automatic()==player.isShiftKeyDown()?0:1)).orElse(hits.get(0));}
+   public static LanePoints.Point create(ServerLevel level,ServerPlayer player,UUID id,V hit){var data=RoadData.get(level);var b=data.index.roads.get(id);if(b==null||b.record.junction()!=null)throw new IllegalArgumentException("请在独立路段的机动车道上放点");if(player!=null)RoadData.requireOwner(player,b.record.owner());var lane=LanePoints.clicked(b.mesh,hit);var md=LaneTopology.metadata(b.record);var existing=md.points().stream().filter(p->!p.automatic()&&p.lane()==lane.index()&&p.position().distance(lane.position())<.65).findFirst();if(existing.isPresent())return existing.get();var p=LanePoints.point(UUID.randomUUID(),LanePoints.Origin.MANUAL,b.mesh,lane.station(),lane.index());var points=new ArrayList<>(md.points());points.add(p);update(level,player,b.record,md.points(points),Set.of());return p;}
+-  private void select(ServerPlayer p,V hit){try{if(!p.mayBuild()||p.isSpectator())throw new IllegalArgumentException("没有建设权限");var picked=pick(p);if(picked!=null&&!(p.isShiftKeyDown()&&picked.point().automatic()&&LaneTopology.metadata(picked.road()).points().stream().noneMatch(v->!v.automatic()&&v.position().distance(picked.point().position())<.65))){RoadData.requireOwner(p,picked.road().owner());RoadNetwork.open(p,payload(RoadData.get(p.serverLevel()),picked.road(),picked.point()));return;}var b=RoadTool.pick(p);if(b==null||hit==null)throw new IllegalArgumentException("请右键机动车道创建蓝色车道点，或右键已有蓝色点");var point=create(p.serverLevel(),p,b.record.id(),hit);RoadNetwork.open(p,payload(RoadData.get(p.serverLevel()),RoadData.get(p.serverLevel()).index.roads.get(b.record.id()).record,point));}catch(IllegalArgumentException e){p.displayClientMessage(Component.literal(e.getMessage()),false);}}
++  private void select(ServerPlayer p,V hit){var pending=OPENING.get(p);if(pending!=null&&p.serverLevel().getGameTime()<pending.expires())return;try{if(!p.mayBuild()||p.isSpectator())throw new IllegalArgumentException("没有建设权限");var picked=pick(p);if(picked!=null&&!(p.isShiftKeyDown()&&picked.point().automatic()&&LaneTopology.metadata(picked.road()).points().stream().noneMatch(v->!v.automatic()&&v.position().distance(picked.point().position())<.65))){RoadData.requireOwner(p,picked.road().owner());open(p,picked.road(),picked.point());return;}var b=RoadTool.pick(p);if(b==null||hit==null)throw new IllegalArgumentException("请右键机动车道创建蓝色车道点，或右键已有蓝色点");var point=create(p.serverLevel(),p,b.record.id(),hit);open(p,RoadData.get(p.serverLevel()).index.roads.get(b.record.id()).record,point);}catch(IllegalArgumentException e){p.displayClientMessage(Component.literal(e.getMessage()),false);}}
+   @Override public InteractionResult useOn(UseOnContext c){if(c.getPlayer() instanceof ServerPlayer p){var h=c.getClickLocation();select(p,new V(h.x,h.y,h.z));}return InteractionResult.sidedSuccess(c.getLevel().isClientSide);}
+   @Override public InteractionResultHolder<ItemStack> use(Level l,Player p,InteractionHand hand){if(p instanceof ServerPlayer sp)select(sp,null);return InteractionResultHolder.sidedSuccess(p.getItemInHand(hand),l.isClientSide);}
+   public static CompoundTag payload(RoadData data,RoadRecord r,LanePoints.Point p){var t=new CompoundTag();t.putString("Kind","lanePoint");t.put("Road",r.header());t.putUUID("Id",r.id());t.putUUID("Point",p.id());t.putInt("Signature",r.header().hashCode());t.putBoolean("Supported",r.assembly()==null&&LanePoints.supported(r.settings()));var refs=LaneTopology.references(LaneTopology.records(data).values(),LanePoints.Ref.lane(r.id(),p.id()));var dependencies=LaneTopology.dependents(data,new HashSet<>(refs));var all=new TreeSet<UUID>(refs);all.addAll(dependencies);var list=new ListTag();all.forEach(id->list.add(StringTag.valueOf(id.toString())));t.put("Dependencies",list);return t;}
+   public static String edit(ServerLevel level,ServerPlayer player,CompoundTag t){var data=RoadData.get(level);var b=data.index.roads.get(t.getUUID("Id"));if(b==null)throw new IllegalArgumentException("道路已不存在");var r=b.record;if(player!=null)RoadData.requireOwner(player,r.owner());if(t.getInt("Signature")!=r.header().hashCode())throw new IllegalArgumentException("道路已变化，请重新打开车道点");var md=LaneTopology.metadata(r);var p=LaneTopology.point(r,t.getUUID("Point"));if(p.automatic())throw new IllegalArgumentException("自动尽头点不能删除或切换车道");var points=new ArrayList<>(md.points());Set<UUID> removed=new HashSet<>();
+     if(t.getBoolean("Delete")){var refs=LaneTopology.references(LaneTopology.records(data).values(),LanePoints.Ref.lane(r.id(),p.id()));removed.addAll(refs);removed.addAll(LaneTopology.dependents(data,removed));LaneDeletes.requireConfirmation(t,removed);if(player!=null)for(UUID id:removed)RoadData.requireOwner(player,data.index.roads.get(id).record.owner());points.remove(p);}else{int lane=t.getInt("Lane");var selected=LanePoints.lane(b.mesh,LanePoints.lane(b.mesh,p).station(),lane);points.set(points.indexOf(p),p.at(selected,b.mesh));}
+     update(level,player,r,md.points(points),removed);return t.getBoolean("Delete")?"手动车道点及确认的依赖匝道已删除":"车道已切换，依赖匝道已同步重建";}
+-  private static void update(ServerLevel level,ServerPlayer player,RoadRecord r,LanePoints.Data md,Set<UUID> deleted){var removed=new HashSet<>(deleted);removed.add(r.id());RoadData.get(level).replaceAssembly(level,player,List.of(new RoadIndex.Built(r.withLanePoints(md))),removed,Set.of(r.a(),r.b()));}
++  private static void update(ServerLevel level,ServerPlayer player,RoadRecord r,LanePoints.Data md,Set<UUID> deleted){
++    var data=RoadData.get(level);boolean referenced=false;
++    for(var p:LaneTopology.metadata(r).points()) {
++      var next=md.points().stream().filter(v->v.id().equals(p.id())).findFirst().orElse(null);
++      if(!p.equals(next)&&!LaneTopology.references(LaneTopology.records(data).values(),LanePoints.Ref.lane(r.id(),p.id())).isEmpty()){referenced=true;break;}
++    }
++    if(!referenced&&deleted.isEmpty()){data.updateLanePointMetadata(level,player,r,md);return;}
++    var removed=new HashSet<>(deleted);removed.add(r.id());data.replaceAssembly(level,player,List.of(new RoadIndex.Built(r.withLanePoints(md))),removed,Set.of(r.a(),r.b()));
++  }
+   @Override public void appendHoverText(ItemStack s,Level l,List<Component> lines,TooltipFlag f){lines.add(Component.literal("右键机动车道吸附到该车道中轴线；右键蓝色点编辑"));lines.add(Component.literal("Shift＋右键自动点创建手动点；重合时 Shift 选择自动点"));}
+ }
+diff --git a/src/main/java/com/sora/splineroads/world/LaneRamps.java b/src/main/java/com/sora/splineroads/world/LaneRamps.java
+index 9160271..b2f5125 100644
+--- a/src/main/java/com/sora/splineroads/world/LaneRamps.java
++++ b/src/main/java/com/sora/splineroads/world/LaneRamps.java
+@@ -11,12 +11,14 @@ import net.minecraft.world.item.ItemStack;
+ public final class LaneRamps {
+   public static RoadRecord host(Map<UUID,RoadRecord> all,LanePoints.Ref ref){var r=all.get(ref.road());if(r==null)throw new IllegalArgumentException("所选道路已不存在");if(r.assembly()!=null||r.junction()!=null||!LanePoints.supported(r.settings()))throw new IllegalArgumentException("连接器仅支持独立普通／高速的地面、自动高架、标准小河桥、梁式高架与跨线桥；不支持立交内部道路");LaneTopology.point(r,ref.point());return r;}
+   public static LaneRampPaths.Port port(RoadRecord road,LanePoints.Point p){var mesh=road.mesh();var l=LanePoints.lane(mesh,p);var sample=RoadStructures.sample(mesh,l.station());var layout=RoadProfile.layout(mesh,sample);double lateral=l.position().sub(sample.center()).dot(sample.left());int side=layout.catalog().twoWay()?(lateral<0?-1:1):layout.outside();double edge=side<0?-layout.motorMin():layout.motorMax();double distance=Math.max(l.width(),edge-side*lateral+l.width()/2);double step=Math.min(.5,mesh.length()/10);var before=RoadStructures.sample(mesh,Math.max(0,l.station()-step));var after=RoadStructures.sample(mesh,Math.min(mesh.length(),l.station()+step));V delta=after.center().sub(before.center());double grade=delta.y()/Math.max(.001,delta.horizontalLength())*l.sign();return new LaneRampPaths.Port(l.position(),l.direction(),sample.left().mul(side),distance,grade);}
+-  static RoadRecord generate(RoadData data,Map<UUID,RoadRecord> all,UUID id,UUID owner,LanePoints.Link link){
++  private record Generated(RoadRecord road,LanePoints.Path path) {}
++  static RoadRecord generate(RoadData data,Map<UUID,RoadRecord> all,UUID id,UUID owner,LanePoints.Link link){return generateChoice(data,all,id,owner,link).road();}
++  private static Generated generateChoice(RoadData data,Map<UUID,RoadRecord> all,UUID id,UUID owner,LanePoints.Link link){
+     var source=host(all,link.from());var p=LaneTopology.point(source,link.from().point());var lane=LanePoints.lane(source.mesh(),p);var a=port(source,p);LaneRampPaths.Port b;
+     if(link.to().road()!=null){var target=host(all,link.to());b=port(target,LaneTopology.point(target,link.to().point()));}else{var spec=RampJunctions.spec(data,link.to().junction());V d=spec.center().sub(link.junctionMouth()).horizontalUnit();b=new LaneRampPaths.Port(link.junctionMouth(),d,d.left(),lane.width(),0);}
+     Style style=RoadProfile.catalog(source.settings().style()).type()==RoadProfile.Type.HIGHWAY?Style.H1_ONE:Style.O1_ONE;
+     var settings=new Settings(Mode.CURVE,style,Math.max(4,lane.width()+1),source.settings().thickness(),.35,90).structure(Structure.AUTO).options(RoadProfile.Options.DEFAULT.traffic(source.settings().options().leftTraffic()).lanePoints(LanePoints.Data.EMPTY.link(link)));
+-    String error="没有满足净空的路径";for(var candidate:LaneRampPaths.candidates(a,b,settings,link.options()))try{Mesh mesh=candidate.mesh();validate(mesh,all,id,link);var start=RoadRibbon.start(mesh);var end=RoadRibbon.end(mesh);return new RoadRecord(id,owner,RampJunctions.at(start.position()),RampJunctions.at(end.position()),start,end,settings,false,4).alignment(null,mesh);}catch(IllegalArgumentException e){error=e.getMessage();}throw new IllegalArgumentException(error);
++    var errors=new EnumMap<LanePoints.Path,String>(LanePoints.Path.class);for(var candidate:LaneRampPaths.candidates(a,b,settings,link.options()))try{Mesh mesh=candidate.mesh();validate(mesh,all,id,link);var start=RoadRibbon.start(mesh);var end=RoadRibbon.end(mesh);return new Generated(new RoadRecord(id,owner,RampJunctions.at(start.position()),RampJunctions.at(end.position()),start,end,settings,false,4).alignment(null,mesh),candidate.path());}catch(IllegalArgumentException e){errors.put(candidate.path(),e.getMessage());}throw new IllegalArgumentException(LaneRampPaths.failure(a,b,link.options(),errors));
+   }
+   static Set<UUID> contactRoads(Map<UUID,RoadRecord> all,LanePoints.Ref ref){Set<UUID> result=new LinkedHashSet<>();if(ref.road()==null)return result;result.add(ref.road());boolean added;do{added=false;for(UUID id:new ArrayList<>(result)){var a=all.get(id);if(a==null||!RoadContinuity.eligible(a.mesh()))continue;for(var b:all.values()){if(result.contains(b.id())||b.assembly()!=null||b.junction()!=null||LaneTopology.metadata(b).link()!=null)continue;for(BlockPos node:List.of(a.a(),a.b()))if(b.a().equals(node)||b.b().equals(node)){long degree=all.values().stream().filter(v->LaneTopology.metadata(v).link()==null&&(v.a().equals(node)||v.b().equals(node))).count();if(degree==2&&RoadContinuity.compatible(a.mesh(),b.mesh(),a.a().equals(node)?a.start().position():a.end().position()))added|=result.add(b.id());}}}if(result.size()>256)throw new IllegalArgumentException("连续接头范围过大");}while(added);return result;}
+   private static int contactEnd(Mesh mesh,Map<UUID,RoadRecord> all,Set<UUID> hosts,boolean first){int n=mesh.samples().size(),i=first?0:n-1;while(i>=0&&i<n){var sample=mesh.samples().get(i);boolean touching=false;for(UUID host:hosts)if(contact(sample,all.get(host).mesh(),0,sample.center())){touching=true;break;}if(!touching)break;i+=first?1:-1;}return Math.max(0,Math.min(n-1,i+(first?2:-2)));}
+@@ -34,10 +36,10 @@ public final class LaneRamps {
+   private static void selection(ServerPlayer p,ItemStack tool,CompoundTag t){var state=tool.getOrCreateTag();if(!state.contains("LaneFrom")||!state.contains("LaneTo")||!state.getCompound("LaneFrom").equals(t.getCompound("From"))||!state.getCompound("LaneTo").equals(t.getCompound("To"))||!p.level().dimension().location().toString().equals(state.getString("LaneDimension")))throw new IllegalArgumentException("匝道选择已失效，请先选汇出点，再选汇入点");}
+   public static CompoundTag preview(ServerPlayer player,ItemStack tool,CompoundTag t){selection(player,tool,t);var data=RoadData.get(player.serverLevel());var from=LanePointCodec.ref(t.getCompound("From"));var to=LanePointCodec.ref(t.getCompound("To"));var options=LanePointCodec.options(t.getCompound("Options"));var all=LaneTopology.records(data);var source=host(all,from);RoadData.requireOwner(player,source.owner());if(to.road()!=null)RoadData.requireOwner(player,host(all,to).owner());else RoadData.requireOwner(player,data.junctions.getOrDefault(to.junction(),new CompoundTag()).getUUID("Owner"));
+     V mouth=to.junction()==null?null:RampJunctions.mouth(data,to.junction(),LaneTopology.point(source,from.point()).position(),new Settings(Mode.STRAIGHT,Style.O1_ONE,Math.max(4,LanePoints.lane(source.mesh(),LaneTopology.point(source,from.point())).width()+1),1,.35,90));
+-    var link=new LanePoints.Link(from,to,options,mouth);UUID id=UUID.randomUUID();RoadRecord r=generate(data,all,id,player.getUUID(),link);
++    var link=new LanePoints.Link(from,to,options,mouth);UUID id=UUID.randomUUID();var generated=generateChoice(data,all,id,player.getUUID(),link);RoadRecord r=generated.road();
+     var staging=new LinkedHashMap<>(all);staging.put(id,r);RampJunctions.reconcile(data,staging); // Validate actual junction arm geometry in preview, too.
+     var checked=new CompoundTag();checked.put("Road",r.header());checked.putInt("FromSignature",signature(data,from));checked.putInt("ToSignature",signature(data,to));checked.putUUID("Token",UUID.randomUUID());tool.getOrCreateTag().put("LanePreview",checked);
+-    var reply=new CompoundTag();reply.putString("Kind","laneRampCheck");reply.putLong("Request",t.getLong("Request"));reply.put("Road",r.header());reply.putUUID("Token",checked.getUUID("Token"));return reply;
++    var reply=new CompoundTag();reply.putString("Kind","laneRampCheck");reply.putString("ResolvedPath",generated.path().name());reply.putLong("Request",t.getLong("Request"));reply.put("Road",r.header());reply.putUUID("Token",checked.getUUID("Token"));return reply;
+   }
+   public static String build(ServerPlayer player,ItemStack tool,CompoundTag t){selection(player,tool,t);var checked=tool.getOrCreateTag().getCompound("LanePreview");if(!checked.hasUUID("Token")||!t.hasUUID("Token")||!checked.getUUID("Token").equals(t.getUUID("Token")))throw new IllegalArgumentException("请先检查当前设置的预览");var r=RoadRecord.load(checked.getCompound("Road"));var link=LaneTopology.metadata(r).link();var data=RoadData.get(player.serverLevel());if(!LanePointCodec.options(link.options()).equals(t.getCompound("Options"))||checked.getInt("FromSignature")!=signature(data,link.from())||checked.getInt("ToSignature")!=signature(data,link.to()))throw new IllegalArgumentException("道路或选项已变化，请重新预览");
+     build(data,player.serverLevel(),player,r);tool.getOrCreateTag().remove("LaneFrom");tool.getOrCreateTag().remove("LaneTo");tool.getOrCreateTag().remove("LanePreview");return "匝道已建成，车道点引用生效";
+diff --git a/src/main/java/com/sora/splineroads/world/RoadData.java b/src/main/java/com/sora/splineroads/world/RoadData.java
+index 8c9c7ab..4b9ece8 100644
+--- a/src/main/java/com/sora/splineroads/world/RoadData.java
++++ b/src/main/java/com/sora/splineroads/world/RoadData.java
+@@ -645,6 +645,28 @@ public final class RoadData extends SavedData {
+     index.put(RoadIndex.Built.loading(next));if(streets.containsKey(r.id()))streets.put(r.id(),streets.get(r.id()).settings(next.settings()));setDirty();RoadNetwork.broadcastRoad(level,next);
+   }
+ 
++  /** Unreferenced lane markers are metadata, not a road construction transaction. */
++  void updateLanePointMetadata(ServerLevel level, ServerPlayer player, RoadRecord r, LanePoints.Data value) {
++    value=value.points(java.util.stream.Stream.concat(value.points().stream().filter(p->!p.automatic()),value.points().stream().filter(LanePoints.Point::automatic)).toList());
++    if (player != null) {
++      requireOwner(player, r.owner());
++      if (!player.mayBuild() || player.isSpectator()) throw new IllegalArgumentException("没有建设权限");
++      for (var point : value.points())
++        if (!level.mayInteract(player, BlockPos.containing(point.position().x(), point.position().y(), point.position().z())))
++          throw new IllegalArgumentException("车道点位于受保护区域");
++    }
++    var before = LaneTopology.metadata(r);
++    for (var point : before.points()) {
++      var next = value.points().stream().filter(p -> p.id().equals(point.id())).findFirst().orElse(null);
++      if (!point.equals(next) && !LaneTopology.references(index.roads.values().stream().map(b -> b.record).toList(), LanePoints.Ref.lane(r.id(), point.id())).isEmpty())
++        throw new IllegalArgumentException("已使用的车道点必须同步重建依赖匝道");
++    }
++    var next = index.lanePoints(r.id(), value).record;
++    if (streets.containsKey(r.id())) streets.put(r.id(), streets.get(r.id()).withLanePoints(value));
++    setDirty();
++    RoadNetwork.broadcastLanePoints(level, r, next);
++  }
++
+   public void editLaneLine(ServerLevel level,ServerPlayer player,CompoundTag t){
+     var built=index.roads.get(t.getUUID("Id"));if(built==null||built.record.junction()!=null)throw new IllegalArgumentException("路段已改变，请重新选择");
+     var r=built.record;if(player!=null)requireOwner(player,r.owner());
+diff --git a/src/main/java/com/sora/splineroads/world/RoadIndex.java b/src/main/java/com/sora/splineroads/world/RoadIndex.java
+index ff22647..2374998 100644
+--- a/src/main/java/com/sora/splineroads/world/RoadIndex.java
++++ b/src/main/java/com/sora/splineroads/world/RoadIndex.java
+@@ -137,6 +137,18 @@ public final class RoadIndex {
+     public static Built loading(RoadRecord record){return new Built(record,false,true,null);}
+     public boolean rasterized(){return rasterized;}
+ 
++    /** Point markers do not change the road ribbon, openings, furniture or collision. */
++    public Built lanePoints(LanePoints.Data value) {
++      var before = record.settings().options().lanePoints();
++      if (!Objects.equals(before.link(), value.link()) || !before.openings().equals(value.openings()))
++        throw new IllegalArgumentException("几何变更必须通过道路建造流程");
++      var next = new Built(record.withLanePoints(value), lazy, true, this);
++      next.local = local;
++      next.nearbyCells.putAll(nearbyCells);
++      next.nearbyColumns.putAll(nearbyColumns);
++      return next;
++    }
++
+ 
+     public Built caps(int mask) {
+       // Ordinary road end caps extend the physical deck; sampled interchange paths ignore them.
+@@ -349,6 +361,15 @@ public final class RoadIndex {
+ 
+   }
+ 
++  /** Preserve the spatial index, shape cache and render revision for point-only changes. */
++  public Built lanePoints(UUID id, LanePoints.Data value) {
++    var previous = roads.get(id);
++    if (previous == null) throw new IllegalArgumentException("道路已不存在");
++    var next = previous.lanePoints(value);
++    roads.put(id, next);
++    return next;
++  }
++
+   public Built remove(UUID id) {
+     Built old = roads.remove(id);
+     if (old == null) return null;
+diff --git a/src/validation/java/com/sora/splineroads/LaneInteractionValidation.java b/src/validation/java/com/sora/splineroads/LaneInteractionValidation.java
+new file mode 100644
+index 0000000..a35f50c
+--- /dev/null
++++ b/src/validation/java/com/sora/splineroads/LaneInteractionValidation.java
+@@ -0,0 +1,30 @@
++package com.sora.splineroads;
++import com.sora.splineroads.core.*;
++import com.sora.splineroads.core.RoadGeometry.*;
++import java.util.*;
++public final class LaneInteractionValidation {
++ static int checks;
++ static void check(boolean v,String reason){checks++;if(!v)throw new AssertionError(reason);}
++ static V rotate(V v,double angle){double c=Math.cos(angle),s=Math.sin(angle);return new V(v.x()*c-v.z()*s,v.y(),v.x()*s+v.z()*c);}
++ public static void main(String[] args){
++  var settings=new Settings(Mode.CURVE,Style.O1_ONE,5,1,.35,90);
++  for(double rotation:new double[]{0,.37,Math.PI/2,Math.PI})for(double space:new double[]{24,30,40,55,80})for(var mode:List.of(LanePoints.Path.RIGHT,LanePoints.Path.AUTO)){
++   V da=rotate(new V(-1,0,0),rotation),db=rotate(new V(0,0,-1),rotation);var a=new LaneRampPaths.Port(new V(0,100,0),da,da.left(),5,0);var b=new LaneRampPaths.Port(rotate(new V(-140,100,-space),rotation),db,db.left(),5,0);
++   var candidate=LaneRampPaths.candidates(a,b,settings,new LanePoints.Options(mode,false,false,24,32)).get(0);var m=candidate.mesh();
++   check(candidate.path()==LanePoints.Path.RIGHT,"Auto/manual select a genuine right turn");check(m.length()<250,"right turn cannot hide a 450 degree loop");check(RoadRibbon.minRadius(m)>23.8,"requested 24 block radius retained");
++   check(m.first().center().distance(a.position())<1e-6&&m.last().center().distance(b.position())<1e-6,"selected endpoints retained");
++   double total=0;for(int i=1;i<m.samples().size();i++){V p=m.samples().get(i-1).left(),q=m.samples().get(i).left();total+=Math.atan2(p.x()*q.z()-p.z()*q.x(),p.dot(q));}
++   check(Math.abs(total-Math.PI/2)<1e-5,"right turn is a positive ninety degrees in Minecraft XZ");
++  }
++  for(var style:List.of(Style.O6_RAIL,Style.O4_YELLOW,Style.O3_ONE))for(double yaw:new double[]{0,37,180}){
++   var a=new Node(new V(.5,2,.5),yaw,0);V end=rotate(new V(0,0,160),Math.toRadians(yaw));var opts=RoadProfile.Options.DEFAULT.sidewalk(new RoadSidewalks.Config(true,RoadSidewalks.Side.RIGHT,5,"minecraft:stone_bricks"));
++   var mesh=RoadGeometry.build(a,new Node(a.position().add(end),yaw,0),new Settings(Mode.CURVE,style,RoadProfile.width(style,opts,4),1,.4,90).options(opts));
++   var p=LanePoints.point(UUID.randomUUID(),LanePoints.Origin.MANUAL,mesh,mesh.length()*.6,0);
++   var image=LanePointPreview.render(mesh,p,360,160,0);
++   for(var marker:image.markers())check(image.laneAt(marker.x(),marker.y())==marker.lane(),"visible lane center clicks resolve to exact lane, including opposite direction");
++   check(image.laneAt(-1,40)==-1&&image.laneAt(360,40)==-1,"outside viewport cannot select a lane");
++   if(RoadProfile.catalog(style).twoWay())check(image.markers().get(0).dy()*image.markers().get(RoadProfile.catalog(style).lanes()/2).dy()<0,"opposite lanes show opposite arrows");
++  }
++  System.out.println("LaneInteractionValidation: "+checks+" checks passed");
++ }
++}

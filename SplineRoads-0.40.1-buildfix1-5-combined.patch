@@ -1,0 +1,136 @@
+diff --git a/build.gradle b/build.gradle
+index ea7b57a..f29ea13 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -274,7 +274,6 @@ tasks.register('validateRevision28', JavaExec) {
+ tasks.named('check') { dependsOn 'validateRevision28' }
+ 
+ 
+-tasks.named('check') { dependsOn 'validateRoadScreen281' }
+ 
+ tasks.register('validateRevision29', JavaExec) {
+     group = 'verification'
+@@ -287,7 +286,6 @@ tasks.register('validateRevision29', JavaExec) {
+ tasks.named('check') { dependsOn 'validateRevision29' }
+ 
+ 
+-tasks.named('check') { dependsOn 'validateRoadScreen29' }
+ 
+ 
+ tasks.register('validateRevision291', JavaExec) {
+diff --git a/src/gametest/java/com/sora/splineroads/world/Revision28GameTests.java b/src/gametest/java/com/sora/splineroads/world/Revision28GameTests.java
+index 79537c2..93cabfb 100644
+--- a/src/gametest/java/com/sora/splineroads/world/Revision28GameTests.java
++++ b/src/gametest/java/com/sora/splineroads/world/Revision28GameTests.java
+@@ -50,11 +50,12 @@ public final class Revision28GameTests {
+     for(Bridge bridge:Bridge.values()){
+       var a=marker(h,8000,12,z);var b=marker(h,8128,12,z);z+=96;
+       var s=road(Style.H4_RAIL,Structure.BRIDGE,Config.DEFAULT.bridge(bridge).span(128));var r=data.connect(level,null,a,b,s,null);var built=data.index.roads.get(r.id());
+-      h.assertTrue(built.record.structures().stream().anyMatch(p->p.material()==RoadStructures.Material.SIGN_GREEN),"elevated highway gantry");
++      h.assertTrue(RoadGantry.count(built.mesh)>0&&built.record.structures().stream().anyMatch(p->p.material()==RoadStructures.Material.STEEL&&Math.abs(p.width()-.45)<1e-8&&Math.abs(p.height()-.45)<1e-8),"elevated highway gantry structure");
++      h.assertTrue(built.record.structures().stream().noneMatch(p->p.material()==RoadStructures.Material.SIGN_GREEN||p.material()==RoadStructures.Material.SIGN_BLUE||p.material()==RoadStructures.Material.SIGN_WHITE),"retired automatic sign panels stay removed");
+       h.assertTrue(built.record.structures().stream().anyMatch(p->p.pier()&&p.height()>10),"bridge foundations");
+       var loaded=RoadData.load(data.save(new CompoundTag())).index.roads.get(r.id());h.assertTrue(loaded.record.structures().equals(built.record.structures()),"bridge model reload");
+       var changed=s.options(s.options().infrastructure(s.options().infrastructure().gantry(Gantry.OFF)));data.connect(level,null,a,b,changed,r.id());
+-      h.assertTrue(data.index.roads.get(r.id()).record.structures().stream().noneMatch(p->p.material()==RoadStructures.Material.SIGN_GREEN),"gantry toggle takes effect on existing bridge");
++      h.assertTrue(data.index.roads.get(r.id()).record.structures().stream().noneMatch(p->p.material()==RoadStructures.Material.STEEL&&Math.abs(p.width()-.45)<1e-8&&Math.abs(p.height()-.45)<1e-8),"gantry toggle takes effect on existing bridge");
+       data.remove(level,null,r.id());
+     }
+     h.assertTrue(RoadWorkChunks.heldCount(level)==0,"tickets released");h.succeed();
+diff --git a/src/main/java/com/sora/splineroads/core/RoadSurface.java b/src/main/java/com/sora/splineroads/core/RoadSurface.java
+index ce5b676..7d679b4 100644
+--- a/src/main/java/com/sora/splineroads/core/RoadSurface.java
++++ b/src/main/java/com/sora/splineroads/core/RoadSurface.java
+@@ -305,9 +305,17 @@ public final class RoadSurface {
+     List<Mesh> union = new ArrayList<>(neighbors);
+     union.add(mesh);
+     Grid paving = new Grid(union);
+-    for (var paint : RoadJunction.markings(mesh, higherPriority, neighbors, true))
+-      for(var poly:visible(paint.points(),owners,.025))
+-        paintOnRoad(markings,new RoadJunction.Paint(poly,paint.color()),paving);
++    for (var paint : RoadJunction.markings(mesh, higherPriority, neighbors, true)) {
++      // Free lane-connector roads need a single owner in a coplanar throat to avoid
++      // duplicate connector paint. Automatic/legacy interchange ramps are different:
++      // their fork hatching is generated symmetrically from both branches and must not
++      // change when UUID/construction ownership flips. Only real lane links use the
++      // ownership clip; style.ramp() by itself is not a lane-connector identity.
++      if(mesh.settings().options().lanePoints().link()!=null)
++        for(var poly:visible(paint.points(),owners,.025))
++          paintOnRoad(markings,new RoadJunction.Paint(poly,paint.color()),paving);
++      else paintOnRoad(markings,paint,paving);
++    }
+     for (var paint : RoadJunction.arrows(mesh, neighbors, crossings)) {
+       if(mesh.settings().options().lanePoints().link()==null)paintOnRoad(markings,paint,paving);
+       else for(var poly:visible(paint.points(),owners,.025))paintOnRoad(markings,new RoadJunction.Paint(poly,paint.color()),paving);
+diff --git a/src/validation/java/com/sora/splineroads/Junction23Validation.java b/src/validation/java/com/sora/splineroads/Junction23Validation.java
+index cc93b42..bc67f2b 100644
+--- a/src/validation/java/com/sora/splineroads/Junction23Validation.java
++++ b/src/validation/java/com/sora/splineroads/Junction23Validation.java
+@@ -17,7 +17,11 @@ public final class Junction23Validation {
+    var options=RoadProfile.Options.DEFAULT.sidewalk(new RoadSidewalks.Config(true,side,width,"minecraft:stone_bricks"));
+    var settings=new Settings(Mode.STRAIGHT,Style.O2_YELLOW,9,1,.35,90).options(options);
+    Mesh mesh=RoadGeometry.build(new Node(new V(sign*100+.5,64,sign*100+.5),0,0),new Node(new V(sign*100+.5,64,sign*100+60.5),0,0),settings);
+-   var cells=RoadSidewalks.cells(mesh,options.sidewalk());check(cells.size()==width*60*(side==RoadSidewalks.Side.BOTH?2:1),"exact integer sidewalk width and length "+width+" "+side+" "+cells.size());
++   var walk=options.sidewalk();
++   // Options may widen a requested sidewalk to reserve the tactile/streetscape rows.
++   // Validate the effective saved width; Revision37 separately asserts the widening policy.
++   check(walk.width()>=width,"effective sidewalk never narrows the requested width "+width+" -> "+walk.width());
++   var cells=RoadSidewalks.cells(mesh,walk);check(cells.size()==walk.width()*60*(side==RoadSidewalks.Side.BOTH?2:1),"exact effective sidewalk width and length requested="+width+" effective="+walk.width()+" "+side+" "+cells.size());
+    for(var c:cells)check(c.y()==63,"real blocks finish flush with deck");
+    check(options.extras(true,true,true).route(options.routing().fit(false)).ends(RoadTransitions.Ends.NONE).sidewalk().equals(options.sidewalk()),"other road edits preserve sidewalk options");
+   }
+diff --git a/src/validation/java/com/sora/splineroads/Revision252Validation.java b/src/validation/java/com/sora/splineroads/Revision252Validation.java
+index 3ba86da..8bc1a7a 100644
+--- a/src/validation/java/com/sora/splineroads/Revision252Validation.java
++++ b/src/validation/java/com/sora/splineroads/Revision252Validation.java
+@@ -59,9 +59,12 @@ public final class Revision252Validation {
+   check(count>0&&exactStart&&exactEnd,"curbs cut at exact openings, not 2m tiles");
+   Ground tiny=new Ground(){public double top(double x,double z,double y){return y-10;}public boolean blocked(Part p){return false;}public boolean joined(V p){return p.x()>1.5;}};
+   Mesh ramp=mesh(road(Style.R1));var rails=RoadStructures.plan(ramp,tiny);
+-  check(rails.stream().noneMatch(p->!p.pier()),"auto removes isolated root barrier stubs");
++  // Edge fascia/slab parts are legitimate non-pier structures at the raised root. The old
++  // "any non-pier" predicate therefore stopped meaning "barrier" once edge slabs were added.
++  java.util.function.Predicate<Part> rail=p->!p.pier()&&(p.material()==Material.STEEL||p.material()==Material.DARK_STEEL);
++  check(rails.stream().noneMatch(rail),"auto removes isolated root barrier stubs");
+   Mesh forced=mesh(road(Style.R1).options(RoadProfile.Options.DEFAULT.outerRail(RoadProfile.OuterRail.ON)));
+-  check(RoadStructures.plan(forced,tiny).stream().anyMatch(p->!p.pier()),"explicit rail ON preserves short exposed run");
++  check(RoadStructures.plan(forced,tiny).stream().anyMatch(rail),"explicit rail ON preserves short exposed run");
+  }
+  // Multi-arm geometry is now covered by Revision26Validation.
+  public static void main(String[] args){highways();curbToHighway();clipping();curbs();System.out.println("Revision252 PASS "+checks+" checks");}
+diff --git a/src/validation/java/com/sora/splineroads/Revision25Validation.java b/src/validation/java/com/sora/splineroads/Revision25Validation.java
+index ef731c3..da607e6 100644
+--- a/src/validation/java/com/sora/splineroads/Revision25Validation.java
++++ b/src/validation/java/com/sora/splineroads/Revision25Validation.java
+@@ -34,7 +34,15 @@ public final class Revision25Validation {
+  }
+  static void curbs(){
+   var s=Revision24Validation.main(Style.O4_YELLOW).options(RoadProfile.Options.DEFAULT.extras(false,false,true));Mesh m=RoadGeometry.build(new Node(new V(0,64,0),0,0),new Node(new V(120,64,0),0,0),s);
+-  for(boolean bridge:new boolean[]{false,true}){var parts=RoadStructures.plan(m,Revision24Validation.ground(p->bridge?48:64));long curb=parts.stream().filter(p->p.material()==Material.CONCRETE&&p.height()==.2).count();check(bridge?curb==0:curb>0,"only ground road receives sidewalk curb");check(parts.stream().anyMatch(p->p.material()==Material.LAMP),"road lighting retained");}
++  for(boolean bridge:new boolean[]{false,true}){
++   var parts=RoadStructures.plan(m,Revision24Validation.ground(p->bridge?48:64));
++   // A sidewalk curb is a non-pier .2-high concrete edge. Modern bridge piers deliberately
++   // use .2-high stepped capital slices, so height/material alone no longer identifies a curb.
++   long curb=parts.stream().filter(p->!p.pier()&&p.material()==Material.CONCRETE&&p.height()==.2).count();
++   check(bridge?curb==0:curb>0,"only ground road receives sidewalk curb");
++   if(bridge)check(parts.stream().filter(p->p.material()==Material.CONCRETE&&p.height()==.2).allMatch(Part::pier),"elevated .2 concrete belongs only to pier capitals, not sidewalk curbs");
++   check(parts.stream().anyMatch(p->p.material()==Material.LAMP),"road lighting retained");
++  }
+  }
+  static void heights(){
+   var s=Revision24Validation.main(Style.H4_RAIL);
+diff --git a/src/validation/java/com/sora/splineroads/Revision28Validation.java b/src/validation/java/com/sora/splineroads/Revision28Validation.java
+index 2e0b8fd..6617b56 100644
+--- a/src/validation/java/com/sora/splineroads/Revision28Validation.java
++++ b/src/validation/java/com/sora/splineroads/Revision28Validation.java
+@@ -46,7 +46,9 @@ public final class Revision28Validation {
+       if(!curve&&style==Style.O2_YELLOW)export("TUNNEL_"+t.name(),m,p);
+     }
+     for(Style style:new Style[]{Style.O2_YELLOW,Style.O2_ONE,Style.H4_RAIL,Style.H2_ONE})for(boolean left:new boolean[]{false,true}){
+-      var s=settings(style,Structure.BRIDGE,Config.DEFAULT.grade(.2)).options(RoadProfile.Options.DEFAULT.infrastructure(Config.DEFAULT.grade(.2)).traffic(left));Mesh m=mesh(s,80,true);var p=RoadInfrastructure.plan(m,ground(0));geometry(m,p);check(p.stream().anyMatch(v->v.material()==Material.SIGN_GREEN||v.material()==Material.SIGN_BLUE),"overhead lane signs");
++      var s=settings(style,Structure.BRIDGE,Config.DEFAULT.grade(.2)).options(RoadProfile.Options.DEFAULT.infrastructure(Config.DEFAULT.grade(.2)).traffic(left));Mesh m=mesh(s,80,true);var p=RoadInfrastructure.plan(m,ground(0));geometry(m,p);
++      var gantry=RoadGantry.plan(m,ground(0));check(!gantry.isEmpty(),"automatic overhead gantry structure");
++      check(gantry.stream().noneMatch(v->v.material()==Material.SIGN_GREEN||v.material()==Material.SIGN_BLUE||v.material()==Material.SIGN_WHITE),"retired built-in sign panels are not regenerated");
+       if(style==Style.H4_RAIL&&!left)export("GANTRY",m,p);
+     }
+     var ordinary=mesh(settings(Style.O2_YELLOW,Structure.GROUND,Config.DEFAULT.grade(.2)),64,false);

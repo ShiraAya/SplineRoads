@@ -1,0 +1,495 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'net.minecraftforge.gradle' version '6.0.54'
+}
+group = 'com.sora.splineroads'
+version = '0.40.1-alpha'
+base { archivesName = 'splineroads' }
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+sourceSets {
+    clientValidation {
+        java.srcDir 'src/clientvalidation/java'
+        compileClasspath += main.output + main.compileClasspath
+        runtimeClasspath += output + compileClasspath + main.runtimeClasspath
+    }
+    validation {
+        java.srcDir 'src/validation/java'
+        compileClasspath += main.output + main.compileClasspath
+        runtimeClasspath += output + compileClasspath + main.runtimeClasspath
+    }
+    gameTest {
+        java.srcDir 'src/gametest/java'; resources.srcDir 'src/gametest/resources'
+        compileClasspath += main.output + main.compileClasspath
+        runtimeClasspath += output + compileClasspath + main.runtimeClasspath
+    }
+}
+tasks.register('validateNativeBuffers', JavaExec) {
+    group = 'verification'
+    dependsOn clientValidationClasses
+    classpath = sourceSets.clientValidation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.client.NativeBufferValidation'
+    jvmArgs '-Xmx128m', '-XX:ActiveProcessorCount=2'
+}
+minecraft {
+    mappings channel: 'official', version: '1.20.1'
+    copyIdeResources = true
+    runs {
+        configureEach {
+            workingDirectory project.file(project.findProperty('roadRunDir') ?: 'run')
+            property 'forge.logging.console.level', 'info'
+            mods { splineroads { source sourceSets.main } }
+        }
+        client {
+            if(project.hasProperty('roadVisualTest')) {
+                mods { splineroads { source sourceSets.gameTest } }
+                property 'road.visual38', 'true'
+                if(project.hasProperty('roadVisualCases')) property 'road.visual38Cases', project.property('roadVisualCases')
+                if(project.hasProperty('roadVisualReload')) property 'road.visual38Reload', project.property('roadVisualReload')
+                jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+                args '--width','1440','--height','1000'
+            }
+        }
+        server { args '--nogui' }
+        gameTestServer {
+            jvmArgs '-Xms256m', '-Xmx'+(project.findProperty('roadTestHeap') ?: '4G'), '-XX:ActiveProcessorCount=2'
+            mods { splineroads { source sourceSets.gameTest } }
+            property 'forge.enabledGameTestNamespaces', project.findProperty('roadTestNamespaces') ?: 'splineroads,splineroads_regression15,splineroads_removal15'
+        }
+    }
+}
+dependencies { minecraft 'net.minecraftforge:forge:1.20.1-47.4.20' }
+tasks.register('validateStorage292', JavaExec) {
+    dependsOn clientValidationClasses
+    classpath = sourceSets.clientValidation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.world.Storage292Validation'
+    jvmArgs '-Xmx256m', '-XX:ActiveProcessorCount=2'
+    if (project.hasProperty('legacyStorage')) args 'legacy'
+}
+tasks.register('validateRevision292', JavaExec) {
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Revision292Validation'
+    jvmArgs '-Xmx1G', '-XX:ActiveProcessorCount=2'
+}
+
+tasks.named('check') { dependsOn 'validateRevision38' }
+tasks.named('jar', Jar) {
+    from('THIRD_PARTY_NOTICES.md') { into 'META-INF' }
+    from('THIRD_PARTY_LICENSES') { into 'META-INF/licenses' }
+    manifest { attributes 'Implementation-Version': project.version }
+    finalizedBy 'reobfJar'
+}
+
+
+tasks.register('validateJunctions', JavaExec) {
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Junction20Validation'
+    jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+}
+tasks.named('check') { dependsOn 'validateJunctions' }
+tasks.register('validateJunction22', JavaExec) {
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Junction22Validation'
+    jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2', '-Djava.awt.headless=true'
+}
+tasks.named('check') { dependsOn 'validateJunction22' }
+tasks.register('validateJunction23', JavaExec) {
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Junction23Validation'
+    jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+}
+tasks.named('check') { dependsOn 'validateJunction23' }
+
+tasks.register('validateRevision231', JavaExec) {
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Revision231Validation'
+    jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+}
+tasks.named('check') { dependsOn 'validateRevision231' }
+
+tasks.register('validateSlopeCollision', JavaExec) {
+    dependsOn clientValidationClasses
+    classpath = sourceSets.clientValidation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.client.SlopeCollisionValidation'
+    jvmArgs '-Xmx1G', '-XX:ActiveProcessorCount=2'
+}
+
+tasks.register('validateRevision232', JavaExec) {
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Revision232Validation'
+    jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2', '-Djava.awt.headless=true'
+}
+tasks.named('check') { dependsOn 'validateRevision232', 'validateSlopeCollision' }
+
+tasks.register('validateRevision233', JavaExec) {
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Revision233Validation'
+    jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+}
+tasks.named('check') { dependsOn 'validateRevision233' }
+tasks.register('validateLoading233', JavaExec) {
+    dependsOn clientValidationClasses
+    classpath = sourceSets.clientValidation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.client.Loading233Validation'
+    jvmArgs '-Xmx1G', '-XX:ActiveProcessorCount=2'
+}
+tasks.named('check') { dependsOn 'validateLoading233' }
+
+tasks.register('validateRevision24', JavaExec) {
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Revision24Validation'
+    jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2', '-Djava.awt.headless=true'
+}
+tasks.named('check') { dependsOn 'validateRevision24' }
+
+tasks.register('validateSignalRendering', JavaExec) {
+    group = 'verification'
+    dependsOn clientValidationClasses
+    classpath = sourceSets.clientValidation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.client.SignalRenderValidation'
+    jvmArgs '-Xmx1G', '-XX:ActiveProcessorCount=2'
+}
+tasks.named('check') { dependsOn 'validateSignalRendering' }
+
+tasks.register('validateRevision25', JavaExec) {
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Revision25Validation'
+    jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2', '-Djava.awt.headless=true'
+}
+tasks.named('check') { dependsOn 'validateRevision25' }
+
+tasks.register('validateAlignment25', JavaExec) {
+    dependsOn clientValidationClasses
+    classpath = sourceSets.clientValidation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.client.Alignment25Validation'
+    jvmArgs '-Xmx1G', '-XX:ActiveProcessorCount=2'
+}
+tasks.named('check') { dependsOn 'validateAlignment25' }
+
+tasks.register('validateRevision251', JavaExec) {
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Revision251Validation'
+    jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+}
+tasks.named('check') { dependsOn 'validateRevision251' }
+
+tasks.register('validateRevision252', JavaExec) {
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Revision252Validation'
+    jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+}
+tasks.named('check') { dependsOn 'validateRevision252' }
+tasks.register('validateWorld252', JavaExec) {
+    dependsOn clientValidationClasses
+    classpath = sourceSets.clientValidation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.client.Revision252WorldValidation'
+    jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+}
+
+// 0.26 binary collectors replace the legacy simultaneous-fan geometry tests.
+tasks.register('validateRevision26', JavaExec) {
+    group = 'verification'
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Revision26Validation'
+    jvmArgs '-Xmx3G', '-XX:ActiveProcessorCount=2'
+}
+tasks.named('check') { dependsOn 'validateRevision26' }
+
+tasks.register('validateRevision262', JavaExec) {
+    group = 'verification'
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Revision262Validation'
+    jvmArgs '-Xmx3G', '-XX:ActiveProcessorCount=2'
+}
+tasks.named('check') { dependsOn 'validateRevision262' }
+
+// Ordinary mouths, reopened fork dividers and straight hatch diagonals.
+tasks.register('validateRevision263', JavaExec) {
+    group = 'verification'
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Revision263Validation'
+    jvmArgs '-Xmx3G', '-XX:ActiveProcessorCount=2'
+}
+tasks.named('check') { dependsOn 'validateRevision263' }
+
+tasks.register('validateRevision27', JavaExec) {
+ group = 'verification'
+ dependsOn validationClasses
+ classpath = sourceSets.validation.runtimeClasspath
+ mainClass = 'com.sora.splineroads.Revision27Validation'
+ jvmArgs '-Xmx3G', '-XX:ActiveProcessorCount=2'
+}
+tasks.named('check') { dependsOn 'validateRevision27' }
+
+tasks.register('validateRevision271', JavaExec) {
+ group = 'verification'
+ dependsOn validationClasses
+ classpath = sourceSets.validation.runtimeClasspath
+ mainClass = 'com.sora.splineroads.Revision271Validation'
+ jvmArgs '-Xmx3G', '-XX:ActiveProcessorCount=2'
+}
+tasks.named('check') { dependsOn 'validateRevision271' }
+
+tasks.register('validateRevision272', JavaExec) {
+ group = 'verification'
+ dependsOn validationClasses
+ classpath = sourceSets.validation.runtimeClasspath
+ mainClass = 'com.sora.splineroads.Revision272Validation'
+ jvmArgs '-Xmx3G', '-XX:ActiveProcessorCount=2'
+}
+tasks.named('check') { dependsOn 'validateRevision272' }
+
+tasks.register('validateRevision273', JavaExec) {
+ group = 'verification'
+ dependsOn validationClasses
+ classpath = sourceSets.validation.runtimeClasspath
+ mainClass = 'com.sora.splineroads.Revision273Validation'
+ jvmArgs '-Xmx3G', '-XX:ActiveProcessorCount=2'
+}
+tasks.named('check') { dependsOn 'validateRevision273' }
+
+tasks.register('validateRevision28', JavaExec) {
+    group = 'verification'
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Revision28Validation'
+    jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+    if (project.hasProperty('roadVisuals')) systemProperty 'road.visuals', project.property('roadVisuals')
+}
+tasks.named('check') { dependsOn 'validateRevision28' }
+
+
+tasks.register('validateRevision29', JavaExec) {
+    group = 'verification'
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Revision29Validation'
+    jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+    if (project.hasProperty('roadVisuals')) systemProperty 'road.visuals', project.property('roadVisuals')
+}
+tasks.named('check') { dependsOn 'validateRevision29' }
+
+
+
+
+tasks.register('validateRevision291', JavaExec) {
+    group = 'verification'
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Revision291Validation'
+    jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+    if (project.hasProperty('roadVisuals')) systemProperty 'road.visuals', project.property('roadVisuals')
+}
+tasks.named('check') { dependsOn 'validateRevision291' }
+
+tasks.register('validateRevision30', JavaExec) {
+ dependsOn validationClasses
+ classpath = sourceSets.validation.runtimeClasspath
+ mainClass = 'com.sora.splineroads.Revision30Validation'
+ jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+ if (project.hasProperty('roadVisuals')) systemProperty 'road.visuals', project.property('roadVisuals')
+}
+tasks.register('validatePackets30', JavaExec) {
+ dependsOn clientValidationClasses
+ classpath = sourceSets.clientValidation.runtimeClasspath
+ mainClass = 'com.sora.splineroads.net.Packet30Validation'
+ jvmArgs '-Xmx512m', '-XX:ActiveProcessorCount=2'
+}
+
+tasks.register('validateRevision31', JavaExec) {
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Revision31Validation'
+    jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+}
+
+
+tasks.register('validateRevision311', JavaExec) {
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Revision311Validation'
+    jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+}
+
+tasks.register('validateRevision32', JavaExec) {
+ dependsOn validationClasses
+ classpath = sourceSets.validation.runtimeClasspath
+ mainClass = 'com.sora.splineroads.Revision32Validation'
+ jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+}
+
+
+tasks.register('validateRevision33', JavaExec) {
+ dependsOn validationClasses
+ classpath = sourceSets.validation.runtimeClasspath
+ mainClass = 'com.sora.splineroads.Revision33Validation'
+ jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+}
+
+tasks.register('validateRevision331', JavaExec) {
+ dependsOn validationClasses
+ classpath = sourceSets.validation.runtimeClasspath
+ mainClass = 'com.sora.splineroads.Revision331Validation'
+ jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+}
+
+tasks.register('validateRevision34', JavaExec) {
+ dependsOn validationClasses
+ classpath = sourceSets.validation.runtimeClasspath
+ mainClass = 'com.sora.splineroads.Revision34Validation'
+ jvmArgs '-Xmx3G', '-XX:ActiveProcessorCount=2'
+}
+
+tasks.register('validateRevision35', JavaExec) {
+ dependsOn validationClasses
+ classpath = sourceSets.validation.runtimeClasspath
+ mainClass = 'com.sora.splineroads.Revision35Validation'
+ jvmArgs '-Xmx3G', '-XX:ActiveProcessorCount=2'
+}
+
+tasks.register('validateSeparated35', JavaExec) {
+ dependsOn validationClasses
+ classpath = sourceSets.validation.runtimeClasspath
+ mainClass = 'com.sora.splineroads.Separated35Validation'
+ jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+}
+
+tasks.register('validateHotfix351', JavaExec) {
+ dependsOn validationClasses
+ classpath = sourceSets.validation.runtimeClasspath
+ mainClass = 'com.sora.splineroads.Hotfix351Validation'
+ jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+}
+
+tasks.register('validateHotfix352', JavaExec) {
+ dependsOn validationClasses
+ classpath = sourceSets.validation.runtimeClasspath
+ mainClass = 'com.sora.splineroads.Hotfix352Validation'
+ jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+}
+
+
+tasks.register('validateHotfix353', JavaExec) {
+ dependsOn validationClasses
+ classpath = sourceSets.validation.runtimeClasspath
+ mainClass = 'com.sora.splineroads.Hotfix353Validation'
+ args layout.buildDirectory.file('validation353/junction.svg').get().asFile.absolutePath
+ jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+}
+
+
+tasks.register('validateRevision37', JavaExec) {
+ dependsOn validationClasses
+ classpath = sourceSets.validation.runtimeClasspath
+ mainClass = 'com.sora.splineroads.Revision37Validation'
+ jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+}
+
+
+tasks.register('validateHotfix371', JavaExec) {
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Hotfix371Validation'
+    jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2', '-Djava.awt.headless=true'
+}
+tasks.register('validateHotfix372', JavaExec) {
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Hotfix372Validation'
+    jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2', '-Djava.awt.headless=true'
+}
+
+
+tasks.register('validateRevision38', JavaExec) {
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Revision38Validation'
+    jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2', '-Djava.awt.headless=true'
+}
+
+tasks.register('validateEndpointV2', JavaExec) {
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.EndpointV2Validation'
+    jvmArgs '-Xmx2G', '-XX:ActiveProcessorCount=2'
+}
+
+tasks.named('check') { dependsOn 'validateEndpointV2' }
+
+tasks.register('validateLaneRampV2', JavaExec) {
+    group = 'verification'
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.LaneRampV2Validation'
+    jvmArgs '-Xmx1G', '-XX:ActiveProcessorCount=2'
+}
+tasks.named('check') { dependsOn 'validateLaneRampV2' }
+
+tasks.register('validateLanePointSnap', JavaExec) {
+    group = 'verification'
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.LanePointSnapValidation'
+    jvmArgs '-Xmx1G', '-XX:ActiveProcessorCount=2'
+}
+tasks.named('check') { dependsOn 'validateLanePointSnap' }
+
+tasks.register('validateLaneInteraction', JavaExec) {
+    group = 'verification'
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.LaneInteractionValidation'
+    jvmArgs '-Xmx1G', '-XX:ActiveProcessorCount=2'
+}
+tasks.named('check') { dependsOn 'validateLaneInteraction' }
+
+tasks.register('validateLaneRampWorkflow', JavaExec) {
+    group = 'verification'
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.LaneRampWorkflowValidation'
+    jvmArgs '-Xmx1G', '-XX:ActiveProcessorCount=2'
+}
+tasks.named('check') { dependsOn 'validateLaneRampWorkflow' }
+
+// Real dependency-backed core regression task. The offline adapter harness is separate.
+tasks.register('validateRamp39', JavaExec) {
+    group = 'verification'
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Ramp39Validation'
+    jvmArgs '-Xmx1500m', '-XX:ActiveProcessorCount=2', '-Djava.awt.headless=true'
+}
+tasks.named('check') { dependsOn 'validateRamp39' }
+
+// Production core only. Explicit offline Forge/MC adapters are NOT part of this source set or JAR.
+tasks.register('validatePerformance40', JavaExec) {
+    group = 'verification'
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Performance40Validation'
+    jvmArgs '-Xmx1500m', '-XX:ActiveProcessorCount=2', '-Djava.awt.headless=true'
+}
+tasks.register('validateGeometry40Parity', JavaExec) {
+    group = 'verification'
+    dependsOn validationClasses
+    classpath = sourceSets.validation.runtimeClasspath
+    mainClass = 'com.sora.splineroads.Geometry40Parity'
+    jvmArgs '-Xmx1500m', '-XX:ActiveProcessorCount=2', '-Djava.awt.headless=true'
+}
+tasks.named('check') { dependsOn 'validatePerformance40' }

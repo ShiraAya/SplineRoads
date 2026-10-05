@@ -1,0 +1,5614 @@
+[
+  {
+    "path": ".gradle/8.8/checksums/checksums.lock",
+    "bytes": 17
+  },
+  {
+    "path": ".gradle/8.8/checksums/md5-checksums.bin",
+    "bytes": 18647
+  },
+  {
+    "path": ".gradle/8.8/checksums/sha1-checksums.bin",
+    "bytes": 18605
+  },
+  {
+    "path": ".gradle/8.8/dependencies-accessors/gc.properties",
+    "bytes": 0
+  },
+  {
+    "path": ".gradle/8.8/executionHistory/executionHistory.bin",
+    "bytes": 621625
+  },
+  {
+    "path": ".gradle/8.8/executionHistory/executionHistory.lock",
+    "bytes": 17
+  },
+  {
+    "path": ".gradle/8.8/fileChanges/last-build.bin",
+    "bytes": 1
+  },
+  {
+    "path": ".gradle/8.8/fileHashes/fileHashes.bin",
+    "bytes": 148733
+  },
+  {
+    "path": ".gradle/8.8/fileHashes/fileHashes.lock",
+    "bytes": 17
+  },
+  {
+    "path": ".gradle/8.8/fileHashes/resourceHashesCache.bin",
+    "bytes": 104283
+  },
+  {
+    "path": ".gradle/8.8/gc.properties",
+    "bytes": 0
+  },
+  {
+    "path": ".gradle/buildOutputCleanup/buildOutputCleanup.lock",
+    "bytes": 17
+  },
+  {
+    "path": ".gradle/buildOutputCleanup/cache.properties",
+    "bytes": 51
+  },
+  {
+    "path": ".gradle/buildOutputCleanup/outputFiles.bin",
+    "bytes": 19163
+  },
+  {
+    "path": ".gradle/file-system.probe",
+    "bytes": 8
+  },
+  {
+    "path": ".gradle/vcs-1/gc.properties",
+    "bytes": 0
+  },
+  {
+    "path": ".vscode/settings.json",
+    "bytes": 68
+  },
+  {
+    "path": "build/classes/java/clientValidation/com/sora/splineroads/client/Alignment25Validation.class",
+    "bytes": 7997
+  },
+  {
+    "path": "build/classes/java/clientValidation/com/sora/splineroads/client/Loading233Validation.class",
+    "bytes": 12336
+  },
+  {
+    "path": "build/classes/java/clientValidation/com/sora/splineroads/client/NativeBufferValidation.class",
+    "bytes": 3929
+  },
+  {
+    "path": "build/classes/java/clientValidation/com/sora/splineroads/client/Revision252WorldValidation.class",
+    "bytes": 14535
+  },
+  {
+    "path": "build/classes/java/clientValidation/com/sora/splineroads/client/SignalRenderValidation$StrictSource.class",
+    "bytes": 1122
+  },
+  {
+    "path": "build/classes/java/clientValidation/com/sora/splineroads/client/SignalRenderValidation.class",
+    "bytes": 23769
+  },
+  {
+    "path": "build/classes/java/clientValidation/com/sora/splineroads/client/SlopeCollisionValidation.class",
+    "bytes": 12123
+  },
+  {
+    "path": "build/classes/java/clientValidation/com/sora/splineroads/net/Packet30Validation.class",
+    "bytes": 6275
+  },
+  {
+    "path": "build/classes/java/clientValidation/com/sora/splineroads/world/Storage292Validation.class",
+    "bytes": 9980
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/AttachedPointRenderer.class",
+    "bytes": 5917
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/AttachedPointScreen.class",
+    "bytes": 11785
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/ClientRoads$Setup.class",
+    "bytes": 2600
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/ClientRoads.class",
+    "bytes": 14860
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/CorridorScreen.class",
+    "bytes": 34306
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/GantryScreen.class",
+    "bytes": 9693
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/InterchangeScreen$1.class",
+    "bytes": 2553
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/InterchangeScreen$2.class",
+    "bytes": 1058
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/InterchangeScreen.class",
+    "bytes": 44294
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/JunctionRoadScreen$1.class",
+    "bytes": 1033
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/JunctionRoadScreen.class",
+    "bytes": 16712
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/JunctionScreen$Label.class",
+    "bytes": 1810
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/JunctionScreen.class",
+    "bytes": 30923
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/LaneDeleteConfirmScreen.class",
+    "bytes": 5152
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/LaneLineScreen.class",
+    "bytes": 12232
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/LanePointRenderer.class",
+    "bytes": 7089
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/LanePointScreen.class",
+    "bytes": 13472
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/LaneRampScreen.class",
+    "bytes": 16127
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/NodeRenderer.class",
+    "bytes": 9746
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadDeleteScreen.class",
+    "bytes": 7326
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadFillRenderer.class",
+    "bytes": 2546
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadInbox$Event.class",
+    "bytes": 2130
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadInbox$Ready.class",
+    "bytes": 1843
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadInbox.class",
+    "bytes": 6158
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadLightSnapshot.class",
+    "bytes": 2139
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadRenderer$1.class",
+    "bytes": 2868
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadRenderer$2.class",
+    "bytes": 3711
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadRenderer$GpuSection.class",
+    "bytes": 3200
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadRenderer$Job.class",
+    "bytes": 2374
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadRenderer$MeshResult.class",
+    "bytes": 2709
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadRenderer$Prepared.class",
+    "bytes": 5410
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadRenderer$SignalCache.class",
+    "bytes": 2318
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadRenderer$Upload$Batch.class",
+    "bytes": 2018
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadRenderer$Upload.class",
+    "bytes": 9066
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadRenderer.class",
+    "bytes": 57409
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadRenderTypes.class",
+    "bytes": 7605
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadScreen$1.class",
+    "bytes": 971
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadScreen.class",
+    "bytes": 65079
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadSignalBatch$Vertex.class",
+    "bytes": 2511
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadSignalBatch.class",
+    "bytes": 9865
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadSignPreview$1.class",
+    "bytes": 1301
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadSignPreview.class",
+    "bytes": 11181
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadSignScreen$Picker.class",
+    "bytes": 9165
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadSignScreen.class",
+    "bytes": 16351
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadSignTextRenderer.class",
+    "bytes": 14095
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadTerrainModels$Assets.class",
+    "bytes": 1930
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadTerrainModels$Prepared.class",
+    "bytes": 2672
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadTerrainModels$Source.class",
+    "bytes": 2198
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadTerrainModels$Stats.class",
+    "bytes": 2349
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadTerrainModels$Streaming.class",
+    "bytes": 3314
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadTerrainModels$TerrainModel$1.class",
+    "bytes": 1720
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadTerrainModels$TerrainModel.class",
+    "bytes": 6191
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadTerrainModels$Tile.class",
+    "bytes": 1999
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadTerrainModels$TileJob.class",
+    "bytes": 2597
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadTerrainModels.class",
+    "bytes": 33714
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadUploadArena.class",
+    "bytes": 1322
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoadUploadBudget.class",
+    "bytes": 3566
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/RoundaboutScreen.class",
+    "bytes": 10196
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/ShaderPackState$Holder.class",
+    "bytes": 897
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/ShaderPackState$Probe.class",
+    "bytes": 2579
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/ShaderPackState$State.class",
+    "bytes": 1859
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/ShaderPackState.class",
+    "bytes": 2365
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/client/YJunctionScreen.class",
+    "bytes": 11690
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/config/RoadClientConfig$SurfaceBackend.class",
+    "bytes": 1393
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/config/RoadClientConfig.class",
+    "bytes": 2826
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/CorridorPlanner$Access.class",
+    "bytes": 1571
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/CorridorPlanner$Adjustment.class",
+    "bytes": 1587
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/CorridorPlanner$Config.class",
+    "bytes": 4117
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/CorridorPlanner$Kind.class",
+    "bytes": 1259
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/CorridorPlanner$Lead.class",
+    "bytes": 1860
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/CorridorPlanner$Port.class",
+    "bytes": 1876
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/CorridorPlanner$Sides.class",
+    "bytes": 1649
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/CorridorPlanner.class",
+    "bytes": 26506
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/CurvedRoadPlans.class",
+    "bytes": 20993
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/InterchangeFit.class",
+    "bytes": 8005
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/InterchangePlanner$1.class",
+    "bytes": 1307
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/InterchangePlanner$Collision.class",
+    "bytes": 1885
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/InterchangePlanner$CornerRadiusFailure.class",
+    "bytes": 571
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/InterchangePlanner$Knot.class",
+    "bytes": 1947
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/InterchangePlanner$Leg.class",
+    "bytes": 2196
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/InterchangePlanner$Levels.class",
+    "bytes": 1963
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/InterchangePlanner$Options.class",
+    "bytes": 5385
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/InterchangePlanner$Plan.class",
+    "bytes": 3612
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/InterchangePlanner$Preset.class",
+    "bytes": 2874
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/InterchangePlanner$Route.class",
+    "bytes": 1541
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/InterchangePlanner.class",
+    "bytes": 70658
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionGuides$Guide.class",
+    "bytes": 2218
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionGuides.class",
+    "bytes": 6082
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionPaint.class",
+    "bytes": 11177
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionPlanner$1.class",
+    "bytes": 1386
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionPlanner$Movement.class",
+    "bytes": 2620
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionPlanner$Piece.class",
+    "bytes": 3023
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionPlanner$Plan.class",
+    "bytes": 4707
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionPlanner$PlanKey.class",
+    "bytes": 1801
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionPlanner$Ref.class",
+    "bytes": 4304
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionPlanner.class",
+    "bytes": 45626
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionPreview$1.class",
+    "bytes": 941
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionPreview$Image.class",
+    "bytes": 2360
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionPreview$Label.class",
+    "bytes": 1765
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionPreview$Painter.class",
+    "bytes": 5554
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionPreview.class",
+    "bytes": 7153
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionSides.class",
+    "bytes": 6462
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionSignalCycle.class",
+    "bytes": 5177
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionSignals$Head.class",
+    "bytes": 1781
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionSignals$Layout.class",
+    "bytes": 2997
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionSignals$Mast.class",
+    "bytes": 1883
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionSignals.class",
+    "bytes": 21378
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionSpec$Arm.class",
+    "bytes": 8673
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionSpec$Control.class",
+    "bytes": 1300
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionSpec$Kind.class",
+    "bytes": 1242
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionSpec$Lane.class",
+    "bytes": 5099
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/JunctionSpec.class",
+    "bytes": 9834
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LanePointPreview$Image.class",
+    "bytes": 2678
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LanePointPreview$Marker.class",
+    "bytes": 2020
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LanePointPreview.class",
+    "bytes": 10543
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LanePoints$1.class",
+    "bytes": 939
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LanePoints$Arrival.class",
+    "bytes": 1470
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LanePoints$Data.class",
+    "bytes": 6599
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LanePoints$Departure.class",
+    "bytes": 1484
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LanePoints$Elevation.class",
+    "bytes": 1550
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LanePoints$Landing.class",
+    "bytes": 1402
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LanePoints$Lane.class",
+    "bytes": 2424
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LanePoints$Link.class",
+    "bytes": 3758
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LanePoints$Opening.class",
+    "bytes": 2621
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LanePoints$Options.class",
+    "bytes": 4659
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LanePoints$Origin.class",
+    "bytes": 1295
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LanePoints$Path.class",
+    "bytes": 1562
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LanePoints$Point.class",
+    "bytes": 4014
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LanePoints$Ref.class",
+    "bytes": 2396
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LanePoints.class",
+    "bytes": 11353
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LaneRampAlignment.class",
+    "bytes": 3484
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LaneRampApproach.class",
+    "bytes": 6458
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LaneRampHeights$Constraint.class",
+    "bytes": 2074
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LaneRampHeights$Plateau.class",
+    "bytes": 1798
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LaneRampHeights$Profile.class",
+    "bytes": 2037
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LaneRampHeights.class",
+    "bytes": 9947
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LaneRampPaths$Candidate.class",
+    "bytes": 2152
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LaneRampPaths$Frame.class",
+    "bytes": 1902
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LaneRampPaths$Port.class",
+    "bytes": 3416
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LaneRampPaths.class",
+    "bytes": 21628
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LaneSections$Cut.class",
+    "bytes": 3373
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LaneSections$Event.class",
+    "bytes": 2431
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LaneSections$Kind.class",
+    "bytes": 1233
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LaneSections$Section.class",
+    "bytes": 2038
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/LaneSections.class",
+    "bytes": 12717
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/MultiFanPaint$Branch.class",
+    "bytes": 4747
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/MultiFanPaint$Slice.class",
+    "bytes": 2609
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/MultiFanPaint.class",
+    "bytes": 13039
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/MultiInterchange$Edge.class",
+    "bytes": 3145
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/MultiInterchange$Grid.class",
+    "bytes": 5182
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/MultiInterchange$Hit.class",
+    "bytes": 1913
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/MultiInterchange$Route.class",
+    "bytes": 1325
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/MultiInterchange.class",
+    "bytes": 37975
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RetiredRoadSigns$1.class",
+    "bytes": 3547
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RetiredRoadSigns.class",
+    "bytes": 5610
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadAttachments$1.class",
+    "bytes": 1061
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadAttachments$Data.class",
+    "bytes": 3861
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadAttachments$Paint.class",
+    "bytes": 2396
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadAttachments$Point.class",
+    "bytes": 3026
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadAttachments$Range.class",
+    "bytes": 1662
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadAttachments$Span.class",
+    "bytes": 2441
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadAttachments.class",
+    "bytes": 17471
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadAxis$Crossing.class",
+    "bytes": 1998
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadAxis.class",
+    "bytes": 9636
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadClearance$Conflict.class",
+    "bytes": 1566
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadClearance$Contact.class",
+    "bytes": 2705
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadClearance$Grid.class",
+    "bytes": 3402
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadClearance$Prepared.class",
+    "bytes": 940
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadClearance$Triangle.class",
+    "bytes": 4103
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadClearance.class",
+    "bytes": 12972
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadContinuity.class",
+    "bytes": 5551
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadCoverage.class",
+    "bytes": 2618
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadFurniture$Phase.class",
+    "bytes": 2447
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadFurniture.class",
+    "bytes": 676
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadGantry$Edit.class",
+    "bytes": 2892
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadGantry$Station.class",
+    "bytes": 2775
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadGantry.class",
+    "bytes": 16350
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadGeometry$1.class",
+    "bytes": 947
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadGeometry$Mesh.class",
+    "bytes": 6413
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadGeometry$Mode.class",
+    "bytes": 1393
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadGeometry$Node.class",
+    "bytes": 2257
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadGeometry$Path.class",
+    "bytes": 8815
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadGeometry$RampTurn.class",
+    "bytes": 1369
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadGeometry$Sample.class",
+    "bytes": 2512
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadGeometry$Settings.class",
+    "bytes": 15149
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadGeometry$Structure.class",
+    "bytes": 1379
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadGeometry$Style.class",
+    "bytes": 4395
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadGeometry$V.class",
+    "bytes": 3067
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadGeometry.class",
+    "bytes": 19559
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadGrades.class",
+    "bytes": 2399
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadInfrastructure$Bridge.class",
+    "bytes": 1923
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadInfrastructure$Config.class",
+    "bytes": 14204
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadInfrastructure$Gantry.class",
+    "bytes": 1582
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadInfrastructure$Tunnel.class",
+    "bytes": 1452
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadInfrastructure.class",
+    "bytes": 22347
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadJunction$EdgeZone.class",
+    "bytes": 1948
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadJunction$Join.class",
+    "bytes": 2278
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadJunction$Paint.class",
+    "bytes": 2080
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadJunction$Route.class",
+    "bytes": 3526
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadJunction$Zone.class",
+    "bytes": 1770
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadJunction.class",
+    "bytes": 46652
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadJunctionSignalModel$Quad.class",
+    "bytes": 2617
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadJunctionSignalModel.class",
+    "bytes": 10521
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadLaneLines$Edit.class",
+    "bytes": 2423
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadLaneLines$Line.class",
+    "bytes": 1824
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadLaneLines$Pattern.class",
+    "bytes": 2879
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadLaneLines.class",
+    "bytes": 7913
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadLighting$Access.class",
+    "bytes": 293
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadLighting.class",
+    "bytes": 3651
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadLimits.class",
+    "bytes": 720
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadLoop$Path.class",
+    "bytes": 3076
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadLoop.class",
+    "bytes": 4289
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadNoiseModel$Quad.class",
+    "bytes": 2683
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadNoiseModel.class",
+    "bytes": 6493
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadNoses$End.class",
+    "bytes": 2387
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadNoses$Key.class",
+    "bytes": 3041
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadNoses.class",
+    "bytes": 9661
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadPlanner$1.class",
+    "bytes": 988
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadPlanner$Hint.class",
+    "bytes": 2344
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadPlanner$Plan.class",
+    "bytes": 2765
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadPlanner.class",
+    "bytes": 9632
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadPoleModel.class",
+    "bytes": 6969
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadProfile$1.class",
+    "bytes": 3392
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadProfile$Catalog.class",
+    "bytes": 3067
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadProfile$Catalogs.class",
+    "bytes": 1992
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadProfile$JoinMode.class",
+    "bytes": 1264
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadProfile$Layout.class",
+    "bytes": 4379
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadProfile$Median.class",
+    "bytes": 1414
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadProfile$Options$CycleFinish.class",
+    "bytes": 1723
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadProfile$Options.class",
+    "bytes": 23054
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadProfile$OuterRail.class",
+    "bytes": 1888
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadProfile$Ports.class",
+    "bytes": 3430
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadProfile$RouteKind.class",
+    "bytes": 1572
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadProfile$Routing.class",
+    "bytes": 4915
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadProfile$Side.class",
+    "bytes": 2292
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadProfile$Type.class",
+    "bytes": 1339
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadProfile.class",
+    "bytes": 13693
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadProjection$Branch.class",
+    "bytes": 2409
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadProjection$Hit.class",
+    "bytes": 583
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadProjection.class",
+    "bytes": 3983
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadQueries$Projection.class",
+    "bytes": 2406
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadQueries.class",
+    "bytes": 7266
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadRaster$Box.class",
+    "bytes": 2087
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadRaster$Cell.class",
+    "bytes": 1720
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadRaster$Interval.class",
+    "bytes": 539
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadRaster$Local$Segment.class",
+    "bytes": 2452
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadRaster$Local.class",
+    "bytes": 12580
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadRaster$Tile.class",
+    "bytes": 1603
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadRaster.class",
+    "bytes": 18880
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadRenderMesh$Cap.class",
+    "bytes": 3675
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadRenderMesh$CutVertex.class",
+    "bytes": 2129
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadRenderMesh$End.class",
+    "bytes": 3073
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadRenderMesh$Piece.class",
+    "bytes": 2456
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadRenderMesh$Point.class",
+    "bytes": 2639
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadRenderMesh$Section.class",
+    "bytes": 2364
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadRenderMesh.class",
+    "bytes": 24119
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadRibbon.class",
+    "bytes": 7639
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSidewalks$1.class",
+    "bytes": 1396
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSidewalks$Cell.class",
+    "bytes": 1741
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSidewalks$Config.class",
+    "bytes": 4335
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSidewalks$Finish.class",
+    "bytes": 3836
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSidewalks$Key.class",
+    "bytes": 2100
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSidewalks$Side.class",
+    "bytes": 1439
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSidewalks$WalkEnd.class",
+    "bytes": 2484
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSidewalks.class",
+    "bytes": 43562
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSignalFrames$Head.class",
+    "bytes": 1776
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSignalFrames$State.class",
+    "bytes": 504
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSignalFrames.class",
+    "bytes": 4655
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSignalModel$Quad.class",
+    "bytes": 2561
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSignalModel.class",
+    "bytes": 6612
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSignals$Approach.class",
+    "bytes": 2978
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSignals.class",
+    "bytes": 12184
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSignCatalog$1.class",
+    "bytes": 1295
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSignCatalog$Field.class",
+    "bytes": 2498
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSignCatalog$Model.class",
+    "bytes": 2687
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSignCatalog.class",
+    "bytes": 11971
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSigns$Attachment.class",
+    "bytes": 5324
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSigns$Mount.class",
+    "bytes": 1364
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSigns$Placement.class",
+    "bytes": 2791
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSigns.class",
+    "bytes": 11627
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadStreetscape$1.class",
+    "bytes": 899
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadStreetscape$Config.class",
+    "bytes": 5922
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadStreetscape$Planting.class",
+    "bytes": 1676
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadStreetscape$Separator.class",
+    "bytes": 1496
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadStreetscape$Span.class",
+    "bytes": 1900
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadStreetscape.class",
+    "bytes": 24083
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadStructures$1.class",
+    "bytes": 2977
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadStructures$Ground.class",
+    "bytes": 894
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadStructures$Material.class",
+    "bytes": 3586
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadStructures$Part.class",
+    "bytes": 11646
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadStructures$RailEnd.class",
+    "bytes": 2264
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadStructures$RailEndKey.class",
+    "bytes": 2660
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadStructures$RailSpan.class",
+    "bytes": 2206
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadStructures.class",
+    "bytes": 35495
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSupports.class",
+    "bytes": 6986
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSurface$Cut.class",
+    "bytes": 4336
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSurface$Face.class",
+    "bytes": 3843
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSurface$Geometry.class",
+    "bytes": 2174
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSurface$Grid.class",
+    "bytes": 5102
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSurface$Texture.class",
+    "bytes": 2727
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSurface$UV.class",
+    "bytes": 1604
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadSurface.class",
+    "bytes": 37318
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadTerrainMesh$Cell.class",
+    "bytes": 2140
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadTerrainMesh$Chunk.class",
+    "bytes": 1644
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadTerrainMesh$Polygon.class",
+    "bytes": 2340
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadTerrainMesh$Result.class",
+    "bytes": 2368
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadTerrainMesh$Section.class",
+    "bytes": 1773
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadTerrainMesh$Source.class",
+    "bytes": 2208
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadTerrainMesh.class",
+    "bytes": 13172
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadTimings.class",
+    "bytes": 3196
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadTransitions$Blend.class",
+    "bytes": 2093
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadTransitions$Ends.class",
+    "bytes": 4497
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadTransitions$Port.class",
+    "bytes": 3755
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadTransitions$Section.class",
+    "bytes": 9771
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadTransitions.class",
+    "bytes": 15372
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadTunnel.class",
+    "bytes": 3383
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadTunnelFit$Adjustment.class",
+    "bytes": 1550
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadTunnelFit.class",
+    "bytes": 5636
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/RoadVertical.class",
+    "bytes": 3136
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/SidewalkFaces.class",
+    "bytes": 9297
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/SidewalkJoins$Cut.class",
+    "bytes": 4051
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/SidewalkJoins.class",
+    "bytes": 9545
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/TactilePaths$Anchor.class",
+    "bytes": 2094
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/TactilePaths$End.class",
+    "bytes": 3505
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/TactilePaths$Trim.class",
+    "bytes": 2158
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/TactilePaths.class",
+    "bytes": 31675
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/TactileSurface.class",
+    "bytes": 9132
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/WeakIdentityCache$Entry.class",
+    "bytes": 2037
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/WeakIdentityCache$Key.class",
+    "bytes": 1407
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/WeakIdentityCache$Stats.class",
+    "bytes": 1942
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/WeakIdentityCache.class",
+    "bytes": 4835
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/YJunctionPlanner$Plan.class",
+    "bytes": 2462
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/YJunctionPlanner.class",
+    "bytes": 14218
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/YJunctionWalks$Pocket.class",
+    "bytes": 2500
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/core/YJunctionWalks.class",
+    "bytes": 11771
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/net/RoadDraft.class",
+    "bytes": 3099
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/net/RoadNetwork$Action.class",
+    "bytes": 4219
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/net/RoadNetwork$ServerMessage.class",
+    "bytes": 4828
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/net/RoadNetwork$Transfer.class",
+    "bytes": 803
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/net/RoadNetwork$Watching.class",
+    "bytes": 1078
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/net/RoadNetwork.class",
+    "bytes": 27808
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/net/RoadPacketCache$Entry.class",
+    "bytes": 1143
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/net/RoadPacketCache$Key.class",
+    "bytes": 1733
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/net/RoadPacketCache.class",
+    "bytes": 6958
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/net/RoadWire$Assembler.class",
+    "bytes": 4542
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/net/RoadWire$Fragment.class",
+    "bytes": 2180
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/net/RoadWire$Pending.class",
+    "bytes": 576
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/net/RoadWire.class",
+    "bytes": 2824
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/SplineRoads.class",
+    "bytes": 12608
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/AttachedPointCodec.class",
+    "bytes": 7357
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/AttachedPoints.class",
+    "bytes": 11928
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/AttachedPointTool.class",
+    "bytes": 14991
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/AutoJunctions$Draft.class",
+    "bytes": 2418
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/AutoJunctions$End.class",
+    "bytes": 3429
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/AutoJunctions.class",
+    "bytes": 65965
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/ContinuousRoads$Source.class",
+    "bytes": 1792
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/ContinuousRoads.class",
+    "bytes": 24395
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/Corridors.class",
+    "bytes": 16941
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/DeferredMap.class",
+    "bytes": 1587
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/FurnitureSpacing.class",
+    "bytes": 6619
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/GantryTool.class",
+    "bytes": 7697
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/HostAxes.class",
+    "bytes": 10276
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/InterchangeEndpoints$Endpoint.class",
+    "bytes": 2320
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/InterchangeEndpoints.class",
+    "bytes": 8228
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/Interchanges$1.class",
+    "bytes": 1305
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/Interchanges.class",
+    "bytes": 46162
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/InterchangeTool.class",
+    "bytes": 14083
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/JunctionCodec.class",
+    "bytes": 8903
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/JunctionRoads.class",
+    "bytes": 14444
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/Junctions.class",
+    "bytes": 21822
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/JunctionTool.class",
+    "bytes": 9519
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/LaneCrossSections.class",
+    "bytes": 9095
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/LaneDeletes.class",
+    "bytes": 8434
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/LaneLineTool.class",
+    "bytes": 7840
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/LanePointCodec.class",
+    "bytes": 11533
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/LanePointTool$Pending.class",
+    "bytes": 1729
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/LanePointTool$Pick.class",
+    "bytes": 2150
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/LanePointTool.class",
+    "bytes": 21203
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/LaneRamps$Generated.class",
+    "bytes": 2004
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/LaneRamps$Obstacle.class",
+    "bytes": 1965
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/LaneRamps$Planning.class",
+    "bytes": 2361
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/LaneRamps.class",
+    "bytes": 49475
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/LaneRampTool.class",
+    "bytes": 11788
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/LaneTopology.class",
+    "bytes": 40901
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/NodeEntity.class",
+    "bytes": 5031
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RampJunctions.class",
+    "bytes": 19258
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadBlocks$Fill.class",
+    "bytes": 4163
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadBlocks$FilledRoad.class",
+    "bytes": 3423
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadBlocks$Node.class",
+    "bytes": 7847
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadBlocks$Road.class",
+    "bytes": 11659
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadBlocks.class",
+    "bytes": 9592
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadBlockStorage$Group.class",
+    "bytes": 508
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadBlockStorage.class",
+    "bytes": 7081
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadCollisionShape$GridShape.class",
+    "bytes": 680
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadCollisionShape.class",
+    "bytes": 3990
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadCommands$ClearJob.class",
+    "bytes": 6112
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadCommands$Species.class",
+    "bytes": 2209
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadCommands.class",
+    "bytes": 15695
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadData$1.class",
+    "bytes": 1201
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadData$NodeMove.class",
+    "bytes": 2521
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadData.class",
+    "bytes": 113353
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadEvents$1.class",
+    "bytes": 1570
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadEvents$2.class",
+    "bytes": 834
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadEvents.class",
+    "bytes": 14095
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadFillEntity.class",
+    "bytes": 3616
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadIndex$1.class",
+    "bytes": 1034
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadIndex$2.class",
+    "bytes": 1376
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadIndex$Built$1$1.class",
+    "bytes": 2363
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadIndex$Built$1.class",
+    "bytes": 2851
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadIndex$Built$Column.class",
+    "bytes": 1734
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadIndex$Built.class",
+    "bytes": 26807
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadIndex.class",
+    "bytes": 16784
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadInteractions.class",
+    "bytes": 7891
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadRecord.class",
+    "bytes": 51657
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadRemover.class",
+    "bytes": 4154
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadSignCodec.class",
+    "bytes": 4743
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadSignTool.class",
+    "bytes": 12537
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadTool.class",
+    "bytes": 26256
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadWorkChunks$State.class",
+    "bytes": 802
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoadWorkChunks.class",
+    "bytes": 9643
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/RoundaboutTool.class",
+    "bytes": 11930
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/SharedRoadEndpoints.class",
+    "bytes": 8567
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/SmartSidewalks.class",
+    "bytes": 20754
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/StructurePlanner$1.class",
+    "bytes": 13917
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/StructurePlanner$2.class",
+    "bytes": 4834
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/StructurePlanner.class",
+    "bytes": 16556
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/TunnelAir.class",
+    "bytes": 1820
+  },
+  {
+    "path": "build/classes/java/main/com/sora/splineroads/world/YJunctionTool.class",
+    "bytes": 23511
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/core/LegacyRaster232$Box.class",
+    "bytes": 2122
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/core/LegacyRaster232$Cell.class",
+    "bytes": 1755
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/core/LegacyRaster232$Interval.class",
+    "bytes": 559
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/core/LegacyRaster232$Local$Segment.class",
+    "bytes": 2492
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/core/LegacyRaster232$Local.class",
+    "bytes": 8718
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/core/LegacyRaster232$Tile.class",
+    "bytes": 1638
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/core/LegacyRaster232.class",
+    "bytes": 19344
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/EndpointV2Validation.class",
+    "bytes": 15245
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Geometry40Parity.class",
+    "bytes": 5590
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Hotfix351Validation.class",
+    "bytes": 11177
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Hotfix352Validation$1.class",
+    "bytes": 1212
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Hotfix352Validation$2.class",
+    "bytes": 1367
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Hotfix352Validation.class",
+    "bytes": 11597
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Hotfix353Validation$1.class",
+    "bytes": 1469
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Hotfix353Validation$2.class",
+    "bytes": 1456
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Hotfix353Validation.class",
+    "bytes": 22916
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Hotfix371Validation$1.class",
+    "bytes": 1306
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Hotfix371Validation.class",
+    "bytes": 32521
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Hotfix372Validation.class",
+    "bytes": 21931
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/InterchangeSafetyValidation$1.class",
+    "bytes": 2810
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/InterchangeSafetyValidation$2.class",
+    "bytes": 3247
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/InterchangeSafetyValidation.class",
+    "bytes": 14492
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/InterchangeSpaceValidation.class",
+    "bytes": 5903
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/InterchangeValidation.class",
+    "bytes": 18165
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Junction20Validation.class",
+    "bytes": 15023
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Junction22Validation.class",
+    "bytes": 19553
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Junction23Validation.class",
+    "bytes": 15615
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/LaneInteractionValidation.class",
+    "bytes": 9713
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/LanePointSnapValidation.class",
+    "bytes": 9827
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/LaneRampV2Validation.class",
+    "bytes": 7550
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/LaneRampWorkflowValidation.class",
+    "bytes": 13775
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Performance40Validation.class",
+    "bytes": 16414
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Probe35$1.class",
+    "bytes": 1201
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Probe35.class",
+    "bytes": 8193
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Ramp39Validation.class",
+    "bytes": 29875
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/RenderValidation$1.class",
+    "bytes": 1222
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/RenderValidation.class",
+    "bytes": 11802
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision11Validation$1.class",
+    "bytes": 3298
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision11Validation$2.class",
+    "bytes": 1249
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision11Validation.class",
+    "bytes": 21618
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision12Validation.class",
+    "bytes": 11566
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision13Validation$1.class",
+    "bytes": 1349
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision13Validation.class",
+    "bytes": 15877
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision14Validation$1.class",
+    "bytes": 1238
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision14Validation$1Layer.class",
+    "bytes": 2364
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision14Validation.class",
+    "bytes": 24980
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision17Validation.class",
+    "bytes": 23356
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision18Validation$1.class",
+    "bytes": 3067
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision18Validation.class",
+    "bytes": 23542
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision19Validation.class",
+    "bytes": 19022
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision231Validation.class",
+    "bytes": 22242
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision232Validation.class",
+    "bytes": 19990
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision233Validation.class",
+    "bytes": 16604
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision24Validation$1.class",
+    "bytes": 1589
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision24Validation.class",
+    "bytes": 24949
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision251Validation.class",
+    "bytes": 16431
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision252Validation$1.class",
+    "bytes": 1321
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision252Validation$2.class",
+    "bytes": 1314
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision252Validation.class",
+    "bytes": 12813
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision25Validation.class",
+    "bytes": 23251
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision262Validation.class",
+    "bytes": 12287
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision263Validation.class",
+    "bytes": 12348
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision26Validation.class",
+    "bytes": 16776
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision271Validation.class",
+    "bytes": 7375
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision272Validation.class",
+    "bytes": 14654
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision273Validation.class",
+    "bytes": 15076
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision27Validation.class",
+    "bytes": 14655
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision28Validation$1.class",
+    "bytes": 1400
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision28Validation.class",
+    "bytes": 21535
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision291Validation$1.class",
+    "bytes": 1413
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision291Validation.class",
+    "bytes": 15937
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision292Validation.class",
+    "bytes": 5952
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision29Validation$1.class",
+    "bytes": 895
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision29Validation$2.class",
+    "bytes": 873
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision29Validation$3.class",
+    "bytes": 914
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision29Validation.class",
+    "bytes": 18754
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision30Validation.class",
+    "bytes": 13525
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision311Validation.class",
+    "bytes": 21840
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision31Validation.class",
+    "bytes": 15134
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision32Validation$1.class",
+    "bytes": 1463
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision32Validation$2.class",
+    "bytes": 1327
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision32Validation.class",
+    "bytes": 23655
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision331Validation.class",
+    "bytes": 12709
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision33Validation.class",
+    "bytes": 25137
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision34Validation.class",
+    "bytes": 20645
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision35Validation$1.class",
+    "bytes": 1253
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision35Validation.class",
+    "bytes": 16476
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision37Validation$1.class",
+    "bytes": 1350
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision37Validation.class",
+    "bytes": 28141
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Revision38Validation.class",
+    "bytes": 16766
+  },
+  {
+    "path": "build/classes/java/validation/com/sora/splineroads/Separated35Validation.class",
+    "bytes": 14597
+  },
+  {
+    "path": "build/createMcpToSrg/output.tsrg",
+    "bytes": 9129252
+  },
+  {
+    "path": "build/downloadMCMeta/version.json",
+    "bytes": 34974
+  },
+  {
+    "path": "build/downloadMcpConfig/output.zip",
+    "bytes": 1740711
+  },
+  {
+    "path": "build/extractSrg/output.srg",
+    "bytes": 4558114
+  },
+  {
+    "path": "build/jarjar/jarJar/metadata.json",
+    "bytes": 20
+  },
+  {
+    "path": "build/libs/splineroads-0.40.1-alpha.jar",
+    "bytes": 5369884
+  },
+  {
+    "path": "build/reobfJar/log.txt",
+    "bytes": 138659
+  },
+  {
+    "path": "build/reobfJar/mappings.tsrg",
+    "bytes": 9129252
+  },
+  {
+    "path": "build/reobfJar/output.jar",
+    "bytes": 5369884
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/blockstates/road_collision.json",
+    "bytes": 1665
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/blockstates/road_infill.json",
+    "bytes": 63
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/blockstates/road_node.json",
+    "bytes": 84
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/lang/en_us.json",
+    "bytes": 1650
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/lang/zh_cn.json",
+    "bytes": 1720
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/block/road_collision.json",
+    "bytes": 96
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/block/road_node.json",
+    "bytes": 624
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/item/endpoint_creator.json",
+    "bytes": 31951
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/item/frontage_generator.json",
+    "bytes": 99255
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/item/gantry_editor.json",
+    "bytes": 4677
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/item/interchange_connector.json",
+    "bytes": 45291
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/item/interchange_connector_3.json",
+    "bytes": 43245
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/item/interchange_connector_5.json",
+    "bytes": 55806
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/item/interchange_connector_6.json",
+    "bytes": 64631
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/item/junction_connector.json",
+    "bytes": 33149
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/item/lane_line_editor.json",
+    "bytes": 6102
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/item/lane_point_tool.json",
+    "bytes": 37673
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/item/layered_connector.json",
+    "bytes": 33856
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/item/ramp_connector.json",
+    "bytes": 50502
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/item/road_connector.json",
+    "bytes": 29419
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/item/road_node.json",
+    "bytes": 16896
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/item/road_pole.json",
+    "bytes": 92
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/item/road_remover.json",
+    "bytes": 50800
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/item/roundabout_generator.json",
+    "bytes": 51574
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/item/sign_editor.json",
+    "bytes": 94
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/item/y_junction_editor.json",
+    "bytes": 7906
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_arm.mesh",
+    "bytes": 2308
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_arm_source.json",
+    "bytes": 5897
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_base.mesh",
+    "bytes": 6916
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_base_source.json",
+    "bytes": 14475
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_noise.mesh",
+    "bytes": 80194
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_noise_provenance.json",
+    "bytes": 297
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_noise_source.json",
+    "bytes": 93729
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_pedestrian.mesh",
+    "bytes": 111556
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_pedestrian_source.json",
+    "bytes": 292138
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_post.mesh",
+    "bytes": 2308
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_post_source.json",
+    "bytes": 11332
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signal.mesh",
+    "bytes": 149449
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signal_source.json",
+    "bytes": 423159
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs.json",
+    "bytes": 113602
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/road_detection_camera.mesh",
+    "bytes": 30884
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/road_lighting_lamp.mesh",
+    "bytes": 19364
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/road_pole_text_display.mesh",
+    "bytes": 22724
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/road_radar_speed_detector.mesh",
+    "bytes": 18564
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/road_solar_panel.mesh",
+    "bytes": 7204
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_alex_weight_limit_10.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_alex_weight_limit_20.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_alex_weight_limit_30.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_cancel_overtake.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_cancel_speed_limit_005.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_cancel_speed_limit_010.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_cancel_speed_limit_020.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_cancel_speed_limit_030.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_cancel_speed_limit_040.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_cancel_speed_limit_050.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_cancel_speed_limit_060.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_cancel_speed_limit_070.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_cancel_speed_limit_080.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_cancel_speed_limit_090.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_cancel_speed_limit_100.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_cancel_speed_limit_110.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_cancel_speed_limit_120.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_check.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_direction_1.mesh",
+    "bytes": 39844
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_direction_2.mesh",
+    "bytes": 39844
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_direction_3.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_direction_4.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_direction_5.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_direction_6.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_distance_from_location_1.mesh",
+    "bytes": 39364
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_distance_from_location_2.mesh",
+    "bytes": 39604
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_distance_from_location_3.mesh",
+    "bytes": 39284
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_distance_from_location_4.mesh",
+    "bytes": 39604
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_distance_from_location_5.mesh",
+    "bytes": 39764
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_distance_from_location_6.mesh",
+    "bytes": 39284
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_entrance_advance_1.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_entrance_advance_10.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_entrance_advance_11.mesh",
+    "bytes": 38964
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_entrance_advance_12.mesh",
+    "bytes": 38964
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_entrance_advance_13.mesh",
+    "bytes": 39604
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_entrance_advance_14.mesh",
+    "bytes": 39284
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_entrance_advance_15.mesh",
+    "bytes": 39284
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_entrance_advance_2.mesh",
+    "bytes": 38964
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_entrance_advance_3.mesh",
+    "bytes": 38964
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_entrance_advance_4.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_entrance_advance_5.mesh",
+    "bytes": 38964
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_entrance_advance_6.mesh",
+    "bytes": 38964
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_entrance_advance_7.mesh",
+    "bytes": 40644
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_entrance_advance_8.mesh",
+    "bytes": 40484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_entrance_advance_9.mesh",
+    "bytes": 40484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_exit_8.mesh",
+    "bytes": 85364
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_geographical_direction.mesh",
+    "bytes": 38884
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_naming_number_1.mesh",
+    "bytes": 40884
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_naming_number_2.mesh",
+    "bytes": 40884
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_expressway_road_name.mesh",
+    "bytes": 40004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_confirmation_1.mesh",
+    "bytes": 39204
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_confirmation_2.mesh",
+    "bytes": 39364
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_detour_1.mesh",
+    "bytes": 34804
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_detour_2.mesh",
+    "bytes": 34804
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_detour_3.mesh",
+    "bytes": 34804
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_distance_to_tunnel_exit_1.mesh",
+    "bytes": 40804
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_distance_to_tunnel_exit_2.mesh",
+    "bytes": 40804
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_distance_to_tunnel_exit_3.mesh",
+    "bytes": 40804
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_distance_to_tunnel_exit_4.mesh",
+    "bytes": 40644
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_distance_to_tunnel_exit_5.mesh",
+    "bytes": 40644
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_distance_to_tunnel_exit_6.mesh",
+    "bytes": 40644
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_identification_airport_left.mesh",
+    "bytes": 39284
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_identification_airport_right.mesh",
+    "bytes": 39284
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_identification_charging.mesh",
+    "bytes": 43204
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_identification_ferry_crossing.mesh",
+    "bytes": 39284
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_identification_first_aid_station.mesh",
+    "bytes": 39284
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_identification_gas_station.mesh",
+    "bytes": 43204
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_identification_metro.mesh",
+    "bytes": 43204
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_impassable_road.mesh",
+    "bytes": 43364
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_intersection_advance_warning_1.mesh",
+    "bytes": 39924
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_intersection_advance_warning_1_wuhan_left.mesh",
+    "bytes": 34724
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_intersection_advance_warning_1_wuhan_right.mesh",
+    "bytes": 34724
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_intersection_advance_warning_1_wuhan_straight.mesh",
+    "bytes": 34724
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_intersection_advance_warning_2.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_intersection_advance_warning_3.mesh",
+    "bytes": 34804
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_intersection_advance_warning_4.mesh",
+    "bytes": 34804
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_intersection_advance_warning_5.mesh",
+    "bytes": 39444
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_intersection_advance_warning_6.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_intersection_advance_warning_7.mesh",
+    "bytes": 39764
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_intersection_advance_warning_8.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_intersection_warning_1.mesh",
+    "bytes": 40164
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_intersection_warning_2.mesh",
+    "bytes": 45044
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_intersection_warning_3.mesh",
+    "bytes": 40724
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_intersection_warning_4.mesh",
+    "bytes": 40564
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_intersection_warning_5.mesh",
+    "bytes": 40484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_intersection_warning_6.mesh",
+    "bytes": 40564
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_lane_indicator_1.mesh",
+    "bytes": 26484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_odometer.mesh",
+    "bytes": 45284
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_roadside_facility_disabled.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_roadside_facility_emergency_escape_facilities.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_roadside_facility_harbor_style_emergency_parking_lane.mesh",
+    "bytes": 43204
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_roadside_facility_overload_checkpoint_1.mesh",
+    "bytes": 40404
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_roadside_facility_overload_checkpoint_2.mesh",
+    "bytes": 40404
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_roadside_facility_parking_1.mesh",
+    "bytes": 43124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_roadside_facility_parking_2.mesh",
+    "bytes": 43204
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_roadside_facility_parking_spot_1.mesh",
+    "bytes": 41764
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_roadside_facility_parking_spot_2.mesh",
+    "bytes": 41204
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_roadside_facility_pedestrian_overpass.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_roadside_facility_pedestrian_underpass.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_roadside_facility_service_station_1.mesh",
+    "bytes": 41844
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_roadside_facility_service_station_2.mesh",
+    "bytes": 41764
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_roadside_facility_viewing_platform_1.mesh",
+    "bytes": 41764
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_roadside_facility_viewing_platform_2.mesh",
+    "bytes": 41684
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_guide_roadside_facility_wrong_lane.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_height_limit_20.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_height_limit_25.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_height_limit_30.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_height_limit_35.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_height_limit_40.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_height_limit_45.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_electric_vehicle.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_headlights.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_honk_horn.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_electric_vehicle.mesh",
+    "bytes": 38644
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_electric_vehicle_left_side_median_strip.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_electric_vehicle_right_side_median_strip.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_electric_vehicle_straight.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_hov.mesh",
+    "bytes": 39444
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_large_bus.mesh",
+    "bytes": 38644
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_large_bus_brt.mesh",
+    "bytes": 38644
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_large_bus_brt_left_side_median_strip.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_large_bus_brt_right_side_median_strip.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_large_bus_brt_straight.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_large_bus_left_side_median_strip.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_large_bus_right_side_median_strip.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_large_bus_straight.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_large_bus_text.mesh",
+    "bytes": 38644
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_large_bus_text_left_side_median_strip.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_large_bus_text_right_side_median_strip.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_large_bus_text_straight.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_left_turn.mesh",
+    "bytes": 38004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_left_turn_around.mesh",
+    "bytes": 38004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_motor_vehicles.mesh",
+    "bytes": 38644
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_motor_vehicles_left_side_median_strip.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_motor_vehicles_right_side_median_strip.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_motor_vehicles_straight.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_non_motor_vehicles.mesh",
+    "bytes": 38644
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_non_motor_vehicles_left_side_median_strip.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_non_motor_vehicles_right_side_median_strip.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_non_motor_vehicles_straight.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_right_turn.mesh",
+    "bytes": 38004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_single_left_turn_around.mesh",
+    "bytes": 38004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_small_passenger_car.mesh",
+    "bytes": 38644
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_small_passenger_car_left_side_median_strip.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_small_passenger_car_right_side_median_strip.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_small_passenger_car_straight.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_straight.mesh",
+    "bytes": 38004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_straight_left_turn.mesh",
+    "bytes": 38004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_straight_right_turn.mesh",
+    "bytes": 38004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_lane_direction_tram_straight.mesh",
+    "bytes": 39524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_left_right_turn.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_left_side_median_strip.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_left_turn.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_motor_vehicles.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_non_motor_vehicles.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_ok_truck.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_one_way_street_left_right.mesh",
+    "bytes": 38964
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_one_way_street_straight.mesh",
+    "bytes": 42324
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_parking_1.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_parking_2.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_parking_3.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_parking_4.mesh",
+    "bytes": 40644
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_parking_bus.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_parking_charging.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_parking_company.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_parking_disabled.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_parking_non_motor_vehicle.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_parking_school_bus.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_parking_school_bus_fluorescence.mesh",
+    "bytes": 59444
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_parking_taxi.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_paved_shoulder_1.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_paved_shoulder_2.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_paved_shoulder_3.mesh",
+    "bytes": 39204
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_pedestrian.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_pedestrian_non_motor_vehicles_1.mesh",
+    "bytes": 10164
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_pedestrian_non_motor_vehicles_2.mesh",
+    "bytes": 10164
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_pedestrian_non_motor_vehicles_3.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_promotion_drive_right.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_promotion_non_motor_vehicles.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_right_side_median_strip.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_right_turn.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_roundabout.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_school_bus_wuxi.mesh",
+    "bytes": 8884
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_straight.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_straight_left_turn.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_straight_right_turn.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_turn_around.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_yield_to_oncoming_traffic.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_zebra_crossing.mesh",
+    "bytes": 39124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_indication_zebra_crossing_fluorescence.mesh",
+    "bytes": 59444
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_min_speed_limit_005.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_min_speed_limit_010.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_min_speed_limit_020.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_min_speed_limit_030.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_min_speed_limit_040.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_min_speed_limit_050.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_min_speed_limit_060.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_min_speed_limit_070.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_min_speed_limit_080.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_min_speed_limit_090.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_min_speed_limit_100.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_all.mesh",
+    "bytes": 9924
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_animal_drawn_cart.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_electric_vehicle.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_entry.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_hazardous_materials_transport_vehicle.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_honk_horn.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_human_powered_cargo_tricycle.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_human_powered_passenger_tricycle.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_large_bus.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_left_right_turn.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_left_turn.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_motor_vehicles.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_motorcycle.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_non_motor_vehicles.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_overtake.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_parking.mesh",
+    "bytes": 11044
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_parking_long_time.mesh",
+    "bytes": 10404
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_pedestrian.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_rickshaw.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_right_turn.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_single_left_turn_around.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_small_passenger_car.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_straight.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_straight_left_turn.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_straight_right_turn.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_three_wheeled_vehicle.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_tractor.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_trailer.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_tricycle.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_no_truck.mesh",
+    "bytes": 10484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_port_check.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_speed_limit_005.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_speed_limit_010.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_speed_limit_020.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_speed_limit_030.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_speed_limit_040.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_speed_limit_050.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_speed_limit_060.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_speed_limit_070.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_speed_limit_080.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_speed_limit_090.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_speed_limit_100.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_speed_limit_110.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_speed_limit_120.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_stop.mesh",
+    "bytes": 4884
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_accident.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_accident_prone_road.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_camel_back_bridge.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_children.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_children_fluorescence.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_confluence_left.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_confluence_right.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_construction.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_continuous_downhill.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_continuous_winding_roads_1.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_continuous_winding_roads_2.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_crossing_1.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_crossing_10.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_crossing_11.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_crossing_2.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_crossing_3.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_crossing_4.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_crossing_5.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_crossing_6.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_crossing_7.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_crossing_8.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_crossing_9.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_crosswind.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_dangerous.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_detour_double.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_detour_left.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_detour_right.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_disabled.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_disabled_fluorescence.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_distance_between_vehicles.mesh",
+    "bytes": 23524
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_electric_vehicle.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_embankment_road_left.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_embankment_road_right.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_emergency_lane_1.mesh",
+    "bytes": 40164
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_emergency_lane_2.mesh",
+    "bytes": 39924
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_falling_rocks_left.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_falling_rocks_right.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_less_3_to_2.mesh",
+    "bytes": 40404
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_less_4_to_3.mesh",
+    "bytes": 40084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_linear_guidance_marker_1.mesh",
+    "bytes": 44244
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_linear_guidance_marker_2.mesh",
+    "bytes": 44244
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_linear_guidance_marker_3.mesh",
+    "bytes": 44324
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_linear_guidance_marker_4.mesh",
+    "bytes": 44404
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_linear_guidance_marker_5.mesh",
+    "bytes": 44484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_linear_guidance_marker_6.mesh",
+    "bytes": 44484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_linear_guidance_marker_7.mesh",
+    "bytes": 44484
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_linear_guidance_marker_8.mesh",
+    "bytes": 44404
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_linear_guidance_marker_9.mesh",
+    "bytes": 44404
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_livestock.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_narrow_bridge.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_narrow_road_double.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_narrow_road_left.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_narrow_road_right.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_non_motor_vehicles.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_perilous_road_along_the_mountain_left.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_perilous_road_along_the_mountain_right.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_reverse_detour_1.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_reverse_detour_2.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_road_icy.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_road_uneven.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_road_wet.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_sharp_turn_1.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_sharp_turn_2.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_slippery.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_someone_guarding_the_railway_crossing.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_speed_bump.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_steep_slope_down.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_steep_slope_up.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_tidal_lane.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_traffic_lights.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_tunnel.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_two_way_traffic.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_unmanned_guarding_the_railway_crossing.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_vehicles_queued_ahead.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_village.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_weather_foggy.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_weather_rainy_snowy.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_weather_thunder.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_wildlife.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_zebra_crossing.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_warning_zebra_crossing_fluorescence.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_weight_limit_10.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_weight_limit_20.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_weight_limit_30.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_weight_limit_40.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_width_limit_20.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_width_limit_25.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_width_limit_30.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_width_limit_35.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_width_limit_40.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_width_limit_45.mesh",
+    "bytes": 10084
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_yield.mesh",
+    "bytes": 23124
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_signs/sign_yield_to_oncoming_traffic.mesh",
+    "bytes": 10004
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_vehicle.mesh",
+    "bytes": 154984
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/models/road/cb_vehicle_source.json",
+    "bytes": 427793
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/block/road_node.png",
+    "bytes": 170
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/block/roundabout_asphalt.png",
+    "bytes": 8724
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/block/terrain_asphalt.png",
+    "bytes": 8724
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/block/terrain_paint.png",
+    "bytes": 79
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/item/endpoint_creator.png",
+    "bytes": 452
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/item/lane_point_tool.png",
+    "bytes": 498
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/item/road_connector.png",
+    "bytes": 189
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/item/road_pole.png",
+    "bytes": 242
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/item/sign_editor.png",
+    "bytes": 327
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/road/asphalt.png",
+    "bytes": 8724
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/road/cb_logo_national_1.png",
+    "bytes": 4736
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/road/cb_logo_national_2.png",
+    "bytes": 4745
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/road/cb_logo_provicial_1.png",
+    "bytes": 4050
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/road/cb_logo_provicial_2.png",
+    "bytes": 2892
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/road/cb_noise.png",
+    "bytes": 220
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/road/cb_sign_atlas.png",
+    "bytes": 1384229
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/road/cb_signal_amber.png",
+    "bytes": 752
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/road/cb_signal_atlas.png",
+    "bytes": 20170
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/road/cb_signal_green.png",
+    "bytes": 749
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/road/cb_signal_housing.png",
+    "bytes": 426
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/road/cb_signal_red.png",
+    "bytes": 752
+  },
+  {
+    "path": "build/resources/main/assets/splineroads/textures/road/white.png",
+    "bytes": 79
+  },
+  {
+    "path": "build/resources/main/data/splineroads/loot_tables/blocks/road_collision.json",
+    "bytes": 41
+  },
+  {
+    "path": "build/resources/main/data/splineroads/loot_tables/blocks/road_node.json",
+    "bytes": 309
+  },
+  {
+    "path": "build/resources/main/data/splineroads/recipes/endpoint_creator.json",
+    "bytes": 174
+  },
+  {
+    "path": "build/resources/main/data/splineroads/recipes/frontage_generator.json",
+    "bytes": 331
+  },
+  {
+    "path": "build/resources/main/data/splineroads/recipes/gantry_editor.json",
+    "bytes": 344
+  },
+  {
+    "path": "build/resources/main/data/splineroads/recipes/interchange_connector.json",
+    "bytes": 336
+  },
+  {
+    "path": "build/resources/main/data/splineroads/recipes/interchange_connector_3.json",
+    "bytes": 336
+  },
+  {
+    "path": "build/resources/main/data/splineroads/recipes/interchange_connector_5.json",
+    "bytes": 338
+  },
+  {
+    "path": "build/resources/main/data/splineroads/recipes/interchange_connector_6.json",
+    "bytes": 335
+  },
+  {
+    "path": "build/resources/main/data/splineroads/recipes/lane_line_editor.json",
+    "bytes": 395
+  },
+  {
+    "path": "build/resources/main/data/splineroads/recipes/layered_connector.json",
+    "bytes": 332
+  },
+  {
+    "path": "build/resources/main/data/splineroads/recipes/ramp_connector.json",
+    "bytes": 327
+  },
+  {
+    "path": "build/resources/main/data/splineroads/recipes/road_connector.json",
+    "bytes": 326
+  },
+  {
+    "path": "build/resources/main/data/splineroads/recipes/road_node.json",
+    "bytes": 276
+  },
+  {
+    "path": "build/resources/main/data/splineroads/recipes/road_remover.json",
+    "bytes": 341
+  },
+  {
+    "path": "build/resources/main/data/splineroads/recipes/roundabout_generator.json",
+    "bytes": 333
+  },
+  {
+    "path": "build/resources/main/data/splineroads/recipes/y_junction_editor.json",
+    "bytes": 396
+  },
+  {
+    "path": "build/resources/main/META-INF/LICENSE.txt",
+    "bytes": 1061
+  },
+  {
+    "path": "build/resources/main/META-INF/mods.toml",
+    "bytes": 557
+  },
+  {
+    "path": "build/resources/main/pack.mcmeta",
+    "bytes": 67
+  },
+  {
+    "path": "build/tmp/compileClientValidationJava/previous-compilation-data.bin",
+    "bytes": 188200
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/AttachedPointCodec.class.uniqueId280",
+    "bytes": 7357
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/AttachedPointRenderer.class.uniqueId212",
+    "bytes": 5917
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/AttachedPoints.class.uniqueId26",
+    "bytes": 11928
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/AttachedPointScreen.class.uniqueId147",
+    "bytes": 11785
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/AttachedPointTool.class.uniqueId153",
+    "bytes": 14991
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/AutoJunctions$Draft.class.uniqueId21",
+    "bytes": 2418
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/AutoJunctions$End.class.uniqueId104",
+    "bytes": 3429
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/AutoJunctions.class.uniqueId14",
+    "bytes": 65965
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/ClientRoads$Setup.class.uniqueId325",
+    "bytes": 2600
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/ClientRoads.class.uniqueId324",
+    "bytes": 14860
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/ContinuousRoads$Source.class.uniqueId263",
+    "bytes": 1792
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/ContinuousRoads.class.uniqueId273",
+    "bytes": 24395
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/Corridors.class.uniqueId243",
+    "bytes": 16941
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/CorridorScreen.class.uniqueId33",
+    "bytes": 34306
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/FurnitureSpacing.class.uniqueId105",
+    "bytes": 6619
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/GantryScreen.class.uniqueId15",
+    "bytes": 9693
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/GantryTool.class.uniqueId120",
+    "bytes": 7697
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/HostAxes.class.uniqueId75",
+    "bytes": 10276
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/InterchangeEndpoints$Endpoint.class.uniqueId281",
+    "bytes": 2320
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/InterchangeEndpoints.class.uniqueId305",
+    "bytes": 8228
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/Interchanges$1.class.uniqueId12",
+    "bytes": 1305
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/Interchanges.class.uniqueId175",
+    "bytes": 46162
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/InterchangeScreen$1.class.uniqueId258",
+    "bytes": 2553
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/InterchangeScreen$2.class.uniqueId297",
+    "bytes": 1058
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/InterchangeScreen.class.uniqueId69",
+    "bytes": 44294
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/InterchangeTool.class.uniqueId178",
+    "bytes": 14083
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionCodec.class.uniqueId10",
+    "bytes": 8903
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionGuides$Guide.class.uniqueId135",
+    "bytes": 2218
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionGuides.class.uniqueId289",
+    "bytes": 6082
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionPaint.class.uniqueId190",
+    "bytes": 11177
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionPlanner$1.class.uniqueId40",
+    "bytes": 1386
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionPlanner$Movement.class.uniqueId276",
+    "bytes": 2620
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionPlanner$Piece.class.uniqueId149",
+    "bytes": 3023
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionPlanner$Plan.class.uniqueId107",
+    "bytes": 4707
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionPlanner$PlanKey.class.uniqueId282",
+    "bytes": 1801
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionPlanner$Ref.class.uniqueId129",
+    "bytes": 4304
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionPlanner.class.uniqueId170",
+    "bytes": 45626
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionPreview$1.class.uniqueId8",
+    "bytes": 941
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionPreview$Image.class.uniqueId130",
+    "bytes": 2360
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionPreview$Label.class.uniqueId245",
+    "bytes": 1765
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionPreview$Painter.class.uniqueId132",
+    "bytes": 5554
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionPreview.class.uniqueId140",
+    "bytes": 7153
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionRoads.class.uniqueId226",
+    "bytes": 14444
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionRoadScreen$1.class.uniqueId308",
+    "bytes": 1033
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionRoadScreen.class.uniqueId272",
+    "bytes": 16712
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/Junctions.class.uniqueId103",
+    "bytes": 21822
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionScreen$Label.class.uniqueId301",
+    "bytes": 1810
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionScreen.class.uniqueId241",
+    "bytes": 30923
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionSignalCycle.class.uniqueId59",
+    "bytes": 5177
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionSignals$Head.class.uniqueId83",
+    "bytes": 1781
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionSignals$Layout.class.uniqueId242",
+    "bytes": 2997
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionSignals$Mast.class.uniqueId232",
+    "bytes": 1883
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionSignals.class.uniqueId295",
+    "bytes": 21378
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/JunctionTool.class.uniqueId169",
+    "bytes": 9519
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LaneCrossSections.class.uniqueId285",
+    "bytes": 9095
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LaneDeletes.class.uniqueId231",
+    "bytes": 8434
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LaneLineScreen.class.uniqueId207",
+    "bytes": 12232
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LaneLineTool.class.uniqueId221",
+    "bytes": 7840
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePointCodec.class.uniqueId38",
+    "bytes": 11533
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePointPreview$Image.class.uniqueId118",
+    "bytes": 2678
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePointPreview$Marker.class.uniqueId46",
+    "bytes": 2020
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePointPreview.class.uniqueId1",
+    "bytes": 10543
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePointRenderer.class.uniqueId62",
+    "bytes": 7089
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePoints$1.class.uniqueId47",
+    "bytes": 939
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePoints$Arrival.class.uniqueId184",
+    "bytes": 1470
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePoints$Data.class.uniqueId291",
+    "bytes": 6599
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePoints$Departure.class.uniqueId192",
+    "bytes": 1484
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePoints$Elevation.class.uniqueId180",
+    "bytes": 1550
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePoints$Landing.class.uniqueId277",
+    "bytes": 1402
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePoints$Lane.class.uniqueId78",
+    "bytes": 2424
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePoints$Link.class.uniqueId237",
+    "bytes": 3758
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePoints$Opening.class.uniqueId223",
+    "bytes": 2621
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePoints$Options.class.uniqueId109",
+    "bytes": 4659
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePoints$Origin.class.uniqueId7",
+    "bytes": 1295
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePoints$Path.class.uniqueId294",
+    "bytes": 1562
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePoints$Point.class.uniqueId219",
+    "bytes": 4014
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePoints$Ref.class.uniqueId81",
+    "bytes": 2396
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePoints.class.uniqueId251",
+    "bytes": 11353
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePointScreen.class.uniqueId77",
+    "bytes": 13472
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePointTool$Pending.class.uniqueId286",
+    "bytes": 1729
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePointTool$Pick.class.uniqueId171",
+    "bytes": 2150
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LanePointTool.class.uniqueId292",
+    "bytes": 21203
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LaneRampApproach.class.uniqueId30",
+    "bytes": 6458
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LaneRamps$Generated.class.uniqueId20",
+    "bytes": 2004
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LaneRamps$Obstacle.class.uniqueId266",
+    "bytes": 1965
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LaneRamps$Planning.class.uniqueId176",
+    "bytes": 2361
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LaneRamps.class.uniqueId279",
+    "bytes": 49475
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LaneRampScreen.class.uniqueId144",
+    "bytes": 16127
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LaneRampTool.class.uniqueId182",
+    "bytes": 11788
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LaneSections$Cut.class.uniqueId23",
+    "bytes": 3373
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LaneSections$Event.class.uniqueId5",
+    "bytes": 2431
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LaneSections$Kind.class.uniqueId203",
+    "bytes": 1233
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LaneSections$Section.class.uniqueId67",
+    "bytes": 2038
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LaneSections.class.uniqueId229",
+    "bytes": 12717
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/LaneTopology.class.uniqueId256",
+    "bytes": 40901
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/MultiFanPaint$Branch.class.uniqueId143",
+    "bytes": 4747
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/MultiFanPaint$Slice.class.uniqueId191",
+    "bytes": 2609
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/MultiFanPaint.class.uniqueId284",
+    "bytes": 13039
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/NodeEntity.class.uniqueId320",
+    "bytes": 5031
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/NodeRenderer.class.uniqueId148",
+    "bytes": 9746
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RampJunctions.class.uniqueId115",
+    "bytes": 19258
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RetiredRoadSigns$1.class.uniqueId87",
+    "bytes": 3547
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RetiredRoadSigns.class.uniqueId29",
+    "bytes": 5610
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadAttachments$1.class.uniqueId117",
+    "bytes": 1061
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadAttachments$Data.class.uniqueId92",
+    "bytes": 3861
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadAttachments$Paint.class.uniqueId296",
+    "bytes": 2396
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadAttachments$Point.class.uniqueId189",
+    "bytes": 3026
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadAttachments$Range.class.uniqueId113",
+    "bytes": 1662
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadAttachments$Span.class.uniqueId216",
+    "bytes": 2441
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadAttachments.class.uniqueId265",
+    "bytes": 17471
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadBlocks$Fill.class.uniqueId160",
+    "bytes": 4163
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadBlocks$FilledRoad.class.uniqueId255",
+    "bytes": 3423
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadBlocks$Node.class.uniqueId187",
+    "bytes": 7847
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadBlocks$Road.class.uniqueId319",
+    "bytes": 11659
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadBlocks.class.uniqueId52",
+    "bytes": 9592
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadCollisionShape$GridShape.class.uniqueId206",
+    "bytes": 680
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadCollisionShape.class.uniqueId85",
+    "bytes": 3990
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadContinuity.class.uniqueId128",
+    "bytes": 5551
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadData$1.class.uniqueId225",
+    "bytes": 1201
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadData$NodeMove.class.uniqueId222",
+    "bytes": 2521
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadData.class.uniqueId234",
+    "bytes": 113353
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadDeleteScreen.class.uniqueId48",
+    "bytes": 7326
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadEvents$1.class.uniqueId154",
+    "bytes": 1570
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadEvents$2.class.uniqueId134",
+    "bytes": 834
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadEvents.class.uniqueId240",
+    "bytes": 14095
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadGantry$Edit.class.uniqueId269",
+    "bytes": 2892
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadGantry$Station.class.uniqueId228",
+    "bytes": 2775
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadGantry.class.uniqueId271",
+    "bytes": 16350
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadGeometry$1.class.uniqueId32",
+    "bytes": 947
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadGeometry$Mesh.class.uniqueId227",
+    "bytes": 6413
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadGeometry$Mode.class.uniqueId73",
+    "bytes": 1393
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadGeometry$Node.class.uniqueId95",
+    "bytes": 2257
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadGeometry$Path.class.uniqueId199",
+    "bytes": 8815
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadGeometry$RampTurn.class.uniqueId27",
+    "bytes": 1369
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadGeometry$Sample.class.uniqueId123",
+    "bytes": 2512
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadGeometry$Settings.class.uniqueId70",
+    "bytes": 15149
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadGeometry$Structure.class.uniqueId63",
+    "bytes": 1379
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadGeometry$Style.class.uniqueId293",
+    "bytes": 4395
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadGeometry$V.class.uniqueId112",
+    "bytes": 3067
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadGeometry.class.uniqueId108",
+    "bytes": 19559
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadInbox$Event.class.uniqueId185",
+    "bytes": 2130
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadInbox$Ready.class.uniqueId31",
+    "bytes": 1843
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadInbox.class.uniqueId16",
+    "bytes": 6158
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadIndex$1.class.uniqueId18",
+    "bytes": 1034
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadIndex$2.class.uniqueId58",
+    "bytes": 1376
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadIndex$Built$1$1.class.uniqueId142",
+    "bytes": 2363
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadIndex$Built$1.class.uniqueId121",
+    "bytes": 2851
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadIndex$Built$Column.class.uniqueId101",
+    "bytes": 1734
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadIndex$Built.class.uniqueId307",
+    "bytes": 26807
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadIndex.class.uniqueId36",
+    "bytes": 16784
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadInfrastructure$Bridge.class.uniqueId35",
+    "bytes": 1923
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadInfrastructure$Config.class.uniqueId150",
+    "bytes": 14204
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadInfrastructure$Gantry.class.uniqueId3",
+    "bytes": 1582
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadInfrastructure$Tunnel.class.uniqueId151",
+    "bytes": 1452
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadInfrastructure.class.uniqueId53",
+    "bytes": 22347
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadInteractions.class.uniqueId261",
+    "bytes": 7891
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadJunction$EdgeZone.class.uniqueId267",
+    "bytes": 1948
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadJunction$Join.class.uniqueId126",
+    "bytes": 2278
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadJunction$Paint.class.uniqueId329",
+    "bytes": 2080
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadJunction$Route.class.uniqueId233",
+    "bytes": 3526
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadJunction$Zone.class.uniqueId316",
+    "bytes": 1770
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadJunction.class.uniqueId4",
+    "bytes": 46652
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadJunctionSignalModel$Quad.class.uniqueId100",
+    "bytes": 2617
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadJunctionSignalModel.class.uniqueId306",
+    "bytes": 10521
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadLaneLines$Edit.class.uniqueId259",
+    "bytes": 2423
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadLaneLines$Line.class.uniqueId152",
+    "bytes": 1824
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadLaneLines$Pattern.class.uniqueId209",
+    "bytes": 2879
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadLaneLines.class.uniqueId49",
+    "bytes": 7913
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadLighting$Access.class.uniqueId332",
+    "bytes": 293
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadLighting.class.uniqueId44",
+    "bytes": 3651
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadNetwork$Action.class.uniqueId161",
+    "bytes": 4219
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadNetwork$ServerMessage.class.uniqueId51",
+    "bytes": 4828
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadNetwork$Transfer.class.uniqueId300",
+    "bytes": 803
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadNetwork$Watching.class.uniqueId186",
+    "bytes": 1078
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadNetwork.class.uniqueId250",
+    "bytes": 27808
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadNoiseModel$Quad.class.uniqueId106",
+    "bytes": 2683
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadNoiseModel.class.uniqueId74",
+    "bytes": 6493
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadNoses$End.class.uniqueId247",
+    "bytes": 2387
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadNoses$Key.class.uniqueId158",
+    "bytes": 3041
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadNoses.class.uniqueId17",
+    "bytes": 9661
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadPacketCache$Entry.class.uniqueId254",
+    "bytes": 1143
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadPacketCache$Key.class.uniqueId60",
+    "bytes": 1733
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadPacketCache.class.uniqueId114",
+    "bytes": 6958
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadPoleModel.class.uniqueId141",
+    "bytes": 6969
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadProfile$1.class.uniqueId302",
+    "bytes": 3392
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadProfile$Catalog.class.uniqueId326",
+    "bytes": 3067
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadProfile$Catalogs.class.uniqueId194",
+    "bytes": 1992
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadProfile$JoinMode.class.uniqueId124",
+    "bytes": 1264
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadProfile$Layout.class.uniqueId96",
+    "bytes": 4379
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadProfile$Median.class.uniqueId303",
+    "bytes": 1414
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadProfile$Options$CycleFinish.class.uniqueId177",
+    "bytes": 1723
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadProfile$Options.class.uniqueId111",
+    "bytes": 23054
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadProfile$OuterRail.class.uniqueId196",
+    "bytes": 1888
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadProfile$Ports.class.uniqueId330",
+    "bytes": 3430
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadProfile$RouteKind.class.uniqueId321",
+    "bytes": 1572
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadProfile$Routing.class.uniqueId328",
+    "bytes": 4915
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadProfile$Side.class.uniqueId76",
+    "bytes": 2292
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadProfile$Type.class.uniqueId197",
+    "bytes": 1339
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadProfile.class.uniqueId288",
+    "bytes": 13693
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRaster$Box.class.uniqueId156",
+    "bytes": 2087
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRaster$Cell.class.uniqueId309",
+    "bytes": 1720
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRaster$Interval.class.uniqueId224",
+    "bytes": 539
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRaster$Local$Segment.class.uniqueId327",
+    "bytes": 2452
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRaster$Local.class.uniqueId9",
+    "bytes": 12580
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRaster$Tile.class.uniqueId82",
+    "bytes": 1603
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRaster.class.uniqueId138",
+    "bytes": 18880
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRecord.class.uniqueId274",
+    "bytes": 51657
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRemover.class.uniqueId172",
+    "bytes": 4154
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRenderer$1.class.uniqueId287",
+    "bytes": 2868
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRenderer$2.class.uniqueId298",
+    "bytes": 3711
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRenderer$GpuSection.class.uniqueId13",
+    "bytes": 3200
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRenderer$Job.class.uniqueId318",
+    "bytes": 2374
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRenderer$MeshResult.class.uniqueId208",
+    "bytes": 2709
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRenderer$Prepared.class.uniqueId66",
+    "bytes": 5410
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRenderer$SignalCache.class.uniqueId19",
+    "bytes": 2318
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRenderer$Upload$Batch.class.uniqueId139",
+    "bytes": 2018
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRenderer$Upload.class.uniqueId99",
+    "bytes": 9066
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRenderer.class.uniqueId200",
+    "bytes": 57409
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRenderMesh$Cap.class.uniqueId164",
+    "bytes": 3675
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRenderMesh$CutVertex.class.uniqueId88",
+    "bytes": 2129
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRenderMesh$End.class.uniqueId188",
+    "bytes": 3073
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRenderMesh$Piece.class.uniqueId94",
+    "bytes": 2456
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRenderMesh$Point.class.uniqueId119",
+    "bytes": 2639
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRenderMesh$Section.class.uniqueId165",
+    "bytes": 2364
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadRenderMesh.class.uniqueId173",
+    "bytes": 24119
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadScreen$1.class.uniqueId313",
+    "bytes": 971
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadScreen.class.uniqueId235",
+    "bytes": 65079
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSidewalks$1.class.uniqueId299",
+    "bytes": 1396
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSidewalks$Cell.class.uniqueId42",
+    "bytes": 1741
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSidewalks$Config.class.uniqueId11",
+    "bytes": 4335
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSidewalks$Finish.class.uniqueId202",
+    "bytes": 3836
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSidewalks$Key.class.uniqueId270",
+    "bytes": 2100
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSidewalks$Side.class.uniqueId304",
+    "bytes": 1439
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSidewalks$WalkEnd.class.uniqueId314",
+    "bytes": 2484
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSidewalks.class.uniqueId198",
+    "bytes": 43562
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSignalBatch$Vertex.class.uniqueId102",
+    "bytes": 2511
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSignalBatch.class.uniqueId168",
+    "bytes": 9865
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSignalFrames$Head.class.uniqueId262",
+    "bytes": 1776
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSignalFrames$State.class.uniqueId210",
+    "bytes": 504
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSignalFrames.class.uniqueId260",
+    "bytes": 4655
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSignalModel$Quad.class.uniqueId37",
+    "bytes": 2561
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSignalModel.class.uniqueId162",
+    "bytes": 6612
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSignals$Approach.class.uniqueId127",
+    "bytes": 2978
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSignals.class.uniqueId252",
+    "bytes": 12184
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSignCatalog$1.class.uniqueId181",
+    "bytes": 1295
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSignCatalog$Field.class.uniqueId116",
+    "bytes": 2498
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSignCatalog$Model.class.uniqueId238",
+    "bytes": 2687
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSignCatalog.class.uniqueId310",
+    "bytes": 11971
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSignCodec.class.uniqueId2",
+    "bytes": 4743
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSignPreview$1.class.uniqueId71",
+    "bytes": 1301
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSignPreview.class.uniqueId201",
+    "bytes": 11181
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSigns$Attachment.class.uniqueId239",
+    "bytes": 5324
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSigns$Mount.class.uniqueId24",
+    "bytes": 1364
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSigns$Placement.class.uniqueId268",
+    "bytes": 2791
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSigns.class.uniqueId93",
+    "bytes": 11627
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSignScreen$Picker.class.uniqueId72",
+    "bytes": 9165
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSignScreen.class.uniqueId39",
+    "bytes": 16351
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSignTextRenderer.class.uniqueId43",
+    "bytes": 14095
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSignTool.class.uniqueId155",
+    "bytes": 12537
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadStreetscape$1.class.uniqueId322",
+    "bytes": 899
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadStreetscape$Config.class.uniqueId145",
+    "bytes": 5922
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadStreetscape$Planting.class.uniqueId204",
+    "bytes": 1676
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadStreetscape$Separator.class.uniqueId131",
+    "bytes": 1496
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadStreetscape$Span.class.uniqueId86",
+    "bytes": 1900
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadStreetscape.class.uniqueId183",
+    "bytes": 24083
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadStructures$1.class.uniqueId213",
+    "bytes": 2977
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadStructures$Ground.class.uniqueId125",
+    "bytes": 894
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadStructures$Material.class.uniqueId159",
+    "bytes": 3586
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadStructures$Part.class.uniqueId317",
+    "bytes": 11646
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadStructures$RailEnd.class.uniqueId315",
+    "bytes": 2264
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadStructures$RailEndKey.class.uniqueId157",
+    "bytes": 2660
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadStructures$RailSpan.class.uniqueId136",
+    "bytes": 2206
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadStructures.class.uniqueId45",
+    "bytes": 35495
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSupports.class.uniqueId248",
+    "bytes": 6986
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSurface$Cut.class.uniqueId193",
+    "bytes": 4336
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSurface$Face.class.uniqueId54",
+    "bytes": 3843
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSurface$Geometry.class.uniqueId79",
+    "bytes": 2174
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSurface$Grid.class.uniqueId163",
+    "bytes": 5102
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSurface$Texture.class.uniqueId230",
+    "bytes": 2727
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSurface$UV.class.uniqueId84",
+    "bytes": 1604
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadSurface.class.uniqueId246",
+    "bytes": 37278
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTerrainMesh$Cell.class.uniqueId110",
+    "bytes": 2140
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTerrainMesh$Chunk.class.uniqueId331",
+    "bytes": 1644
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTerrainMesh$Polygon.class.uniqueId56",
+    "bytes": 2340
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTerrainMesh$Result.class.uniqueId64",
+    "bytes": 2368
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTerrainMesh$Section.class.uniqueId217",
+    "bytes": 1773
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTerrainMesh$Source.class.uniqueId323",
+    "bytes": 2208
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTerrainMesh.class.uniqueId137",
+    "bytes": 13172
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTerrainModels$Assets.class.uniqueId290",
+    "bytes": 1930
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTerrainModels$Prepared.class.uniqueId122",
+    "bytes": 2672
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTerrainModels$Source.class.uniqueId257",
+    "bytes": 2198
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTerrainModels$Stats.class.uniqueId25",
+    "bytes": 2349
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTerrainModels$Streaming.class.uniqueId220",
+    "bytes": 3314
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTerrainModels$TerrainModel$1.class.uniqueId215",
+    "bytes": 1720
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTerrainModels$TerrainModel.class.uniqueId244",
+    "bytes": 6191
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTerrainModels$Tile.class.uniqueId0",
+    "bytes": 1999
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTerrainModels$TileJob.class.uniqueId91",
+    "bytes": 2597
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTerrainModels.class.uniqueId236",
+    "bytes": 33714
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTool.class.uniqueId218",
+    "bytes": 26256
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTransitions$Blend.class.uniqueId249",
+    "bytes": 2093
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTransitions$Ends.class.uniqueId133",
+    "bytes": 4497
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTransitions$Port.class.uniqueId89",
+    "bytes": 3755
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTransitions$Section.class.uniqueId312",
+    "bytes": 9771
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTransitions.class.uniqueId90",
+    "bytes": 15372
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTunnel.class.uniqueId211",
+    "bytes": 3383
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTunnelFit$Adjustment.class.uniqueId253",
+    "bytes": 1550
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadTunnelFit.class.uniqueId6",
+    "bytes": 5636
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadUploadBudget.class.uniqueId28",
+    "bytes": 3566
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadVertical.class.uniqueId57",
+    "bytes": 3136
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadWorkChunks$State.class.uniqueId278",
+    "bytes": 802
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoadWorkChunks.class.uniqueId264",
+    "bytes": 9643
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoundaboutScreen.class.uniqueId179",
+    "bytes": 10196
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/RoundaboutTool.class.uniqueId98",
+    "bytes": 11930
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/SharedRoadEndpoints.class.uniqueId166",
+    "bytes": 8567
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/SidewalkFaces.class.uniqueId205",
+    "bytes": 9297
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/SidewalkJoins$Cut.class.uniqueId97",
+    "bytes": 4051
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/SidewalkJoins.class.uniqueId34",
+    "bytes": 9545
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/SmartSidewalks.class.uniqueId167",
+    "bytes": 20754
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/SplineRoads.class.uniqueId41",
+    "bytes": 12608
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/StructurePlanner$1.class.uniqueId22",
+    "bytes": 13917
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/StructurePlanner$2.class.uniqueId80",
+    "bytes": 4834
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/StructurePlanner.class.uniqueId275",
+    "bytes": 16556
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/TactilePaths$Anchor.class.uniqueId283",
+    "bytes": 2094
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/TactilePaths$End.class.uniqueId68",
+    "bytes": 3505
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/TactilePaths$Trim.class.uniqueId55",
+    "bytes": 2158
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/TactilePaths.class.uniqueId195",
+    "bytes": 31675
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/TactileSurface.class.uniqueId214",
+    "bytes": 9132
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/YJunctionPlanner$Plan.class.uniqueId311",
+    "bytes": 2462
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/YJunctionPlanner.class.uniqueId65",
+    "bytes": 14218
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/YJunctionScreen.class.uniqueId174",
+    "bytes": 11690
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/YJunctionTool.class.uniqueId61",
+    "bytes": 23511
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/YJunctionWalks$Pocket.class.uniqueId146",
+    "bytes": 2500
+  },
+  {
+    "path": "build/tmp/compileJava/compileTransaction/stash-dir/YJunctionWalks.class.uniqueId50",
+    "bytes": 11771
+  },
+  {
+    "path": "build/tmp/compileJava/previous-compilation-data.bin",
+    "bytes": 226514
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/EndpointV2Validation.class.uniqueId7",
+    "bytes": 15245
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Hotfix351Validation.class.uniqueId40",
+    "bytes": 11177
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Hotfix352Validation$1.class.uniqueId41",
+    "bytes": 1212
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Hotfix352Validation$2.class.uniqueId37",
+    "bytes": 1367
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Hotfix352Validation.class.uniqueId11",
+    "bytes": 11597
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Hotfix353Validation$1.class.uniqueId68",
+    "bytes": 1469
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Hotfix353Validation$2.class.uniqueId48",
+    "bytes": 1456
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Hotfix353Validation.class.uniqueId8",
+    "bytes": 22916
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Hotfix371Validation$1.class.uniqueId29",
+    "bytes": 1306
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Hotfix371Validation.class.uniqueId53",
+    "bytes": 32521
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Hotfix372Validation.class.uniqueId66",
+    "bytes": 21931
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Junction20Validation.class.uniqueId16",
+    "bytes": 15023
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Junction22Validation.class.uniqueId28",
+    "bytes": 19553
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Junction23Validation.class.uniqueId23",
+    "bytes": 15306
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/LaneRampWorkflowValidation.class.uniqueId17",
+    "bytes": 13775
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/LegacyRaster232$Box.class.uniqueId32",
+    "bytes": 2122
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/LegacyRaster232$Cell.class.uniqueId33",
+    "bytes": 1755
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/LegacyRaster232$Interval.class.uniqueId24",
+    "bytes": 559
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/LegacyRaster232$Local$Segment.class.uniqueId27",
+    "bytes": 2492
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/LegacyRaster232$Local.class.uniqueId59",
+    "bytes": 8718
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/LegacyRaster232$Tile.class.uniqueId25",
+    "bytes": 1638
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/LegacyRaster232.class.uniqueId15",
+    "bytes": 19344
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Performance40Validation.class.uniqueId70",
+    "bytes": 16414
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Probe35$1.class.uniqueId39",
+    "bytes": 1201
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Probe35.class.uniqueId6",
+    "bytes": 8193
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Ramp39Validation.class.uniqueId49",
+    "bytes": 29875
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/RenderValidation$1.class.uniqueId12",
+    "bytes": 1222
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/RenderValidation.class.uniqueId13",
+    "bytes": 11802
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision12Validation.class.uniqueId35",
+    "bytes": 11566
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision13Validation$1.class.uniqueId26",
+    "bytes": 1349
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision13Validation.class.uniqueId50",
+    "bytes": 15877
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision14Validation$1.class.uniqueId3",
+    "bytes": 1238
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision14Validation$1Layer.class.uniqueId43",
+    "bytes": 2364
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision14Validation.class.uniqueId4",
+    "bytes": 24980
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision17Validation.class.uniqueId14",
+    "bytes": 23356
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision18Validation$1.class.uniqueId51",
+    "bytes": 3067
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision18Validation.class.uniqueId38",
+    "bytes": 23542
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision19Validation.class.uniqueId46",
+    "bytes": 19022
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision231Validation.class.uniqueId65",
+    "bytes": 22242
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision24Validation$1.class.uniqueId42",
+    "bytes": 1589
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision24Validation.class.uniqueId34",
+    "bytes": 24949
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision251Validation.class.uniqueId62",
+    "bytes": 16431
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision252Validation$1.class.uniqueId69",
+    "bytes": 1321
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision252Validation$2.class.uniqueId10",
+    "bytes": 1314
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision252Validation.class.uniqueId0",
+    "bytes": 12730
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision25Validation.class.uniqueId63",
+    "bytes": 22928
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision263Validation.class.uniqueId55",
+    "bytes": 12348
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision27Validation.class.uniqueId36",
+    "bytes": 14655
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision28Validation$1.class.uniqueId18",
+    "bytes": 1400
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision28Validation.class.uniqueId67",
+    "bytes": 21267
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision291Validation$1.class.uniqueId64",
+    "bytes": 1413
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision291Validation.class.uniqueId30",
+    "bytes": 15937
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision29Validation$1.class.uniqueId31",
+    "bytes": 895
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision29Validation$2.class.uniqueId1",
+    "bytes": 873
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision29Validation$3.class.uniqueId21",
+    "bytes": 914
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision29Validation.class.uniqueId52",
+    "bytes": 18754
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision30Validation.class.uniqueId44",
+    "bytes": 13525
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision311Validation.class.uniqueId5",
+    "bytes": 21840
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision31Validation.class.uniqueId60",
+    "bytes": 15134
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision32Validation$1.class.uniqueId54",
+    "bytes": 1463
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision32Validation$2.class.uniqueId57",
+    "bytes": 1327
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision32Validation.class.uniqueId20",
+    "bytes": 23655
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision331Validation.class.uniqueId61",
+    "bytes": 12709
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision33Validation.class.uniqueId47",
+    "bytes": 25137
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision34Validation.class.uniqueId56",
+    "bytes": 20645
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision35Validation$1.class.uniqueId9",
+    "bytes": 1253
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision35Validation.class.uniqueId19",
+    "bytes": 16476
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision37Validation$1.class.uniqueId45",
+    "bytes": 1350
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision37Validation.class.uniqueId58",
+    "bytes": 28141
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Revision38Validation.class.uniqueId22",
+    "bytes": 16766
+  },
+  {
+    "path": "build/tmp/compileValidationJava/compileTransaction/stash-dir/Separated35Validation.class.uniqueId2",
+    "bytes": 14597
+  },
+  {
+    "path": "build/tmp/compileValidationJava/previous-compilation-data.bin",
+    "bytes": 197364
+  },
+  {
+    "path": "build/tmp/jar/MANIFEST.MF",
+    "bytes": 63
+  },
+  {
+    "path": "build/validation22/junction-preview.png",
+    "bytes": 10648
+  },
+  {
+    "path": "build/validation22/roundabout-preview.png",
+    "bytes": 11621
+  },
+  {
+    "path": "build/validation22/selected-lane-preview.png",
+    "bytes": 10795
+  },
+  {
+    "path": "build/validation22/two-road-corner.png",
+    "bytes": 9245
+  },
+  {
+    "path": "build/validation232/junction-3-0.png",
+    "bytes": 29038
+  },
+  {
+    "path": "build/validation232/junction-4-0.png",
+    "bytes": 21964
+  },
+  {
+    "path": "build/validation232/junction-4-10.png",
+    "bytes": 35227
+  },
+  {
+    "path": "build/validation232/roundabout.png",
+    "bytes": 26767
+  },
+  {
+    "path": "build/validation25/multi5.csv",
+    "bytes": 601999
+  },
+  {
+    "path": "build/validation25/multi6.csv",
+    "bytes": 912317
+  },
+  {
+    "path": "logs/debug-1.log.gz",
+    "bytes": 1232
+  },
+  {
+    "path": "logs/debug.log",
+    "bytes": 0
+  },
+  {
+    "path": "logs/latest.log",
+    "bytes": 0
+  }
+]

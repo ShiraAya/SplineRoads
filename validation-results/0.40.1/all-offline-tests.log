@@ -1,0 +1,56 @@
+JDK / host used by this run:
+openjdk version "21.0.11" 2026-04-21
+OpenJDK Runtime Environment (build 21.0.11+10-1-deb13u2-Debian)
+OpenJDK 64-Bit Server VM (build 21.0.11+10-1-deb13u2-Debian, mixed mode, sharing)
+SourceSyntax40: 156 production Java units parsed with --release 17. SYNTAX ONLY; no symbol/API/type checking or Forge build.
+EndpointV2 core PASS: continuity, scope, paint isolation, identity, control interpolation, green taper, sidewalk walls
+LanePointSnapValidation: 742 checks passed; reproduced old maximum drift=0.01943854553513143
+LaneInteractionValidation: 254 checks passed
+LaneRampV2Validation: 2836 checks passed
+LaneRampWorkflowValidation: 9190 checks passed
+Ramp39Validation: 16231 checks passed (production core; no Forge/client claims)
+
+CORE TESTS ONLY: Forge, NBT, world transactions, client rendering and the sign catalog are not validated by this runner.
+  production DETACH + REPLACE: outgoing 435.5 m, incoming 284.3 m, host retains lane 0; deletion restores both lanes
+Ramp39ModelValidation: 377 checks passed; real LaneRamps/LaneTopology/LanePointCodec/RoadRecord, test-only NBT/world adapters; NO game/client/world-write claim
+  compound scale=1.00 rotation=0.00 origin=0: 3->2, DETACH, fork, I over A, II over IV, REPLACE, reconcile/reload/delete; ramps 1289.4 / 1291.3 / 1054.3 m
+  compound scale=0.50 rotation=0.00 origin=0: 3->2, DETACH, fork, I over A, II over IV, REPLACE, reconcile/reload/delete; ramps 644.2 / 645.2 / 526.1 m
+  compound scale=0.50 rotation=0.60 origin=100000: 3->2, DETACH, fork, I over A, II over IV, REPLACE, reconcile/reload/delete; ramps 644.2 / 645.2 / 526.1 m
+Ramp39CompoundValidation: 2767 checks passed; in-memory production planner/reconcile only, NOT Minecraft construction/rendering
+Ramp39WidgetValidation: 12 checks passed; real screen state with test-only widgets, no Minecraft/GPU/network test
+
+MODEL TESTS ONLY: NBT map adapters are not Mojang NBT binary encoding; world writes, networking and GPU drawing throw. This is not a Forge/Minecraft test.
+Performance40Validation: 200936 checks passed (production core; not a shader/GPU test)
+Geometry40Parity: valid=64, rejected=0, sha256=6c50d4bb328abb230584b611b61483422005b889a4829afabb95d9107b1bdae8
+Index40Validation: 175398 checks passed (real RoadIndex/DeferredMap/RoadRaster; test BlockPos/AABB only; no world-write or VoxelShape claim)
+Terrain40ModelValidation: 87 checks passed (production bridge with explicit API adapters; NOT Forge/Oculus/Embeddium/GPU validation)
+mesh_rounds_ms=[1.349937, 1.0808, 0.71572, 0.601868, 0.592734], endpoint_rounds_ms=[137.1536, 52.27732, 46.015434, 22.99461, 42.057628]
+roads=256, repeated_mesh_median_ms=0.716, endpoint_initialize_median_ms=46.015, checksum=1343488.0
+In-memory CPU microbenchmark, five rounds after warmup. NOT NBT disk load, Minecraft FPS or edit wall-clock time.
+
+PASS: offline core / production-index-local-queries / terrain-publication-model tests.
+Forge/MC API adapters live ONLY under tools/. No real chunk renderer, GPU, Oculus/Embeddium or save-load timing was validated.
+Core geometry parity must be compared with the same Geometry40Parity executable compiled against the baseline source.
+PATCH PASS: unrelated create ignores invalid remote ramp; no remote records rewritten
+PATCH PASS: unrelated normal update + deletion also pass; saved remote ramp unchanged
+  local obstacle rejected: 本次道路修改影响既有匝道 00000000-0000-0029-0000-000000015f9b：与本次修改道路 00000000-0000-0029-0000-000000015f9d 的净空或上下关系冲突
+LocalEdits401Validation: 11 checks passed (actual planning, no world writes)
+TerrainChunk401Validation: 75455 checks passed (production CPU clipping, no block/render world)
+Oct 05, 2026 6:55:15 AM com.sora.splineroads.client.ShaderPackState$Probe read
+WARNING: Cannot query shader render state; AUTO safely falls back to VBO
+java.lang.reflect.InvocationTargetException
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:118)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at com.sora.splineroads.client.ShaderPackState$Probe.read(ShaderPackState.java:27)
+	at com.sora.splineroads.client.ShaderBackend401Validation.main(ShaderBackend401Validation.java:21)
+Caused by: java.lang.IllegalStateException: deliberate API failure
+	at net.irisshaders.iris.api.v0.IrisApi.isShaderPackInUse(IrisApi.java:7)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	... 3 more
+
+ShaderBackend401Validation: 219 checks passed; actual reflection/backend code, fake API/world, NO GPU runtime claim
+  same-road walk: 200 view changes, 3 tiles baked, 199 cache hits, 0 full-road invalidations
+TerrainStreaming401Validation: 25 checks passed; actual tile logic with fake chunk lifecycle, NO FPS or GPU claim
+
+PASS: scoped-road edits + per-chunk streaming + shader-state backend tests.
+World transactions, Forge linking, real shader switching/lighting/FPS remain unvalidated here.

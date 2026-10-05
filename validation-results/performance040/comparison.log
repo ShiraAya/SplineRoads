@@ -1,0 +1,57 @@
+EndpointV2 core PASS: continuity, scope, paint isolation, identity, control interpolation, green taper, sidewalk walls
+LanePointSnapValidation: 742 checks passed; reproduced old maximum drift=0.01943854553513143
+LaneInteractionValidation: 254 checks passed
+LaneRampV2Validation: 2836 checks passed
+LaneRampWorkflowValidation: 9190 checks passed
+Ramp39Validation: 16231 checks passed (production core; no Forge/client claims)
+
+CORE TESTS ONLY: Forge, NBT, world transactions, client rendering and the sign catalog are not validated by this runner.
+  production DETACH + REPLACE: outgoing 435.5 m, incoming 284.3 m, host retains lane 0; deletion restores both lanes
+Ramp39ModelValidation: 377 checks passed; real LaneRamps/LaneTopology/LanePointCodec/RoadRecord, test-only NBT/world adapters; NO game/client/world-write claim
+  compound scale=1.00 rotation=0.00 origin=0: 3->2, DETACH, fork, I over A, II over IV, REPLACE, reconcile/reload/delete; ramps 1289.4 / 1291.3 / 1054.3 m
+  compound scale=0.50 rotation=0.00 origin=0: 3->2, DETACH, fork, I over A, II over IV, REPLACE, reconcile/reload/delete; ramps 644.2 / 645.2 / 526.1 m
+  compound scale=0.50 rotation=0.60 origin=100000: 3->2, DETACH, fork, I over A, II over IV, REPLACE, reconcile/reload/delete; ramps 644.2 / 645.2 / 526.1 m
+Ramp39CompoundValidation: 2767 checks passed; in-memory production planner/reconcile only, NOT Minecraft construction/rendering
+Ramp39WidgetValidation: 12 checks passed; real screen state with test-only widgets, no Minecraft/GPU/network test
+
+MODEL TESTS ONLY: NBT map adapters are not Mojang NBT binary encoding; world writes, networking and GPU drawing throw. This is not a Forge/Minecraft test.
+JDK / host used by this run:
+openjdk version "21.0.11" 2026-04-21
+OpenJDK Runtime Environment (build 21.0.11+10-1-deb13u2-Debian)
+OpenJDK 64-Bit Server VM (build 21.0.11+10-1-deb13u2-Debian, mixed mode, sharing)
+EndpointV2 core PASS: continuity, scope, paint isolation, identity, control interpolation, green taper, sidewalk walls
+LanePointSnapValidation: 742 checks passed; reproduced old maximum drift=0.01943854553513143
+LaneInteractionValidation: 254 checks passed
+LaneRampV2Validation: 2836 checks passed
+LaneRampWorkflowValidation: 9190 checks passed
+Ramp39Validation: 16231 checks passed (production core; no Forge/client claims)
+
+CORE TESTS ONLY: Forge, NBT, world transactions, client rendering and the sign catalog are not validated by this runner.
+  production DETACH + REPLACE: outgoing 435.5 m, incoming 284.3 m, host retains lane 0; deletion restores both lanes
+Ramp39ModelValidation: 377 checks passed; real LaneRamps/LaneTopology/LanePointCodec/RoadRecord, test-only NBT/world adapters; NO game/client/world-write claim
+  compound scale=1.00 rotation=0.00 origin=0: 3->2, DETACH, fork, I over A, II over IV, REPLACE, reconcile/reload/delete; ramps 1289.4 / 1291.3 / 1054.3 m
+  compound scale=0.50 rotation=0.00 origin=0: 3->2, DETACH, fork, I over A, II over IV, REPLACE, reconcile/reload/delete; ramps 644.2 / 645.2 / 526.1 m
+  compound scale=0.50 rotation=0.60 origin=100000: 3->2, DETACH, fork, I over A, II over IV, REPLACE, reconcile/reload/delete; ramps 644.2 / 645.2 / 526.1 m
+Ramp39CompoundValidation: 2767 checks passed; in-memory production planner/reconcile only, NOT Minecraft construction/rendering
+Ramp39WidgetValidation: 12 checks passed; real screen state with test-only widgets, no Minecraft/GPU/network test
+
+MODEL TESTS ONLY: NBT map adapters are not Mojang NBT binary encoding; world writes, networking and GPU drawing throw. This is not a Forge/Minecraft test.
+Performance40Validation: 200936 checks passed (production core; not a shader/GPU test)
+Geometry40Parity: valid=64, rejected=0, sha256=6c50d4bb328abb230584b611b61483422005b889a4829afabb95d9107b1bdae8
+Index40Validation: 175398 checks passed (real RoadIndex/DeferredMap/RoadRaster; test BlockPos/AABB only; no world-write or VoxelShape claim)
+Terrain40ModelValidation: 87 checks passed (production bridge with explicit API adapters; NOT Forge/Oculus/Embeddium/GPU validation)
+mesh_rounds_ms=[1.218209, 1.085547, 0.643972, 0.747229, 0.594144], endpoint_rounds_ms=[154.647381, 52.148394, 42.598878, 47.849653, 39.870303]
+roads=256, repeated_mesh_median_ms=0.747, endpoint_initialize_median_ms=47.850, checksum=1343488.0
+In-memory CPU microbenchmark, five rounds after warmup. NOT NBT disk load, Minecraft FPS or edit wall-clock time.
+
+PASS: offline core / production-index-local-queries / terrain-publication-model tests.
+Forge/MC API adapters live ONLY under tools/. No real chunk renderer, GPU, Oculus/Embeddium or save-load timing was validated.
+Core geometry parity must be compared with the same Geometry40Parity executable compiled against the baseline source.
+Geometry40Parity: valid=64, rejected=0, sha256=6c50d4bb328abb230584b611b61483422005b889a4829afabb95d9107b1bdae8
+mesh_rounds_ms=[2732.292525, 966.249163, 478.473247, 398.414998, 452.276639], endpoint_rounds_ms=[1074.482478, 137.751831, 127.14134, 121.177306, 118.92481]
+roads=256, repeated_mesh_median_ms=478.473, endpoint_initialize_median_ms=127.141, checksum=1343488.0
+In-memory CPU microbenchmark, five rounds after warmup. NOT NBT disk load, Minecraft FPS or edit wall-clock time.
+mesh_rounds_ms=[0.984752, 0.95498, 0.69794, 0.712671, 0.702301], endpoint_rounds_ms=[142.177167, 63.895989, 69.022253, 26.132368, 44.934049]
+roads=256, repeated_mesh_median_ms=0.713, endpoint_initialize_median_ms=63.896, checksum=1343488.0
+In-memory CPU microbenchmark, five rounds after warmup. NOT NBT disk load, Minecraft FPS or edit wall-clock time.
+Comparison complete. Interpret CPU microbenchmarks ONLY, not full-world load or FPS.

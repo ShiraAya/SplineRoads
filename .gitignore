@@ -1,0 +1,18 @@
+.gradle/
+build/
+run/
+*.class
+
+# Isolated regression worlds
+run375*/
+run376*/
+run377*/
+logs/
+
+run038*/
+
+# Isolated ramp 0.39 client fixture
+run039*/
+
+# Isolated performance/render verification worlds
+run040*/

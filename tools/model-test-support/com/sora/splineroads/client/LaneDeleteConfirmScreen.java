@@ -1,0 +1,1 @@
+package com.sora.splineroads.client;import net.minecraft.client.gui.screens.Screen;import net.minecraft.network.chat.Component;import net.minecraft.nbt.ListTag;public class LaneDeleteConfirmScreen extends Screen {public LaneDeleteConfirmScreen(Screen previous,ListTag t,Runnable action){super(Component.literal("test-only confirmation"));}}

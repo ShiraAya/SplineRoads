@@ -1,0 +1,3 @@
+// TEST ADAPTER ONLY. Not shipped in the mod JAR. No actual Forge/GL emulation.
+package net.minecraft.resources;
+public class ResourceLocation {private final String namespace,path;public ResourceLocation(String namespace,String path){this.namespace=namespace;this.path=path;}public static ResourceLocation fromNamespaceAndPath(String n,String p){return new ResourceLocation(n,p);}public String getNamespace(){return namespace;}public String getPath(){return path;}public boolean equals(Object o){return o!=null&&getClass()==o.getClass()&&o instanceof ResourceLocation r&&namespace.equals(r.namespace)&&path.equals(r.path);}public int hashCode(){return java.util.Objects.hash(namespace,path);}}

@@ -1,0 +1,4493 @@
+[
+  {
+    "id": "sign_stop",
+    "label": "停车让行标志",
+    "width": 1.0000001326722572,
+    "height": 1.0000001326722572,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_yield",
+    "label": "减速让行标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_yield_to_oncoming_traffic",
+    "label": "会车让行标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_all",
+    "label": "禁止通行标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04,
+    "fields": []
+  },
+  {
+    "id": "sign_no_entry",
+    "label": "禁止驶入标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_motor_vehicles",
+    "label": "禁止机动车驶入标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04375000000000029,
+    "fields": []
+  },
+  {
+    "id": "sign_no_large_bus",
+    "label": "禁止大型载客汽车驶入标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_small_passenger_car",
+    "label": "禁止小型载客汽车驶入标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_truck",
+    "label": "禁止载货汽车驶入标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_trailer",
+    "label": "禁止挂车、半挂车驶入标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_tractor",
+    "label": "禁止拖拉机驶入标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_three_wheeled_vehicle",
+    "label": "禁止三轮汽车、低速货车驶入标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_motorcycle",
+    "label": "禁止摩托车驶入标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_non_motor_vehicles",
+    "label": "禁止非机动车进入标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_electric_vehicle",
+    "label": "禁止电动自行车进入标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_animal_drawn_cart",
+    "label": "禁止畜力车驶入标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_tricycle",
+    "label": "禁止三轮车驶入标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_human_powered_passenger_tricycle",
+    "label": "禁止人力客运三轮车进入标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_human_powered_cargo_tricycle",
+    "label": "禁止人力货运三轮车标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_rickshaw",
+    "label": "禁止人力车进入标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_pedestrian",
+    "label": "禁止行人进入标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_left_turn",
+    "label": "禁止向左转弯标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_straight",
+    "label": "禁止直行标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_right_turn",
+    "label": "禁止向右转弯标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_left_right_turn",
+    "label": "禁止向左和向右转弯",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_straight_left_turn",
+    "label": "禁止直行和向左转弯标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_straight_right_turn",
+    "label": "禁止直行和向右转弯标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_single_left_turn_around",
+    "label": "禁止掉头标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_overtake",
+    "label": "禁止超车标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_cancel_overtake",
+    "label": "解除禁止超车标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_parking",
+    "label": "禁止车辆停放标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04062500000000002,
+    "fields": []
+  },
+  {
+    "id": "sign_no_parking_long_time",
+    "label": "禁止车辆长时停放标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04062500000000002,
+    "fields": []
+  },
+  {
+    "id": "sign_no_honk_horn",
+    "label": "禁止鸣喇叭标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_width_limit_20",
+    "label": "限制宽度标志：2.0米",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_width_limit_25",
+    "label": "限制宽度标志：2.5米",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_width_limit_30",
+    "label": "限制宽度标志：3.0米",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_width_limit_35",
+    "label": "限制宽度标志：3.5米",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_width_limit_40",
+    "label": "限制宽度标志：4.0米",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_width_limit_45",
+    "label": "限制宽度标志：4.5米",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_height_limit_20",
+    "label": "限制高度标志：2.0米",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_height_limit_25",
+    "label": "限制高度标志：2.5米",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_height_limit_30",
+    "label": "限制高度标志：3.0米",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_height_limit_35",
+    "label": "限制高度标志：3.5米",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_height_limit_40",
+    "label": "限制高度标志：4.0米",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_height_limit_45",
+    "label": "限制高度标志：4.5米",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_weight_limit_10",
+    "label": "限制质量标志：10吨",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_weight_limit_20",
+    "label": "限制质量标志：20吨",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_weight_limit_30",
+    "label": "限制质量标志：30吨",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_weight_limit_40",
+    "label": "限制质量标志：40吨",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_alex_weight_limit_10",
+    "label": "限制轴重标志：10吨",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_alex_weight_limit_20",
+    "label": "限制轴重标志：20吨",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_alex_weight_limit_30",
+    "label": "限制轴重标志：30吨",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_speed_limit_005",
+    "label": "限制速度标志：5公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_speed_limit_010",
+    "label": "限制速度标志：10公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_speed_limit_020",
+    "label": "限制速度标志：20公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_speed_limit_030",
+    "label": "限制速度标志：30公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_speed_limit_040",
+    "label": "限制速度标志：40公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_speed_limit_050",
+    "label": "限制速度标志：50公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_speed_limit_060",
+    "label": "限制速度标志：60公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_speed_limit_070",
+    "label": "限制速度标志：70公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_speed_limit_080",
+    "label": "限制速度标志：80公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_speed_limit_090",
+    "label": "限制速度标志：90公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_speed_limit_100",
+    "label": "限制速度标志：100公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_speed_limit_110",
+    "label": "限制速度标志：110公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_speed_limit_120",
+    "label": "限制速度标志：120公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_cancel_speed_limit_005",
+    "label": "解除限制速度标志：5公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_cancel_speed_limit_010",
+    "label": "解除限制速度标志：10公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_cancel_speed_limit_020",
+    "label": "解除限制速度标志：20公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_cancel_speed_limit_030",
+    "label": "解除限制速度标志：30公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_cancel_speed_limit_040",
+    "label": "解除限制速度标志：40公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_cancel_speed_limit_050",
+    "label": "解除限制速度标志：50公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_cancel_speed_limit_060",
+    "label": "解除限制速度标志：60公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_cancel_speed_limit_070",
+    "label": "解除限制速度标志：70公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_cancel_speed_limit_080",
+    "label": "解除限制速度标志：80公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_cancel_speed_limit_090",
+    "label": "解除限制速度标志：90公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_cancel_speed_limit_100",
+    "label": "解除限制速度标志：100公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_cancel_speed_limit_110",
+    "label": "解除限制速度标志：110公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_cancel_speed_limit_120",
+    "label": "解除限制速度标志：120公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_check",
+    "label": "停车检查标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_port_check",
+    "label": "口岸停车检查标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_no_hazardous_materials_transport_vehicle",
+    "label": "禁止危险物品运输车辆驶入标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_straight",
+    "label": "直行标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_left_turn",
+    "label": "向左转弯标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_right_turn",
+    "label": "向右转弯标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_straight_left_turn",
+    "label": "直行和向左转弯标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_straight_right_turn",
+    "label": "直行和向右转弯标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_left_right_turn",
+    "label": "向左和向右转弯标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_right_side_median_strip",
+    "label": "分隔带右侧行驶标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_left_side_median_strip",
+    "label": "分隔带左侧行驶标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_roundabout",
+    "label": "环岛行驶标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_one_way_street_left_right",
+    "label": "单行路（向左或向右）标志",
+    "width": 2.0642089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_one_way_street_straight",
+    "label": "单行路（直行）标志",
+    "width": 1.0000005094142947,
+    "height": 2.0642092009237896,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_honk_horn",
+    "label": "鸣喇叭标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_headlights",
+    "label": "开车灯标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_min_speed_limit_005",
+    "label": "最低限速标志：5公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_min_speed_limit_010",
+    "label": "最低限速标志：10公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_min_speed_limit_020",
+    "label": "最低限速标志：20公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_min_speed_limit_030",
+    "label": "最低限速标志：30公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_min_speed_limit_040",
+    "label": "最低限速标志：40公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_min_speed_limit_050",
+    "label": "最低限速标志：50公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_min_speed_limit_060",
+    "label": "最低限速标志：60公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_min_speed_limit_070",
+    "label": "最低限速标志：70公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_min_speed_limit_080",
+    "label": "最低限速标志：80公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_min_speed_limit_090",
+    "label": "最低限速标志：90公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_min_speed_limit_100",
+    "label": "最低限速标志：100公里/小时",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_yield_to_oncoming_traffic",
+    "label": "会车先行标志",
+    "width": 1.0017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_zebra_crossing",
+    "label": "人行横道标志",
+    "width": 1.0017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_zebra_crossing_fluorescence",
+    "label": "荧光人行横道标志",
+    "width": 1.251709120609547,
+    "height": 1.2534178706095471,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_right_turn",
+    "label": "右转车道标志",
+    "width": 1.2517089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_left_turn",
+    "label": "左转车道标志",
+    "width": 1.2517089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_straight",
+    "label": "直行车道标志",
+    "width": 1.2517089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_straight_right_turn",
+    "label": "直行和右转合用车道",
+    "width": 1.2517089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_straight_left_turn",
+    "label": "直行和左转合用车道",
+    "width": 1.2517089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_single_left_turn_around",
+    "label": "掉头车道标志",
+    "width": 1.2517089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_left_turn_around",
+    "label": "掉头和左转合用车道",
+    "width": 1.2517089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_motor_vehicles",
+    "label": "机动车行驶标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_motor_vehicles",
+    "label": "机动车车道标志1",
+    "width": 1.5017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_motor_vehicles_straight",
+    "label": "机动车车道标志2",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_motor_vehicles_left_side_median_strip",
+    "label": "机动车车道标志3",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_motor_vehicles_right_side_median_strip",
+    "label": "机动车车道标志4",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_small_passenger_car",
+    "label": "小型客车车道标志1",
+    "width": 1.5017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_small_passenger_car_straight",
+    "label": "小型客车车道标志2",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_small_passenger_car_left_side_median_strip",
+    "label": "小型客车车道标志3",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_small_passenger_car_right_side_median_strip",
+    "label": "小型客车车道标志4",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_large_bus",
+    "label": "公交专用车道标志1",
+    "width": 1.5017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_large_bus_straight",
+    "label": "公交专用车道标志2",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_large_bus_left_side_median_strip",
+    "label": "公交专用车道标志3",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_large_bus_right_side_median_strip",
+    "label": "公交专用车道标志4",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_large_bus_text",
+    "label": "公交专用车道（文字）标志1",
+    "width": 1.5017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_large_bus_text_straight",
+    "label": "公交专用车道（文字）标志2",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_large_bus_text_left_side_median_strip",
+    "label": "公交专用车道（文字）标志3",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_large_bus_text_right_side_median_strip",
+    "label": "公交专用车道（文字）标志4",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_large_bus_brt",
+    "label": "快速公交系统(BRT)专用车道标志1",
+    "width": 1.5017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_large_bus_brt_straight",
+    "label": "快速公交系统(BRT)专用车道标志2",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_large_bus_brt_left_side_median_strip",
+    "label": "快速公交系统(BRT)专用车道标志3",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_large_bus_brt_right_side_median_strip",
+    "label": "快速公交系统(BRT)专用车道标志4",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_tram_straight",
+    "label": "有轨电车专用车道标志",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_hov",
+    "label": "多乘员车辆(HOV)专用车道标志",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_non_motor_vehicles",
+    "label": "非机动车行驶标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_non_motor_vehicles",
+    "label": "非机动车车道标志1",
+    "width": 1.5017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_non_motor_vehicles_straight",
+    "label": "非机动车车道标志2",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_non_motor_vehicles_left_side_median_strip",
+    "label": "非机动车车道标志3",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_non_motor_vehicles_right_side_median_strip",
+    "label": "非机动车车道标志4",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_electric_vehicle",
+    "label": "电动自行车行驶标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_electric_vehicle",
+    "label": "电动自行车车道标志1",
+    "width": 1.5017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_electric_vehicle_straight",
+    "label": "电动自行车车道标志2",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_electric_vehicle_left_side_median_strip",
+    "label": "电动自行车车道标志3",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_lane_direction_electric_vehicle_right_side_median_strip",
+    "label": "电动自行车车道标志4",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_pedestrian",
+    "label": "行人标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_pedestrian_non_motor_vehicles_1",
+    "label": "非机动车与行人通行标志1",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_pedestrian_non_motor_vehicles_2",
+    "label": "非机动车与行人通行标志2",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_pedestrian_non_motor_vehicles_3",
+    "label": "非机动车与行人通行标志3",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_promotion_non_motor_vehicles",
+    "label": "非机动车推行标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_promotion_drive_right",
+    "label": "靠右侧车道行驶标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_parking_1",
+    "label": "停车位标志1",
+    "width": 1.0017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_parking_2",
+    "label": "停车位标志2",
+    "width": 1.0017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_parking_3",
+    "label": "停车位标志3",
+    "width": 1.0017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_parking_4",
+    "label": "停车位标志4",
+    "width": 1.0017089353047735,
+    "height": 1.5000003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_parking_disabled",
+    "label": "残疾人专用停车位标志",
+    "width": 1.0017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_parking_school_bus",
+    "label": "校车专用停车位标志、校车停靠站点标志",
+    "width": 1.0017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_school_bus_wuxi",
+    "label": "无锡校园定制公交站点标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_parking_school_bus_fluorescence",
+    "label": "荧光校车专用停车位标志、荧光校车停靠站点标志",
+    "width": 1.251709120609547,
+    "height": 1.2534178706095471,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_parking_taxi",
+    "label": "出租车专用停车位标志",
+    "width": 1.0017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_parking_non_motor_vehicle",
+    "label": "非机动车专用停车位标志",
+    "width": 1.0017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_parking_bus",
+    "label": "公交车专用停车位标志",
+    "width": 1.0017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_parking_charging",
+    "label": "充电停车位标志",
+    "width": 1.0017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_parking_company",
+    "label": "专属停车位标志",
+    "width": 1.0017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_turn_around",
+    "label": "允许掉头标志",
+    "width": 1.0017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_paved_shoulder_1",
+    "label": "硬路肩允许行驶标志1",
+    "width": 1.0017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_paved_shoulder_2",
+    "label": "硬路肩允许行驶标志2",
+    "width": 1.0017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_paved_shoulder_3",
+    "label": "硬路肩允许行驶标志3",
+    "width": 1.0017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.050000000000000044,
+    "fields": []
+  },
+  {
+    "id": "sign_indication_ok_truck",
+    "label": "货车通行标志",
+    "width": 1.0000000507516074,
+    "height": 1.0000000507516074,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_crossing_1",
+    "label": "交叉路口标志1",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_crossing_2",
+    "label": "交叉路口标志2",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_crossing_3",
+    "label": "交叉路口标志3",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_crossing_4",
+    "label": "交叉路口标志4",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_crossing_5",
+    "label": "交叉路口标志5",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_crossing_6",
+    "label": "交叉路口标志6",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_crossing_7",
+    "label": "交叉路口标志7",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_crossing_8",
+    "label": "交叉路口标志8",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_crossing_9",
+    "label": "交叉路口标志9",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_crossing_10",
+    "label": "交叉路口标志10",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_crossing_11",
+    "label": "交叉路口标志11",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_sharp_turn_1",
+    "label": "向左急弯路标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_sharp_turn_2",
+    "label": "向右急弯路标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_reverse_detour_1",
+    "label": "反向弯路标志1",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_reverse_detour_2",
+    "label": "反向弯路标志2",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_continuous_winding_roads_1",
+    "label": "连续弯路标志1",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_continuous_winding_roads_2",
+    "label": "连续弯路标志2",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_steep_slope_up",
+    "label": "上陡坡标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_steep_slope_down",
+    "label": "下陡坡标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_continuous_downhill",
+    "label": "连续下坡标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_narrow_road_double",
+    "label": "两侧变窄标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_narrow_road_left",
+    "label": "左侧变窄标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_narrow_road_right",
+    "label": "右侧变窄标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_narrow_bridge",
+    "label": "窄桥标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_two_way_traffic",
+    "label": "双向交通标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_zebra_crossing",
+    "label": "注意行人标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_zebra_crossing_fluorescence",
+    "label": "荧光注注意行人标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_children",
+    "label": "注意儿童标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_children_fluorescence",
+    "label": "荧光注意儿童标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_disabled",
+    "label": "注意残疾人标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_disabled_fluorescence",
+    "label": "荧光注意残疾人标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_non_motor_vehicles",
+    "label": "注意非机动车标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_electric_vehicle",
+    "label": "注意电动自行车标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_livestock",
+    "label": "注意牲畜标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_wildlife",
+    "label": "注意野生动物标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_traffic_lights",
+    "label": "注意信号灯标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_falling_rocks_left",
+    "label": "注意左侧落石标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_falling_rocks_right",
+    "label": "注意右侧落石标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_crosswind",
+    "label": "注意横风标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_slippery",
+    "label": "易滑标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_perilous_road_along_the_mountain_left",
+    "label": "左侧傍山险路标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_perilous_road_along_the_mountain_right",
+    "label": "右侧傍山险路标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_embankment_road_left",
+    "label": "堤坝路标志1",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_embankment_road_right",
+    "label": "堤坝路标志2",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_village",
+    "label": "村庄标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_tunnel",
+    "label": "隧道标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_camel_back_bridge",
+    "label": "驼峰桥标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_road_uneven",
+    "label": "路面不平标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_speed_bump",
+    "label": "减速丘标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_road_wet",
+    "label": "过水路面（或漫水桥）标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_someone_guarding_the_railway_crossing",
+    "label": "有人看守铁路道口标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_unmanned_guarding_the_railway_crossing",
+    "label": "无人看守铁路道口标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_accident_prone_road",
+    "label": "事故易发路段标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_detour_double",
+    "label": "左右绕行障碍物标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_detour_left",
+    "label": "左侧绕行障碍物标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_detour_right",
+    "label": "右侧绕行障碍物标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_dangerous",
+    "label": "注意危险标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_construction",
+    "label": "施工标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_accident",
+    "label": "交通事故管理标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_tidal_lane",
+    "label": "注意潮汐车道标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_distance_between_vehicles",
+    "label": "注意保持车距标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_confluence_left",
+    "label": "注意合流标志1",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_confluence_right",
+    "label": "注意合流标志2",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_less_3_to_2",
+    "label": "注意车道数变少标志（3变2）",
+    "width": 1.7517089353047737,
+    "height": 2.0000003998275915,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_less_4_to_3",
+    "label": "注意车道数变少标志（4变3）",
+    "width": 2.501708935304774,
+    "height": 2.0000003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_emergency_lane_1",
+    "label": "避险车道标志1",
+    "width": 2.03125,
+    "height": 2.1250003998275915,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_emergency_lane_2",
+    "label": "避险车道标志2",
+    "width": 2.501708935304774,
+    "height": 2.46875,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_road_icy",
+    "label": "注意路面结冰标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_weather_rainy_snowy",
+    "label": "注意雨（雪）天标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_weather_foggy",
+    "label": "注意雾天标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_weather_thunder",
+    "label": "注意不利气象条件标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_vehicles_queued_ahead",
+    "label": "注意前方车辆排队标志",
+    "width": 0.9860525,
+    "height": 1.0381325000000001,
+    "depth": 0.04437500000000005,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_linear_guidance_marker_1",
+    "label": "线形诱导标1",
+    "width": 0.9375,
+    "height": 1.0000006143504097,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_linear_guidance_marker_2",
+    "label": "线形诱导标2",
+    "width": 0.9375,
+    "height": 1.0000006143504097,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_linear_guidance_marker_3",
+    "label": "线形诱导标3",
+    "width": 1.5625,
+    "height": 1.0000006143504097,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_linear_guidance_marker_4",
+    "label": "线形诱导标4",
+    "width": 2.1875,
+    "height": 1.0000006143504097,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_linear_guidance_marker_5",
+    "label": "线形诱导标5",
+    "width": 2.8125,
+    "height": 1.0000006143504097,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_linear_guidance_marker_6",
+    "label": "线形诱导标6",
+    "width": 2.8125,
+    "height": 1.0000006143504097,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_linear_guidance_marker_7",
+    "label": "线形诱导标7",
+    "width": 1.0125000000000002,
+    "height": 2.2625,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_linear_guidance_marker_8",
+    "label": "线形诱导标8",
+    "width": 2.0,
+    "height": 2.0012895417363192,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_warning_linear_guidance_marker_9",
+    "label": "线形诱导标9",
+    "width": 2.0,
+    "height": 2.0012895417363192,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_intersection_advance_warning_1_wuhan_left",
+    "label": "武汉普道快速路导向左标志",
+    "width": 3.0017089353047735,
+    "height": 2.0000003257227266,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_intersection_advance_warning_1_wuhan_straight",
+    "label": "武汉普道快速路导向直行标志",
+    "width": 3.0017089353047735,
+    "height": 2.0000003257227266,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_intersection_advance_warning_1_wuhan_right",
+    "label": "武汉普道快速路导向右标志",
+    "width": 3.001708935304774,
+    "height": 2.0000003257227266,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_intersection_advance_warning_1",
+    "label": "交叉路口预告标志1（图形式）",
+    "width": 1.6267089353047737,
+    "height": 2.1250003998275915,
+    "depth": 0.043749999999999956,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -0.749564375,
+        "y": 1.8125000926523867,
+        "scale": 0.035,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "text2",
+        "initial": "",
+        "label": "文字 2",
+        "x": -0.31206437499999995,
+        "y": 0.6250000926523868,
+        "scale": 0.035,
+        "align": "left",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_guide_intersection_advance_warning_2",
+    "label": "交叉路口预告标志2（图形式）",
+    "width": 2.251708935304774,
+    "height": 1.8750003998275915,
+    "depth": 0.043749999999999956,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -1.0620643749999998,
+        "y": 1.5625000926523867,
+        "scale": 0.035,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "text2",
+        "initial": "",
+        "label": "文字 2",
+        "x": 0.18793562500000005,
+        "y": 0.8750000926523868,
+        "scale": 0.035,
+        "align": "left",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_guide_intersection_advance_warning_3",
+    "label": "交叉路口预告标志3（文字式）",
+    "width": 3.0017089353047735,
+    "height": 1.5000003257227266,
+    "depth": 0.04437499999999994,
+    "fields": [
+      {
+        "key": "cnText2",
+        "initial": "",
+        "label": "文字 2",
+        "x": 0.00043562499999993953,
+        "y": 1.2500000926523867,
+        "scale": 0.03,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "enText2",
+        "initial": "",
+        "label": "文字 2",
+        "x": 0.00043562499999993953,
+        "y": 1.0000000926523867,
+        "scale": 0.023,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "cnText4",
+        "initial": "",
+        "label": "文字 4",
+        "x": -0.8745643750000001,
+        "y": 1.0000000926523867,
+        "scale": 0.03,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "enText4",
+        "initial": "",
+        "label": "文字 4",
+        "x": -0.8745643750000001,
+        "y": 0.7500000926523868,
+        "scale": 0.023,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "cnText5",
+        "initial": "",
+        "label": "文字 5",
+        "x": -0.8745643750000001,
+        "y": 0.5000000926523868,
+        "scale": 0.03,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "enText5",
+        "initial": "",
+        "label": "文字 5",
+        "x": -0.8745643750000001,
+        "y": 0.25000009265238676,
+        "scale": 0.023,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "cnText6",
+        "initial": "",
+        "label": "文字 6",
+        "x": 0.8754356249999999,
+        "y": 1.0000000926523867,
+        "scale": 0.03,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "enText6",
+        "initial": "",
+        "label": "文字 6",
+        "x": 0.8754356249999999,
+        "y": 0.7500000926523868,
+        "scale": 0.023,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "cnText7",
+        "initial": "",
+        "label": "文字 7",
+        "x": 0.8754356249999999,
+        "y": 0.5000000926523868,
+        "scale": 0.03,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "enText7",
+        "initial": "",
+        "label": "文字 7",
+        "x": 0.8754356249999999,
+        "y": 0.25000009265238676,
+        "scale": 0.023,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_guide_intersection_advance_warning_4",
+    "label": "交叉路口预告标志4（图文式）",
+    "width": 3.0017089353047735,
+    "height": 2.0000003257227266,
+    "depth": 0.04437499999999994,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": 0.00043562499999993953,
+        "y": 0.43750009265238676,
+        "scale": 0.03,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "cnText2",
+        "initial": "",
+        "label": "文字 2",
+        "x": 0.00043562499999993953,
+        "y": 1.3750000926523867,
+        "scale": 0.03,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "enText2",
+        "initial": "",
+        "label": "文字 2",
+        "x": 0.00043562499999993953,
+        "y": 1.1875000926523867,
+        "scale": 0.023,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "cnText3",
+        "initial": "",
+        "label": "文字 3",
+        "x": 0.00043562499999993953,
+        "y": 1.8125000926523867,
+        "scale": 0.03,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "enText3",
+        "initial": "",
+        "label": "文字 3",
+        "x": 0.00043562499999993953,
+        "y": 1.6250000926523867,
+        "scale": 0.023,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "cnText4",
+        "initial": "",
+        "label": "文字 4",
+        "x": -0.8745643750000001,
+        "y": 1.5000000926523867,
+        "scale": 0.03,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "enText4",
+        "initial": "",
+        "label": "文字 4",
+        "x": -0.8745643750000001,
+        "y": 1.2500000926523867,
+        "scale": 0.023,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "cnText5",
+        "initial": "",
+        "label": "文字 5",
+        "x": -0.8745643750000001,
+        "y": 1.0000000926523867,
+        "scale": 0.03,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "enText5",
+        "initial": "",
+        "label": "文字 5",
+        "x": -0.8745643750000001,
+        "y": 0.7500000926523868,
+        "scale": 0.023,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "cnText6",
+        "initial": "",
+        "label": "文字 6",
+        "x": 0.8754356249999999,
+        "y": 1.5000000926523867,
+        "scale": 0.03,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "enText6",
+        "initial": "",
+        "label": "文字 6",
+        "x": 0.8754356249999999,
+        "y": 1.2500000926523867,
+        "scale": 0.023,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "cnText7",
+        "initial": "",
+        "label": "文字 7",
+        "x": 0.8754356249999999,
+        "y": 1.0000000926523867,
+        "scale": 0.03,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "enText7",
+        "initial": "",
+        "label": "文字 7",
+        "x": 0.8754356249999999,
+        "y": 0.7500000926523868,
+        "scale": 0.023,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_guide_intersection_advance_warning_5",
+    "label": "交叉路口预告标志5",
+    "width": 2.501708935304774,
+    "height": 2.0000003998275915,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_intersection_advance_warning_6",
+    "label": "交叉路口预告标志6",
+    "width": 2.251708935304774,
+    "height": 1.5000003998275915,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_intersection_advance_warning_7",
+    "label": "交叉路口预告标志7",
+    "width": 2.501708935304774,
+    "height": 2.2500003998275915,
+    "depth": 0.043749999999999956,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": 0.37543562500000005,
+        "y": 1.8750000926523867,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text2",
+        "initial": "",
+        "label": "文字 2",
+        "x": 0.37543562500000005,
+        "y": 1.1250000926523867,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text3",
+        "initial": "",
+        "label": "文字 3",
+        "x": 0.37543562500000005,
+        "y": 0.37500009265238676,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_guide_intersection_advance_warning_8",
+    "label": "交叉路口预告标志8",
+    "width": 2.251708935304774,
+    "height": 1.5000003998275915,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_intersection_warning_1",
+    "label": "交叉路口告知/地名/分界标志1",
+    "width": 1.6267089353047737,
+    "height": 0.7500003998275917,
+    "depth": 0.04,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": 0.00043562500000005056,
+        "y": 0.37500009265238676,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_guide_intersection_warning_2",
+    "label": "交叉路口告知标志2",
+    "width": 1.8913194676523868,
+    "height": 0.8125003998275917,
+    "depth": 0.043749999999999956,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -0.16327964117380667,
+        "y": 0.40625009265238676,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_guide_intersection_warning_3",
+    "label": "交叉路口告知标志3",
+    "width": 2.251708935304774,
+    "height": 0.7500003998275917,
+    "depth": 0.04437499999999994,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": 0.00043562500000005056,
+        "y": 0.37500009265238676,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_guide_intersection_warning_4",
+    "label": "交叉路口告知标志4",
+    "width": 2.126708935304774,
+    "height": 0.8125003998275917,
+    "depth": 0.04,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_intersection_warning_5",
+    "label": "交叉路口告知标志5",
+    "width": 2.501708935304774,
+    "height": 0.8750003998275917,
+    "depth": 0.04,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_intersection_warning_6",
+    "label": "交叉路口告知/地名/分界标志6",
+    "width": 1.8767089353047737,
+    "height": 0.7500003998275917,
+    "depth": 0.04,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": 0.00043562500000005056,
+        "y": 0.37500009265238676,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_guide_confirmation_1",
+    "label": "确认标志1",
+    "width": 2.564208935304774,
+    "height": 1.8125003998275915,
+    "depth": 0.04,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -1.0620643749999998,
+        "y": 1.4687500926523867,
+        "scale": 0.04,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "text2",
+        "initial": "",
+        "label": "文字 2",
+        "x": -1.0620643749999998,
+        "y": 0.9062500926523868,
+        "scale": 0.04,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "text3",
+        "initial": "",
+        "label": "文字 3",
+        "x": -1.0620643749999998,
+        "y": 0.34375009265238676,
+        "scale": 0.04,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "length1",
+        "initial": "",
+        "label": "里程 1",
+        "x": 0.812935625,
+        "y": 1.4687500926523867,
+        "scale": 0.04,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "length2",
+        "initial": "",
+        "label": "里程 2",
+        "x": 0.812935625,
+        "y": 0.9062500926523868,
+        "scale": 0.04,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "length3",
+        "initial": "",
+        "label": "里程 3",
+        "x": 0.812935625,
+        "y": 0.34375009265238676,
+        "scale": 0.04,
+        "align": "right",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_guide_confirmation_2",
+    "label": "确认标志2",
+    "width": 2.314208935304774,
+    "height": 1.8125003998275915,
+    "depth": 0.04,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -0.937064375,
+        "y": 1.4687500926523867,
+        "scale": 0.04,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "text2",
+        "initial": "",
+        "label": "文字 2",
+        "x": -0.937064375,
+        "y": 0.9062500926523868,
+        "scale": 0.04,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "text3",
+        "initial": "",
+        "label": "文字 3",
+        "x": -0.937064375,
+        "y": 0.34375009265238676,
+        "scale": 0.04,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "length1",
+        "initial": "",
+        "label": "里程 1",
+        "x": 0.687935625,
+        "y": 1.4687500926523867,
+        "scale": 0.04,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "length2",
+        "initial": "",
+        "label": "里程 2",
+        "x": 0.687935625,
+        "y": 0.9062500926523868,
+        "scale": 0.04,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "length3",
+        "initial": "",
+        "label": "里程 3",
+        "x": 0.687935625,
+        "y": 0.34375009265238676,
+        "scale": 0.04,
+        "align": "right",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_guide_lane_indicator_1",
+    "label": "车道导向指示牌1",
+    "width": 3.0017089353047735,
+    "height": 2.0000003257227266,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_identification_first_aid_station",
+    "label": "急救站识别标志",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_identification_airport_left",
+    "label": "飞机场识别标志（左向出口）",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_identification_airport_right",
+    "label": "飞机场识别标志（右向出口）",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_identification_gas_station",
+    "label": "加油站识别标志",
+    "width": 1.1250005369161715,
+    "height": 1.3767091379714318,
+    "depth": 0.050000000000000044,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_identification_charging",
+    "label": "电动汽车充电站识别标志",
+    "width": 1.1250005369161715,
+    "height": 1.3767091379714318,
+    "depth": 0.050000000000000044,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_identification_metro",
+    "label": "地铁识别标志",
+    "width": 1.1250005369161715,
+    "height": 1.3767091379714318,
+    "depth": 0.050000000000000044,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_identification_ferry_crossing",
+    "label": "渡口识别标志",
+    "width": 1.5017089353047735,
+    "height": 1.1250003998275915,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_roadside_facility_parking_1",
+    "label": "停车场（区）标志",
+    "width": 1.1250005369161715,
+    "height": 1.3767091379714318,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_roadside_facility_parking_2",
+    "label": "露天停车场（区）标志",
+    "width": 1.1250005369161715,
+    "height": 1.4379189667646768,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_roadside_facility_wrong_lane",
+    "label": "错车道标志",
+    "width": 1.0017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_roadside_facility_harbor_style_emergency_parking_lane",
+    "label": "港湾式紧急停车带标志",
+    "width": 1.1250005369161715,
+    "height": 1.3767091379714318,
+    "depth": 0.050000000000000044,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_roadside_facility_pedestrian_overpass",
+    "label": "人行天桥标志",
+    "width": 1.0017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_roadside_facility_pedestrian_underpass",
+    "label": "人行地下通道标志",
+    "width": 1.0017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_roadside_facility_disabled",
+    "label": "无障碍设施标志",
+    "width": 1.0017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_roadside_facility_service_station_1",
+    "label": "服务站标志1",
+    "width": 1.2517089353047737,
+    "height": 1.890625307175205,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_roadside_facility_service_station_2",
+    "label": "服务站标志2",
+    "width": 1.2517089353047737,
+    "height": 1.890625307175205,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_roadside_facility_parking_spot_1",
+    "label": "停车点标志1",
+    "width": 1.2517089353047737,
+    "height": 1.890625307175205,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_roadside_facility_parking_spot_2",
+    "label": "停车点标志2",
+    "width": 1.2517089353047737,
+    "height": 1.390625307175205,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_roadside_facility_viewing_platform_1",
+    "label": "观景台标志1",
+    "width": 1.2517089353047737,
+    "height": 2.0,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_roadside_facility_viewing_platform_2",
+    "label": "观景台标志2",
+    "width": 1.2517089353047737,
+    "height": 2.0,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_roadside_facility_emergency_escape_facilities",
+    "label": "应急避难设施（场所）标志",
+    "width": 1.0017089353047735,
+    "height": 1.0000003998275917,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_roadside_facility_overload_checkpoint_1",
+    "label": "超限检测站标志1",
+    "width": 2.501708935304774,
+    "height": 2.5000003998275915,
+    "depth": 0.04437499999999994,
+    "fields": [
+      {
+        "key": "length1",
+        "initial": "",
+        "label": "里程 1",
+        "x": -0.09331437499999995,
+        "y": 0.43750009265238676,
+        "scale": 0.045,
+        "align": "right",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_guide_roadside_facility_overload_checkpoint_2",
+    "label": "超限检测站标志2",
+    "width": 2.501708935304774,
+    "height": 2.5000003998275915,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_detour_1",
+    "label": "绕行标志1",
+    "width": 3.0017089353047735,
+    "height": 3.0,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_detour_2",
+    "label": "绕行标志2",
+    "width": 3.0017089353047735,
+    "height": 3.0,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_detour_3",
+    "label": "绕行标志3",
+    "width": 3.0017089353047735,
+    "height": 3.0,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_impassable_road",
+    "label": "此路不通标志",
+    "width": 1.1250005369161715,
+    "height": 1.5017091379714318,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_guide_distance_to_tunnel_exit_1",
+    "label": "隧道出口距离标志1",
+    "width": 1.6267089353047737,
+    "height": 0.625,
+    "depth": 0.050000000000000044,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": 0.31293562500000005,
+        "y": 0.3125,
+        "scale": 0.045,
+        "align": "right",
+        "color": 2579112
+      },
+      {
+        "key": "unit1",
+        "initial": "km",
+        "label": "单位",
+        "x": 0.562935625,
+        "y": 0.28125,
+        "scale": 0.03,
+        "align": "right",
+        "color": 2579112
+      }
+    ]
+  },
+  {
+    "id": "sign_guide_distance_to_tunnel_exit_2",
+    "label": "隧道出口距离标志2",
+    "width": 1.6267089353047737,
+    "height": 0.625,
+    "depth": 0.050000000000000044,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": 0.31293562500000005,
+        "y": 0.3125,
+        "scale": 0.045,
+        "align": "right",
+        "color": 2579112
+      },
+      {
+        "key": "unit1",
+        "initial": "km",
+        "label": "单位",
+        "x": 0.562935625,
+        "y": 0.28125,
+        "scale": 0.03,
+        "align": "right",
+        "color": 2579112
+      }
+    ]
+  },
+  {
+    "id": "sign_guide_distance_to_tunnel_exit_3",
+    "label": "隧道出口距离标志3",
+    "width": 1.6267089353047737,
+    "height": 0.625,
+    "depth": 0.050000000000000044,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": 0.31293562500000005,
+        "y": 0.3125,
+        "scale": 0.045,
+        "align": "right",
+        "color": 2579112
+      },
+      {
+        "key": "unit1",
+        "initial": "km",
+        "label": "单位",
+        "x": 0.562935625,
+        "y": 0.28125,
+        "scale": 0.03,
+        "align": "right",
+        "color": 2579112
+      }
+    ]
+  },
+  {
+    "id": "sign_guide_distance_to_tunnel_exit_4",
+    "label": "隧道出口距离标志4",
+    "width": 0.8767089353047736,
+    "height": 1.1875003998275915,
+    "depth": 0.050000000000000044,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -0.03081437499999995,
+        "y": 0.34375009265238676,
+        "scale": 0.045,
+        "align": "right",
+        "color": 2579112
+      },
+      {
+        "key": "unit1",
+        "initial": "km",
+        "label": "单位",
+        "x": 0.21918562500000005,
+        "y": 0.31250009265238676,
+        "scale": 0.03,
+        "align": "right",
+        "color": 2579112
+      }
+    ]
+  },
+  {
+    "id": "sign_guide_distance_to_tunnel_exit_5",
+    "label": "隧道出口距离标志5",
+    "width": 0.8767089353047736,
+    "height": 1.1875003998275915,
+    "depth": 0.050000000000000044,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -0.03081437499999995,
+        "y": 0.34375009265238676,
+        "scale": 0.045,
+        "align": "right",
+        "color": 2579112
+      },
+      {
+        "key": "unit1",
+        "initial": "km",
+        "label": "单位",
+        "x": 0.21918562500000005,
+        "y": 0.31250009265238676,
+        "scale": 0.03,
+        "align": "right",
+        "color": 2579112
+      }
+    ]
+  },
+  {
+    "id": "sign_guide_distance_to_tunnel_exit_6",
+    "label": "隧道出口距离标志6",
+    "width": 0.8767089353047736,
+    "height": 1.1875003998275915,
+    "depth": 0.050000000000000044,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -0.03081437499999995,
+        "y": 0.34375009265238676,
+        "scale": 0.045,
+        "align": "right",
+        "color": 2579112
+      },
+      {
+        "key": "unit1",
+        "initial": "km",
+        "label": "单位",
+        "x": 0.21918562500000005,
+        "y": 0.31250009265238676,
+        "scale": 0.03,
+        "align": "right",
+        "color": 2579112
+      }
+    ]
+  },
+  {
+    "id": "sign_guide_odometer",
+    "label": "里程牌标志",
+    "width": 1.4392089353047737,
+    "height": 0.9526653998275917,
+    "depth": 0.04,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": 0.00043562500000005056,
+        "y": 0.6638325926523868,
+        "scale": 0.055,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_entrance_advance_1",
+    "label": "入口预告标志1（向前500米）",
+    "width": 2.001708935304774,
+    "height": 1.9098508580703397,
+    "depth": 0.04437499999999994,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -0.43706437499999995,
+        "y": 0.878600625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text2",
+        "initial": "",
+        "label": "文字 2",
+        "x": 0.43793562500000005,
+        "y": 0.878600625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "expresswayNumber1",
+        "initial": "",
+        "label": "路线编号 1",
+        "x": 0.00043562500000005056,
+        "y": 1.409850625,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_entrance_advance_2",
+    "label": "入口预告标志1（向左）",
+    "width": 2.001708935304774,
+    "height": 1.9254758580703397,
+    "depth": 0.04437499999999994,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -0.43706437499999995,
+        "y": 0.894225625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text2",
+        "initial": "",
+        "label": "文字 2",
+        "x": 0.43793562500000005,
+        "y": 0.894225625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "expresswayNumber1",
+        "initial": "",
+        "label": "路线编号 1",
+        "x": 0.00043562500000005056,
+        "y": 1.425475625,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_entrance_advance_3",
+    "label": "入口预告标志1（向右）",
+    "width": 2.001708935304774,
+    "height": 1.9254758580703397,
+    "depth": 0.04437499999999994,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -0.43706437499999995,
+        "y": 0.894225625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text2",
+        "initial": "",
+        "label": "文字 2",
+        "x": 0.43793562500000005,
+        "y": 0.894225625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "expresswayNumber1",
+        "initial": "",
+        "label": "路线编号 1",
+        "x": 0.00043562500000005056,
+        "y": 1.425475625,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_entrance_advance_4",
+    "label": "入口预告标志2（向前500米）",
+    "width": 2.001708935304774,
+    "height": 1.9098508580703397,
+    "depth": 0.04437499999999994,
+    "fields": [
+      {
+        "key": "expresswayNumber1",
+        "initial": "",
+        "label": "路线编号 1",
+        "x": -0.18706437499999995,
+        "y": 1.409850625,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_entrance_advance_5",
+    "label": "入口预告标志2（向左）",
+    "width": 2.001708935304774,
+    "height": 1.9254758580703397,
+    "depth": 0.04437499999999994,
+    "fields": [
+      {
+        "key": "expresswayNumber1",
+        "initial": "",
+        "label": "路线编号 1",
+        "x": -0.18706437499999995,
+        "y": 1.425475625,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_entrance_advance_6",
+    "label": "入口预告标志2（向右）",
+    "width": 2.001708935304774,
+    "height": 1.9254758580703397,
+    "depth": 0.04437499999999994,
+    "fields": [
+      {
+        "key": "expresswayNumber1",
+        "initial": "",
+        "label": "路线编号 1",
+        "x": -0.18706437499999995,
+        "y": 1.425475625,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_entrance_advance_7",
+    "label": "入口预告标志3（向前500米）",
+    "width": 2.126708935304774,
+    "height": 1.9098508580703397,
+    "depth": 0.04437499999999994,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": 0.00043562500000005056,
+        "y": 1.503600625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text2",
+        "initial": "",
+        "label": "文字 2",
+        "x": -0.43706437499999995,
+        "y": 0.878600625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text3",
+        "initial": "",
+        "label": "文字 3",
+        "x": 0.43793562500000005,
+        "y": 0.878600625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_entrance_advance_8",
+    "label": "入口预告标志3（向左）",
+    "width": 2.126708935304774,
+    "height": 1.9254758580703397,
+    "depth": 0.04437499999999994,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": 0.00043562500000005056,
+        "y": 1.519225625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text2",
+        "initial": "",
+        "label": "文字 2",
+        "x": -0.43706437499999995,
+        "y": 0.894225625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text3",
+        "initial": "",
+        "label": "文字 3",
+        "x": 0.43793562500000005,
+        "y": 0.894225625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_entrance_advance_9",
+    "label": "入口预告标志3（向右）",
+    "width": 2.126708935304774,
+    "height": 1.9254758580703397,
+    "depth": 0.04437499999999994,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": 0.00043562500000005056,
+        "y": 1.519225625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text2",
+        "initial": "",
+        "label": "文字 2",
+        "x": -0.43706437499999995,
+        "y": 0.894225625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text3",
+        "initial": "",
+        "label": "文字 3",
+        "x": 0.43793562500000005,
+        "y": 0.894225625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_entrance_advance_10",
+    "label": "入口预告标志4（向前500米）",
+    "width": 2.001708935304774,
+    "height": 1.9098508580703397,
+    "depth": 0.04437499999999994,
+    "fields": [
+      {
+        "key": "expresswayNumber1",
+        "initial": "",
+        "label": "路线编号 1",
+        "x": -0.37456437499999995,
+        "y": 1.409850625,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "expresswayNumber2",
+        "initial": "",
+        "label": "路线编号 2",
+        "x": 0.37543562500000005,
+        "y": 1.409850625,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -0.43706437499999995,
+        "y": 0.878600625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text2",
+        "initial": "",
+        "label": "文字 2",
+        "x": 0.43793562500000005,
+        "y": 0.878600625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_entrance_advance_11",
+    "label": "入口预告标志4（向左）",
+    "width": 2.001708935304774,
+    "height": 1.9254758580703397,
+    "depth": 0.04437499999999994,
+    "fields": [
+      {
+        "key": "expresswayNumber1",
+        "initial": "",
+        "label": "路线编号 1",
+        "x": -0.37456437499999995,
+        "y": 1.425475625,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "expresswayNumber2",
+        "initial": "",
+        "label": "路线编号 2",
+        "x": 0.37543562500000005,
+        "y": 1.425475625,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -0.43706437499999995,
+        "y": 0.894225625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text2",
+        "initial": "",
+        "label": "文字 2",
+        "x": 0.43793562500000005,
+        "y": 0.894225625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_entrance_advance_12",
+    "label": "入口预告标志4（向右）",
+    "width": 2.001708935304774,
+    "height": 1.9254758580703397,
+    "depth": 0.04437499999999994,
+    "fields": [
+      {
+        "key": "expresswayNumber1",
+        "initial": "",
+        "label": "路线编号 1",
+        "x": -0.37456437499999995,
+        "y": 1.425475625,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "expresswayNumber2",
+        "initial": "",
+        "label": "路线编号 2",
+        "x": 0.37543562500000005,
+        "y": 1.425475625,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -0.43706437499999995,
+        "y": 0.894225625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text2",
+        "initial": "",
+        "label": "文字 2",
+        "x": 0.43793562500000005,
+        "y": 0.894225625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_entrance_advance_13",
+    "label": "入口预告标志5（向前500米）",
+    "width": 2.001708935304774,
+    "height": 2.2848508580703397,
+    "depth": 0.04437500000000005,
+    "fields": [
+      {
+        "key": "expresswayNumber1",
+        "initial": "",
+        "label": "路线编号 1",
+        "x": -0.37456437499999995,
+        "y": 1.784850625,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "expresswayNumber2",
+        "initial": "",
+        "label": "路线编号 2",
+        "x": 0.37543562500000005,
+        "y": 1.784850625,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -0.43706437499999995,
+        "y": 1.253600625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text2",
+        "initial": "",
+        "label": "文字 2",
+        "x": -0.43706437499999995,
+        "y": 0.816100625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text3",
+        "initial": "",
+        "label": "文字 3",
+        "x": 0.43793562500000005,
+        "y": 1.253600625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text4",
+        "initial": "",
+        "label": "文字 4",
+        "x": 0.43793562500000005,
+        "y": 0.816100625,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_entrance_advance_14",
+    "label": "入口预告标志5（向左）",
+    "width": 2.001708935304774,
+    "height": 2.3004758580703397,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_expressway_entrance_advance_15",
+    "label": "入口预告标志5（向右）",
+    "width": 2.001708935304774,
+    "height": 2.3004758580703397,
+    "depth": 0.04437499999999994,
+    "fields": []
+  },
+  {
+    "id": "sign_expressway_direction_1",
+    "label": "地点、方向标志1（向左）",
+    "width": 2.189208935304774,
+    "height": 1.0000003257227266,
+    "depth": 0.043749999999999956,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": 0.28190312500000003,
+        "y": 0.5000000926523868,
+        "scale": 0.05,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_direction_2",
+    "label": "地点、方向标志1（向右）",
+    "width": 2.189208935304774,
+    "height": 1.0000003257227266,
+    "depth": 0.043749999999999956,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -0.28059687499999997,
+        "y": 0.5000000926523868,
+        "scale": 0.05,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_direction_3",
+    "label": "地点、方向标志2（向左）",
+    "width": 2.189208935304774,
+    "height": 2.0000003257227266,
+    "depth": 0.043749999999999956,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": 0.28190312500000003,
+        "y": 0.5625000926523868,
+        "scale": 0.05,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "expresswayNumber1",
+        "initial": "",
+        "label": "路线编号 1",
+        "x": 0.28190312500000003,
+        "y": 1.4062500926523867,
+        "scale": 0.06,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_direction_4",
+    "label": "地点、方向标志2（向右）",
+    "width": 2.189208935304774,
+    "height": 2.0000003257227266,
+    "depth": 0.043749999999999956,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -0.28059687499999997,
+        "y": 0.5625000926523868,
+        "scale": 0.05,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "expresswayNumber1",
+        "initial": "",
+        "label": "路线编号 1",
+        "x": -0.28059687499999997,
+        "y": 1.4062500926523867,
+        "scale": 0.06,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_direction_5",
+    "label": "地点、方向标志3（向左）",
+    "width": 2.189208935304774,
+    "height": 2.0000003257227266,
+    "depth": 0.043749999999999956,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": 0.28190312500000003,
+        "y": 0.5625000926523868,
+        "scale": 0.05,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "expresswayNumber1",
+        "initial": "",
+        "label": "路线编号 1",
+        "x": 0.28190312500000003,
+        "y": 1.4062500926523867,
+        "scale": 0.06,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_direction_6",
+    "label": "地点、方向标志3（向右）",
+    "width": 2.189208935304774,
+    "height": 2.0000003257227266,
+    "depth": 0.043749999999999956,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -0.28059687499999997,
+        "y": 0.5625000926523868,
+        "scale": 0.05,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "expresswayNumber1",
+        "initial": "",
+        "label": "路线编号 1",
+        "x": -0.28059687499999997,
+        "y": 1.4062500926523867,
+        "scale": 0.06,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_geographical_direction",
+    "label": "sign_expressway_geographical_direction",
+    "width": 1.0642089353047737,
+    "height": 0.6250003257227265,
+    "depth": 0.043749999999999956,
+    "fields": []
+  },
+  {
+    "id": "sign_expressway_naming_number_1",
+    "label": "sign_expressway_naming_number_1",
+    "width": 1.4392089353047737,
+    "height": 1.6250000926523867,
+    "depth": 0.043749999999999956,
+    "fields": [
+      {
+        "key": "expresswayNumber",
+        "initial": "",
+        "label": "路线编号 ",
+        "x": 0.0006531250000000322,
+        "y": 0.7812500926523868,
+        "scale": 0.08,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_naming_number_2",
+    "label": "sign_expressway_naming_number_2",
+    "width": 1.4392089353047737,
+    "height": 1.6250000926523867,
+    "depth": 0.043749999999999956,
+    "fields": [
+      {
+        "key": "expresswayNumber",
+        "initial": "",
+        "label": "路线编号 ",
+        "x": 0.0006531250000000322,
+        "y": 0.7812500926523868,
+        "scale": 0.08,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_road_name",
+    "label": "路名标志",
+    "width": 1.7517089353047737,
+    "height": 0.8125003998275917,
+    "depth": 0.04,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": 0.00043562500000005056,
+        "y": 0.40625009265238676,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_distance_from_location_1",
+    "label": "地点距离标志1",
+    "width": 2.314208935304774,
+    "height": 1.8125003998275915,
+    "depth": 0.04,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -0.937064375,
+        "y": 1.4687500926523867,
+        "scale": 0.04,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "text2",
+        "initial": "",
+        "label": "文字 2",
+        "x": -0.937064375,
+        "y": 0.9062500926523868,
+        "scale": 0.04,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "text3",
+        "initial": "",
+        "label": "文字 3",
+        "x": -0.937064375,
+        "y": 0.34375009265238676,
+        "scale": 0.04,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "length1",
+        "initial": "",
+        "label": "里程 1",
+        "x": 0.687935625,
+        "y": 1.4687500926523867,
+        "scale": 0.04,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "length2",
+        "initial": "",
+        "label": "里程 2",
+        "x": 0.687935625,
+        "y": 0.9062500926523868,
+        "scale": 0.04,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "length3",
+        "initial": "",
+        "label": "里程 3",
+        "x": 0.687935625,
+        "y": 0.34375009265238676,
+        "scale": 0.04,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "unit6",
+        "initial": "km",
+        "label": "单位",
+        "x": 0.937935625,
+        "y": 1.4375000926523867,
+        "scale": 0.025,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "unit7",
+        "initial": "km",
+        "label": "单位",
+        "x": 0.937935625,
+        "y": 0.8750000926523868,
+        "scale": 0.025,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "unit8",
+        "initial": "km",
+        "label": "单位",
+        "x": 0.937935625,
+        "y": 0.31250009265238676,
+        "scale": 0.025,
+        "align": "right",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_distance_from_location_2",
+    "label": "sign_expressway_distance_from_location_2",
+    "width": 2.314208935304774,
+    "height": 2.0625003998275915,
+    "depth": 0.04,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -0.937064375,
+        "y": 1.7187500926523867,
+        "scale": 0.04,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "expresswayNumber",
+        "initial": "",
+        "label": "路线编号 ",
+        "x": -0.687064375,
+        "y": 0.9687500926523868,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text3",
+        "initial": "",
+        "label": "文字 3",
+        "x": -0.937064375,
+        "y": 0.34375009265238676,
+        "scale": 0.04,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "length1",
+        "initial": "",
+        "label": "里程 1",
+        "x": 0.625435625,
+        "y": 1.7187500926523867,
+        "scale": 0.04,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "length2",
+        "initial": "",
+        "label": "里程 2",
+        "x": 0.625435625,
+        "y": 1.0312500926523867,
+        "scale": 0.04,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "length3",
+        "initial": "",
+        "label": "里程 3",
+        "x": 0.625435625,
+        "y": 0.34375009265238676,
+        "scale": 0.04,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "unit6",
+        "initial": "km",
+        "label": "单位",
+        "x": 0.875435625,
+        "y": 1.6875000926523867,
+        "scale": 0.025,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "unit7",
+        "initial": "km",
+        "label": "单位",
+        "x": 0.875435625,
+        "y": 1.0000000926523867,
+        "scale": 0.025,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "unit8",
+        "initial": "km",
+        "label": "单位",
+        "x": 0.875435625,
+        "y": 0.31250009265238676,
+        "scale": 0.025,
+        "align": "right",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_distance_from_location_3",
+    "label": "地点距离标志3",
+    "width": 2.064208935304774,
+    "height": 1.4375003998275915,
+    "depth": 0.043749999999999956,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": 0.00043562500000005056,
+        "y": 1.0625000926523867,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_distance_from_location_4",
+    "label": "地点距离标志4",
+    "width": 2.564208935304774,
+    "height": 2.3125003998275915,
+    "depth": 0.04,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -1.0620643749999998,
+        "y": 1.9062500926523867,
+        "scale": 0.04,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "text2",
+        "initial": "",
+        "label": "文字 2",
+        "x": -1.0620643749999998,
+        "y": 1.1562500926523867,
+        "scale": 0.04,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "text3",
+        "initial": "",
+        "label": "文字 3",
+        "x": -1.0620643749999998,
+        "y": 0.40625009265238676,
+        "scale": 0.04,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "length1",
+        "initial": "",
+        "label": "里程 1",
+        "x": 0.812935625,
+        "y": 1.9062500926523867,
+        "scale": 0.04,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "length2",
+        "initial": "",
+        "label": "里程 2",
+        "x": 0.812935625,
+        "y": 1.1562500926523867,
+        "scale": 0.04,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "length3",
+        "initial": "",
+        "label": "里程 3",
+        "x": 0.812935625,
+        "y": 0.40625009265238676,
+        "scale": 0.04,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "unit6",
+        "initial": "km",
+        "label": "单位",
+        "x": 1.0629356250000002,
+        "y": 1.8750000926523867,
+        "scale": 0.025,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "unit7",
+        "initial": "km",
+        "label": "单位",
+        "x": 1.0629356250000002,
+        "y": 1.1250000926523867,
+        "scale": 0.025,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "unit8",
+        "initial": "km",
+        "label": "单位",
+        "x": 1.0629356250000002,
+        "y": 0.37500009265238676,
+        "scale": 0.025,
+        "align": "right",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_distance_from_location_5",
+    "label": "地点距离标志5",
+    "width": 2.501708935304774,
+    "height": 2.1250003998275915,
+    "depth": 0.043749999999999956,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -0.874564375,
+        "y": 1.1250000926523867,
+        "scale": 0.04,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "text2",
+        "initial": "",
+        "label": "文字 2",
+        "x": -0.43706437499999995,
+        "y": 0.6250000926523868,
+        "scale": 0.04,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "text3",
+        "initial": "",
+        "label": "文字 3",
+        "x": -0.43706437499999995,
+        "y": 0.25000009265238676,
+        "scale": 0.04,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "length1",
+        "initial": "",
+        "label": "里程 1",
+        "x": 0.844185625,
+        "y": 1.1250000926523867,
+        "scale": 0.04,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "length2",
+        "initial": "",
+        "label": "里程 2",
+        "x": 0.844185625,
+        "y": 0.6250000926523868,
+        "scale": 0.04,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "length3",
+        "initial": "",
+        "label": "里程 3",
+        "x": 0.844185625,
+        "y": 0.25000009265238676,
+        "scale": 0.04,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "unit6",
+        "initial": "km",
+        "label": "单位",
+        "x": 1.0941856250000002,
+        "y": 1.0937500926523867,
+        "scale": 0.025,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "unit7",
+        "initial": "km",
+        "label": "单位",
+        "x": 1.0941856250000002,
+        "y": 0.5937500926523868,
+        "scale": 0.025,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "unit8",
+        "initial": "km",
+        "label": "单位",
+        "x": 1.0941856250000002,
+        "y": 0.21875009265238676,
+        "scale": 0.025,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "expresswayNumber1",
+        "initial": "",
+        "label": "路线编号 1",
+        "x": -0.43706437499999995,
+        "y": 1.6562500926523867,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "expresswayNumber2",
+        "initial": "",
+        "label": "路线编号 2",
+        "x": 0.43793562500000005,
+        "y": 1.6562500926523867,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "expresswayNumber3",
+        "initial": "",
+        "label": "路线编号 3",
+        "x": -0.812064375,
+        "y": 0.46875009265238676,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_distance_from_location_6",
+    "label": "地点距离标志6",
+    "width": 2.626708935304774,
+    "height": 1.8750003998275915,
+    "depth": 0.043749999999999956,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -0.43706437499999995,
+        "y": 1.4375000926523867,
+        "scale": 0.04,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "text2",
+        "initial": "",
+        "label": "文字 2",
+        "x": -0.43706437499999995,
+        "y": 0.7500000926523868,
+        "scale": 0.04,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "text3",
+        "initial": "",
+        "label": "文字 3",
+        "x": -0.43706437499999995,
+        "y": 0.31250009265238676,
+        "scale": 0.04,
+        "align": "left",
+        "color": 16777215
+      },
+      {
+        "key": "length1",
+        "initial": "",
+        "label": "里程 1",
+        "x": 0.844185625,
+        "y": 1.4375000926523867,
+        "scale": 0.04,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "length2",
+        "initial": "",
+        "label": "里程 2",
+        "x": 0.844185625,
+        "y": 0.7500000926523868,
+        "scale": 0.04,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "length3",
+        "initial": "",
+        "label": "里程 3",
+        "x": 0.844185625,
+        "y": 0.31250009265238676,
+        "scale": 0.04,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "unit6",
+        "initial": "km",
+        "label": "单位",
+        "x": 1.0941856250000002,
+        "y": 1.4062500926523867,
+        "scale": 0.025,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "unit7",
+        "initial": "km",
+        "label": "单位",
+        "x": 1.0941856250000002,
+        "y": 0.7187500926523868,
+        "scale": 0.025,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "unit8",
+        "initial": "km",
+        "label": "单位",
+        "x": 1.0941856250000002,
+        "y": 0.28125009265238676,
+        "scale": 0.025,
+        "align": "right",
+        "color": 16777215
+      },
+      {
+        "key": "expresswayNumber1",
+        "initial": "",
+        "label": "路线编号 1",
+        "x": -0.874564375,
+        "y": 1.4062500926523867,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "expresswayNumber2",
+        "initial": "",
+        "label": "路线编号 2",
+        "x": -0.874564375,
+        "y": 0.5625000926523868,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "sign_expressway_exit_8",
+    "label": "高速公路出口标志8",
+    "width": 3.0017089353047735,
+    "height": 2.5937500926523867,
+    "depth": 0.04437499999999994,
+    "fields": [
+      {
+        "key": "text1",
+        "initial": "",
+        "label": "文字 1",
+        "x": -0.8745643750000001,
+        "y": 0.9687500926523868,
+        "scale": 0.03,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "text2",
+        "initial": "",
+        "label": "文字 2",
+        "x": 0.9066856249999999,
+        "y": 0.9687500926523868,
+        "scale": 0.03,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "exitNumber",
+        "initial": "",
+        "label": "文字 ",
+        "x": 1.234810625,
+        "y": 2.3750000926523867,
+        "scale": 0.03,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "expresswayNumber1",
+        "initial": "",
+        "label": "路线编号 1",
+        "x": -0.46831437500000006,
+        "y": 1.6250000926523867,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      },
+      {
+        "key": "expresswayNumber2",
+        "initial": "",
+        "label": "路线编号 2",
+        "x": 0.46918562499999994,
+        "y": 1.6250000926523867,
+        "scale": 0.045,
+        "align": "center",
+        "color": 16777215
+      }
+    ]
+  },
+  {
+    "id": "road_detection_camera",
+    "label": "道路检测/测速监控摄像头",
+    "width": 0.6606413565626017,
+    "height": 0.7543329982595149,
+    "depth": 1.0,
+    "fields": []
+  },
+  {
+    "id": "road_lighting_lamp",
+    "label": "道路补光灯",
+    "width": 0.4375,
+    "height": 0.7258019152775718,
+    "depth": 1.0,
+    "fields": []
+  },
+  {
+    "id": "road_radar_speed_detector",
+    "label": "道路雷达测速器",
+    "width": 0.4375,
+    "height": 0.7691087683640382,
+    "depth": 1.0,
+    "fields": []
+  },
+  {
+    "id": "road_pole_text_display",
+    "label": "路杆文字显示屏",
+    "width": 2.0,
+    "height": 0.9126806985109033,
+    "depth": 0.375,
+    "fields": [
+      {
+        "key": "text",
+        "initial": "",
+        "label": "显示文字",
+        "x": 0,
+        "y": 0.45634034925545164,
+        "scale": 0.035,
+        "align": "center",
+        "color": 16759349
+      }
+    ]
+  },
+  {
+    "id": "road_solar_panel",
+    "label": "路灯太阳能板",
+    "width": 1.25,
+    "height": 1.0087333772740799,
+    "depth": 1.0453439027059024,
+    "fields": []
+  }
+]

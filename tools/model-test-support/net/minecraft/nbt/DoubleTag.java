@@ -1,0 +1,1 @@
+package net.minecraft.nbt; public record DoubleTag(double value) implements Tag {public static DoubleTag valueOf(double v){return new DoubleTag(v);} public double getAsDouble(){return value;}}

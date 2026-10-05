@@ -1,0 +1,6 @@
+Supplied archive: CityBuild-0.7.3-road-name-sign-thin-pillar-fix-source.zip
+Original path: src/main/resources/assets/roadchina/textures/block/asphalt_road.png
+Original CRC and uncompressed size verified against supplied ZIP local entry.
+SHA256: 9d16df82f207c79ad9c01f8d0b773d37d6037ca770313ee7f14a16fc69f138eb
+Supplied ASSET_SOURCES.csv entry:
+Epochwood/RoadChina,Forge 1.20.1-1.0.2 supplied JAR,textures/block/asphalt_road.png,unmodified support resource retained in original namespace

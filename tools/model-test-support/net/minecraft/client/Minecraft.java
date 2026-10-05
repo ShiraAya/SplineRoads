@@ -1,0 +1,1 @@
+package net.minecraft.client;import net.minecraft.client.gui.screens.Screen;public class Minecraft {private static final Minecraft INSTANCE=new Minecraft();public Screen screen;public static Minecraft getInstance(){return INSTANCE;}public void setScreen(Screen s){screen=s;if(s!=null)s.resize(this,854,480);}}

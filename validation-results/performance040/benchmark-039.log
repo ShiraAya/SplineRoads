@@ -1,0 +1,3 @@
+mesh_rounds_ms=[2732.292525, 966.249163, 478.473247, 398.414998, 452.276639], endpoint_rounds_ms=[1074.482478, 137.751831, 127.14134, 121.177306, 118.92481]
+roads=256, repeated_mesh_median_ms=478.473, endpoint_initialize_median_ms=127.141, checksum=1343488.0
+In-memory CPU microbenchmark, five rounds after warmup. NOT NBT disk load, Minecraft FPS or edit wall-clock time.

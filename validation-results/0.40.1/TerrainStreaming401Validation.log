@@ -1,0 +1,2 @@
+  same-road walk: 200 view changes, 3 tiles baked, 199 cache hits, 0 full-road invalidations
+TerrainStreaming401Validation: 25 checks passed; actual tile logic with fake chunk lifecycle, NO FPS or GPU claim

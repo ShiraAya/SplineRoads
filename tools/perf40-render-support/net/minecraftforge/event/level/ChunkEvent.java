@@ -1,0 +1,2 @@
+// TEST ADAPTER ONLY. Not shipped in the mod JAR. No actual Forge/GL emulation.
+package net.minecraftforge.event.level;public class ChunkEvent {public Object getLevel(){return null;}public Chunk getChunk(){return new Chunk();}public static class Chunk {public net.minecraft.world.level.ChunkPos getPos(){return new net.minecraft.world.level.ChunkPos(0,0);}}public static class Load extends ChunkEvent{}public static class Unload extends ChunkEvent{}}

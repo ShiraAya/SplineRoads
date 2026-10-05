@@ -1,0 +1,14 @@
+LaneRampWorkflowValidation: 9190 checks passed
+LaneRampV2Validation: 3065 checks passed
+LanePointSnapValidation: 742 checks passed; reproduced old maximum drift=0.01943854553513143
+LaneInteractionValidation: 254 checks passed
+EndpointV2 core PASS: continuity, scope, paint isolation, identity, control interpolation, green taper, sidewalk walls
+P01 width: motor lane=4.000, pavement=5.000, edge-white-line offset=2.300, lane boundary offset=2.000, difference=0.300
+P02 parent-child same-height overlap: parent paints=64, child paints=60, identical shared paint polygons=60, child pavement faces=0
+P03 reverse-oriented host migration primitive: lane index 0 -> 0, point V[x=2.0, y=100.0, z=75.0] -> V[x=-2.0, y=100.0, z=75.0], horizontal shift=4.000, driving-direction dot=-1.000
+P04 unrelated parallel overlapping roads, no links: ACCEPTED
+P05 perpendicular crossing: upper thickness=.25, lower thickness=2, deck gap=4.75, upper bottom minus lower surface=4.50; validator=REJECTED: 与已有道路在 0, 105, 43 附近净空冲突（路面高差 4.8 格），请调整选区或移走该路段
+P06 paint-priority cycle for acyclic host chain A->B->C: A>B=true, B>C=true, C>A=true; overlapping pavement face counts A=0 B=0 C=0
+Synthetic audit observations confirmed: 6 (not Forge/client tests)
+
+These last six observations CONFIRM counterexamples, not correctness. See README.md.

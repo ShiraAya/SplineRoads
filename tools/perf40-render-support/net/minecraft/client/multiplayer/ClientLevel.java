@@ -1,0 +1,2 @@
+// TEST ADAPTER ONLY. Not shipped in the mod JAR. No actual Forge/GL emulation.
+package net.minecraft.client.multiplayer;public class ClientLevel implements net.minecraft.world.level.BlockAndTintGetter {public java.util.Set<Long> loadedChunks;public boolean hasChunkAt(net.minecraft.core.BlockPos p){if(loadedChunks!=null)return loadedChunks.contains(((long)(p.getX()>>4)&0xffffffffL)|((long)(p.getZ()>>4)<<32));return Math.abs(p.getX()>>4)<8&&Math.abs(p.getZ()>>4)<8;}}

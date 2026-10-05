@@ -1,0 +1,1 @@
+package net.minecraft.server.level;public class ServerLevel {public Dimension dimension(){return new Dimension();}public static class Dimension {public String location(){return "test-only:not-a-world";}}}

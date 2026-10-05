@@ -1,0 +1,7 @@
+{
+  "source_model": "sound_barrier_1_green_normal.json",
+  "model_sha256": "df1e946140d96d1ba3ed190e8068d0ee0d7bc181ad55b496260097fc1594651b",
+  "source_texture": "sound_barrier_1_green.png",
+  "texture_sha256": "918356b4f9f2a853840ae006d1dfde41d66ed2b58535c6a62d1feac3dd3ad1e4",
+  "faces": 990
+}

@@ -1,0 +1,1 @@
+package net.minecraft.nbt;public class ListTag extends java.util.ArrayList<Tag> implements Tag {public ListTag copy(){var l=new ListTag();for(var t:this)l.add(t.copy());return l;} public CompoundTag getCompound(int i){return (CompoundTag)get(i);}public String getString(int i){return get(i).getAsString();}public double getDouble(int i){return ((DoubleTag)get(i)).getAsDouble();}}

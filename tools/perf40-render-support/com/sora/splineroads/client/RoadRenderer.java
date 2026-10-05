@@ -1,0 +1,2 @@
+// TEST ADAPTER ONLY. Not shipped in the mod JAR. No actual Forge/GL emulation.
+package com.sora.splineroads.client;public class RoadRenderer {public static int changes,resets;public static java.util.concurrent.Executor executor=Runnable::run;public static java.util.concurrent.Executor terrainExecutor(){return executor;}public static void reset(){resets++;RoadTerrainModels.clear();}public static void changed(java.util.Collection<java.util.UUID> ids){changes+=ids.size();}}

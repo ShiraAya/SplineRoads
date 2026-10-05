@@ -1,0 +1,1 @@
+package net.minecraft.client.gui.components;public class AbstractWidget {public boolean active=true;}

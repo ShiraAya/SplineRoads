@@ -1,0 +1,1 @@
+package net.minecraft.nbt; public record StringTag(String value) implements Tag {public static StringTag valueOf(String v){return new StringTag(v);}public String getAsString(){return value;}}

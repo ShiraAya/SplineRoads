@@ -1,0 +1,4 @@
+  compound scale=1.00 rotation=0.00 origin=0: 3->2, DETACH, fork, I over A, II over IV, REPLACE, reconcile/reload/delete; ramps 1289.4 / 1291.3 / 1054.3 m
+  compound scale=0.50 rotation=0.00 origin=0: 3->2, DETACH, fork, I over A, II over IV, REPLACE, reconcile/reload/delete; ramps 644.2 / 645.2 / 526.1 m
+  compound scale=0.50 rotation=0.60 origin=100000: 3->2, DETACH, fork, I over A, II over IV, REPLACE, reconcile/reload/delete; ramps 644.2 / 645.2 / 526.1 m
+Ramp39CompoundValidation: 2767 checks passed; in-memory production planner/reconcile only, NOT Minecraft construction/rendering

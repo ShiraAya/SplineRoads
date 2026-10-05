@@ -1,0 +1,4 @@
+PATCH PASS: unrelated create ignores invalid remote ramp; no remote records rewritten
+PATCH PASS: unrelated normal update + deletion also pass; saved remote ramp unchanged
+  local obstacle rejected: 本次道路修改影响既有匝道 00000000-0000-0029-0000-000000015f9b：与本次修改道路 00000000-0000-0029-0000-000000015f9d 的净空或上下关系冲突
+LocalEdits401Validation: 11 checks passed (actual planning, no world writes)

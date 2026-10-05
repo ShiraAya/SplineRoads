@@ -1,0 +1,13 @@
+Oct 05, 2026 6:55:15 AM com.sora.splineroads.client.ShaderPackState$Probe read
+WARNING: Cannot query shader render state; AUTO safely falls back to VBO
+java.lang.reflect.InvocationTargetException
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:118)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at com.sora.splineroads.client.ShaderPackState$Probe.read(ShaderPackState.java:27)
+	at com.sora.splineroads.client.ShaderBackend401Validation.main(ShaderBackend401Validation.java:21)
+Caused by: java.lang.IllegalStateException: deliberate API failure
+	at net.irisshaders.iris.api.v0.IrisApi.isShaderPackInUse(IrisApi.java:7)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	... 3 more
+
+ShaderBackend401Validation: 219 checks passed; actual reflection/backend code, fake API/world, NO GPU runtime claim

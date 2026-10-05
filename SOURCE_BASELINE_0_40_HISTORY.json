@@ -1,0 +1,11 @@
+{
+  "input_filename": "SplineRoads-0.38.0-alpha-ramp-workflow-hotfix3-source.zip",
+  "input_sha256": "4cc97dce20ca0fc2b46bdc6fba0052eb76e1791cf0039975c521fb540e110dc9",
+  "new_version": "0.39.0-alpha",
+  "network_protocol": 52,
+  "save_format": 34,
+  "baseline_git_commit": "22c72abd6cf8029e735734948cc6707d133a0a50",
+  "forge_build_completed": false,
+  "minecraft_client_tested": false,
+  "source_modified": true
+}

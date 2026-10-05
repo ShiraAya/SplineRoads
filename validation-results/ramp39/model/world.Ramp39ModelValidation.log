@@ -1,0 +1,2 @@
+  production DETACH + REPLACE: outgoing 435.5 m, incoming 284.3 m, host retains lane 0; deletion restores both lanes
+Ramp39ModelValidation: 377 checks passed; real LaneRamps/LaneTopology/LanePointCodec/RoadRecord, test-only NBT/world adapters; NO game/client/world-write claim

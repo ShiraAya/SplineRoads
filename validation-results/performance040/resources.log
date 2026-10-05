@@ -1,0 +1,3 @@
+road/asphalt.png -> block/terrain_asphalt.png : byte-identical 9d16df82f207c79ad9c01f8d0b773d37d6037ca770313ee7f14a16fc69f138eb
+road/white.png -> block/terrain_paint.png : byte-identical a93c17028d894827813ce3f52be4c7f70b5e33571bd9e51ca8fd2975ef03a1a9
+All production JSON resources parsed successfully.

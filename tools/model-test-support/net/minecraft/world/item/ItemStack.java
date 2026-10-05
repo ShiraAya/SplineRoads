@@ -1,0 +1,1 @@
+package net.minecraft.world.item;public class ItemStack {private final net.minecraft.nbt.CompoundTag tag=new net.minecraft.nbt.CompoundTag();public net.minecraft.nbt.CompoundTag getOrCreateTag(){return tag;}}

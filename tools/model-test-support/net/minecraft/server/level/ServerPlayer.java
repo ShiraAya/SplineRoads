@@ -1,0 +1,1 @@
+package net.minecraft.server.level;public class ServerPlayer {public ServerLevel serverLevel(){throw new UnsupportedOperationException("no world");}public ServerLevel level(){throw new UnsupportedOperationException("no world");}public java.util.UUID getUUID(){throw new UnsupportedOperationException("no player");}}

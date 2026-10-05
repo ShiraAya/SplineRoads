@@ -1,0 +1,2550 @@
+[
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignExpresswayDirection1EntityRenderer.java",
+    "sha256": "6c161f38557fab844171451d264405abc31be9f9e60bf93b738b5c1076152d0e"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignExpresswayDirection3EntityRenderer.java",
+    "sha256": "f9269bf9f7b4ef3c3e8d2852d1acc0dca2893e5f13340c9b1744a95265a05c12"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignExpresswayDirection5EntityRenderer.java",
+    "sha256": "65c1f50083075a5f59507270425f4f3653584bfc98b7cc4f323172247176732c"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignExpresswayDistanceFromLocation1EntityRenderer.java",
+    "sha256": "a93a30dfadc885eb43dfa59370ef935e922d3675b05e762edbfff5730ad37c06"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignExpresswayDistanceFromLocation2EntityRenderer.java",
+    "sha256": "7a162fce168491ee9e5e6031dd2d718f146f11476e2722b95f3eabfc63e00991"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignExpresswayDistanceFromLocation3EntityRenderer.java",
+    "sha256": "1ca1c2b967780e7143854504ef775a4f09d71989f5a9dc371d9e27fc65b6085a"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignExpresswayDistanceFromLocation4EntityRenderer.java",
+    "sha256": "ad769789be55a398322c2cdd680bfe70f776e7bcb3fa41af7009054a711833ff"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignExpresswayDistanceFromLocation5EntityRenderer.java",
+    "sha256": "5d6b155867324ae6c51bb65b40e21e65f6e04a3347ffe6b411063c3993dac669"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignExpresswayDistanceFromLocation6EntityRenderer.java",
+    "sha256": "3e4a663f0e0d8d12de52d699c9ffc1e1c5dfa6cb3fc256210ca81c0a9f8415bf"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignExpresswayEntranceAdvance10EntityRenderer.java",
+    "sha256": "f57e8c2e6664b8149e37111e513d64f8b6d4a416397a338d7c0006185f73bce0"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignExpresswayEntranceAdvance13EntityRenderer.java",
+    "sha256": "7c7bf5f8927df4eb7f2aeed0cff809b7944889c4055e4ae2c0833219adff8573"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignExpresswayEntranceAdvance1EntityRenderer.java",
+    "sha256": "e4eb5d7632b50350951fb9372b3034e35d89928d74470710cb4a442647bac1b0"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignExpresswayEntranceAdvance4EntityRenderer.java",
+    "sha256": "cadd129921477f87c301b0ff888fdc5b74d0b991669683d56f1745c0131134d4"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignExpresswayEntranceAdvance7EntityRenderer.java",
+    "sha256": "f5ba8351b3c3d172b1adb7b8bd21537a69c6131c6cf9a10aab46b1be9803ba9d"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignExpresswayExit8EntityRenderer.java",
+    "sha256": "741e27583f7b22c7ea5639432af2f188abb4c99074ffc58ae47613f0e9490ab3"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignExpresswayNamingNumberEntityRenderer.java",
+    "sha256": "fd7ac809b5a50768a0e0ec55cef2b2d037ba317296739451a2e1f7e9c2abdb10"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignExpresswayRoadNameEntityRenderer.java",
+    "sha256": "ff79df8b24c24e8b15aabcd7fa5fdbdf15cc6388d8cf28d01727482644a04fd2"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignGuideConfirmation1EntityRenderer.java",
+    "sha256": "2e9368a10ec8408b8887da236573804f9b0f590f0694cb7d2e8d521ae429200f"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignGuideIntersectionAdvanceWarning1EntityRenderer.java",
+    "sha256": "a32432232df1b137217d51ca55062ec4847468d08ca23bf786d7e566c8c8ffff"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignGuideIntersectionAdvanceWarning1WuhanEntityRenderer.java",
+    "sha256": "da93b0f572a80056f0842a39b457f5bf3f6b271cb7bc767c5f28329ffe57338b"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignGuideIntersectionAdvanceWarning3EntityRenderer.java",
+    "sha256": "8ac30ba7ee491f46c024164b9b09d71aa113249d2fbd79270bca26b5d6c00625"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignGuideIntersectionAdvanceWarning5EntityRenderer.java",
+    "sha256": "df2a2ec0c05d44221568fd48ec396f3b65726f14508b49b0c9086da40cc54319"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignGuideIntersectionAdvanceWarning6EntityRenderer.java",
+    "sha256": "aa392e7ad8ff7bd8d58825681114cd1779b405c47c74e55e9a200d1c28fa8544"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignGuideIntersectionAdvanceWarning7EntityRenderer.java",
+    "sha256": "c917c674622ff7cde5808ed07150abfe60974db1b1b5e4a6876cda3b6b57e8d4"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignGuideIntersectionWarning1EntityRenderer.java",
+    "sha256": "71488d69f9c4df24769748a9e3441ba370b03c0700c19fcd35dc8bbef32b2369"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignGuideIntersectionWarning4EntityRenderer.java",
+    "sha256": "4a556267334f4177c58e9de521f7016147b8e04e07386e4fd0f7931349d45bfa"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignGuideLaneIndicator1EntityRenderer.java",
+    "sha256": "d5fc8809c2d4b0a195348db6485448dae9a8ca2b4c9098556186231d767c53d5"
+  },
+  {
+    "path": "src/main/java/com/sora/citybuild/urban/render/SignGuideRoadsideFacilityOverloadCheckpoint1EntityRenderer.java",
+    "sha256": "f11c5e9bd1b6ada3933e5e2535f00d0f0500e5456145e5350d196d724255cc61"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/road_detection_camera.json",
+    "sha256": "e23f76c0e69cf7278ec6ff3461f82397829ae9319556c645eb240ba4d5eb8e2f"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/road_lighting_lamp_on.json",
+    "sha256": "cccbeb5dff6ecd49693804f833a8c21e10261f31f34d936a92ba5cf32febc702"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/road_pole_text_display.json",
+    "sha256": "4c3b6a89bbd87a524f949dc23418646afde8dd7beb8294e412acd1ec58263253"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/road_radar_speed_detector_on.json",
+    "sha256": "303baf65abe6236b1fad9edf6bf77cd5f1c7b4955877dfc7876f33b08d55bfd5"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/road_solar_panel.json",
+    "sha256": "3c123ffcf7a2994588e986d6382443194389e261e9b814e3b291dd5b381ea9a5"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_alex_weight_limit_10.json",
+    "sha256": "8a4b74fe3fb378a226daa867c9c2cd6a8e40ce7c550db6f6b001eae0ec87b5eb"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_alex_weight_limit_20.json",
+    "sha256": "bc3d4312791740fd2fe12b8d94f1a760345c1027060c24806432f7dc837cac94"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_alex_weight_limit_30.json",
+    "sha256": "70e6295c1f2007a9bba392378483d709573d82076db6048911c5e56ace5f0708"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_cancel_overtake.json",
+    "sha256": "a6f7c1caa6307574c971f2d78839f74e6f55ad9f71d88302fbdcf58050ac6252"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_cancel_speed_limit_005.json",
+    "sha256": "c621d51bd6320396a9c218f6aa663f4e708ee0d28b7f4386916d1f05e6b28832"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_cancel_speed_limit_010.json",
+    "sha256": "79ba86fca4a1c0d70f9f736092ee2fce5e6b5c252ae2c7d3794da3c73a39fd3f"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_cancel_speed_limit_020.json",
+    "sha256": "6b2845aa8de1db04c039ffc939254affa12ba29dc08c597ffa1d9b9999b773c8"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_cancel_speed_limit_030.json",
+    "sha256": "35db3e8415d79208a7581ac4569361845d5929213ec1d9b6b3e4fcb700a01de1"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_cancel_speed_limit_040.json",
+    "sha256": "45a673960e48ca1737e8b9c069545d965f1b212ebbef831d05bf7afda6bad8db"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_cancel_speed_limit_050.json",
+    "sha256": "aa13acee4dbf6d406ae3bbdb307201ca5bdb628d5c0baa599fb3076324a65e75"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_cancel_speed_limit_060.json",
+    "sha256": "f8f80c3c3a245ed28f09c84444f8a53a8bb1eedd3e468ef9e905a97c20f80d0f"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_cancel_speed_limit_070.json",
+    "sha256": "0afdb1e752fbadba5f4e35ddbb1eeb44f8a8374d6312486507cb275f773ee9bb"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_cancel_speed_limit_080.json",
+    "sha256": "d66940ab14a9a52f1816db18cfd6006e3d683554d580bf1df6b803c605f226dd"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_cancel_speed_limit_090.json",
+    "sha256": "6a9689cd0a3d152ca5b2ce332098c82b9a0c5fcd36079bbf1117b042ecfa8385"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_cancel_speed_limit_100.json",
+    "sha256": "b89151ef5b12d5b8c25ea50d4d1a309e7a18cc4b8dc0a1d06b8267a9e5d8b595"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_cancel_speed_limit_110.json",
+    "sha256": "526a2afa12a9d26f2ebfa7683a61ce92901ce25dc76c9d532ddaee006ddd3417"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_cancel_speed_limit_120.json",
+    "sha256": "f58a95e22c94d2a1808da68d7767d5ba4ad82d59d30682e99a51cb2bfcdeb9c5"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_check.json",
+    "sha256": "e985f9b4a65bed11a371a7e53f9c937b2a021dca48b72988b2d52f6ca139e2a6"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_direction_1.json",
+    "sha256": "f199cbc9429e4d8d48e69072a013d46a8374e9188fd83b698302afda3b5a02d3"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_direction_2.json",
+    "sha256": "31f927f6dc45186b960628eb625da79ae004482d1357993c07e94a20c4dabf5a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_direction_3.json",
+    "sha256": "218138f87194e7d7c65f84eff892150aab738331c526776ec304e62ed7a19acf"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_direction_4.json",
+    "sha256": "b69b5c166faed9799791475b02b3e9d46bcdf71cea06daa12d34673dee8d3e04"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_direction_5.json",
+    "sha256": "30e8e98df408bf1b51824fbee1766646e3cf62ab124cae6b3f46d1703bb4a801"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_direction_6.json",
+    "sha256": "d7f947bb8ba71ff34a4c46aabc04eac2bf53b53ca491348afa0ddcfc0387ea59"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_distance_from_location_1.json",
+    "sha256": "6a7f8e90478fa3b3d8abe4656756445a30168421724b06a321053340cc579a9b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_distance_from_location_2.json",
+    "sha256": "9fdf6aa29168eb5d02d3fa4ed2c3acfd8f6cc30937f3d8649e8179b6ab9400f9"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_distance_from_location_3.json",
+    "sha256": "499c3b71037a186532d9a918e7813850145d2caa803c8bf987507f9702d8663a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_distance_from_location_4.json",
+    "sha256": "24849fb19d5569a9fe84bc857ec20606c9146af9d3463aa61bebbc1e0d377052"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_distance_from_location_5.json",
+    "sha256": "15193d5d86555afe242a2a3a311eca9666d69374134558bd4f4ed88c67801f42"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_distance_from_location_6.json",
+    "sha256": "56f07a5c589e9f3e8e937db1038de877b2ef17872952991842d3fb948de8c755"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_entrance_advance_1.json",
+    "sha256": "dfa9536c963bc5f595d0265bd286d8621701f913d4c8481473b4396a342d7856"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_entrance_advance_13.json",
+    "sha256": "1590eafcadd62720ec44f59283868fbcd320cc4c1d01df4a8bd026f23a55db8c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_entrance_advance_14.json",
+    "sha256": "3f53a7fca2f4605c8d7c155a1b2a9a2fab51fad03a150111d323ac77c4776e80"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_entrance_advance_15.json",
+    "sha256": "b22f469c9ae24484bd6c76884a8c8308ed55212abb4ccce151cbe14137e72bec"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_entrance_advance_2.json",
+    "sha256": "f713c66dce30251b95df8f25fef6409f4468a7c3f7abd5270bc7de6bde265bdf"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_entrance_advance_3.json",
+    "sha256": "d28024228b581accd5681ce1a3e0d4d834475f3ae4050a51c40845dc35443b59"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_entrance_advance_7.json",
+    "sha256": "4dcb081f31bc6927f40b5948e4ed5c609f7de71842bda21cc4b45adf9c741a9a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_entrance_advance_8.json",
+    "sha256": "8f3e8b4a6aeeda819d7533db38f9d2d25f2eba426393155ad5b296beb1a4557b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_entrance_advance_9.json",
+    "sha256": "41e6c1c49d17e7d5abbc1ed901564c075bbb1197d09ece9efdff80acc8b3339e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_exit_8.json",
+    "sha256": "b3d580ac6d35c9d6321110b016d4386c29a7782a349ea1fcc238876f37d6b929"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_geographical_direction_south.json",
+    "sha256": "e84041e48a5a1a071c8752e0ea141c7c8f9d06ab19cf63fd22c491a1503ea3c9"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_naming_number_1.json",
+    "sha256": "f60ece88d4bbc4fd054a7587aaa4940b05eb66496e4d008973c352eec07c7829"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_naming_number_2.json",
+    "sha256": "442c517c8d3c4d24c02c8fb70ee6dbb83e2f5aaa6e66c0106ff33526287c7888"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_expressway_road_name.json",
+    "sha256": "1d1c94c3d4649809b931d84154e030b6ef8b9cf970ac5d5c70dc9e690b6b83d9"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_confirmation_1.json",
+    "sha256": "e6c6916bb734cbf7eb4f2d71b285bda3bc3c05982fe71f36139f5aec5a4ef98d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_confirmation_2.json",
+    "sha256": "737c44a0761260b0c0f5bcfa83486a823ebefa69d8a59c99fdbde452c4c7d07d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_detour_1.json",
+    "sha256": "6d2251f3001be1bc1cb85eb8fe8164efcfb21305941407376f6300467af82f09"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_detour_2.json",
+    "sha256": "7680b01c18ae11dff141840e4ed40e5fa3b28d70b10f03599a64384930cea782"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_detour_3.json",
+    "sha256": "29f7dcf5f93c053d594231658df222a9e999d4870654ea8b550004848318c568"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_distance_to_tunnel_exit_1.json",
+    "sha256": "bcdd7f2a2c761e8e645c3895368f1b6c3092a94de1cffab316a6aaeed2509f8c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_distance_to_tunnel_exit_2.json",
+    "sha256": "9de869835ea8229008fd8363726a1eae30101c7257ec0125e1237edb2feb2d29"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_distance_to_tunnel_exit_3.json",
+    "sha256": "40614360d141c7751ced1bc7e56e705a1acd26318d689016d2fb69f3aa93aefb"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_distance_to_tunnel_exit_4.json",
+    "sha256": "d6c8339122ff8f4eac423d379ace3fc699cf87f5169602a91d22f7a1d6bb2a2c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_distance_to_tunnel_exit_5.json",
+    "sha256": "d10a8dfae8d8f273d4ce61807c8f92958da28525cd0b18a903c2e9da64f06208"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_distance_to_tunnel_exit_6.json",
+    "sha256": "0848958f90f9034974dbae96bedde02aae15a0bc383bb7480747f5088600a542"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_identification_airport_left.json",
+    "sha256": "6c4ae1c2c52235dd4b53e3e9ce0d09463b41e405a6f3f106b305e06009130120"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_identification_airport_right.json",
+    "sha256": "3910d26ac71171991b0368f61af1ab85327cc5a74bd0a102224b1bcee51e1cc2"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_identification_charging.json",
+    "sha256": "d1227aab9101b657bc79815b125dc9b92ad6fd781e23ba8a28ba6be43ecb4ca2"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_identification_ferry_crossing.json",
+    "sha256": "558956c22897f208124ae827c685f3270481a002b464fa46724c5dc4c34fb215"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_identification_first_aid_station.json",
+    "sha256": "2b9f6908cc9d7b7aab42a8beb035558295b7dfabff859684d8f7d64902535e28"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_identification_gas_station.json",
+    "sha256": "8da160ad8f4d8b87802c1b089392a573cc89fba25ad8141ce46abf7d1d41bd92"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_identification_metro.json",
+    "sha256": "38f787eb7d0edf3e6861a3e5d8d0c4f364a76f69d3f39ae0e31f3481ee2360a3"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_impassable_road.json",
+    "sha256": "921cfeca6095f0d329b6799a85d9f8e38f61161f706019cf111594261421555d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_intersection_advance_warning_1.json",
+    "sha256": "ce91614318430344037b8781ccf6d0b7d18a9ef144aa0b81f3f73860e2696314"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_intersection_advance_warning_1_wuhan_left.json",
+    "sha256": "d2c1eae03d20060b50f7a81bcc5dd082d0344f66dbdf7fcc10e6d666f3cffd10"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_intersection_advance_warning_1_wuhan_right.json",
+    "sha256": "12119624b9f25156ba993d736972ecb24de311bb7bd8ad1c2e349ffeeb2a8334"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_intersection_advance_warning_1_wuhan_straight.json",
+    "sha256": "1a3ab0f8c2b024ec16671bfa3337a87951ab71ec10da5d36f7d8d5f43b2cbbcc"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_intersection_advance_warning_2.json",
+    "sha256": "84417345df8009616c6bfb29057a0e2fdd16d46489a08fc8af43082b7f9fc734"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_intersection_advance_warning_3_south.json",
+    "sha256": "04f88093e4e93317fa5a3db6ab1cfea244c18de16dd2d15cca8390360e6a9e36"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_intersection_advance_warning_4_south.json",
+    "sha256": "007e15ebe26a48cbb9336a7ac90badd3277ff1732a72eecd81d7a270ada797c1"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_intersection_advance_warning_5.json",
+    "sha256": "44a81c1448b68998d69145b7ffc9cd9e055f9298436492b5a97bc2552f8fa149"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_intersection_advance_warning_6.json",
+    "sha256": "94916cbb794c7693c26c813025d03b704616250739799b075a93ca523e899c5a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_intersection_advance_warning_7.json",
+    "sha256": "b8f0380cba785abb8b29ce499bf6bd5d1004340b7150c48cc0086464321ebffe"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_intersection_advance_warning_8.json",
+    "sha256": "dca6d67096ca33b744806e25c02a7b2ec0299927c6d213d282a59da2a02c7968"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_intersection_warning_1.json",
+    "sha256": "739e27aee133328c47c9f577b5ec6869755386cf0d1e8f9adbb876a39f12f4ab"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_intersection_warning_2.json",
+    "sha256": "3b099a434cfac9d73ea74c878e2ff9356979c6fb12e469c1e3b558d7c9c32c21"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_intersection_warning_3.json",
+    "sha256": "bbd02bc1c8fdc6cbe4b22bde96dd4351d043ce2e52a28247c17dab26e255fc4a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_intersection_warning_4.json",
+    "sha256": "8d93f4c147fac7101f1c6ca70d67ca32f32ed51fbd7f954d6d0d7b4f892360a7"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_intersection_warning_5.json",
+    "sha256": "53bae719c6c81111ccf4ec5d43abb3c1e6e9d531e10f7d657734ba75eb2c3b4e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_intersection_warning_6.json",
+    "sha256": "3b9178ec02904182a6d7d2a890e55816eca9250668c4396f2f11bdfe4df0a5e4"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_lane_indicator_1.json",
+    "sha256": "4e0cfd377d2b8454eb02088a21022749380a41d704732045f9530c192d9e0a61"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_odometer.json",
+    "sha256": "8cfda8a4a6165e61e2f15966e664c79d792dd68dc353bb9bf2837c37c5ef68b7"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_roadside_facility_disabled.json",
+    "sha256": "6dc760a795b01d0208c34c59657a24f2bbbf91cb33d044dd08dff3878dddf336"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_roadside_facility_emergency_escape_facilities.json",
+    "sha256": "f9e6a0fece74fba4d7d9e983a0352ee122db3938e03969c3033a55bf29caa249"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_roadside_facility_harbor_style_emergency_parking_lane.json",
+    "sha256": "4ccc73123003ed57d84da70d20613b62c95f37390f35210342e84ab1883af029"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_roadside_facility_overload_checkpoint_1.json",
+    "sha256": "8435faa0281bce30bb7b2adeef0fb7462c808df8425da101164e2508151ec790"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_roadside_facility_overload_checkpoint_2.json",
+    "sha256": "2ecc170db3bda9a99199b55327846eb74b0d862b052eabbaaced8f50e66936bf"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_roadside_facility_parking_1.json",
+    "sha256": "db5981d0c2512efd70ae66c9bc3385a66f32ccb3ced08dc5aa120899d773bf21"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_roadside_facility_parking_2.json",
+    "sha256": "eae954bd4f28faea676ee72e39dcf6fece6275811d163bc796dbdf2b6c6b24c9"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_roadside_facility_parking_spot_1.json",
+    "sha256": "831c8baf85201af55d6516f99140e3d1b505e197d93ac3ba1ca6dbdb922910f6"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_roadside_facility_parking_spot_2.json",
+    "sha256": "c2e9018f5abc79807a11b8931e6e5f1e126f9e295ffb1282bc775ff1ef3495c3"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_roadside_facility_pedestrian_overpass.json",
+    "sha256": "8e50322612717282e9a95669cb293e5db944fe8d1db62a091aa86bc6973ca1e5"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_roadside_facility_pedestrian_underpass.json",
+    "sha256": "edc99eff972a9e13d868f9edd08a6d78fa4c927456da71d7f85b407e738bf0ac"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_roadside_facility_service_station_1.json",
+    "sha256": "2038deec02f8eeed219db8a537e05f742c67e5f799e24e482b2466c989962ec8"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_roadside_facility_service_station_2.json",
+    "sha256": "1a6b2abdbe25b91495eade9e213c6fe3cd430551e3cb33d573493acf4b2ba598"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_roadside_facility_viewing_platform_1.json",
+    "sha256": "ce2a728a78a6cafd7ce71fb6d46213074ee1d512b66ad1651725788ac1373056"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_roadside_facility_viewing_platform_2.json",
+    "sha256": "6f0943e93f50b1a254429ebffb35f05327f47fe6bb86e0f8f0f92a9d59681eed"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_guide_roadside_facility_wrong_lane.json",
+    "sha256": "14492c3e8ae1ba6f31a6eaf6e54dd2bbb24a6420d068ecd95672aad8eb7f5a3a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_height_limit_20.json",
+    "sha256": "5f43ee973e95e11c8dc88a8533d2aaf67c8e0d23872d37021197c21d689c0fe3"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_height_limit_25.json",
+    "sha256": "aaea5ab08f74aad987ecf8b5fca17e0fe6ecdefd702ffb0b2a41ef0361ecdb1e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_height_limit_30.json",
+    "sha256": "687f29273299af80a810a350dad9a2b8fb70cfb848926fd57c6abc696ade7fcb"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_height_limit_35.json",
+    "sha256": "627641bd27d227c6845606db81528390dcf1b84c0147b91130727874c0249443"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_height_limit_40.json",
+    "sha256": "fb551f94732cf26ea358014e9884973cc39a956a1adebeaf88772d968d848704"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_height_limit_45.json",
+    "sha256": "8d7a461ba9d94af432d3e03ea3a872bd12a396e0dd1d886046f493cce0d0af68"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_electric_vehicle.json",
+    "sha256": "9fe7cd6cd816ed7b80c972780b2ed63115a84249f6ea6184ee1b95b27ec6c79a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_headlights.json",
+    "sha256": "657cdbfc0d406b16e9d3ff69db01850a531a313a681bdf4a99ad9d9f18c40fa0"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_honk_horn.json",
+    "sha256": "c870c88bdadd283f60d7277189d88bf05b8808dd29e0ff949571c1a0e84333d1"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_electric_vehicle.json",
+    "sha256": "e666c9c3de7cc3738f75f63c2bfdc24753b6b8133a79391df3e4641a31cc10a3"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_electric_vehicle_left_side_median_strip.json",
+    "sha256": "3630c0a0371f70353142311eb9561fefdece7164d80ac055567a2f39aac64177"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_electric_vehicle_right_side_median_strip.json",
+    "sha256": "76ff2ea425321f5cc0c130a1f7eeae7079806acd402cbb5cebc275572a1ad68d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_electric_vehicle_straight.json",
+    "sha256": "25d9843d1a1abc0907f6ea579de41dd4ca5ce9f41664f39fb396a4a5c8cc3697"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_hov.json",
+    "sha256": "0d9c3421ea502f6b8016ded5eeb07b740bc0ff919507db1dc7109fd5851fd8e5"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_large_bus.json",
+    "sha256": "ef880568192437030423b929c26b2ce9f56ff98e5f8ac72231365b12490d5502"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_large_bus_brt.json",
+    "sha256": "e44875bffa94b7622a47ea1fba4e298c69a8cbf7aaaaf57bcf975d16303e7583"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_large_bus_brt_left_side_median_strip.json",
+    "sha256": "0f5c5e47f8fd5e15cf15d8306642ddb44159030b0bfe9cc5bbf3f9535fbf1561"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_large_bus_brt_right_side_median_strip.json",
+    "sha256": "93aa36fe963a2293449e4e0ac5c31f004eaa0f668ac391f11d9da0e051e37658"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_large_bus_brt_straight.json",
+    "sha256": "3c5e2813544cfdb1c7defbdc56d7a88c5e4f05f8ba48a70e444665b45e9f64b7"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_large_bus_left_side_median_strip.json",
+    "sha256": "1809457833ff0fbadc321d99fe2704e936c71bbbf39be2d545350640ab674e83"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_large_bus_right_side_median_strip.json",
+    "sha256": "649e0134fd32abcfbe2db2f04eff037ee5a403e1f88380a07316c7dad7b12c32"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_large_bus_straight.json",
+    "sha256": "7dab3ea1dd9adddc66d493c0c7a8512deb5849bd6f8ae39b0b544dad520d0487"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_large_bus_text.json",
+    "sha256": "2dd713aadffd218f8b1d6b17fa2f9a655df5e636f28929e4c379de884ea5b2a9"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_large_bus_text_left_side_median_strip.json",
+    "sha256": "a595198a1b4515986c455244da0ab51316ad68eb85d63d77cf3177699440687e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_large_bus_text_right_side_median_strip.json",
+    "sha256": "6d4df6ce1e9ba5ab757ef5918b98af7456d6b35dc1cb364928cfac048c043e9e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_large_bus_text_straight.json",
+    "sha256": "bc8526ecf956953d141cea6da63fdf5f029e175e9ad6e8d2c5a9bdf0aff82196"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_left_turn.json",
+    "sha256": "510342df4c823e89e03e58db2bb0498f47a7fbe5711be232d498d67ff6d61df9"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_left_turn_around.json",
+    "sha256": "a358aabe5362fe3085c74b4ccf9a8924bc34a7d6e2da0fb7e375d98e4225edb4"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_motor_vehicles.json",
+    "sha256": "8b225f4cdfcc159e0afe8c9c21776444e3adcf596df237cfbef95566c5f1ee17"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_motor_vehicles_left_side_median_strip.json",
+    "sha256": "6061a28ed5e7a135663b60bdfdc88df9cb56ca4876a91f8b3d9237cbf500e431"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_motor_vehicles_right_side_median_strip.json",
+    "sha256": "a44b761e322d754fdb8e16befadfae45feb99ba64decabe435a414abc3a63323"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_motor_vehicles_straight.json",
+    "sha256": "846d2cc081fe14eb172fdfbe2fdb3fb4ac12b83bc87a2842a0544ba3aa927ed6"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_non_motor_vehicles.json",
+    "sha256": "2f4fdf637cf9522484758b03e35beb0ac23cf141e60efa0e847ed63adb0e53a8"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_non_motor_vehicles_left_side_median_strip.json",
+    "sha256": "154ca615bf4f8a6cb308b3ea67d5b594db40330d42bfa8893d23fba504af52e7"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_non_motor_vehicles_right_side_median_strip.json",
+    "sha256": "47ffe0c2da7a59176072677fe7798dd01a8b8aa3a5ebe2d48d3b44f32006463a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_non_motor_vehicles_straight.json",
+    "sha256": "bd2ae08e105b67a9b54432aa2d287791b3da4ed5da9115d046faa9124a410cbf"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_right_turn.json",
+    "sha256": "c2165bac4c406a7cb748e65443c517cca62c493e09eec5c27710489abf84e1fb"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_single_left_turn_around.json",
+    "sha256": "6a7a740956d0ed52cd18663e3e891f4d7336bdf698d15abdaccefd3192f48dc4"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_small_passenger_car.json",
+    "sha256": "5fff99d183fa2bff61d3e5dbfa8a4ba5f2d386334072d8fd7df0c79741b5c184"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_small_passenger_car_left_side_median_strip.json",
+    "sha256": "f96680a4f93091ec31525ca29a0638200af60f4bcf30115fb2f474737cda95c2"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_small_passenger_car_right_side_median_strip.json",
+    "sha256": "36747a1c08fa0a93d1134d8376cb7467d284de4794854d3493346a87e111825e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_small_passenger_car_straight.json",
+    "sha256": "77fcff458e7e2726e11dc70dd30b877f40779469cda79a0fbebc2d324ca3830a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_straight.json",
+    "sha256": "b5da9e2c81593cdf75c114d7961b16cb4ff5f9c16d4f91c7dc710540ac61d3f3"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_straight_left_turn.json",
+    "sha256": "3f2549385b4de5358f832d914e0dbb3e52a9ce1a85a5c7fc4896a7580e00ccfa"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_straight_right_turn.json",
+    "sha256": "767355f71cdbcd2444dbea4dea2a9cb7f7af16e276371ed000a7fcc641be62ec"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_lane_direction_tram_straight.json",
+    "sha256": "630f0b0708120ac48df3f1757919ec1be721b061ff7cbfa63d783dde4f004081"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_left_right_turn.json",
+    "sha256": "dd8eb73da8e759213da7b7f17fa44d9ffa1b0272f94fe67e3c5ad5fbb268b07f"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_left_side_median_strip.json",
+    "sha256": "51f1dc8de4e052b3ff4a9c6bb75cadb851b1457fe1267e08395496faa6286213"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_left_turn.json",
+    "sha256": "916435585b75791f50999b10ffba8e29cb6b30e766371dca7f57d4bd4b5700f9"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_motor_vehicles.json",
+    "sha256": "c3a879616a6132e95e28e2bf0abcbab62c1e81c25ee774b2bf3dc48a170ffefe"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_non_motor_vehicles.json",
+    "sha256": "7fda7ed9b3dc043d12b332a106f376cd966ae701522a75690c32b00c7ee30540"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_ok_truck.json",
+    "sha256": "6f2cc721e10f0e5510b4b05f3af290c22bf90595b05e7c4d5b3306b739c053ff"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_one_way_street_left_right.json",
+    "sha256": "523944857bebbe8313a49bc3020e3aa1159509f8f65d714de2e66f37e3da159d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_one_way_street_straight.json",
+    "sha256": "c2af582fad46d973d50407d180e643c96f2ff23380cd12c924cf47b765707a6d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_parking_1.json",
+    "sha256": "2b8b0f96cd8058bdd2274c4ec83b4034b5b25e651bc9bc77adf6af2288047170"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_parking_2.json",
+    "sha256": "e1635acb29bb842591c40d9f216b0a7a4e843c37f0dfb8feaa9eed49d9493058"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_parking_3.json",
+    "sha256": "7a7e0814242c797682f4769a58e10c2406429c0262584b816dbfd913ee7a2493"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_parking_4.json",
+    "sha256": "fda2293f2a4ef947c0d19d5c46e423ab41c2597a80e35e6486c7f9fc29a51382"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_parking_bus.json",
+    "sha256": "aca1f7fa4472a81965d20f92148920b921d4ab277e548f938333f02b754c892f"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_parking_charging.json",
+    "sha256": "7fd5092e4be3e0b3650441953cc4fb731a70e3c8c006d1e70cdc9d4ac8a70c3a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_parking_company.json",
+    "sha256": "035f1f7f995043c0968f4946947db71815c6d4ec87c11b3471dad96265201bb5"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_parking_disabled.json",
+    "sha256": "c1e5c00405c676551e39963c4f050f7c79b5272245090925adfd2f1de5b889ff"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_parking_non_motor_vehicle.json",
+    "sha256": "858d5e42a81b849f8ccd5a7a92ffab5d84ec42d72f194a6811ede40088c5161c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_parking_school_bus.json",
+    "sha256": "a70790ae8d431392274632fe7c5f9516e9aeb0429b87f78b10ba8033701bfceb"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_parking_school_bus_fluorescence.json",
+    "sha256": "4c6bf4e0b9545bbc8c6bdbf614826cfa5f2be38d6623ca45269c28a3a6f4be9c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_parking_taxi.json",
+    "sha256": "d96b044471aede26399a4e4c2487fb6e5bab3a12d32549a062afc50e0ca18b2b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_paved_shoulder_1.json",
+    "sha256": "07ffb990f7444bddc1de16c9faeb34f20ad8f787c3091c59a288bd68ae655096"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_paved_shoulder_2.json",
+    "sha256": "db1cf6b3e33de6fda5a479c2d672b5651332687a1dfc6d4254815e436e245cdf"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_paved_shoulder_3.json",
+    "sha256": "7e832c5b7461a38a21381e74b1c89834ea319f1c487880054101b1a8693ebd69"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_pedestrian.json",
+    "sha256": "c28e8d53b250797b67b6f551ce7c28312e10b8dbaaa7697826f984794a69a34c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_pedestrian_non_motor_vehicles_1.json",
+    "sha256": "8153c1e90de03dada06688837191390eda622949beb78ffa0fb06b40bb2590e5"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_pedestrian_non_motor_vehicles_2.json",
+    "sha256": "4428c6258dc8e48a7b529d0392a80d9eead112ceda67a782cc28a63e375bfb41"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_pedestrian_non_motor_vehicles_3.json",
+    "sha256": "453c53ac247a8086fc8dbed346726b8475259be2819a4eb780b9ad566e645ad7"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_promotion_drive_right.json",
+    "sha256": "1c09a13dcfa3f401104eb97b23f00421724a9360b6d94c3262485dfad45d4e42"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_promotion_non_motor_vehicles.json",
+    "sha256": "7c51aaa89fd487bd957f936762ed0c43243e09ff6c42cf0311780f4ae74b998b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_right_side_median_strip.json",
+    "sha256": "aa674afd8081c6f174fc677d74adc2c92034dae9e7f28a4ddf7b9834abca31cb"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_right_turn.json",
+    "sha256": "6a3f5806a31c837aa03ec70b2f8d43ab60621c10f97b69784be02a2d0b059334"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_roundabout.json",
+    "sha256": "b6015ce09aa6c29e48bbe04c0df515edf6cdfd624f826ceceec5194a99b7a110"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_school_bus_wuxi.json",
+    "sha256": "065879780da006680d29582c1ead86cb64a5ad9bb5f4d4ebe9a212a31b53da8a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_straight.json",
+    "sha256": "4d8cdd88d4917926e6b4f240f009308391b828b452ad9c94e33a8e965cd8dd07"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_straight_left_turn.json",
+    "sha256": "e9d76db8f7568682acbf951847b228f2a3b780046a9b2661c3b1be17cefb0a0d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_straight_right_turn.json",
+    "sha256": "13b914ce9aeaf12b35fcbe067e989da2bb5f89769f2741745b93a654528ed854"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_turn_around.json",
+    "sha256": "548b0d8b28f63127f63051bc0ef0dad467868bff2695839bbb17017c355152ee"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_yield_to_oncoming_traffic.json",
+    "sha256": "236865d6d0248066e5235ce0bf39779c47399e76b68f2ded726e40123e1f7b3c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_zebra_crossing.json",
+    "sha256": "d34cf848e07d12ba0310de6510acc26b919f0f95edad735f19ae69ecbf8e1b8c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_indication_zebra_crossing_fluorescence.json",
+    "sha256": "fca84532720f89fc4a5a2387303563cc3ed14b8c50f15470456152aa15f93b1d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_min_speed_limit_005.json",
+    "sha256": "2fac696fa6d2a67a466ae02c7ad5af88fe0da0f57e41f2140f60a1f0bac1de1b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_min_speed_limit_010.json",
+    "sha256": "29c2bd8fa836e918893d93893a4252655f9f99f525d97c19afacda65b730e2c0"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_min_speed_limit_020.json",
+    "sha256": "86ce1498c595c570e3c28ebec41e74aca8f4646227a9d9c91960d35854083dce"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_min_speed_limit_030.json",
+    "sha256": "3149e752bc0e0819d03719794a556b939f3f0b8e22ef0bc37fe7314a831ada7d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_min_speed_limit_040.json",
+    "sha256": "d57052a9c765feca4cd7685af17456f69cf5f0a60762c16d18e7b7e9a6d99957"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_min_speed_limit_050.json",
+    "sha256": "1ba92b133f44eb237c5f5408c9f7a23652e6f315f16441555f903b8ae230120b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_min_speed_limit_060.json",
+    "sha256": "5ec1f1f10f113d4a5ff021be8978a8737079c752ddf2e818fb338cf27b95700c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_min_speed_limit_070.json",
+    "sha256": "b434f2c3cfceb3977c57e006ae06d679d37c2652725d73253dfd840de9434c65"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_min_speed_limit_080.json",
+    "sha256": "dda7d3a895e194827f023b431ba2fb48379b0c8523a5c53cbb0f221a60ec757b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_min_speed_limit_090.json",
+    "sha256": "a95ad746f1b6f7a6ad01ba4479a78173d56f01d29c19c6b9be05a2c95e101685"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_min_speed_limit_100.json",
+    "sha256": "90b726af6e8e0a59d19e3fd870afdb7c26a1718bd09331e8f5f107dfca600782"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_all.json",
+    "sha256": "c4caeab30354346a239cd5955d3c8ea7ded638b17646caa48567bd2b80115c50"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_animal_drawn_cart.json",
+    "sha256": "6f2e660031bb2653ca66cd8b145d8ea7b0c56de905ec7bfe4678f5ede6dc4683"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_electric_vehicle.json",
+    "sha256": "c0869562430a71f20f93a698929024813c33a310f710e4b453aeecc61d680609"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_entry.json",
+    "sha256": "d79eda79cb91776598bf88d55620ef7b9b0034466afbbf7757423f7ecd8654d8"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_hazardous_materials_transport_vehicle.json",
+    "sha256": "a6920bf2b3cada067b468b570bcbc0e23276bcd0672d4cf1710c6f65209e109d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_honk_horn.json",
+    "sha256": "b651d86b2dab40fa61b58d8bf14e0474b3415c70b845f66f1dc5a68cb9fac433"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_human_powered_cargo_tricycle.json",
+    "sha256": "b59accd8267dee48116083e781f21b5f48dc202890e25456582bff62c0c5bd95"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_human_powered_passenger_tricycle.json",
+    "sha256": "52af563b1913eed0b176b3b38d78ab96f2461e19baf641c8f402de52b967a76a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_large_bus.json",
+    "sha256": "56c7aae8db6fe9ea175d092d221b5f9a057132d7f592b771c2ea6be03d6c7361"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_left_right_turn.json",
+    "sha256": "af233382d39d4d9f27a3c8800418e0ba30fdbb9079936abd5515b076ba5661bf"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_left_turn.json",
+    "sha256": "1958d228d185c2abe96ab9804757f8c82f1c1ff728509cb859fd243e065b1c5f"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_motor_vehicles.json",
+    "sha256": "af6cfe76d52dbf7b79bb8e9fee08b41722ed36607176ae7e40f53f609537afcc"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_motorcycle.json",
+    "sha256": "b9eb513c04d9e0c308d3b9c9d618e64edf0bdc9a8a061c1497a6d146823e87ba"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_non_motor_vehicles.json",
+    "sha256": "0724037c926fcc8872844f7763c5dcaad06eeb278a3462d46af90d19082771f6"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_overtake.json",
+    "sha256": "6f45a1b4387e9b89e24379d34e89927d41c6495bcc66748800b2729bf60ace36"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_parking.json",
+    "sha256": "20041b7a2b65a11d8e1c830c8f711d4aea5e32641dc84b799d6e36bf09a91a6b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_parking_long_time.json",
+    "sha256": "6f0fc24cda03ba72a8441c98db3e4da9ac2fff68322f2f0302d43475a00bc987"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_pedestrian.json",
+    "sha256": "f8899404a17c1abee739f34a9295fabd42ef635651aaf7dc17c8539cc7abbc5e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_rickshaw.json",
+    "sha256": "074c003ec0a9a5f2a6e27af1d67453b7c82ad6abebef45fd003207f620f3b30b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_right_turn.json",
+    "sha256": "621fa8fa12f8fb499825879f3fb779ad4caf49e3f7d2601ea8b2f996489611e3"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_single_left_turn_around.json",
+    "sha256": "28c9282606c7c5bf76bf0d36696e41013c67c3be3a425ba286b2459c5ce89daa"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_small_passenger_car.json",
+    "sha256": "4a86c1d8c21ffea0da4ebd3eee6b5e2f24f4bdb1b486f9543ce28870c421f618"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_straight.json",
+    "sha256": "208e6f8d2d98c28417240b9b6246118810aa799a2fc05332bc3598667738092e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_straight_left_turn.json",
+    "sha256": "87a5bcf2eeecacda9e60d3172a18049f2b49eaf84032e89430924304a05c6c6b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_straight_right_turn.json",
+    "sha256": "47ae280edb15c5967555b90430b7f644aa3d9456a54c3149968ae7dc132edafd"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_three_wheeled_vehicle.json",
+    "sha256": "eaef4ce80b668015ed632a763896a0cfc4b4e769460c9f3661c6cb3b8d0620f0"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_tractor.json",
+    "sha256": "98cb4699b2f6bf0453e3b323484e0c875dbf281198c532c0059ebfc3b6cb7433"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_trailer.json",
+    "sha256": "c490e185584248f79c695ce768d425b9f8aa71e450f45098b0a10478d8dfeaef"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_tricycle.json",
+    "sha256": "43997b7e55a4c6cf7cfe26d9438c66f45fbb636334b1b79e6b2bfa8eae829bc9"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_no_truck.json",
+    "sha256": "56c0ffe6e800096e40143331d60d3a12f3abf419624cc714df2962751e571057"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_port_check.json",
+    "sha256": "8e792c6ce3852866b83d56584b394e24a5ff8192beb8c4e179db9e066d83f8b5"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_speed_limit_005.json",
+    "sha256": "18dfad1e264bb02592249532dbde85716347128eac9af8654b3d2cac159830e5"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_speed_limit_010.json",
+    "sha256": "b78f04611b7912f3db7111298bdeee28f389fbf02f7fe01a5b2de15dec859445"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_speed_limit_020.json",
+    "sha256": "d408af7a3c100953dcffb668e12bfc3205ad6bb07c6a2f516dd2534817638200"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_speed_limit_030.json",
+    "sha256": "8d5f920ca29eed9bfa9985416d8b62e0b0d830e169579f30c1ccdf9bbf58f355"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_speed_limit_040.json",
+    "sha256": "6074e6495c5a03fec20bf062aceb0a847bb3c2381982224b2b2a82cad1b2a072"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_speed_limit_050.json",
+    "sha256": "c91b8ca52bf4c58423632868406915d3dc7df1de651fcc3beddb86949100de3b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_speed_limit_060.json",
+    "sha256": "2c4c357021c6af42e9ade0499dc16a3c3b236192f618b638cc62c50ab59213ad"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_speed_limit_070.json",
+    "sha256": "11d024959b5616dd8389dd04f1d17592f8e29658784f6cb449c24f41e93e83ea"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_speed_limit_080.json",
+    "sha256": "32961671d7c9057d9c9ce8df618b34117bd7787bfe398a45b351932c45119709"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_speed_limit_090.json",
+    "sha256": "c89df2a32ed554fddcad820d62c3ffb4463b6e522620e582cd5d0d754757d17f"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_speed_limit_100.json",
+    "sha256": "6b9dc4e049f9e66fb225e1208b3e613eca021a65be1bfa1d8f9b22c363154130"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_speed_limit_110.json",
+    "sha256": "6a1526ab7db6c0cd4b4ad89bc552513fe955ad3dd6c4f190ac23242d6e4043d3"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_speed_limit_120.json",
+    "sha256": "62f6b542a508fdc72c6f42c228e5acdb48b5760322e8e2e32684a0140beaa986"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_stop.json",
+    "sha256": "5d535601de6cc21467078bb20be0f91e6669522d2cedaab5ae7ed144465e3ecf"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_accident.json",
+    "sha256": "c3e1b873efb1685b020ab224fb5f26657d6b3635f41431e0cde791d50670ef1c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_accident_prone_road.json",
+    "sha256": "fbce051f505e2d554e7f98d1a79646e64af36bdd4fcbd70482dd72a837edaffb"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_camel_back_bridge.json",
+    "sha256": "093754c24a560fbf882f3f028ae2405ccd09e63abeb1879dde99d3e38f3349b9"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_children.json",
+    "sha256": "2de100265242efc9f5680754f58e5172208736764f160c4a6c4fceb6459d68f5"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_children_fluorescence.json",
+    "sha256": "e02400af58130da2992dfb54bf7d611767185c63fa73ea2b8bdf62152d31c01b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_confluence_left.json",
+    "sha256": "dc194f1266ee212c90aa6aeadac042ce5a2e6bbe1a1a1f771a2563c685e53e75"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_confluence_right.json",
+    "sha256": "609eeee4ca9de383a73441c5b599de073687b3f4cac84938e5bcbed9ba0dc31c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_construction.json",
+    "sha256": "35663385f8602c6e16cbad0b3fe8a8f909e102485f758e70bb85e1b81a8f3269"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_continuous_downhill.json",
+    "sha256": "5a7481908a2f0088f6c728d5aa1cc54568de8f01d350fecbe731047b0705a47a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_continuous_winding_roads_1.json",
+    "sha256": "86b26c4ca66f1740f1adba68d256e5d7fc44152e10c9025355adc73c7368bcf4"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_continuous_winding_roads_2.json",
+    "sha256": "a443c1a7425f4aac2f343519ef5d377c1f730e18c898520e3cceae9b1b48c334"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_crossing_1.json",
+    "sha256": "ac6649797c5bd799453f8bc1a6f7ba009397a57af1251ca2a6c17db4a464fea7"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_crossing_10.json",
+    "sha256": "c4efa8f2c33242e14c03fe32b0838caffde2b26afaca7390010096ae69f9d7bd"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_crossing_11.json",
+    "sha256": "896829ea1547fd1c10f0a05593586df00b08a72951b6f94cc0479196cd386139"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_crossing_2.json",
+    "sha256": "9a73f1fbd37f452ab3e7416f7c60a6a303a8e7b4942236207485d6b1a3ef8de2"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_crossing_3.json",
+    "sha256": "f19e4b19fd8fd3124ecb3b31d9194f6ba6ec16d98a6bbd2ecd496740be89be8a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_crossing_4.json",
+    "sha256": "f4ecbd4fa27a1e11f7071228735755a71a083ec910b10d50ee847c31eba1cf64"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_crossing_5.json",
+    "sha256": "ab76ca7c7c58e3325f25d32d7e00d1c3f0387da9b0490022dafc961bbbd6dd1e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_crossing_6.json",
+    "sha256": "30767d9897826844331f661a90931d857f4c39a160d56bc34613109fcd749b28"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_crossing_7.json",
+    "sha256": "a13cbde50e976845e2e99109ed1a25840db24abf357c9c18d3c6888703b5b1ef"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_crossing_8.json",
+    "sha256": "0b68d1f9c2bd1772f78416e887453d7ef6a1710a9fdeca078e0ffa109c6fd540"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_crossing_9.json",
+    "sha256": "3dca84b4b415e416a91a6a48808f59f50b7e47a753ba9a49dc1675a06e320d85"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_crosswind.json",
+    "sha256": "cdf39f3575243d659442eb710b06397a85501e2ca3e9669a126d698d52dcfaba"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_dangerous.json",
+    "sha256": "fdfd9204f928c6a0a2d58356b3d2dcd8f8779041495495848f3445f41fe8b2b1"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_detour_double.json",
+    "sha256": "e5d195d47066507a5d36b90569532a4cee295795ed258e9195dd7a6de86cb1c2"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_detour_left.json",
+    "sha256": "6d735692f249e9c3f551c3f2471013eec942f2ac00592c0288f06e46256284b1"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_detour_right.json",
+    "sha256": "d8752011ccb26a7cebefefd2fd62959e5420bd11095d4c809bdc963a94b5c461"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_disabled.json",
+    "sha256": "384d8efada4bd3565d312e05818a8398947661d1f8306ff06b0e2a54b97385da"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_disabled_fluorescence.json",
+    "sha256": "70f516f89e6665f36223724713fc8f8b4cebd26cb9860193bede42531cac8f14"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_distance_between_vehicles.json",
+    "sha256": "9f798473b71a74f0a0f417c6136849a65266c127b8e4f662fe082b4b45ce996c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_electric_vehicle.json",
+    "sha256": "01ed82416c751f6878627f7daedc28d32120064ef62b3bc88f4a82068c0bc7d3"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_embankment_road_left.json",
+    "sha256": "2497b1ace4995d10c189322a2ad15b3350153bcd3e0a5e6c0dfe3ddc3e6170ab"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_embankment_road_right.json",
+    "sha256": "50659f7d86193d9b7e0f024fd91ae419e726e20cbbea3b26ece82f10f1b2a598"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_emergency_lane_1.json",
+    "sha256": "d98c4fbc50b81428c1b851fb45c91bb83ada0897ea18a9e5d5c9facd528f7d36"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_emergency_lane_2.json",
+    "sha256": "8a79b110e2a28f650b4b9ab864223783f11e4c7380ee27a306109b81b5739a51"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_falling_rocks_left.json",
+    "sha256": "6e5ee3fb2464bdd7de02cc3b8047e0561be856c4d9adf46389390ad6060d1ac2"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_falling_rocks_right.json",
+    "sha256": "7a4b216615d6095ff48825b077ea868129d20b79b6cb393502478f2f6a4b1b1b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_less_3_to_2.json",
+    "sha256": "9f4d817271b208d0d51cd68ffa6a330a94732d800cfa1afe22ae7fc8a54e2659"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_less_4_to_3.json",
+    "sha256": "8ed13562188502c233bb29ddd3fdc3aeb785bd24c9891ecf360426cc95cd373f"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_linear_guidance_marker_1.json",
+    "sha256": "47e5f9c0c1b1aca7d06638a45224a9f9096e795ff4a6c3ee7c77fb0c0e06a7cd"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_linear_guidance_marker_2.json",
+    "sha256": "65e19a1186b4bd1e4468886de637435309414786114a26086fdb278afc216c04"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_linear_guidance_marker_3.json",
+    "sha256": "769ad92bd82ac93e81face41ad9928a2af41e4e97609e158565abe45cf06c8e5"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_linear_guidance_marker_4.json",
+    "sha256": "82bfa447d8010f64e44f8f56580746f38bc96d4c40e8328c3227ad5356c740bb"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_linear_guidance_marker_5.json",
+    "sha256": "e87f076ec52a23866896a8eca4866fd34924e9d0103732f9fc459409ead6db9f"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_linear_guidance_marker_6.json",
+    "sha256": "f7d4aff265e4d1bd75e1201be359c12f1d1aab760bdccff9da38dcf8563e34e2"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_linear_guidance_marker_7.json",
+    "sha256": "47bd31cd9b3e600cd9a8beb330c4d8162e11f102c063d265c490e785925c8eff"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_linear_guidance_marker_8.json",
+    "sha256": "0766949916bf2e3e14610071729c1ad0fe25e126363a709b67cc83916be30924"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_linear_guidance_marker_9.json",
+    "sha256": "1ce016ff2d070e5f3335e73c6bf9d0ed52bfcbfa9bc66c0802fabee183e3fca4"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_livestock.json",
+    "sha256": "008f84f1a03ac8583c511e412bbc8e61539f632346c265fd48b06a615691dfa1"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_narrow_bridge.json",
+    "sha256": "3e27581652ccdbb573e8bd4f1462e7a37a67b1c0a7b3a8db64dc647bf2ea0cfb"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_narrow_road_double.json",
+    "sha256": "c5f77ab55bf14b345c7245697b1a68d57354e87e71f8569eb1b80f198dc861bb"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_narrow_road_left.json",
+    "sha256": "66bd72f9f4ff327256d3f6d5cd83be45314b7cafd238ed6db5a271c9b1573b6c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_narrow_road_right.json",
+    "sha256": "11b467f120ccd761d216c11021d1175a0d8363de77892496cf4cfdb19aaf1e78"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_non_motor_vehicles.json",
+    "sha256": "fe86cbfd4aa06a9433f8034f4cde2edb0bf97401e7983d24ba204fc0ac6a978c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_perilous_road_along_the_mountain_left.json",
+    "sha256": "cf02db37c1c838f4bdb23c0a34e37f90b9d27b1144658c382c7556502044ff07"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_perilous_road_along_the_mountain_right.json",
+    "sha256": "2ddff6143ea39be564103080b632385b1e16a9c84ec8a0b659d775d90e8a38f3"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_reverse_detour_1.json",
+    "sha256": "f7631c355807909d837564ea7a9cf9ffcbcfee783c8cde6a52c147431f06fd26"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_reverse_detour_2.json",
+    "sha256": "7c8e6f6931c5708cefb9ad93e4162022224daa226415087faba6b4796b0f7cf6"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_road_icy.json",
+    "sha256": "3d2fa41c7060f044b9bb28428415866a57c45bb96ada54c640dad533b3be937c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_road_uneven.json",
+    "sha256": "18b660c6a558dac4bc2e51854425d273bf55b69888c0ad2fd8e300efab3dc4ef"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_road_wet.json",
+    "sha256": "5892d52b632a4662f9c6edab87ac6867f795ec7082584619e6b3bcd0d9cbda81"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_sharp_turn_1.json",
+    "sha256": "8c4f0ecd9a8785b4e1e03aa1c447149b570bf4b3ff750b9bf97a7118c05ce9fe"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_sharp_turn_2.json",
+    "sha256": "652a4f4e7bf7cc943e353108a000ed31030cc5d4c5aa56afb8f586e89881f5a6"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_slippery.json",
+    "sha256": "580fb5555c558940cb17b0954bf220bcc5748e2dd805a44f5b80229b906a1e56"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_someone_guarding_the_railway_crossing.json",
+    "sha256": "0dc782d2c5c8fe20761dbcf42ea25c4e78ca9ec8ad9e94204335f537f9e5d329"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_speed_bump.json",
+    "sha256": "06881c1dbb958c0ebbff8ea88ac367634a6f3ab1788a4837f5b325362ca44cd3"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_steep_slope_down.json",
+    "sha256": "3acad93ca72bf5e548df7408429f303ac21d6428287dd0d92aac92255f9d6439"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_steep_slope_up.json",
+    "sha256": "b5ee91039ec37d9cd054a646229b1585bcad47ecdef4b47822c572e9b2673fa6"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_tidal_lane.json",
+    "sha256": "3530b121f435e2e3c804a2ab687ec5333b0e036c35034cb426db9e8ecd7a3a53"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_traffic_lights.json",
+    "sha256": "c4579f0bccdede73ddaccb05c1b28a74ac1c58703d6d1f926e741c61dd067771"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_tunnel.json",
+    "sha256": "0139c3dda1e102ebf519b0b4a6a28fe47470afcb0335b521878ac51f0ef542b6"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_two_way_traffic.json",
+    "sha256": "ff2864ec2f5a04ea63232657450db4138b644902fc98687ca864381235f7c801"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_unmanned_guarding_the_railway_crossing.json",
+    "sha256": "582f2e3737a4df79b1f29cb7c85492ff99ed07bfd295d479007353902549a9a0"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_vehicles_queued_ahead.json",
+    "sha256": "8366857f0cbb1e8b754a9726724ecea3cbb1a34c03cc3c5330640e321f247345"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_village.json",
+    "sha256": "37c247872f94a85e323ed7e3e1c6712ad99a58b900df5f0be7583ae734ad00a6"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_weather_foggy.json",
+    "sha256": "1008598011ce5c93be78d81353645443ce71a016e1a51ceac9465ce4e75b9ff2"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_weather_rainy_snowy.json",
+    "sha256": "ff6bdffcaa0032f9313e1f07b94ebc94af41a2d1884569989174b2858def1fed"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_weather_thunder.json",
+    "sha256": "b870373a19e985ac90f336b9d201a30cbdbca2e1ac3622e265c90bac42bfee3b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_wildlife.json",
+    "sha256": "9af89eb4bffd30a00fcb0d99bf2aa31e752a050b6be9e576b4d827513edb29df"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_zebra_crossing.json",
+    "sha256": "5aa5dc9f985429e4478bd713136c37af97719acdfea57ebf3573500685560ca7"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_warning_zebra_crossing_fluorescence.json",
+    "sha256": "905f1a8a69f2b8ae41e1ecbcf6536c684607125bded38fd29585c5c20ec6ffa0"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_weight_limit_10.json",
+    "sha256": "79bb6879d9c001fb3098f880ad4a54b4ebe5abe92854f2442c4511b826be5733"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_weight_limit_20.json",
+    "sha256": "f8d198ac88a65ca7402239ac2837269943574f5fc5c3383569cfc81a43c1d31b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_weight_limit_30.json",
+    "sha256": "c77abdc48a63ef5a3e2aa8366389621ff421f9aa86325cf2eca5822627f37ecc"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_weight_limit_40.json",
+    "sha256": "e9bf8a56bd95e75631a587b00bf9926ed7c4ff36214bf8b74842291b4d31bac9"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_width_limit_20.json",
+    "sha256": "bf622dd4806273bb4be721cd5d6ab42a7825a3c79364f10b502faafd02ded544"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_width_limit_25.json",
+    "sha256": "d1d200f32e087e5845e34b76d8817666e82598f26a98188274eae9d469f9970e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_width_limit_30.json",
+    "sha256": "a49413781b03b7bac533eca4ca305cdaf917c94a0d02921b8eff81709c93104b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_width_limit_35.json",
+    "sha256": "d4e2b3be0455e611af477564c44d9a86ec30e03fe82a0df2affc028d957f0f1b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_width_limit_40.json",
+    "sha256": "102fd00cb9ac99d0f48cf84ae45095354a2da6b6c1c61f3b145ecf38b6bd201d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_width_limit_45.json",
+    "sha256": "0b7d59cec860b35cfbb3b61db7dae767ac52218d3eb55d79b1993a90ac5e742b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_yield.json",
+    "sha256": "11669b480deaa601ab7a6567ae35131dbc8d2143619ea7f3c4ae9ccc85d7be1c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/models/block/sign/normal/sign_yield_to_oncoming_traffic.json",
+    "sha256": "993c631cffdf228fc630319604644b3171e03896d26a6b0fb66e8a56598067cf"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/color/656565.png",
+    "sha256": "50e760ec7b90e6df98b6d3b89d45f239eb4c0fb18b9f11b5dfa46308514e1c34"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/color/e7e7e7.png",
+    "sha256": "4f52d89c6eabfaf17a161768ba75d7decf882e21afe2270f64d4ecd09edeafa8"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/color/ffffff.png",
+    "sha256": "fd61413c7a1e498c09bcd7ee5f2c8ae7e3842a26abde79dbc6598eb59a84a541"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/road_detection_camera.png",
+    "sha256": "ecd423e21e6ef13e8b893dc4640d91199b351b2697808f7d873bcf409dc630e4"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/road_lighting_lamp_on.png",
+    "sha256": "6ddc7ce32aa6a1ef4925b83d99a308b842d48f56daacdb8210489fe41d34b4c9"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/road_pole_text_display.png",
+    "sha256": "6da7d0ad8ad2f6619a52d69387428c301b00794f1df3916d9eb3fd3ce5560949"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/road_radar_speed_detector.png",
+    "sha256": "31a2004f987433afdda6b2b3c30881d8b97b071d1bd9657d4ce29c573e0f3c1b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/road_solar_panel.png",
+    "sha256": "7d7e87d9ef8e56c871b2253465d80423fb39441c6422dfc6258f74c84b94e26b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_alex_weight_limit_10.png",
+    "sha256": "c29b2d6cb67c19f2118a429c1682847107288ca47d6cefaa15256526f8c758de"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_alex_weight_limit_20.png",
+    "sha256": "ed33661bdaa9d6e0b9143aa8fcc9d4238e617394d4529fce8dc2ce7f4d4c3be6"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_alex_weight_limit_30.png",
+    "sha256": "c5da721155c4cee5ed2ed6c0685ba93aecf3489879bb859ffcd630126e49da6c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_charging.png",
+    "sha256": "4f076fe0cc61e47a6e148df39290a76cab189e9cc12c76a816d301b8124fe62c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_check.png",
+    "sha256": "c396504887157a2ec2c896cb748f87a195e1d55a5712c9b52ce0262e467316d7"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_circle.png",
+    "sha256": "56dd25ccf37d5b9fbd36b25f0729920d1708c823f012f8ffc7e74e8c5decb3f6"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_disabled.png",
+    "sha256": "29cde374cf675d61a2e4825325c52fca76e53a837f54f3bc27ef8fe017e54472"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_expressway_arrow_left.png",
+    "sha256": "c9981de95f352adf87a31294bd340c1d2e26702af55d1c67dddea641f9c351bf"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_expressway_entrance_advance_text_1.png",
+    "sha256": "23f805f7a4f4d039a2703b242949b754e87a7c9de19212cd0f6f0805704786bc"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_expressway_exit_background_2.png",
+    "sha256": "a3a6fb4f161333ebc73085a91741bde923dc74e25e939e6ef6991b130f217392"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_expressway_exit_text_1.png",
+    "sha256": "6c3f69615e5ff0586b57d81340da90a127cad5d3e9c86c84c31358e9eb6d6935"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_expressway_geographical_direction_south.png",
+    "sha256": "b26289714e0e941afe63e38e0174d6f5c8811ca8778fabcd05bab595a8efe5f4"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_expressway_naming_number_1.png",
+    "sha256": "3c9848ae91bcab1ae9a40f5d2173f4c4f2b5a65dc8f7ea30338e93c39b9d9fc9"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_expressway_naming_number_2.png",
+    "sha256": "d885a75b4fa35eb20951f59be9aa7f4a5c552402d5e34e5b052f53373e186f91"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_expressway_number_500.png",
+    "sha256": "f0873de98c7fd79dde5ac878216cfe4f6e18c50f2ce599da0b49ea4f96cd4706"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_expressway_right_side_median_strip.png",
+    "sha256": "22bf0952a559e9d56c4061e9b7b8eb7103fc368f53b9401227b120193b5507c7"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_expressway_straight.png",
+    "sha256": "3b4687ccd15b2ee1051bf0dc99b10d8f1793432c482309e92190db0eb650355b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_fluorescence.png",
+    "sha256": "518ad060134c13f18ab42347f8987033bb6c32578f6f06e37e6826aa7dad8719"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_gray.png",
+    "sha256": "9ff0126311730502c368d5edcd6c9c281006b706dded901a5e9dad3c5f10b24d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_detour_1.png",
+    "sha256": "b9a5d3aa5d91cee081ef06dbf9eea22163b54509f47c628e966114bb693c6bf0"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_detour_2.png",
+    "sha256": "a4a98e72a35d94f407e920679d78f56c4f73b63cf8269828c978f35aac2fc83e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_detour_3.png",
+    "sha256": "9d018d348099f56b4ada4ec672e210082f388e460acd528c3d81bdf88ecffd2f"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_distance_to_tunnel_exit_1.png",
+    "sha256": "e2080bd9e0f74345a489d90c923fe6050f0494d0e1c2339035371292de37c8e1"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_distance_to_tunnel_exit_2.png",
+    "sha256": "5d9c78ef435771595e04cc60cbd7a8ab8d4ef9f29e16151aa2f8ab20d3a91f2c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_distance_to_tunnel_exit_3.png",
+    "sha256": "0e30640bd3d955b3a6e14cac9a2123a54efc40433de8335f34669468bd3b3830"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_distance_to_tunnel_exit_4.png",
+    "sha256": "0fc8ac1a1525d9588ff714723256bea8ed44da274fe34a920e1a129fff950ee9"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_identification_airport.png",
+    "sha256": "002acd4ebe4d3e32085346a94785b0d449954e868acd9d82d215ac1366081daa"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_identification_ferry_crossing.png",
+    "sha256": "b526f0387effe0f6e2916eb27c6b9411bdee83b49471e1ca559df1c1d5e4e270"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_identification_first_aid_station.png",
+    "sha256": "2cef5b99216048dff2bcf0ef47aeec7586b1adea8d442cc16b7bec1d47e90eb0"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_identification_gas_station.png",
+    "sha256": "8775a9390ca2a92ab200c36bb8527cc465e3c117d41cc6df7f5b0449dbfd6b48"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_identification_metro.png",
+    "sha256": "3471698eabc5acac3c3420fc5f2745ed211479bbeb7d8392ac585e1b8952801f"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_impassable_road.png",
+    "sha256": "20ad026a4b9d4842ebd23ef3e6dc1288bfc4ac91d81063f2d83e473947da5bbf"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_intersection_advance_warning_1.png",
+    "sha256": "0332bd9cec445bf1c41720fe9e8ced2b13dc4c8c710b38a1284a480039aad272"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_intersection_advance_warning_1_wuhan_left.png",
+    "sha256": "c6be4a22496750cfe590cd47f27a9fe31404e943d7c9bbb1025ab5b9d21c24a0"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_intersection_advance_warning_1_wuhan_straight.png",
+    "sha256": "689810a63718e29e240212cfea4fc559c72053687bd009a4bcc79d94bb4c2e68"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_intersection_advance_warning_3.png",
+    "sha256": "90d335c1be7ec22e59f07e7febe76da8d427f9a5173e9b40bd3e2e668505f916"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_intersection_advance_warning_4.png",
+    "sha256": "682e788f2930752a3392d422e5bbddeee8d4ac7ecec373b4db4ba62e685a8e8d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_intersection_advance_warning_5.png",
+    "sha256": "0a003d784b9bc7b983aea93d06f521f0a4bb482b78360b04200c54ce88b2333c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_intersection_warning_2.png",
+    "sha256": "0a1720edd44a18d40f545cb21c6d602c9e376d5a678076c6e46f815a86d7ceae"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_intersection_warning_3.png",
+    "sha256": "fd36059392aff2d27090c9599f5aff4c7c3d36eda43751cc712a7a7235dc7349"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_lane_indicator_1.png",
+    "sha256": "2cea46d064184f0fdded89a322e69aff5e485dd8349c6ff7844100e94b149c1e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_roadside_facility_disabled.png",
+    "sha256": "f4fafe6f43173be6c047c292a16868dff78ffd6d85ff6f4cac74ef6e97eedaa0"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_roadside_facility_emergency_escape_facilities.png",
+    "sha256": "011874b230dfa7e4d43e4c9165f3bd90465a71766ebd2f94816a14464e36997b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_roadside_facility_harbor_style_emergency_parking_lane.png",
+    "sha256": "f25910fd7bcf07dbe5a66c8b3e0b06259207ac68336a305d69647cd2b9739c3c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_roadside_facility_overload_checkpoint_1.png",
+    "sha256": "0997edbf154b6f3bceaf912db19fbbe227431b40c34c697d04107c71adf656c9"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_roadside_facility_overload_checkpoint_2.png",
+    "sha256": "ca9cf5f59587d772e6f82abfed43a6a811483ec688f72f23e6e891b61c38463c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_roadside_facility_parking.png",
+    "sha256": "3f67353560e9940d49a8798ce746a72ddfdfcf16ec0aec5f36e689d808f3683a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_roadside_facility_parking_spot.png",
+    "sha256": "63340ca3dec6357424113e14b92ae0d828865fc322c619bd5a64f00e315386a6"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_roadside_facility_pedestrian_overpass.png",
+    "sha256": "e673cd48dba7de5a36cf32b62d85841dd17836906433dc6b42141fb00664581b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_roadside_facility_pedestrian_underpass.png",
+    "sha256": "37f40b1b8ed283e460f3f115b617f983ef0284107b085c302c5054b16752779a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_roadside_facility_service_station.png",
+    "sha256": "95c22050f9f46c8f425ea158a912049d5cf240c23c9584078e3ec76367b2ee67"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_roadside_facility_viewing_platform_1.png",
+    "sha256": "3676ff396f9270be74354dcc9c237ec3fee4d169b8038599c0d573b4326f3f75"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_roadside_facility_viewing_platform_2.png",
+    "sha256": "358dae7bed5d816a41563439abfba2f8fe300c873f244c00081c487854da1227"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_roadside_facility_wrong_lane.png",
+    "sha256": "ae3f072683df145cf90f5df644c88814bbb553c2ff5fa34103bd2b70bb54b28e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_guide_south.png",
+    "sha256": "f264eea39bbf2627509e880f56f18a9eb749a49d81d3bd49e01f7f9626c9a19d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_height_limit_20.png",
+    "sha256": "580643bdefbb13077bbaa38edbc42e975bd08dbf735cc5e4a2ad83e450aa31dd"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_height_limit_25.png",
+    "sha256": "4f5102ea61f293bd2a303e3e2d41084f2d30979de67e3856439e251777771605"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_height_limit_30.png",
+    "sha256": "7ce3deee9b716d2e83361015c9c2b4d2ac1007bd9e3785ec8d78183566863703"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_height_limit_35.png",
+    "sha256": "0fd12c8a6be189c90c642939782c21223ded2b55d0a6c39d395ae4340791b5c8"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_height_limit_40.png",
+    "sha256": "14c17d31a4e7969a9cbb026d68d484d7ff69995760978572d6116e25bc2a4a32"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_height_limit_45.png",
+    "sha256": "c7b5243f2ab38035fe1bcc5b0d2817ba3781a55d4f4049adac6532755a470a1a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_drive_right.png",
+    "sha256": "3c0d25dec9137b802b715e5a4b5d99ed9cae2f5a38a4065dadf14783c4aec3f7"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_electric_vehicle.png",
+    "sha256": "c93d13fd1e886c87c7a6e463caeea89b366023acb4cac17ca75c63abb0ef5585"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_headlights.png",
+    "sha256": "aa2a20ea3afec563b4435e215945c9d59979aea6a7a366e5487edaebad9ba37f"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_honk_horn.png",
+    "sha256": "4ec1c969ed6c2e60033cf9f0f8e1acd5a41721d5f7bd9e21c5f4a39ef9a2b412"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_hov.png",
+    "sha256": "838477c9abb7ef0b5e9af6f07f6e14ab7a8778b78bb80f31b54322e291cf54b5"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_large_bus.png",
+    "sha256": "82d9d4ec8408792a48829b2abd81db44e880a18a2ecf17d6e79bc13ddf82bc30"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_large_bus_brt.png",
+    "sha256": "14748db07fb3a4a159333c46040967dae247903b1283ad06ddee1efcaf572e92"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_large_bus_text.png",
+    "sha256": "199a4c165296cf2732d5ba262e68af1ed32fc21768ebad41019d88830623cdc1"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_left_right_turn.png",
+    "sha256": "ed386b353c257f8685b67e3e2a3c28c3c36a7c938b50ba4472a986a462fe827d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_left_side_median_strip.png",
+    "sha256": "923c9864297d41ffcef1a5f39c9086d0bd22eddfaed1656a03731f7960aca557"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_left_turn.png",
+    "sha256": "681faa2b8e7504b7e742092025973d0ac43d79b1ebaf89ef9374d2bf50acadfc"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_left_turn_around.png",
+    "sha256": "6723b766231fb1308a47ea93ceab6579d340a22513bf2ee376088d5422e734cd"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_motor_vehicles.png",
+    "sha256": "e400d150f4418b563383370d30f0fe07b95777bc2542068e227d29cb5bf6fa5b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_non_motor_vehicles.png",
+    "sha256": "2c557b89e40f406ff4485f16093afc767a14e182cbc7bb40a1b57f67bbd87007"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_one_way_street.png",
+    "sha256": "7a2633eea67b5d9f562f611beb63a589da7f463d6e128bbced89cb41159bb3b6"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_parking_1.png",
+    "sha256": "c3a2d5a59d061eceb89edf4457b8e1b4c0ba8323cbcb65e76b372b6cb0868202"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_parking_2.png",
+    "sha256": "075df46eaaa0f041ae82f3f2f33fa6f5fbcfa575935464662b4f7697e6478dc5"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_parking_3.png",
+    "sha256": "883e086804c9e417938a321ca07685ed6e19a62832d170baac88812dd0d34176"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_parking_4.png",
+    "sha256": "f71c7f6410ef8005503cd79e02b89eea3316516bbdc8c2c5ddc4a2946abe423c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_parking_bus.png",
+    "sha256": "0157bc9b1bfefffbb9db39c4e0e59f72d314368f76e7c9aa4f5693e729a5447d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_parking_charging.png",
+    "sha256": "b03d12a2fa27dfee5dc8f05c800f2df6ffcdc9338d1f898f97a7386b7135166a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_parking_company.png",
+    "sha256": "34dda8fd36abc69dc2b25728397ad6ca64f68f97af8e4258aad7096b88a75328"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_parking_disabled.png",
+    "sha256": "0b0ef5416ad730dd1cfb181effdb2302c8fc51e40ce752cd199b452e5f935785"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_parking_non_motor_vehicles.png",
+    "sha256": "7710ce4fb926788f148feb62c5a36d967fd5648d1505f2b3826275ca0329aaae"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_parking_school_bus.png",
+    "sha256": "c7521916e6d7e4ec9b6d6eed01161698dad6e07758791fc011283c1a922fc790"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_parking_taxi.png",
+    "sha256": "e03b9dc8f8635ad2f66c644fd001a330b6abc8a904f31dbe663c3491269f4102"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_paved_shoulder_1.png",
+    "sha256": "3529420f8f2ca5aaf0de26cb971ded41ba9a3764c9c89466a8b9ca60e4d0be00"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_paved_shoulder_2.png",
+    "sha256": "09c44e2f3a4361b5eac2c94382a7dfdc22be08805c62c7295959c464a7861600"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_paved_shoulder_3.png",
+    "sha256": "62e2905aca92545ec2e8a81e679697693f9708eac61a477649faaedaa9c945be"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_pedestrian.png",
+    "sha256": "acc8bece891985aa1ed3a498fe4ac3649fbd93bae341d3d6992bc17af3c4bb33"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_promotion_non_motor_vehicles.png",
+    "sha256": "44baabe1aab6ea92dd6bc9e941ca063a804fd65e0d9078d9e8f0337893b6358f"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_right_side_median_strip.png",
+    "sha256": "6b304df1f72f607fe229ee8afcaf5a9e14cbe87a99933340e04b3c39f547b22e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_right_turn.png",
+    "sha256": "b89ec7b885cd0dcc22312e5c4ef913b794726cb943d1d4a52ed6f69dbca4ae93"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_roundabout.png",
+    "sha256": "e95c32c36188c66d3506c82c85a22e0591516c7edc9e260d99bd26966fda1427"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_school_bus_wuxi.png",
+    "sha256": "b4972c2092c2a2d6d9979ef627963dbf269978c1ec8ea799bb948ed7bebf928a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_single_left_turn_around.png",
+    "sha256": "a81acf7fd9a5cb9365528d321927387deb8fa104ad25b7c6764c3940405f23d9"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_small_passenger_car.png",
+    "sha256": "d1ef25ee58c74648b43df1707b6eb6b0ece8072c84e5911931ce9f3ed619d194"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_straight.png",
+    "sha256": "c693558351e4e3c4069debaad0891ad09957545f00c86165562386ae3c5a51f3"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_straight_inverted.png",
+    "sha256": "0279c8454c6e523647846606e4a6fd82fb76b5ebdc67ad1a865b80596f6c119d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_straight_left_turn.png",
+    "sha256": "6b20e43944503b35e54e13ebfebaaaea0229503c66bd2a3d57fd755e94d39869"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_straight_right_turn.png",
+    "sha256": "9655bf1a39092c892cf41fd3b612e761392054172278cba019dafff63759c1bd"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_tram.png",
+    "sha256": "e32ee8ebb1efd12d08b7d8ad0928fc4442f42f1537cd41b5b96c26d9ee0466a0"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_yield_to_oncoming_traffic.png",
+    "sha256": "323e0e691f0b09791ca55114e4d8b5c48e1e0dfe52cc58e4f3b1937217aded2a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_indication_zebra_crossing.png",
+    "sha256": "88dea36763e9a1f44f8274909279011c0f4f22798e7a931a1ab646fa61802b4e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_lane.png",
+    "sha256": "2c2b375d5b1c3ef4dc7ab53a58ba6a4ed79c010f8033c1195f67c29e3b718ba0"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_lane_four.png",
+    "sha256": "7c48f4aa203ad20a2158c40947ae14b5f330ebfe1ebfa03f53791a3b16f77ffc"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_min_speed_limit_005.png",
+    "sha256": "70541383aa27965e3be7181bdee16e12c2775d703e913b7c485f492298b5480d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_min_speed_limit_010.png",
+    "sha256": "63d75403ceea679c41985dd1fadedc137562b3084c1057fdf4298311a3480735"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_min_speed_limit_020.png",
+    "sha256": "1e09656c6e62117301fe3687722ea491653f867016b9a67308eb2539ae92b6cd"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_min_speed_limit_030.png",
+    "sha256": "2bd078f1af7438f048c3826991d05f974baf15d52b900d04d912223921673b8f"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_min_speed_limit_040.png",
+    "sha256": "d051cb34e2f3deaa8ece76dfff16a476275601e5d3488cc1cf85974eee4cf9f4"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_min_speed_limit_050.png",
+    "sha256": "6414726f4def7f55bdce6af9e73936f8583fbed8aa10d13f7be4aaf57a387d5a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_min_speed_limit_060.png",
+    "sha256": "763c9da1926794a4cba3b969d8852485aed02d7c26dda1feac4b0f357bcce15c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_min_speed_limit_070.png",
+    "sha256": "1ae594714df883198fec7f612b3570c71fca4840920639a9df05ccffc61564df"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_min_speed_limit_080.png",
+    "sha256": "81480d20add9f48f7e7c568974adfa61426ff44d3f030d467b733fe64718dc26"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_min_speed_limit_090.png",
+    "sha256": "564d4a92e1617c9b08bccd83f2598c32475719f5542855f46bec69e5a01f0aee"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_min_speed_limit_100.png",
+    "sha256": "71ad0a6dbefdc6c21c28460826563848d2dc76649ed59fc1abde675f093b5ac7"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_animal_drawn_cart.png",
+    "sha256": "cc226ad33c9fa382cb237c6ae1a1c77f7473af01373ed23270ca59759e3bf444"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_electric_vehicle.png",
+    "sha256": "fbe063ceb9ceffaff31494f2e194932d8a34ea580697b2c38df99d3d545c6ded"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_entry.png",
+    "sha256": "6141b6f1a6f9ed9901d5e5eda6b8ebe10616cd990a6877c51c5a73613185a890"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_hazardous_materials_transport_vehicle.png",
+    "sha256": "5d7701d1a496a46529db86a149a37c5db9ad217a271e07624c40082a3fe9b2be"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_honk_horn.png",
+    "sha256": "20a725944aa97e9451ce17b04265a96ab39e764ffbafde39f8916282bc803d6d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_human_powered_cargo_tricycle.png",
+    "sha256": "1e6be3d42ccc51d5743e5e257e5ba767ae08d569f1d66e6e06a47a25cbd30496"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_human_powered_passenger_tricycle.png",
+    "sha256": "3c8528de8244f900746fabc9e0aef36d21ee39a7808a843bdf536ef345354f43"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_large_bus.png",
+    "sha256": "de0ca917364642dc908d4253f78ba86980950fe8e2c0679197af37b1feba940f"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_left_right_turn.png",
+    "sha256": "cd6c9206ce4ca7f171b1c317a94f33a00fe3990dcca9f3caad9bfbb2b111bd50"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_left_turn.png",
+    "sha256": "8962ce66ca6f62af9d28aa63c14691ef79712f1db69cc5b0d5a0399762487afd"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_motor_vehicles.png",
+    "sha256": "efade39e61afa73a756db71f9a2630dd878d86b59e71db2443e400dd588ed671"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_motorcycle.png",
+    "sha256": "e41d07e4905c2bf0b9f000a66cfe732739d5be2c30c97e4a23f470fddba24b86"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_non_motor_vehicles.png",
+    "sha256": "3476e68e2678b9bcbb4f5f9179ccb4a53caffa9f062dda56fa6c604131b803f5"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_overtake.png",
+    "sha256": "89052e2b37780a45eda4ae5c2e1f1cec60b2a84c8f8600a1f3fee73cd813572e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_pedestrian.png",
+    "sha256": "fcd5f3eb82b7ebd74946f54ef039e8227620b8b81211f63cc05d51f32473c8a6"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_rickshaw.png",
+    "sha256": "301e714cbd9eaaad6ca662b137fc0fc6979ac820efddaeb2f7a3aae822ece939"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_right_turn.png",
+    "sha256": "9567898ee95c60e8eea9b5e1b9e239b08d590c7fd99b4f74d154e041ddbfb171"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_single_left_turn_around.png",
+    "sha256": "c46cc24fb4af098b3e032ca294c344f620c583ca37b96a38b6dcedc1260ac393"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_small_passenger_car.png",
+    "sha256": "dc5810a5cf97fa392099ac4c4a937da96774a7f42b387dae9b23dc5a23b6fa4b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_straight.png",
+    "sha256": "feab0b49ba30d2425f591d96d0b198dd367c068ff0cb1eb4dd6ed337fb983421"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_straight_left_turn.png",
+    "sha256": "a0779cd4cf85e4f744d1b9dc10de4fd7e0e564d80296c93c19b0883eb752f7a0"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_straight_right_turn.png",
+    "sha256": "2396863a5e580130eaf1fc0a893c2ff31928bcd86b27a877ee2ce2b2d02b30ca"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_three_wheeled_vehicle.png",
+    "sha256": "51a26f8cfd144031c109aa5556ba9dbc73829a80892cdb7e17ae7f9baaa44b7a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_tractor.png",
+    "sha256": "f31663883cc73cb8aece9b76cd4e0fb96142f9ef750ff55c47fd05049428736a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_trailer.png",
+    "sha256": "02af939fb8862499efac60d620e11ada97542682e03897d1e0cc9b6e0f65cfd4"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_tricycle.png",
+    "sha256": "d58481ff6000893ba39fabbacd9411f3fb5389288b5d23d7fce9ca627b56c355"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_no_truck.png",
+    "sha256": "c8fa8a8e6d2eb952f882b28557f491f0e9177865c21b7b676b4f9af938f07330"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_port_check.png",
+    "sha256": "edd0c178f3fee444e15daf792b85549f33cedb7de4450303b4a0b6554d41008a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_red.png",
+    "sha256": "eb14a1712ed5261b939d1068f9ae899a20d86b668f93fc34d628f708b108d991"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_1.png",
+    "sha256": "eea1672cfeedd6e7813607fcb9aa9bcfff2d4acfe49b432acfa55a3f8d57c0ac"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_2.png",
+    "sha256": "4f52d89c6eabfaf17a161768ba75d7decf882e21afe2270f64d4ecd09edeafa8"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_3.png",
+    "sha256": "9864b2362a5f49863e7eee7bed6fe622142613c88b39aa1bf74032d83c6d3048"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_blue_1.png",
+    "sha256": "845b6b02baaed65a2e084f5c71a17d8f1de92a4e60eff8535fe540fc19d09687"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_blue_2.png",
+    "sha256": "da4ad69a7db7ab4afd3797da6dc90c20bed826c36e4e867fb6476357d1b521df"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_blue_3.png",
+    "sha256": "f523fad613cc67334d443fb07f1bda379c2ec45ad69f3b0caf0068175783fe36"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_blue_4.png",
+    "sha256": "f86cbd4f06d525b28d2dfa32a26e1a50416934eadbea0a00d7bb553c27cc0fb7"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_blue_5.png",
+    "sha256": "78e801ecdb43a5ba875f32ebfc303b9195140bb21635ff6c4c7de99ef036bb1d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_blue_6.png",
+    "sha256": "0bb6a043ce07cdb98fdd609b50e6ff386bf775bed9a3bf2af8cc85d5570a0f5d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_gray_1.png",
+    "sha256": "b9ddab34fa1fa8a55bf29b9998a3e31d88b2537692d7ba8cd376a45157c95657"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_green_1.png",
+    "sha256": "0327cc8f43e6878528440798bb57c962edd8e2eeffd6fb7d10872a91481481b0"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_green_2.png",
+    "sha256": "a1a8c985225c1733f7d44ab2ee9151856830fc8d47d588ec870cc98d97fb2c49"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_green_3.png",
+    "sha256": "ceb10945fe5ce24e10fed0082c0ccc0eee91f39b187efafe0c516b35eeb613ce"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_green_4.png",
+    "sha256": "87ff3304657201f9e7d7f606ede659c1cf0931779b4f600a316175c48b7bdbae"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_green_5.png",
+    "sha256": "7eda9af9dd563add620301bd39e0bfaf5174135b1a5be94192ece7a5293cc21d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_orange_1.png",
+    "sha256": "deb6f1c36ae04a5a5e322875260a0f3d1de11a8c9ec1c41d8d88bbcb6f93688b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_purple_1.png",
+    "sha256": "64b80207ec4530ae2e4e67df8c605cd6f58bbcd18b1ac31af200252659730ef7"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_red_1.png",
+    "sha256": "317eed7eecf4810c40a57dbe13b6af58b6e2ec71517d091923763fdca73e2b36"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_red_2.png",
+    "sha256": "1c942fd76329f3d2ffc4f2f2bcdfb94796a1d072806fe72f104bac1e88b40330"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_red_3.png",
+    "sha256": "91aa6709f1a23088a931e12ceb28458efff79625fb465a9f30dc1f04c8576f70"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_red_4.png",
+    "sha256": "0b119572c27ae6c048a8cc8cf64cb18a3ec38192df892b91030501d4816bfacc"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_red_5.png",
+    "sha256": "1bba1f2e55952f91991c4a9e8c7664ae078019d2a319960e89469873170d0e9f"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_white_1.png",
+    "sha256": "878354a15fafdf7ddc0534ba508e5ba1a7552ca9c4ce962e0455fb0e570acb07"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_yellow_1.png",
+    "sha256": "3b0a73e376069102d0a62af3eb8056cc34d89c5c0eaf34909ab751c4c545c0b7"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_yellow_2.png",
+    "sha256": "12e7db00b1e34c4f29f279e1f1167af2805612f93e0b268fbd3ea442b5200434"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_yellow_3.png",
+    "sha256": "46d80518ce0575f4a77e42a46a700101c5cd98642080052c80dc1de765f179c8"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_single_yellow_wuxi_1.png",
+    "sha256": "f551b3024abcaa16cdb1957862e31ec0ece575e24ec12ebbec712dc7c61b989c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_speed_limit_005.png",
+    "sha256": "66c0afe77151498be1863657329ddf575377567f4215684c8b290be39e814e38"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_speed_limit_010.png",
+    "sha256": "96d08a66f0b1fe27b33d777e8121c92ff4a443cb9e709213eac50de31b130a38"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_speed_limit_020.png",
+    "sha256": "97bbb072bd4654e84947cb04ab03443a729f88ee4b3aafc845fb2f18475cd1fc"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_speed_limit_030.png",
+    "sha256": "e99f512507c0c265db0e0acab9687e90d8dd5beb40e9788d5122f8542b494197"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_speed_limit_040.png",
+    "sha256": "50888136494647adce9e38123e94d7de0e5110d16026dc1a256f2cdd26666880"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_speed_limit_050.png",
+    "sha256": "b211b72e094ed4b3947c699e7ecb2dc9150908f7e6c79866572fbe13554967ed"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_speed_limit_060.png",
+    "sha256": "93121933ed68233132819deb8246ac35b3aa9a5b847a9ba13835d3a96383eb9e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_speed_limit_070.png",
+    "sha256": "3865dcd408ad37dad62ea37bff042b982a5875a9742fc2de02a2891db54b21f6"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_speed_limit_080.png",
+    "sha256": "e4f854588d563c78855b0f53d55d7284e034d3b46a7ca202f26de51b97469a71"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_speed_limit_090.png",
+    "sha256": "4b250c026f4c7bdebaadf7685562ace61f5981385b09fb787b828e8aaf471cb1"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_speed_limit_100.png",
+    "sha256": "aa0aa55a46d88e8d4ac9b9ebc884fcdc0745ac66ef006567b80bf33deadbc895"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_speed_limit_110.png",
+    "sha256": "2b4558658bf503f370fe17720e098dec5a15b8959b3efeca11a8f5748c853643"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_speed_limit_120.png",
+    "sha256": "806eaae77539633bcd710d6afadbe9e48ff51c25036a7ee0b4bffa8e79505f42"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_stop.png",
+    "sha256": "0763d7cf62acc1f646ea2f7f256ba8445b0203e4de9e30e4855ab89a59ef4cd8"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_toilet.png",
+    "sha256": "3ac7680c085164e2d3e7f83df51d1a47a9e9fcc5d650191aa66247958a24081f"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_unit_metre.png",
+    "sha256": "692cba60705b22c62c0980ce8a5a1be647eefa555c68be0ce567ad8bbc375c21"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_accident_prone_road.png",
+    "sha256": "07336c52fe3988de080e0c3d3205f1f6be5c9560039c79df957af3fdffb2328f"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_camel_back_bridge.png",
+    "sha256": "693597a748a750b37440b7d119c8d004cab660bacdbfff7a063d4f7354efde3f"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_children.png",
+    "sha256": "93e7f20eda4b8d61b5105de43add8f97d9104269279cf61d3b0d6255dc41e447"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_confluence_left.png",
+    "sha256": "bfe6932583dd5ab2aef4295cf1ac208d6fc3b26d5e99b22ff3a3a83675896c4e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_confluence_right.png",
+    "sha256": "56d776148ffd60a2da9c250e6a3788c9fa980a6f966c91705e4e07833c69252e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_construction.png",
+    "sha256": "5b349ecffb649756358d782ef7e1e10b5b129b35c2110a0624781ffe361f4e4b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_continuous_downhill.png",
+    "sha256": "f9d46831bad8c06aa73002d5ccc547a04b8c5697ed0d2a72ddc1c89871e5f3c8"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_continuous_winding_roads_1.png",
+    "sha256": "c952e3cbf96a2d1564f8066c851e02717512fc8b5f8d21d01d020f7f805e7987"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_continuous_winding_roads_2.png",
+    "sha256": "d9bd4d5607ef1eb3fbe53de3d837b1b5a0bb771d44923ac1297dcb9de88636cd"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_crossing_1.png",
+    "sha256": "475af3acb1ad9b6888dcec3aafd1d86a3571bcd901e6210a7c0d098b6a36f000"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_crossing_10.png",
+    "sha256": "a3206dab4ad2e8532f6cd66e15c4e6de68c5811e6e8c747cc89f37a3f721553d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_crossing_11.png",
+    "sha256": "3d8d1c4935c27a11e9549a8b853223d6df56236d907827c9543e9f1a85d77632"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_crossing_2.png",
+    "sha256": "7de3fcfb24f786c5e571b8323afc7f1655d0c5151d858c56544506233c557c56"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_crossing_3.png",
+    "sha256": "edb10153770724c77c0ec7a74531980ce6b1265c8a734e383fc2ecc0341a2bd5"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_crossing_4.png",
+    "sha256": "853f8e483dd09207233739103041258624a2e29ad72eaae229dab29f36c58157"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_crossing_5.png",
+    "sha256": "5e9b4b1e33eb1f031bc01949a5b5b6e9ecd3720129e59f9e2a6ad6f03fbd5d5f"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_crossing_6.png",
+    "sha256": "2107f953f594a1b5c00d2b51b16500f35c7a1c31313daa3bf13d7adc7c9d1714"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_crossing_7.png",
+    "sha256": "76dc56af63cb5b1bae58321c18e8bf6ee3a7afdb8d1cda2806f2727cc82c8618"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_crossing_8.png",
+    "sha256": "f0cf4ff1433aa9aa638e279c26be6573d482b23829d79ad06dc2aba1ee5abd81"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_crossing_9.png",
+    "sha256": "a5778b98d747d8d1454162f7d5dfa1b1a8c29bb9d0ad10177321038e8e3f39c5"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_crosswind.png",
+    "sha256": "e877e895612a9d27adc6eaf26264b4b26296c622d67c92994e0f8eb452703bf3"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_dangerous.png",
+    "sha256": "e0400dc94bb493ec3d6fdc3e48d31add34d164db7a52a72dfc9c7be7b0343644"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_detour_double.png",
+    "sha256": "fa1b1b200e978bfc6bf6585774ff21efe46bf2bf9a956598a2e3f913bd759684"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_detour_left.png",
+    "sha256": "794e2f76ee0b16742dcc3a63351eee3bf15afa95afca53bb7304757b1131fb44"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_detour_right.png",
+    "sha256": "6b7f7cb0ad7f7f97897a0f31b9281a9f190e8c7ffc6f30dc869a5a0973c5ccbf"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_distance_between_vehicles.png",
+    "sha256": "0267b4ca59096ca1e2aa4b18e599979405f1f0cc13d6be9170110321071bc9c0"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_embankment_road_left.png",
+    "sha256": "784c8f1152f7ebd0e677fbbcc9efa14b7f687f12cbb639b4508c535782f4338c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_embankment_road_right.png",
+    "sha256": "664b9bd51fccd8eeeb5d8b80c3230093ab08ec76b45cc48d566af4d7d21d67a1"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_emergency_lane_1.png",
+    "sha256": "6b3925c03b4e092668a89d124fb34e9192f921af5a192618ec139cb6699dbd93"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_emergency_lane_2.png",
+    "sha256": "3df6d72e228d5c2fb2927c952f85307f1e246c4a3f8275724055f139bb575d37"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_falling_rocks_left.png",
+    "sha256": "80406339945522829b1560b2897ead6d8e4acbfcfbdbfd23dff287df421cd77e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_falling_rocks_right.png",
+    "sha256": "bdb20c1a9d6950d00354e179976461183f0a20a51f7ddeb96f02799f98a70343"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_less_3_to_2.png",
+    "sha256": "e20e24f1e6e872755cbb41d3731c1acf73d76a1662e8cc4146e31aca31bfd51c"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_linear_guidance_marker_1.png",
+    "sha256": "07714c69b1ceaaba0d854c5d75d90cccd9317dbda49454a2b4f2ed5e8c3aaafb"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_linear_guidance_marker_2.png",
+    "sha256": "f46802cf4eef1e2d625a2245f0ea0cf8a32889c8a60fa4eaeaf6f6ed2b23d2bb"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_livestock.png",
+    "sha256": "bcc8c19096f46330e99799f46519d1f3fe6ab73f69bbbbe73a2e35f37cb3a119"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_narrow_bridge.png",
+    "sha256": "c784e04419da3bf9b6fcef4805230c812e921b13e57bfc2440f50d83259466ed"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_narrow_road_double.png",
+    "sha256": "30defb6af0cce4bb3545bd7533ed3c5d1a1b6dabf5a8a429b3a50596fa9ca0b3"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_narrow_road_left.png",
+    "sha256": "9fdbd15a2809fc07974b69962a45a42a4251210a6bd402d4073c18341ecb55c9"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_narrow_road_right.png",
+    "sha256": "f510c44f3bad15face20e1b288c25f71090a74aee487a84a3014d32e7e78f939"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_perilous_road_along_the_mountain_left.png",
+    "sha256": "107049b2c51c3687884d7e7170b4e46e4d2bd7da24308699c3252934cfbbc735"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_perilous_road_along_the_mountain_right.png",
+    "sha256": "958cf45e7c6cd0a2d9e892c72859cd9000ffda3908be1f56efdbec5fa27b53c8"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_reverse_detour_1.png",
+    "sha256": "898b94bb62d32124425337fc868ddab6772352730a78828563fa084fe56fe0bb"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_reverse_detour_2.png",
+    "sha256": "dff4cb85b519709bc669f29951d3cf352698875a39b8b6641d350f8d17896dcb"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_road_icy.png",
+    "sha256": "cfca5a952017b4508bf590da79f68b4343317cf8b91dd8a59b59f89ddc3d3f5b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_road_uneven.png",
+    "sha256": "6eeff7e8cf5ea373ce3b64bcb0950ea694231c2954b75fcdbd3e04064237d156"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_road_wet.png",
+    "sha256": "d73f408673b512d3490570242f79bfa0def7e131fa98cd87ab69253cfe98c665"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_sharp_turn_1.png",
+    "sha256": "afe3ad650aa4ff786a58c272ffc12c5bebd02d7a43d1d6754cde30d2a262dd14"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_sharp_turn_2.png",
+    "sha256": "bff3c77a80496c7175bca4d6e6aea115ccf863362714d12270ed6f4e5c286754"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_slippery.png",
+    "sha256": "32ebb476100d9b9ee59fe9c5515c75fecca19e1071b5c2152b0cd78af2909d94"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_someone_guarding_the_railway_crossing.png",
+    "sha256": "b1aae7a5c3aebe9b8d2f39400b9cd0faeba05189102e45bc133c43a9a038f838"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_speed_bump.png",
+    "sha256": "c4b19bebd45195a083ca35a0b17a4e6a6862e87ce99c61d58253d2e911b89689"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_steep_slope_down.png",
+    "sha256": "f84eb20df4622a8270c182d1578ee5e0e6ace226246d7e72bd51a9ad0b38ba04"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_steep_slope_up.png",
+    "sha256": "4237ead2b2603ae917776e728e3b279b37272a005c5554a8e6aa15148506f5bf"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_tidal_lane.png",
+    "sha256": "c6a492d5c97f8cdd90abf5204edb9a09594923912501e155f8567ba931e5a226"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_traffic_lights.png",
+    "sha256": "4459ee7399e1f4c404cdb8ca26f3a61168a3bd843dc6a66904e8cc22511c647d"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_tunnel.png",
+    "sha256": "51586f0b5452b249847e758d4db2acd74ae3603dc385b9192097aab4cbe2e3ca"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_two_way_traffic.png",
+    "sha256": "b7ad5c6df046697db5bfe79af89b0093e2e3626cb83e22ed876e5e2a4f95467e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_unmanned_guarding_the_railway_crossing.png",
+    "sha256": "ce943a39282ea072680b2534711b17417895db6cf85e3bea0dad1bf3ba67932a"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_vehicles_queued_ahead.png",
+    "sha256": "05dc8682389ee27e284b3fb870a56d9527a23021043567c8c09c84a689db8456"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_village.png",
+    "sha256": "e095d5442ccc984282bccfa77c082da6072ed262d4bbc4490cdc537b5aeb3b1f"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_weather_foggy.png",
+    "sha256": "0a96ee2490fea6f1614f04d564df552be7fa10b09c490ac98badea1b7026ddb8"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_weather_rainy_snowy.png",
+    "sha256": "738964cbaf9d7c61f061b03df08ce1147d7b4cdee06f02050e132ad2bad18a7e"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_weather_thunder.png",
+    "sha256": "3beeea8329bae651226445a7b170d16ef80326287f08079f4bbda90dcd34dfa8"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_wildlife.png",
+    "sha256": "e5190d1173e0b0c8bf4cd9c76035a2ff5bc3f2ada573e36e450d8b5c40bc2691"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_warning_zebra_crossing.png",
+    "sha256": "78af4b82c87f9be099eb8134440bf52459633eec38087dd6d18ba72aa9a6bc4b"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_water.png",
+    "sha256": "d864fb9a334e0aa3aa4d38db76c1fa0f0cda99b1dae950667b581450248ddf33"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_weight_limit_10.png",
+    "sha256": "96f7ea9499df1298348baaca82f95911411760f0ccd1866db75bb28b31a251d3"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_weight_limit_20.png",
+    "sha256": "76b066522c1a2ef8e2ebe89fe477a5b5f722d6141306ccdb962e6d5754fa4607"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_weight_limit_30.png",
+    "sha256": "8fa11e7a43612aca845af80b7320f1cb1ec9c7cc0a44b43ebdc90e73e560f2d7"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_weight_limit_40.png",
+    "sha256": "3b69778278a5d816a90c3198acbe8136127db60323ebc0a18b75af1d50fc9cfa"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_yield.png",
+    "sha256": "5cb785fc19eb5deebbfc6b170aeea6669f7a1c8f37c22d3388a5257f044a3e40"
+  },
+  {
+    "path": "src/main/resources/assets/citybuild/textures/block/sign/sign_yield_to_oncoming_traffic.png",
+    "sha256": "3d8b33ca25490b41cda0996a901c82c6f2b528c6e192ae93a31701cc6268affc"
+  }
+]

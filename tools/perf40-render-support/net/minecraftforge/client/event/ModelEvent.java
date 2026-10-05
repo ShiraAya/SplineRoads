@@ -1,0 +1,2 @@
+// TEST ADAPTER ONLY. Not shipped in the mod JAR. No actual Forge/GL emulation.
+package net.minecraftforge.client.event;import java.util.*;import net.minecraft.resources.*;import net.minecraft.client.resources.model.*;public class ModelEvent {public static class ModifyBakingResult {private final Map<ResourceLocation,BakedModel> models;public ModifyBakingResult(Map<ResourceLocation,BakedModel> m){models=m;}public Map<ResourceLocation,BakedModel> getModels(){return models;}}public static class BakingCompleted {public ModelManager getModelManager(){return new ModelManager();}}}

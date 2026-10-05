@@ -1,0 +1,1 @@
+package com.sora.splineroads.net;import net.minecraft.nbt.CompoundTag;public class RoadNetwork {public static final Channel CHANNEL=new Channel();public record Action(CompoundTag tag){}public static class Channel {public void sendToServer(Action a){throw new UnsupportedOperationException("network messages are NOT simulated");}}}

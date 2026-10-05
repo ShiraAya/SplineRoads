@@ -1,0 +1,1 @@
+package com.sora.splineroads.world;public class LaneRampTool {public static void clearSelection(net.minecraft.world.item.ItemStack t){throw new UnsupportedOperationException("not tested");}}

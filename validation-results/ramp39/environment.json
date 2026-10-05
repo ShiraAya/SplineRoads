@@ -1,0 +1,13 @@
+{
+  "java_version": "openjdk version \"21.0.11\" 2026-04-21\nOpenJDK Runtime Environment (build 21.0.11+10-1-deb13u2-Debian)\nOpenJDK 64-Bit Server VM (build 21.0.11+10-1-deb13u2-Debian, mixed mode, sharing)",
+  "compiler_target": "--release 17",
+  "offline_core_command": "bash tools/test_ramp39.sh <output-dir>",
+  "offline_model_command": "bash tools/test_ramp39_model.sh <model-output-dir> <core-output-dir>",
+  "model_rebuilds_core": true,
+  "forge_attempt": "./gradlew compileJava",
+  "forge_result": "Gradle 8.8 distribution download failed: UnknownHostException services.gradle.org",
+  "minecraft_client": "NOT RUN",
+  "native_nbt_binary": "NOT RUN",
+  "performance_fps": "NOT RUN",
+  "baseline_audit_note": "P01 is a custom-boundary numeric illustration, not a universal offset; see changelog correction."
+}

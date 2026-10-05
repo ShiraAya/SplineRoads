@@ -1,0 +1,46 @@
+package com.sora.splineroads.world;
+import com.sora.splineroads.core.*;
+import com.sora.splineroads.core.RoadGeometry.*;
+import com.sora.splineroads.net.RoadNetwork;
+import net.minecraft.nbt.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.*;
+import net.minecraft.world.*;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.*;
+import java.util.*;
+
+public final class LanePointTool extends Item {
+  public LanePointTool(){super(new Properties().stacksTo(1));}
+  private record Pending(UUID token,long expires) {}
+  private static final Map<ServerPlayer,Pending> OPENING=new WeakHashMap<>();
+  static UUID pendingToken(ServerPlayer p){var v=OPENING.get(p);return v==null?null:v.token();}
+  public static void acknowledge(ServerPlayer p,UUID token){var v=OPENING.get(p);if(v!=null&&v.token().equals(token))OPENING.remove(p);}
+  private static void open(ServerPlayer p,RoadRecord r,LanePoints.Point point){
+    var t=payload(RoadData.get(p.serverLevel()),r,point);UUID token=UUID.randomUUID();
+    OPENING.put(p,new Pending(token,p.serverLevel().getGameTime()+100));t.putUUID("Interaction",token);RoadNetwork.open(p,t);
+  }
+  public record Pick(RoadRecord road,LanePoints.Point point,double distance){}
+  public static Pick pick(ServerPlayer player){Vec3 eye=player.getEyePosition(),end=eye.add(player.getLookAngle().scale(96));double stop=player.pick(96,0,false).getLocation().distanceTo(eye)+.7;List<Pick> hits=new ArrayList<>();for(var b:RoadData.get(player.serverLevel()).index.roads.values())for(var p:LaneTopology.metadata(b.record).points()){V v=p.position();var hit=new AABB(v.x()-.26,v.y()+.03,v.z()-.26,v.x()+.26,v.y()+.55,v.z()+.26).clip(eye,end);if(hit.isPresent()&&hit.get().distanceTo(eye)<stop)hits.add(new Pick(b.record,p,hit.get().distanceTo(eye)));}hits.sort(Comparator.comparingDouble(Pick::distance));if(hits.isEmpty())return null;double nearest=hits.get(0).distance();return hits.stream().filter(h->h.distance()<nearest+.15).min(Comparator.comparingInt(h->h.point().automatic()==player.isShiftKeyDown()?0:1)).orElse(hits.get(0));}
+  public static LanePoints.Point create(ServerLevel level,ServerPlayer player,UUID id,V hit){var data=RoadData.get(level);var b=data.index.roads.get(id);if(b==null||b.record.junction()!=null)throw new IllegalArgumentException("请在独立路段的机动车道上放点");if(player!=null)RoadData.requireOwner(player,b.record.owner());var lane=LanePoints.clicked(b.mesh,hit);var md=LaneTopology.metadata(b.record);var existing=md.points().stream().filter(p->!p.automatic()&&p.lane()==lane.index()&&p.position().distance(lane.position())<.65).findFirst();if(existing.isPresent())return existing.get();var p=LanePoints.point(UUID.randomUUID(),LanePoints.Origin.MANUAL,b.mesh,lane.station(),lane.index());var points=new ArrayList<>(md.points());points.add(p);update(level,player,b.record,md.points(points),Set.of());return p;}
+  private void select(ServerPlayer p,V hit){var pending=OPENING.get(p);if(pending!=null&&p.serverLevel().getGameTime()<pending.expires())return;try{if(!p.mayBuild()||p.isSpectator())throw new IllegalArgumentException("没有建设权限");var picked=pick(p);if(picked!=null&&!(p.isShiftKeyDown()&&picked.point().automatic()&&LaneTopology.metadata(picked.road()).points().stream().noneMatch(v->!v.automatic()&&v.position().distance(picked.point().position())<.65))){RoadData.requireOwner(p,picked.road().owner());open(p,picked.road(),picked.point());return;}var b=RoadTool.pick(p);if(b==null||hit==null)throw new IllegalArgumentException("请右键机动车道创建蓝色车道点，或右键已有蓝色点");var point=create(p.serverLevel(),p,b.record.id(),hit);open(p,RoadData.get(p.serverLevel()).index.roads.get(b.record.id()).record,point);}catch(IllegalArgumentException e){p.displayClientMessage(Component.literal(e.getMessage()),false);}}
+  @Override public InteractionResult useOn(UseOnContext c){if(c.getPlayer() instanceof ServerPlayer p){var h=c.getClickLocation();select(p,new V(h.x,h.y,h.z));}return InteractionResult.sidedSuccess(c.getLevel().isClientSide);}
+  @Override public InteractionResultHolder<ItemStack> use(Level l,Player p,InteractionHand hand){if(p instanceof ServerPlayer sp)select(sp,null);return InteractionResultHolder.sidedSuccess(p.getItemInHand(hand),l.isClientSide);}
+  public static CompoundTag payload(RoadData data,RoadRecord r,LanePoints.Point p){var t=new CompoundTag();t.putString("Kind","lanePoint");t.put("Road",r.header());t.putUUID("Id",r.id());t.putUUID("Point",p.id());t.putInt("Signature",r.header().hashCode());t.putBoolean("Supported",r.assembly()==null&&LanePoints.supported(r.settings()));var refs=LaneTopology.references(LaneTopology.records(data).values(),LanePoints.Ref.lane(r.id(),p.id()));var dependencies=LaneTopology.dependents(data,new HashSet<>(refs));var all=new TreeSet<UUID>(refs);all.addAll(dependencies);var list=new ListTag();all.forEach(id->list.add(StringTag.valueOf(id.toString())));t.put("Dependencies",list);return t;}
+  public static String edit(ServerLevel level,ServerPlayer player,CompoundTag t){var data=RoadData.get(level);var b=data.index.roads.get(t.getUUID("Id"));if(b==null)throw new IllegalArgumentException("道路已不存在");var r=b.record;if(player!=null)RoadData.requireOwner(player,r.owner());if(t.getInt("Signature")!=r.header().hashCode())throw new IllegalArgumentException("道路已变化，请重新打开车道点");var md=LaneTopology.metadata(r);var p=LaneTopology.point(r,t.getUUID("Point"));if(p.automatic())throw new IllegalArgumentException("自动尽头点不能删除或切换车道");var points=new ArrayList<>(md.points());Set<UUID> removed=new HashSet<>();
+    if(t.getBoolean("Delete")){var refs=LaneTopology.references(LaneTopology.records(data).values(),LanePoints.Ref.lane(r.id(),p.id()));removed.addAll(refs);removed.addAll(LaneTopology.dependents(data,removed));LaneDeletes.requireConfirmation(t,removed);if(player!=null)for(UUID id:removed)RoadData.requireOwner(player,data.index.roads.get(id).record.owner());points.remove(p);}else{int lane=t.getInt("Lane");var selected=LanePoints.lane(b.mesh,LanePoints.lane(b.mesh,p).station(),lane);points.set(points.indexOf(p),p.at(selected,b.mesh));}
+    update(level,player,r,md.points(points),removed);return t.getBoolean("Delete")?"手动车道点及确认的依赖匝道已删除":"车道已切换，依赖匝道已同步重建";}
+  private static void update(ServerLevel level,ServerPlayer player,RoadRecord r,LanePoints.Data md,Set<UUID> deleted){
+    var data=RoadData.get(level);boolean referenced=false;
+    for(var p:LaneTopology.metadata(r).points()) {
+      var next=md.points().stream().filter(v->v.id().equals(p.id())).findFirst().orElse(null);
+      if(!p.equals(next)&&!LaneTopology.references(LaneTopology.records(data).values(),LanePoints.Ref.lane(r.id(),p.id())).isEmpty()){referenced=true;break;}
+    }
+    if(!referenced&&deleted.isEmpty()){data.updateLanePointMetadata(level,player,r,md);return;}
+    var removed=new HashSet<>(deleted);removed.add(r.id());data.replaceAssembly(level,player,List.of(new RoadIndex.Built(r.withLanePoints(md))),removed,Set.of(r.a(),r.b()));
+  }
+  @Override public void appendHoverText(ItemStack s,Level l,List<Component> lines,TooltipFlag f){lines.add(Component.literal("右键机动车道吸附到该车道中轴线；右键蓝色点编辑"));lines.add(Component.literal("Shift＋右键自动点创建手动点；重合时 Shift 选择自动点"));}
+}
