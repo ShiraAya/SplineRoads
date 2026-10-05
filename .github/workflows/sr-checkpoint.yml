@@ -21,8 +21,8 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: All prior regressions plus corrected tunnel tactile and shaft cases; real Forge build
-        run: bash tools/check_release0405.sh
+      - name: All regressions, exact performance-path parity and complete Forge build
+        run: bash tools/check_release0406.sh
       - name: Retain original solid material and visibility binding checks
         run: |
           python - <<'PY'
