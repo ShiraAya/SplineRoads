@@ -1,20 +1,13 @@
-# Spline Roads 0.40.8-alpha — P1隧道边界与道路接缝
+# SR 0.40.9-alpha — 已编译的匝道阶段检查点
 
-Minecraft Java1.20.1 / Forge47.4.20 / Java17。工作分支chat/sr-0402，沿用用户编译修正后的SR.zip基线。
+这是checkpoint/sr-0409-arrival-verified分支，用于固定已经下载核验的生产提交a7b8a8d5f9b54cfa8000f3fcf3091ed0252b5511。继续开发分支是chat/sr-0402，最新修正不一定已进入本检查点JAR。
 
-**P1《问题2》全部24项优先；P2《问题3》terrain四项与多线程，必须等全部P1处理后再开始。** [优先级](docs/PRIORITIES.md) · [当前逐项状态](docs/issues/problem2-batch2-status.md)。
+本轮主体：相邻机动车道及中央空间独立保护，精确车道口；普通MERGE目标车道从实际上游危险相交前关闭，到实际B完整接入后开放；修复目标高程钉死的一条原因。其他P1及全部P2未被本说明隐含标为完成。
 
-本版处理Q2-03额外地形开挖、Q2-04入口外侧原地形保留、Q2-07拱顶整数层越界及Q2-05地面/隧道共同接缝。只修已定位代码路径，不能称所有分数边界缝隙或原存档症状均结案。隧道中央绿化转护栏，黄线保留，双方保留同一车道轴线；无关旧功能保持。
+真实JDK17 Forge1.20.1-47.4.20编译、旧回归、新32几何和78规划场景通过。下载artifact的摘要、CRC、COMMIT、源码字节与JAR版本已核实。详见PROGRESS.md、docs/checkpoints/arrival417-stage2-verified.json和docs/issues/problem2-batch3-status.md。
 
-最终生产及已下载核验源码/JAR对应 `3be551cafc56700b63883586d888beda17f217c4`。完整Forge构建与旧/新回归通过；[实际校验](docs/checkpoints/tunnel415-verified.json)、[PROGRESS](PROGRESS.md)。本README在构建后的文档提交，精确构建源码ZIP不伪装包含后续文字。
+主分支排队的stage3最后两行旧Link编辑/距离显示修正另存WIP，并有本地6场景30检查；不能把它们与本检查点的Forge结果混在一起。原始构建源码ZIP仍为该生产提交的git archive，不加入后续文档来伪装同一快照。
 
-```powershell
-.\gradlew.bat compileJava compileGameTestJava jar
-```
-```bash
-bash tools/check_tunnel415.sh
-```
+存档37协议55，先备份世界，客户端/服务端同步。尚未运行Minecraft客户端、GPU/光影、世界写入、二进制保存重进或多人。对旧连接器的编辑兼容复测应等待最终补充CI确认。本检查点没有开展P2 terrain或多线程，也未实现地面绿化/高架全矩形封闭形态。
 
-测试适配器不入JAR。未执行真实Minecraft客户端/GPU/光影、方块写入、水流传播、二进制保存重进或多人。旧设施可能需编辑更新，有原始材料记录才可恢复，未知旧地形不凭空填回。
-
-存档36、网络协议54保持；先备份世界，客户端与服务端同步替换。保留任意所选车道TEMPORARY和DETACH原限制，当前目标汇入新语义等余下17项P1仍待处理。一次性历史apply脚本禁止在后续源码重跑。
+本分支的临时有写权限apply workflow已删除；固定基线补丁仅留历史，不可在新基线重跑。工作分支保留当前排队任务以免改动其分支头造成非快进冲突。
