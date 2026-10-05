@@ -70,3 +70,4 @@ jobs:
           name: sr-r3-jar-${{ github.run_id }}
           path: build/libs/*.jar
           retention-days: 14
+# Staged source transfer replayed locally; before/after hashes remain mandatory.
