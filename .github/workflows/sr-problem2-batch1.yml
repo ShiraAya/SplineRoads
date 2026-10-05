@@ -1,0 +1,65 @@
+name: SR problem2 P1 stage1 apply and validate
+on:
+  push:
+    branches: [chat/sr-0402]
+    paths: [.github/workflows/sr-problem2-batch1.yml]
+permissions:
+  contents: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: write
+    outputs:
+      commit: ${{ steps.save.outputs.commit }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Apply fixed, hash-verified P1 source and preserve before long build
+        id: save
+        run: |
+          test "$(git ls-remote origin refs/heads/chat/sr-0402 | cut -f1)" = "$GITHUB_SHA"
+          python tools/apply_problem2_batch1.py
+          git diff --check
+          git add src/main/java
+          git -c user.name='SR checkpoint' -c user.email='sr-checkpoint@users.noreply.github.com' commit -m 'WIP: shared seam preflight and exact differential tunnel shell checks (Q2-08/09)'
+          git push origin HEAD:refs/heads/chat/sr-0402
+          test "$(git ls-remote origin refs/heads/chat/sr-0402 | cut -f1)" = "$(git rev-parse HEAD)"
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  verify:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.commit }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Existing regression suite and real Forge build
+        run: bash tools/check_release0406.sh
+      - name: Exact source snapshot even if build fails
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr-problem2-stage1-source-logs
+          path: build/checkpoint-logs/
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr-problem2-stage1-jar
+          path: build/libs/*.jar
+          retention-days: 14
