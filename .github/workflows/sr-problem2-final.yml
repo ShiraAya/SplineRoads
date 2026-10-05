@@ -1,8 +1,8 @@
-name: SR P1 stage2 water and build validation
+name: SR P1 batch final validation
 on:
   push:
     branches: [chat/sr-0402]
-    paths: [.github/workflows/sr-problem2-batch2.yml]
+    paths: [.github/workflows/sr-problem2-final.yml]
 permissions:
   contents: read
 jobs:
@@ -15,14 +15,14 @@ jobs:
       commit: ${{ steps.save.outputs.commit }}
     steps:
       - uses: actions/checkout@v4
-      - name: Preserve exact candidate before long tests
+      - name: Save final level-end consistency guard before long test
         id: save
         run: |
           test "$(git ls-remote origin refs/heads/chat/sr-0402 | cut -f1)" = "$GITHUB_SHA"
-          python tools/apply_problem2_batch2.py
+          python tools/apply_problem2_final.py
           git diff --check
-          git add src/main/java build.gradle src/main/resources/META-INF/mods.toml AGENTS.md docs/CURRENT_REQUIREMENTS.md
-          git -c user.name='SR checkpoint' -c user.email='sr-checkpoint@users.noreply.github.com' commit -m 'WIP: preserve exterior tunnel water, retain automatic endpoint fitting and correct preflight imports'
+          git add src/main/java src/validation/java/com/sora/splineroads/Problem2GeometryValidation.java
+          git -c user.name='SR checkpoint' -c user.email='sr-checkpoint@users.noreply.github.com' commit -m 'fix: align linked seam preview with explicit level-end and bridge/tunnel fitting rules'
           git push origin HEAD:refs/heads/chat/sr-0402
           test "$(git ls-remote origin refs/heads/chat/sr-0402 | cut -f1)" = "$(git rev-parse HEAD)"
           echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
@@ -39,9 +39,9 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: All previous and new P1 tests plus actual Forge build
+      - name: Complete P1 and prior regressions plus real Forge build
         run: bash tools/check_problem2_batch1.sh
-      - name: Exact source and logs even on failure
+      - name: Preserve exact source and logs on success or failure
         if: always()
         run: |
           mkdir -p build/checkpoint-logs
@@ -50,13 +50,13 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: sr-problem2-stage2-source-logs
+          name: sr-problem2-final-source-logs
           path: build/checkpoint-logs/
           retention-days: 14
       - uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: sr-problem2-stage2-jar
+          name: sr-problem2-final-jar
           path: build/libs/*.jar
           if-no-files-found: error
           retention-days: 14
