@@ -1,0 +1,63 @@
+name: SR P1 tunnel and seam final validation
+on:
+  push:
+    branches: [chat/sr-0402]
+    paths: [tools/changes/tunnel415-stage2.json]
+permissions:
+  contents: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      sha: ${{ steps.save.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - name: Save exact candidate before build
+        id: save
+        env:
+          EXPECTED: ${{ github.sha }}
+        run: |
+          test "$(git ls-remote origin refs/heads/chat/sr-0402 | cut -f1)" = "$EXPECTED"
+          python3 tools/changes/apply_tunnel415_stage2.py
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git add src/main/java src/main/resources/META-INF/mods.toml build.gradle
+          git commit -m 'fix: preserve tunnel exterior terrain and share supported median seam at portal (0.40.8)'
+          git push origin HEAD:refs/heads/chat/sr-0402
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  verify:
+    needs: preserve
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Full prior and focused P1 regressions plus actual Forge build
+        run: bash tools/check_tunnel415.sh
+      - name: Always preserve exact source and build identity
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr-tunnel415-final-source-logs
+          path: build/checkpoint-logs/
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr-tunnel415-final-jar
+          path: build/libs/*.jar
+          retention-days: 14
