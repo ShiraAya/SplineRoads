@@ -1,0 +1,27 @@
+{
+  "version": "0.40.6-alpha",
+  "source_commit": "00cd820a5be4b5c95dea47488464f493b8a20cc9",
+  "workflow_trigger_commit": "5a3a9b0166ea46af0179676f415a8f38ae0adc56",
+  "run_id": 37339625483,
+  "job_id": 111863068115,
+  "job_conclusion": "success",
+  "source_logs_artifact": 11357084579,
+  "compiled_artifact": 11357822676,
+  "source_logs_download_sha256": "a14dd4f982fb453ce76df594f72f79d5551be4d1f925a0152ddab9ff154efada",
+  "compiled_download_sha256": "1c43cc695c1cee3f3f6d891e77da275fada1e4191c9b2b8b1fcf439dc6bcdc5a",
+  "jar_sha256": "492b3bcf4ba97d8d363e7111406051ed3c2111db004d6eae09183b04c3b86d37",
+  "source_zip_sha256": "da8b99c38628e6f59a2004e3f4df7cada074108197713992c1dc0dcf33393379",
+  "save_format": 36,
+  "network_protocol": 54,
+  "java_target": 17,
+  "forge": "1.20.1-47.4.20",
+  "checks": ["downloaded final artifacts, not prior-stage substitutes", "ZIP CRC and GitHub digest match", "source COMMIT is actual applied production commit", "6 changed/new production Java files plus mods.toml match reviewed local bytes", "427 resource files and 6 license/notice files unchanged from 0.40.5", "compileJava and compileGameTestJava succeeded", "jar and reobfJar succeeded", "three new implementation classes are Java class version 61", "test adapters are not packaged into JAR"],
+  "new_test_counts": {"mixed_structure_raster":225,"plain_structure_fast_path":160,"bounds_mutation_and_edges":6088,"small_and_large_planning_snapshot":6301,"profile_parser_unit_methods":5},
+  "core_benchmarks": {
+    "mixed_160_parts": {"old_part_raster_passes":256,"new_part_raster_passes":160,"old_median_ms":16.272,"new_median_ms":11.115,"rounds":7},
+    "synthetic_10000_bounds_2000_queries": {"old_predicate_checks":20000000,"new_predicate_checks":2000,"old_median_ms":49.484,"new_median_ms":9.809,"index_construction_included":true,"rounds":5},
+    "scope": "Same-run core/synthetic measurements only; not actual Minecraft construction, load time, FPS or GPU memory. Small real edit transactions deliberately do not pay world-sized spatial setup."
+  },
+  "not_tested": ["real Minecraft client", "GPU/shaders", "server world placement", "real binary save/reload", "multiplayer", "user-world total construction and initial load timing"],
+  "handoff": "This docs-only checkpoint removes the one-time write workflow without changing production. Exact source build archive retains its historical guarded workflow; do not rerun old apply scripts."
+}
