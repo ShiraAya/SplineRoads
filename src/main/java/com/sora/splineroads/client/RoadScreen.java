@@ -685,7 +685,7 @@ public final class RoadScreen extends Screen {
   }
 
   private void setLaneWidth(double value) {
-    roadWidth = RoadProfile.modern(style) ? RoadProfile.width(style, options, value) : value;
+    roadWidth = laneRoad()&&options.lanePoints().link()!=null&&options.lanePoints().link().protectedMerge()?value:RoadProfile.modern(style)?RoadProfile.width(style,options,value):value;
   }
 
   private String typeName() {

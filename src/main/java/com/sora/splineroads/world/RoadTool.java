@@ -326,7 +326,8 @@ public final class RoadTool extends Item {
   }
 
   private static void requireTool(RoadRecord road) {
-    if (road.settings().style().ramp())
+    if (road.settings().style().ramp() &&
+        !(road.settings().style().connectorRamp()&&LaneTopology.metadata(road).link()!=null))
       throw new IllegalArgumentException("此旧路段可用道路删除器移除");
   }
 

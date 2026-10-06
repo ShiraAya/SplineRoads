@@ -37,7 +37,7 @@ public final class RoadGantry {
   }
   private static boolean enabled(Mesh m,Ground ground,Station st){
     if(st.kind()==Gantry.OFF)return false;var s=st.sample();
-    if(st.kind()==Gantry.AUTO&&m.settings().options().infrastructure().signs().stream().noneMatch(a->a.mount()==RoadSigns.Mount.GANTRY&&a.station()==st.slot())&&RoadProfile.catalog(m.settings().style()).type()!=RoadProfile.Type.HIGHWAY&&m.settings().structure()!=Structure.BRIDGE){
+    if(st.kind()==Gantry.AUTO&&m.settings().options().infrastructure().signs().stream().noneMatch(a->a.mount()==RoadSigns.Mount.GANTRY&&a.station()==st.slot())&&!RoadProfile.highway(m.settings().style())&&m.settings().structure()!=Structure.BRIDGE){
       if(!Double.isFinite(ground.top(s.center().x(),s.center().z(),s.center().y()))||!RoadStructures.elevated(m,s,ground))return false;
     }
     return !ground.furnitureClear(s.center())&&!ground.joined(s.center());
