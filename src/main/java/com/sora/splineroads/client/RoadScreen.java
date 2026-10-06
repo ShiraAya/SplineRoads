@@ -116,9 +116,9 @@ public final class RoadScreen extends Screen {
                   b -> {
                     if ((!capture())) return;
                     selectStyle(
-                        RoadProfile.catalog(style).type() == Type.HIGHWAY
-                            ? (laneRoad()?Style.O1_ONE:Style.O2_YELLOW)
-                            : (laneRoad()?Style.H1_ONE:Style.H4_RAIL),
+                        RoadProfile.highway(style)
+                            ? (laneRoad()?Style.C1_RAMP:Style.O2_YELLOW)
+                            : (laneRoad()?Style.C1_HIGHWAY_RAMP:Style.H4_RAIL),
                         true);
                   })
               .bounds(x, y, 98, 20)
@@ -658,7 +658,9 @@ public final class RoadScreen extends Screen {
             0xBBD3DC);
       } else {
         String note =
-            RoadProfile.catalog(style).type() == Type.HIGHWAY
+            (laneRoad()||style.connectorRamp())
+                ? "一般箭头关闭；额外扩入保留并线导向"
+                : RoadProfile.catalog(style).type() == Type.HIGHWAY
                 ? "含外侧应急车道及全段护栏"
                 : RoadProfile.modern(style) ? "普通路自动路灯 · 24 格间距" : "旧断面保留；切换样式升级";
         g.drawWordWrap(
@@ -687,10 +689,12 @@ public final class RoadScreen extends Screen {
   }
 
   private String typeName() {
+    if(laneRoad()||style.connectorRamp())return RoadProfile.highway(style)?"自由匝道（高速）":"自由匝道（普通）";
     return RoadProfile.catalog(style).type() == Type.HIGHWAY ? "高速道路" : "普通道路";
   }
 
   private String styleName() {
+    if(laneRoad()||style.connectorRamp())return "单车道匝道";
     return RoadProfile.modern(style) ? RoadProfile.catalog(style).name() : STYLES[style.ordinal()];
   }
 
@@ -706,6 +710,7 @@ public final class RoadScreen extends Screen {
   }
 
   private void cycleLanes() {
+    if(laneRoad()||style.connectorRamp())return;
     var c = RoadProfile.catalog(style);
     Type type = c.type();
     if (type == Type.LEGACY) {

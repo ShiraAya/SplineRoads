@@ -63,7 +63,7 @@ public final class RoadStreetscape {
   public static double tactileOffset(double width){return Math.max(.5,width-.8);}
   public static boolean bridge(Mesh mesh,Sample at,Ground g){return mesh.settings().structure()==Structure.BRIDGE||mesh.settings().structure()!=Structure.GROUND&&RoadStructures.elevated(mesh,at,g);}
   public static List<Part> plan(Mesh mesh,Ground ground,RoadFurniture.Phase phase){
-    if(RoadProfile.catalog(mesh.settings().style()).type()!=RoadProfile.Type.ORDINARY||mesh.settings().structure()==Structure.TUNNEL)return List.of();
+    if(RoadProfile.catalog(mesh.settings().style()).type()!=RoadProfile.Type.ORDINARY&&mesh.settings().style()!=Style.C1_RAMP||mesh.settings().structure()==Structure.TUNNEL)return List.of();
     var out=new ArrayList<Part>();var o=mesh.settings().options();var c=o.streetscape();var walk=o.sidewalk();
     for(double d=phase.first(8,c.lampSpacing());d<mesh.length()-1e-6;d+=c.lampSpacing()){
       if(d<1||mesh.length()-d<1||RoadInfrastructure.nearGantry(mesh,ground,d))continue;

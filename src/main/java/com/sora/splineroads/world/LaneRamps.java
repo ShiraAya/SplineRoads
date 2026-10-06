@@ -25,7 +25,7 @@ public final class LaneRamps {
     if(plan.decks.size()>32)plan.decks.clear();
     return RoadClearance.contacts(proposed,plan.decks.computeIfAbsent(existing,RoadClearance::prepare));
   }
-  public static RoadRecord host(Map<UUID,RoadRecord> all,LanePoints.Ref ref){var r=all.get(ref.road());if(r==null)throw new IllegalArgumentException("所选道路已不存在");if(r.assembly()!=null||r.junction()!=null||!LanePoints.supported(r.settings()))throw new IllegalArgumentException("连接器仅支持独立普通／高速的地面、自动高架、标准小河桥、梁式高架与跨线桥；不支持立交内部道路");LaneTopology.point(r,ref.point());return r;}
+  public static RoadRecord host(Map<UUID,RoadRecord> all,LanePoints.Ref ref){var r=all.get(ref.road());if(r==null)throw new IllegalArgumentException("所选道路已不存在");if(r.assembly()!=null||r.junction()!=null||!LanePoints.supported(r.settings()))throw new IllegalArgumentException("连接器仅支持独立普通道路／高速／自由匝道的地面、自动高架、标准小河桥、梁式高架与跨线桥；不支持立交内部道路");LaneTopology.point(r,ref.point());return r;}
   public static LaneRampPaths.Port port(RoadRecord road,LanePoints.Point p){var mesh=mesh(road);var l=LanePoints.lane(mesh,p);var sample=RoadStructures.sample(mesh,l.station());var layout=RoadProfile.layout(mesh,sample);double lateral=l.position().sub(sample.center()).dot(sample.left());int side=layout.catalog().twoWay()?(lateral<layout.medianCenter()?-1:1):layout.outside();double edge=side<0?-layout.motorMin():layout.motorMax();double distance=Math.max(l.width(),edge-side*lateral+l.width()/2);double step=Math.min(.5,mesh.length()/10);var before=RoadStructures.sample(mesh,Math.max(0,l.station()-step));var after=RoadStructures.sample(mesh,Math.min(mesh.length(),l.station()+step));V delta=after.center().sub(before.center());double grade=delta.y()/Math.max(.001,delta.horizontalLength())*l.sign();return new LaneRampPaths.Port(l.position(),l.direction(),sample.left().mul(side),distance,grade);}
   public static LaneRampPaths.Port targetPort(RoadRecord road,LanePoints.Point point,double offset){
     var lane=LanePoints.lane(mesh(road),point);double station=lane.station()+lane.sign()*offset;
@@ -40,7 +40,7 @@ public final class LaneRamps {
   public static RoadRecord reconfigure(RoadRecord old,Settings requested,Map<UUID,RoadRecord> all){return reconfigure(null,old,requested,all);}
   private static RoadRecord reconfigure(RoadData data,RoadRecord old,Settings requested,Map<UUID,RoadRecord> all){
     if(RoadProfile.catalog(requested.style()).lanes()!=1||!LanePoints.supported(requested))
-      throw new IllegalArgumentException("连接器匝道须保持独立单向 1 车道及支持的道路结构");
+      throw new IllegalArgumentException("连接器匝道须保持独立匝道类型、单车道及支持的道路结构");
     return generateChoice(data,all,old.id(),old.owner(),LaneTopology.metadata(old).link(),requested).road();
   }
   private static Generated generateChoice(RoadData data,Map<UUID,RoadRecord> all,UUID id,UUID owner,LanePoints.Link link,Settings edited){
@@ -50,9 +50,16 @@ public final class LaneRamps {
     link=link.withProtectedMerge().withRectangularClosure();
     var source=host(all,link.from());var p=LaneTopology.point(source,link.from().point());var lane=LanePoints.lane(mesh(source),p);
     var previous=all.get(id);var old=previous!=null&&LaneTopology.metadata(previous).link()!=null?previous:null;
-    Style style=RoadProfile.catalog(source.settings().style()).type()==RoadProfile.Type.HIGHWAY?Style.H1_ONE:Style.O1_ONE;
+    Style style=RoadProfile.highway(source.settings().style())?Style.C1_HIGHWAY_RAMP:Style.C1_RAMP;
     Settings base=edited!=null?edited:old!=null?old.settings():new Settings(Mode.CURVE,style,Math.max(4,lane.width()),source.settings().thickness(),.35,90).structure(Structure.AUTO).options(RoadProfile.Options.DEFAULT.traffic(source.settings().options().leftTraffic()).lanePoints(LanePoints.Data.EMPTY.link(link)));
-    base=base.options(base.options().lanePoints(base.options().lanePoints().link(link)));
+    boolean migrating=old!=null&&!old.settings().style().connectorRamp();
+    Style kind=(edited!=null?RoadProfile.highway(edited.style()):old!=null?RoadProfile.highway(old.settings().style()):RoadProfile.highway(style))?Style.C1_HIGHWAY_RAMP:Style.C1_RAMP;
+    var options=base.options().lanePoints(base.options().lanePoints().link(link)).hideArrows(true);
+    // New connectors and old AUTO defaults start without gantries. Explicit saved/edited
+    // equipment choices survive; ordinary roads and automatic interchanges are untouched.
+    if(old==null&&edited==null||migrating&&options.infrastructure().gantry()==RoadInfrastructure.Gantry.AUTO)
+      options=options.infrastructure(options.infrastructure().gantry(RoadInfrastructure.Gantry.OFF));
+    base=new Settings(base.mode(),kind,base.width(),base.thickness(),base.tension(),base.arcDegrees(),base.startWidth(),base.endWidth(),base.structure(),base.taperVersion(),base.rampTurn(),options);
     base.validate();
     var a=port(source,p);if(link.options().sourceExtra())a=approach(source,p,0,true,base,link.options().transition());
     var offsets=new LinkedHashSet<Double>();if(Math.abs(link.targetOffset())<=targetReach(link.options()))offsets.add(link.targetOffset());offsets.add(0d);

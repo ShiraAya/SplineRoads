@@ -16,7 +16,7 @@ public final class RoadGantry {
     public static Edit defaults(int slot){return new Edit(slot,0,5.6,Gantry.AUTO,false);}
   }
   public record Station(int slot,double distance,Sample sample,Edit edit,Gantry kind) {}
-  public static int count(Mesh m){return m.settings().structure()==Structure.TUNNEL||m.settings().style().ramp()||m.length()<20?0:Math.max(1,(int)Math.floor(m.length()/m.settings().options().infrastructure().spacing()));}
+  public static int count(Mesh m){return m.settings().structure()==Structure.TUNNEL||m.settings().style().ramp()&&!m.settings().style().connectorRamp()||m.length()<20?0:Math.max(1,(int)Math.floor(m.length()/m.settings().options().infrastructure().spacing()));}
   public static Edit edit(Config c,int slot){return c.gantryEdits().stream().filter(e->e.slot()==slot).findFirst().orElse(Edit.defaults(slot));}
   public static Station station(Mesh m,int slot){
     int n=count(m);if(slot<0||slot>=n)throw new IllegalArgumentException("该龙门架位置已失效，请重新选择");

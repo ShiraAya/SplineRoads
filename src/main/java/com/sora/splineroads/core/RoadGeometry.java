@@ -94,7 +94,9 @@ public final class RoadGeometry {
     R1,
     R2,
     R1_SHOULDER,
-    R2_SHOULDER, O8_YELLOW, O8_RAIL, O8_GREEN, O4_ONE, H8_RAIL, H8_GREEN, H4_ONE, H1_ONE;
+    R2_SHOULDER, O8_YELLOW, O8_RAIL, O8_GREEN, O4_ONE, H8_RAIL, H8_GREEN, H4_ONE, H1_ONE, C1_RAMP, C1_HIGHWAY_RAMP;
+
+    public boolean connectorRamp() { return this==C1_RAMP||this==C1_HIGHWAY_RAMP; }
 
     public boolean ramp() {
       return this == RAMP_ONE
@@ -303,7 +305,7 @@ public final class RoadGeometry {
     }
 
     public boolean laneRamp() {
-      return style.ramp() && rampTurn != RampTurn.LEGACY;
+      return style.ramp() && !style.connectorRamp() && rampTurn != RampTurn.LEGACY;
     }
 
     public Settings rampTurn(RampTurn turn) {

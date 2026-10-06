@@ -92,7 +92,7 @@ public final class LanePoints {
     if(best==null||distance>best.width()/2+.05||Math.abs(hit.y()-best.position().y())>2)throw new IllegalArgumentException("请点击机动车道内，不能在中央隔离带、人行道或非机动车道放点");return best;
   }
   public static String label(Mesh mesh,int index){var lane=lane(mesh,mesh.length()/2,index);var c=RoadProfile.catalog(mesh.settings().style());return (c.twoWay()?(lane.sign()>0?"正向":"反向")+" ":"单向 ")+(c.twoWay()?index%(c.lanes()/2)+1:index+1)+" 车道";}
-  public static boolean supported(Settings s){var type=RoadProfile.catalog(s.style()).type();if(type!=RoadProfile.Type.ORDINARY&&type!=RoadProfile.Type.HIGHWAY)return false;if(s.structure()==Structure.TUNNEL)return false;if(s.structure()!=Structure.BRIDGE)return true;return switch(s.options().infrastructure().bridge()){case STANDARD,BEAM,OVERPASS->true;default->false;};}
+  public static boolean supported(Settings s){var type=RoadProfile.catalog(s.style()).type();if(type!=RoadProfile.Type.ORDINARY&&type!=RoadProfile.Type.HIGHWAY&&!s.style().connectorRamp())return false;if(s.structure()==Structure.TUNNEL)return false;if(s.structure()!=Structure.BRIDGE)return true;return switch(s.options().infrastructure().bridge()){case STANDARD,BEAM,OVERPASS->true;default->false;};}
   public static boolean opening(Mesh mesh,V location){
     for(var opening:mesh.settings().options().lanePoints().openings())for(int i=1;i<opening.centerline().size();i++){
       V a=opening.centerline().get(i-1),b=opening.centerline().get(i),d=b.sub(a);double length=d.x()*d.x()+d.z()*d.z();if(length<1e-9)continue;double t=Math.max(0,Math.min(1,(location.x()-a.x())*d.x()/length+(location.z()-a.z())*d.z()/length));V p=a.add(d.mul(t));

@@ -438,6 +438,7 @@ public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,
       case H1_ONE -> new Catalog(Type.HIGHWAY, 1, false, Median.NONE, false);
       case H2_ONE -> new Catalog(Type.HIGHWAY, 2, false, Median.NONE, true);
       case H3_ONE -> new Catalog(Type.HIGHWAY, 3, false, Median.NONE, true);
+      case C1_RAMP, C1_HIGHWAY_RAMP -> new Catalog(Type.RAMP,1,false,Median.NONE,false);
       case R1 -> new Catalog(Type.RAMP, 1, false, Median.NONE, false);
       case R2 -> new Catalog(Type.RAMP, 2, false, Median.NONE, false);
       case R1_SHOULDER -> new Catalog(Type.RAMP, 1, false, Median.NONE, true);
@@ -451,6 +452,8 @@ public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,
               false);
     };
   }
+
+  public static boolean highway(Style s) { return catalog(s).type()==Type.HIGHWAY||s==Style.C1_HIGHWAY_RAMP; }
 
   public static boolean modern(Style s) {
     return catalog(s).type() != Type.LEGACY;
@@ -479,7 +482,7 @@ public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,
   public static List<Style> styles(Type type) {
     return Arrays.stream(Style.values())
         .filter(s -> catalog(s).type() == type)
-        .filter(s -> s != Style.H4_YELLOW && s != Style.H6_YELLOW)
+        .filter(s -> s != Style.H4_YELLOW && s != Style.H6_YELLOW && !s.connectorRamp())
         .toList();
   }
 
@@ -501,6 +504,7 @@ public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,
   }
 
   public static double width(Style style, Options o, double laneWidth) {
+    if(style.connectorRamp())return laneWidth;
     var c = catalog(style);
     int sides = c.twoWay() ? 2 : 1;
     return c.lanes() * laneWidth
@@ -572,7 +576,7 @@ public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,
     // New precise lane connectors have one centred driveable strip. Inherit neither
     // ordinary-road verge nor the highway's asymmetric shoulder at a four-block lane port.
     // The persisted marker keeps old saved meshes unchanged until an explicit edit.
-    if(o.lanePoints().link()!=null&&o.lanePoints().link().protectedMerge()&&c.lanes()==1)
+    if(s.style().connectorRamp()||o.lanePoints().link()!=null&&o.lanePoints().link().protectedMerge()&&c.lanes()==1)
       return new Layout(new Catalog(c.type(),1,false,Median.NONE,false),actualWidth,0,-actualWidth/2,actualWidth/2,0,0,0,trafficSign(o.leftTraffic()),null);
     int sides = c.twoWay() ? 2 : 1, outside = trafficSign(o.leftTraffic());
     double cycle = c.type() == Type.ORDINARY && o.cycle() ? 2.5+RoadStreetscape.separatorWidth(o) : 0,

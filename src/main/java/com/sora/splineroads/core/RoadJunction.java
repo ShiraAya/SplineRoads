@@ -34,6 +34,7 @@ public final class RoadJunction {
   private record Join(Route a, Route b, double nose, double available, boolean parallel) {}
 
   private static Join join(Mesh ramp, Mesh host, boolean first) {
+    if(ramp.settings().style().connectorRamp()||host.settings().style().connectorRamp())return null;
     var endpoint = first ? ramp.first() : ramp.last();
     var projection = RoadQueries.project(host, endpoint.center());
     if (projection.horizontalDistance() > projection.sample().halfWidth() + endpoint.halfWidth() - .10
@@ -130,7 +131,7 @@ public final class RoadJunction {
   }
   private static boolean taperClosure(Mesh ramp,Mesh host,boolean first){
     // Ordinary roads also have a narrowing auxiliary port, even without a shoulder.
-    if(!ramp.settings().style().ramp()||host.settings().style().ramp()||host.settings().style()==Style.UNMARKED)return false;
+    if(ramp.settings().style().connectorRamp()||!ramp.settings().style().ramp()||host.settings().style().ramp()||host.settings().style()==Style.UNMARKED)return false;
     Sample end=first?ramp.first():ramp.last();if(end.halfWidth()*2>=ramp.settings().width()*.7)return false;
     var projection=RoadQueries.horizontal(host,end.center());return Math.abs(end.center().y()-projection.sample().center().y())<=.1&&projection.horizontalDistance()<=end.halfWidth()+projection.sample().halfWidth()&&Math.abs(end.left().dot(projection.sample().left()))>=.94;
   }
@@ -162,7 +163,7 @@ public final class RoadJunction {
 
   /** Parallel auxiliary roads use a dashed lane boundary, without a false chevron gore. */
   private static boolean parallelFeeder(Mesh ramp, Mesh host) {
-    if (!ramp.settings().style().ramp() || host.settings().style().ramp()
+    if (ramp.settings().style().connectorRamp() || !ramp.settings().style().ramp() || host.settings().style().ramp()
         || host.settings().style() == Style.UNMARKED) return false;
     for (double d = 0; d <= ramp.length(); d += Math.max(.5, ramp.length() / 24)) {
       Sample a = RoadStructures.sample(ramp, d);
@@ -193,7 +194,7 @@ public final class RoadJunction {
         result.add(other);
         continue;
       }
-      if (!other.settings().style().ramp()) continue;
+      if (!other.settings().style().ramp()||other.settings().style().connectorRamp()) continue;
       for (int i = 0; i < other.samples().size(); i += 6) {
         Sample p = other.samples().get(i);
         if (!RoadQueries.contains(road, p.center(), 0, .05)) continue;
@@ -213,6 +214,7 @@ public final class RoadJunction {
   }
 
   public static List<Paint> arrows(Mesh ramp, List<Mesh> neighbors, List<Mesh> crossings) {
+    if(ramp.settings().style().connectorRamp())return LaneRampPaint.arrows(ramp,neighbors);
     if(MultiFanPaint.applies(ramp))return List.of();
     if (RoadProfile.modern(ramp.settings().style())) {
       List<Paint> out = new ArrayList<>();
@@ -381,7 +383,7 @@ public final class RoadJunction {
 
   public static List<Paint> markings(Mesh ramp, List<Mesh> hosts, List<Mesh> neighbors, boolean mainOwned) {
     if(MultiFanPaint.applies(ramp))return MultiFanPaint.markings(ramp,neighbors);
-    if (!ramp.settings().style().ramp()) {
+    if (!ramp.settings().style().ramp()||ramp.settings().style().connectorRamp()) {
       List<Paint> out = terminalMarkings(ramp);
       if (mainOwned) mainGuides(out, ramp, neighbors);
       return out;

@@ -192,7 +192,7 @@ public final class RoadStructures {
     mesh=RoadStreetscape.resolve(mesh,ground);
     boolean modern = RoadProfile.modern(mesh.settings().style());
     boolean highway =
-        RoadProfile.catalog(mesh.settings().style()).type() == RoadProfile.Type.HIGHWAY;
+        RoadProfile.highway(mesh.settings().style());
     if (!modern && mesh.settings().structure() == Structure.GROUND) return List.of();
     List<Part> out = new ArrayList<>();
     // Accumulate each continuous exposed edge before creating rail parts. Tiny AUTO islands
@@ -260,7 +260,7 @@ public final class RoadStructures {
         double d = target + shift;
         if (d < 0 || d >= mesh.length() || d - previous < 10) continue;
         Sample s = sample(mesh, d);
-        var support=mesh.settings().style().ramp()?RoadSupports.ramp(s,mesh.settings().thickness(),ground):RoadSupports.clearStandard(s,mesh.settings().thickness(),ground);
+        var support=mesh.settings().style().ramp()&&!mesh.settings().style().connectorRamp()?RoadSupports.ramp(s,mesh.settings().thickness(),ground):RoadSupports.clearStandard(s,mesh.settings().thickness(),ground);
         if(support.isEmpty()||support.stream().anyMatch(ground::blocked))continue;
         out.addAll(support);
         previous = d;
@@ -276,7 +276,7 @@ public final class RoadStructures {
     double length=run.stream().mapToDouble(r->r.a.distance(r.b)).sum();
     if(modern && mesh.settings().options().lanePoints().link()==null && mesh.settings().options().lanePoints().openings().isEmpty() && mesh.length()>8 && length<3
         && mesh.settings().options().outerRail()==RoadProfile.OuterRail.AUTO)return;
-    if(modern&&!mesh.settings().style().ramp()&&mesh.settings().options().outerRail().sound(side)){
+    if(modern&&(!mesh.settings().style().ramp()||mesh.settings().style().connectorRamp())&&mesh.settings().options().outerRail().sound(side)){
       var ordinary=new ArrayList<RailSpan>();
       for(int i=0;i<run.size();){var first=run.get(i);
         if(!first.raised()&&mesh.settings().structure()!=Structure.BRIDGE){ordinary.add(first);i++;continue;}
@@ -349,7 +349,7 @@ public final class RoadStructures {
   /** Furniture is baked once together with the collision; never generated in the render loop. */
   private static void furniture(Mesh mesh, Ground ground, List<Part> out, RoadFurniture.Phase phase) {
     var profile = RoadProfile.catalog(mesh.settings().style());
-    boolean highway = profile.type() == RoadProfile.Type.HIGHWAY;
+    boolean highway = RoadProfile.highway(mesh.settings().style());
     for (double d = 0; d < mesh.length() - 1e-6; d += 2) {
       Sample a = sample(mesh, d), b = sample(mesh, Math.min(mesh.length(), d + 2));
       var la = RoadProfile.layout(mesh, a);
