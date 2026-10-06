@@ -1,15 +1,15 @@
-# Spline Roads 0.40.13-alpha
+# Spline Roads 0.40.14-alpha — Q2统一实机候选
 
-Minecraft 1.20.1 / Forge 47.4.20 / Java17。当前交付源码和JAR精确生产提交：`16cebd055dcf69e2605b8e3244fe81dbb8c220b2`；专用CI `37430977987` 已完成完整Forge构建和新旧回归，下载产物/摘要/源码字节已核验。本README等验收文档晚于该生产构建提交，不冒充在其源码ZIP内。
+Minecraft Java1.20.1 / Forge47.4.20 / JDK17。精确源码与JAR：e87cec55171ed247db78c8e7951c5242713ed164；最终CI37437611241完整构建及回归通过，下载产物已核验。证据见 [验证记录](docs/checkpoints/q2close422-verified.json)，全部24项与新操作见 [统一实机清单](docs/issues/problem2-unified-0414-test.md)。
 
-本轮恢复0.40.12自由匝道编辑入口、旧Link精确宽度和显式AUTO龙门架补正；新增连接器专属坡比：普通默认20%/超限25%，涉及高速默认原15%/超限20%，开关默认关闭。服务器按真实两端及关联链判定，并在生成、升降拟合及最终路面验证；自动立交不受影响。定向左转保留实际LEFT轨迹和请求诊断，不再漏出内部镜像求解的右转空间文字。
+剩余Q2-01/06/19与10/17/21本轮一并实现：混宽盲道、世界相对VBO雾距、独立外侧合流缩减形成补入空位、局部端口坡度、半幅支承分类和Link共面标线归属。其余Q2既有实现保留并回归；并非用户原存档已验收。Q3 terrain与多线程继续搁置。
 
-当前《问题2》仍全P1，《问题3》terrain及多线程全P2，必须先处理完P1。完整状态见 `docs/issues/problem2-batch6-status.md`，实际范围见 `docs/checkpoints/grade421-release.md`，构建证据见 `docs/checkpoints/grade421-verified.json`，续接见 `PROGRESS.md`。
+新操作在手动蓝色车道点选择“外侧合流缩减”，默认32格；先放好下游补入目标点，再缩减及REPLACE。原整车道分离限制不变，临时保留分离仍任意槽位。同向唯一车道不可缩减，也不可导入已关闭邻道。
+
+存档41/协议59。先备份世界副本，客户端/服务端同时更新，不同时装两份SR，不用旧版打开新版保存数据。旧设施可能需明确更新，不全图载入重建。
 
 ```bash
-bash tools/check_grade421.sh
+bash tools/check_q2final422.sh
 ```
 
-该入口包含实际Forge compileJava/compileGameTestJava/jar/reobfJar；分层数学/规划/控件测试有显式地形、NBT和Widget适配器。没有真实Minecraft客户端、GPU/光影、方块写入、磁盘保存重进或多人验收。
-
-**存档40/协议58。先备份世界，客户端和服务端同时更新，不用旧版打开新版保存数据。** 不在载入旧存档时全图重建；编辑旧连接会按新类型与规则检查。资源与许可保持。
+该入口包含旧回归、完整Forge四项构建与新六项测试。明确的Ground/NBT/index适配器不进入生产包。未运行真实Minecraft/GLSL/GPU、世界写入、水流、磁盘保存重进、车辆、多人或FPS。先依统一实机清单验收，再处理新反馈。
