@@ -1,0 +1,82 @@
+name: SR live feedback 423 preserved candidate
+on:
+  push:
+    branches: [chat/sr-0402]
+    paths: ['tools/patches/live423s1*', '.github/workflows/sr-live423-stage1.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 3
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: save
+        run: |
+          python - <<'PY'
+          import base64,hashlib,lzma,subprocess
+          from pathlib import Path
+          subprocess.run(['git','diff','--exit-code','eafa18a1322665e7eeb60b8c7d5f36345bf500a2','--','src','build.gradle','AGENTS.md','tools/model-test-support'],check=True)
+          text=''.join(Path('tools/patches/live423s1.xz64.'+str(i)).read_text() for i in range(2))
+          patch=lzma.decompress(base64.b64decode(text,validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='06b36e71b256e8fbae5f44622b536bc6b39acad6ccddfbdada78407c88718574'
+          subprocess.run(['git','apply','--exclude=PROGRESS.md','--check','-'],input=patch,check=True)
+          subprocess.run(['git','apply','--exclude=PROGRESS.md','-'],input=patch,check=True)
+          Path('PROGRESS.md').write_text('# SR 当前：0.40.15 实机反馈修复 WIP\n\n恢复开始UTC2026-10-06T10:16:32Z。生产起点e87cec55，远端起点eafa18a。用户反馈就是继续修代码的指令；无需过程确认。\n\n已保存候选：全路径受限坡线、EXTRA其他车道保护、停止全宿主钉高、FLOW独立枚举、完整事务写入前dry-run预览、B后真实结构判定、孔边栏杆、普通道路共享绿化床。新增专项回归、FLOW和护栏接缝/标线仍在补查，不能当成完整已验收版本。候选0.40.15/save42/net60。\n\n现有核心及Ramp39Model/Compound/Widget通过，明确世界/NBT适配器，未运行真实游戏。当前CI尝试真实Forge编译，结果尚未核实。最新截图全范围见docs/issues/0414-live-feedback-423-resume.md。\n\n下一步：核对本次CI、补新截图对应回归及FLOW/栏杆/标线边界。Q3 terrain和多线程仍暂停；不关闭坡比/净空/依赖检查。每小阶段保存，45分钟收尾50分钟暂停。旧0.40.14验收记录仍在341eb32f及docs/checkpoints/q2close422-verified.json，不以旧成功否定新反馈。\n',encoding='utf8')
+          subprocess.run(['git','add','--','src','build.gradle','AGENTS.md','PROGRESS.md','docs/issues/0414-live-feedback-423-resume.md','tools/model-test-support/com/sora/splineroads/world/RoadData.java'],check=True)
+          PY
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git diff --cached --check
+          git commit -m 'WIP: preserve global ramp corridor, full preflight and physical closure fixes'
+          git push origin HEAD:refs/heads/chat/sr-0402
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  verify:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Actual core and model regression
+        run: |
+          mkdir -p build/checkpoint-logs
+          set -o pipefail
+          bash tools/test_ramp39_model.sh 2>&1 | tee build/checkpoint-logs/core-model.log
+      - name: Complete Forge API compilation
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          set -o pipefail
+          bash gradlew --no-daemon compileJava compileGameTestJava jar reobfJar 2>&1 | tee build/checkpoint-logs/forge.log
+      - name: Preserve exact candidate source and results
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr-live423s1-logs-${{ github.sha }}
+          path: build/checkpoint-logs/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr-live423s1-WIP-jar-${{ github.sha }}
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 30
