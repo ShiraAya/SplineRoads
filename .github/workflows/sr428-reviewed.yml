@@ -1,0 +1,79 @@
+name: SR15 reviewed integrated RC verification
+on:
+  push:
+    branches: [SR-0.40.15]
+    paths: ['tools/patches/sr428-reviewed-guides.xz64', '.github/workflows/sr428-reviewed.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    if: github.ref == 'refs/heads/SR-0.40.15'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 3
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - id: save
+        run: |
+          git config core.whitespace blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+          python - <<'PY'
+          import base64, hashlib, lzma, subprocess
+          from pathlib import Path
+          subprocess.run(['git','diff','--exit-code','32c6e9807ea775ccc463764e461eee5ab3ed50f7','--','src','build.gradle'],check=True)
+          patch=lzma.decompress(base64.b64decode(Path('tools/patches/sr428-reviewed-guides.xz64').read_text().strip(),validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='a80c91645eba519cf6f7792ea2fda6afee6d3d6a02419e1ca3fb6ee3ff60bdb6'
+          subprocess.run(['git','apply','--check','-'],input=patch,check=True)
+          subprocess.run(['git','apply','-'],input=patch,check=True)
+          p=Path('PROGRESS.md');p.write_text('# SR15 reviewed integrated RC — final verification pending\n\nThe integration review additionally reproduced real main-road guide generation at DETACH/TEMPORARY source contacts. It now suppresses auxiliary merge guides only for the actual departing host, not genuine arrival/BRANCH/EXTRA guidance. Added 16 identity cases; the pre-fix RoadJunction fails the same source-guides test. Final full CI must cover this reviewed code, not the earlier 32c6e980 candidate. Version remains 0.40.16-alpha-rc1, protocol62; no new JAR has been delivered yet.\n\n'+p.read_text(),encoding='utf-8')
+          subprocess.run(['git','add','--','src','PROGRESS.md'],check=True)
+          PY
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git diff --cached --check
+          git commit -m 'fix: distinguish actual whole-lane source contacts from auxiliary merge guidance'
+          git push origin HEAD:refs/heads/SR-0.40.15
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  verify:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Actual Forge and all old and integrated regressions
+        run: |
+          mkdir -p build/checkpoint-logs
+          set -o pipefail
+          bash tools/check_sr428.sh 2>&1 | tee build/checkpoint-logs/sr428-reviewed-full.log
+      - name: Preserve exact source and evidence
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+          sha256sum build/libs/*.jar > build/checkpoint-logs/JAR-SHA256.txt 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr428-reviewed-source-logs-${{ needs.preserve.outputs.saved }}
+          path: build/checkpoint-logs/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr428-reviewed-jars-${{ needs.preserve.outputs.saved }}
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 30
