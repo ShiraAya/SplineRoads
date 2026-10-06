@@ -1,0 +1,80 @@
+name: SR15 stage1 live section verification
+on:
+  push:
+    branches: [SR-0.40.15]
+    paths: ['tools/patches/sr425-stage1.xz64', '.github/workflows/sr425-stage1.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    if: github.ref == 'refs/heads/SR-0.40.15'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 3
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - id: save
+        run: |
+          python - <<'PY'
+          import base64, hashlib, lzma, subprocess
+          from pathlib import Path
+          subprocess.run(['git','diff','--exit-code','376ceae81ee03fcfb743b22f2e7910adc1ac3eaa','--','src'],check=True)
+          patch=lzma.decompress(base64.b64decode(Path('tools/patches/sr425-stage1.xz64').read_text(),validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='85f92d7ae578b7768b7ac891f1f8016db4ed81d7700f0b165d37cd12a31ec493'
+          subprocess.run(['git','apply','--check','-'],input=patch,check=True)
+          subprocess.run(['git','apply','-'],input=patch,check=True)
+          p=Path('PROGRESS.md')
+          old=p.read_text()
+          p.write_text('# SR-0.40.15 repair in progress — stage1 saved\n\nUser authorized implementation on 2026-10-06. Base 376ceae.\n\nSaved actual RoadIndex canonical-mesh/reference fix, current-station live-lane/outside identity, sequential merge validation and final lane-point reconciliation. See docs/checkpoints/SR15-stage1-425.md. Local old regression and new actual-index adapter regression passed. The same new test fails against old RoadIndex with lost reference. Full CI is pending; NOT all 14 issues fixed and NOT Minecraft acceptance. Per-direction creation sliders and actual endpoint continuation remain unfinished.\n\nCurrent entry: bash tools/check_sr425.sh. Continue directly on SR-0.40.15; no changes to other branches.\n\n---\n## Historical pre-implementation checkpoint\n'+old)
+          subprocess.run(['git','add','--','src','tools/check_sr425.sh','tools/sr425-validation','docs/checkpoints/SR15-stage1-425.md','PROGRESS.md'],check=True)
+          PY
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git diff --cached --check
+          git commit -m 'fix: retain canonical narrowed-lane mesh and dynamic live outer identity'
+          git push origin HEAD:refs/heads/SR-0.40.15
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  verify:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Actual Forge build and full old/new regression
+        run: |
+          mkdir -p build/checkpoint-logs
+          set -o pipefail
+          bash tools/check_sr425.sh 2>&1 | tee build/checkpoint-logs/sr425-full.log
+      - name: Preserve exact source and evidence
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+          sha256sum build/libs/*.jar > build/checkpoint-logs/JAR-SHA256.txt 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr425-stage1-source-logs-${{ needs.preserve.outputs.saved }}
+          path: build/checkpoint-logs/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr425-stage1-jars-${{ needs.preserve.outputs.saved }}
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 30
