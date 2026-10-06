@@ -1,0 +1,64 @@
+name: SR P1 rail boundary stage
+on:
+  push:
+    branches: [chat/sr-0402]
+    paths: ['tools/patches/rail419-stage1.z64', '.github/workflows/sr-rail419-stage.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 3
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: save
+        run: |
+          python - <<'PY'
+          import base64,gzip,hashlib,subprocess
+          from pathlib import Path
+          p=gzip.decompress(base64.b64decode(Path('tools/patches/rail419-stage1.z64').read_text()))
+          assert hashlib.sha256(p).hexdigest()=='ad6cae2e3a689d1b8146fcb63c33f97073316271df401d951e262f55389ce2a8'
+          subprocess.run(['git','apply','--check','-'],input=p,check=True)
+          subprocess.run(['git','apply','-'],input=p,check=True)
+          PY
+          git diff --check
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git add src
+          git commit -m 'WIP: preserve exact union-edge clipping for lane-connector rails before validation'
+          git push origin HEAD:refs/heads/chat/sr-0402
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  verify:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - run: bash tools/check_closure418.sh
+      - if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr-rail419-stage-logs-${{ github.sha }}
+          path: build/checkpoint-logs/
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr-rail419-stage-jar-${{ github.sha }}
+          path: build/libs/*.jar
+          if-no-files-found: error
