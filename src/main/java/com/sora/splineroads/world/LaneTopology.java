@@ -45,7 +45,7 @@ public final class LaneTopology {
   public static void initialize(RoadData data){var all=records(data);LaneCrossSections.reconcile(all);assignPriorities(all);var ends=endpointOwners(all.values());for(var r:new ArrayList<>(all.values()))if(independent(r)){var next=automatic(r,ends);if(!next.equals(data.index.roads.get(r.id()).record)){data.index.put(RoadIndex.Built.loading(next));if(data.streets.containsKey(r.id()))data.streets.put(r.id(),data.streets.get(r.id()).withLanePoints(metadata(next)));data.setDirty();}}}
   private static RoadRecord automatic(RoadRecord r,Map<net.minecraft.core.BlockPos,Set<UUID>> ends){
     var md=metadata(r);List<LanePoints.Point> points=new ArrayList<>();for(var p:md.points())if(!p.automatic())points.add(LanePoints.snap(r.mesh(),p));
-    Mesh mesh=r.mesh();int lanes=RoadProfile.catalog(r.settings().style()).lanes();
+    Mesh mesh=r.mesh();int lanes=RoadProfile.catalog(r.settings()).lanes();
     for(boolean first:new boolean[]{true,false})if(free(r,mesh,first,ends))for(int i=0;i<lanes;i++){
       double station=first?0:mesh.length();if(!LaneSections.active(mesh,station,i))continue;
       var origin=first?LanePoints.Origin.AUTOMATIC_START:LanePoints.Origin.AUTOMATIC_END;int lane=i;
@@ -126,7 +126,7 @@ public final class LaneTopology {
         RoadRecord target=r;
         if((q.sample().distance()<1e-6&&beyond<-.05||q.sample().distance()>mesh.length()-1e-6&&beyond>.05)&&data.index.roads.containsKey(r.id())){
           var old=data.index.roads.get(r.id()).record;
-          for(var candidate:all.values())if(!candidate.id().equals(r.id())&&normal(candidate)&&adjacentBefore(data,candidate,old)&&p.lane()<RoadProfile.catalog(candidate.settings().style()).lanes()){
+          for(var candidate:all.values())if(!candidate.id().equals(r.id())&&normal(candidate)&&adjacentBefore(data,candidate,old)&&p.lane()<RoadProfile.catalog(candidate.settings()).lanes()){
             var v=RoadQueries.horizontal(candidate.rawMesh(),p.position());double along=p.position().sub(v.sample().center()).dot(v.tangent().horizontalUnit());if(v.horizontalDistance()<v.sample().halfWidth()&&!(v.sample().distance()<1e-6&&along<-.05||v.sample().distance()>candidate.mesh().length()-1e-6&&along>.05)){target=candidate;break;}
           }
         }
@@ -140,6 +140,7 @@ public final class LaneTopology {
     }
     for(var r:new ArrayList<>(all.values())){var l=metadata(r).link();if(l==null)continue;var from=migrations.getOrDefault(l.from(),l.from());var to=migrations.getOrDefault(l.to(),l.to());if(!from.equals(l.from())||!to.equals(l.to()))all.put(r.id(),r.withLanePoints(metadata(r).link(new LanePoints.Link(from,to,l.options(),l.junctionMouth(),l.targetOffset(),l.protectedMerge(),l.rectangularClosure()))));}
     LaneCrossSections.reconcile(all,scope);
+    RoadContinuations.reconcile(records(data),all,scope);
     var ends=endpointOwners(all.values());
     for(var r:new ArrayList<>(all.values()))if(independent(r)&&scope.contains(r.id()))all.put(r.id(),automatic(r,ends));
     // A missing used automatic point is a normal-road closure, never a ramp unlock.

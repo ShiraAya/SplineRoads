@@ -41,19 +41,20 @@ public final class YJunctionTool extends Item {
       if(!hosts.isEmpty()){
         var host=hosts.get(0);if(p!=null)RoadData.requireOwner(p,host.record.owner());settings=RoadData.endpointSection(host,pos);
         if(host.record.assembly()==null)settings=settings.options(settings.options().sidewalk(host.record.settings().options().sidewalk()));
-        var end=host.record.a().equals(pos)?host.mesh.first():host.mesh.last();V outward=end.left().left().mul(host.record.a().equals(pos)?1:-1);
+        var actual=host.record.caps(0).mesh();var end=host.record.a().equals(pos)?actual.first():actual.last();V outward=end.left().left().mul(host.record.a().equals(pos)?1:-1);
         V direction=i==1?outward.mul(-1):outward; // A points toward junction, B away, C toward junction.
         if(i==0)direction=outward;
         double grade=(host.record.a().equals(pos)?host.record.start().grade():host.record.end().grade())*(host.record.a().equals(pos)?-1:1)*(i==1?-1:1);
-        V endpoint=host.record.a().equals(pos)?host.record.start().position():host.record.end().position();
+        V endpoint=end.center();
         node=new Node(endpoint,YJunctionPlanner.yaw(direction),grade);
+        if(direction.left().dot(end.left())<0)settings=RoadEndpointSections.orient(settings,true);
         if(i>0&&((i==1&&!host.record.a().equals(pos))||(i==2&&!host.record.b().equals(pos))))throw new IllegalArgumentException((i==1?"B":"C")+" 单行道方向不符：B 应从端点驶出，C 应驶入端点");
         signature=31*signature+GantryTool.signature(host.record);
       }else {
-        if(i>0&&!t.contains("Profile"+i)){var main=RoadRecord.readSettings(t.getCompound("Profile0"));var cp=RoadProfile.catalog(main.style());var style=RoadProfile.choose(cp.type(),cp.lanes()/2,false,Median.NONE,cp.shoulder());settings=new Settings(Mode.CURVE,style,style.defaultWidth(),main.thickness(),.4,90).structure(main.structure()).options(main.options().ends(RoadTransitions.Ends.NONE).laneLines(List.of()));}
+        if(i>0&&!t.contains("Profile"+i)){var main=RoadRecord.readSettings(t.getCompound("Profile0"));var cp=RoadProfile.catalog(main);var count=new RoadLanes.Counts(i==1?RoadLanes.counts(main).forward():RoadLanes.counts(main).reverse(),0);var style=RoadLanes.carrier(cp.type(),count,Median.NONE);var o=main.options().lanes(count).ends(RoadTransitions.Ends.NONE).laneLines(List.of());settings=new Settings(Mode.CURVE,style,RoadProfile.width(style,o,RoadProfile.layout(main,main.width()).laneWidth()),main.thickness(),.4,90).structure(main.structure()).options(o);}
         if(!entity.headingLocked){V av=RoadData.requireNode(l,BlockPos.of(points[0]),p).constructionNode().position();V bv=RoadData.requireNode(l,BlockPos.of(points[1]),p).constructionNode().position();V cv=RoadData.requireNode(l,BlockPos.of(points[2]),p).constructionNode().position();V direction=i==0?bv.add(cv).mul(.5).sub(av):i==1?bv.sub(av):av.sub(cv);node=new Node(node.position(),YJunctionPlanner.yaw(direction),0);}
       }
-      nodes.add(RoadRecord.writeNode(node));t.put("Profile"+i,RoadRecord.writeSettings(settings));signature=31*signature+node.hashCode();
+      t.putBoolean("LockedProfile"+i,!hosts.isEmpty());nodes.add(RoadRecord.writeNode(node));t.put("Profile"+i,RoadRecord.writeSettings(settings));signature=31*signature+node.hashCode();
     }
     t.put("Nodes",nodes);t.putInt("Signature",signature);return t;
   }
@@ -65,6 +66,7 @@ public final class YJunctionTool extends Item {
     if(command.getBoolean("Delete")){if(id==null)throw new IllegalArgumentException("尚未建造");Interchanges.remove(l,p,id);return "Y 字路口已删除";}
     try(var work=RoadWorkChunks.open(l)){
       var t=payload(l,p,points,id);if(t.getInt("Signature")!=command.getInt("Signature"))throw new IllegalArgumentException("端点或相接道路已改变，请重新选择");
+      for(int i=0;i<3;i++)if(!t.getBoolean("LockedProfile"+i)&&command.contains("Profile"+i)){var requested=RoadRecord.readSettings(command.getCompound("Profile"+i));requested.validate();t.put("Profile"+i,RoadRecord.writeSettings(requested));}
       double tension=command.getDouble("Tension");t.putDouble("Tension",tension);var n=t.getList("Nodes",Tag.TAG_COMPOUND);var plan=YJunctionPlanner.plan(RoadRecord.readNode(n.getCompound(0)),RoadRecord.readNode(n.getCompound(1)),RoadRecord.readNode(n.getCompound(2)),RoadRecord.readSettings(t.getCompound("Profile0")),RoadRecord.readSettings(t.getCompound("Profile1")),RoadRecord.readSettings(t.getCompound("Profile2")),tension);
       UUID group=id==null?UUID.randomUUID():id,owner=p==null?new UUID(0,0):p.getUUID();t.putUUID("Id",group);t.putUUID("Owner",owner);
       BlockPos a=BlockPos.of(points[0]),b=BlockPos.of(points[1]),c=BlockPos.of(points[2]),throat=BlockPos.containing(plan.throat().position().x(),plan.throat().position().y(),plan.throat().position().z());

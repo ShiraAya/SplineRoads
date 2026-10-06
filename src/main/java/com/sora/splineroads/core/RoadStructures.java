@@ -230,6 +230,7 @@ public final class RoadStructures {
 
     if (RoadInfrastructure.customBridge(mesh)){out.addAll(RoadSidewalks.parts(mesh,mesh.settings().options().sidewalk(),ground,out).stream().filter(p->!ground.blocked(p)).toList());return List.copyOf(out);}
     out.addAll(edgeSlabs(mesh,ground));
+    out.addAll(groundSkirts(mesh,ground));
     out.addAll(supports(mesh,ground,phase));
     out.addAll(RoadSidewalks.parts(mesh,mesh.settings().options().sidewalk(),ground,out).stream().filter(p->!ground.blocked(p)).toList());
     return List.copyOf(out);
@@ -248,6 +249,31 @@ public final class RoadStructures {
         if(!ground.joined(mid.at(side*(mid.halfWidth()+.2),0))&&!ground.blocked(part))out.add(part);
       }
     }return List.copyOf(out);
+  }
+
+  /** Seal only shallow exposed gaps between the deck underside and its supporting
+   * terrain. The AUTO elevated threshold is intentionally larger than these gaps;
+   * previously it left a daylight slit at the foot of a gentle ramp. Never fill a
+   * real bridge opening, tunnel, or another road's vehicle corridor. */
+  public static List<Part> groundSkirts(Mesh mesh,Ground ground){
+    if(mesh.settings().structure()==Structure.BRIDGE||mesh.settings().structure()==Structure.TUNNEL)
+      return List.of();
+    var out=new ArrayList<Part>();double depth=mesh.settings().thickness();
+    for(double d=mesh.first().distance();d<mesh.last().distance()-1e-7;d+=.5){
+      var a=sample(mesh,d);var b=sample(mesh,Math.min(mesh.last().distance(),d+.5));
+      for(int side:new int[]{-1,1}){
+        V aa=a.at(side*(a.halfWidth()-.035),depth),bb=b.at(side*(b.halfWidth()-.035),depth);
+        double ga=ground.top(aa.x(),aa.z(),aa.y()+depth),gb=ground.top(bb.x(),bb.z(),bb.y()+depth);
+        double gapA=aa.y()-ga,gapB=bb.y()-gb;
+        if(!RoadGeometry.finite(ga,gb)||Math.max(gapA,gapB)<=.005||Math.min(gapA,gapB)<-.025
+            ||Math.max(gapA,gapB)>.6)continue;
+        double height=Math.max(gapA,gapB)+.02;
+        var part=new Part(new V(aa.x(),ga-.01,aa.z()),new V(bb.x(),gb-.01,bb.z()),.10,height,false,Material.CONCRETE)
+            .frames(a.left().mul(.05),b.left().mul(.05));
+        if(!ground.blocked(part))out.add(part);
+      }
+    }
+    return List.copyOf(out);
   }
 
   /** Shared by ordinary roads and elevated junction surfaces. */

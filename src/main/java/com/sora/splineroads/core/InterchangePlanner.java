@@ -237,7 +237,7 @@ public final class InterchangePlanner {
     this.options = options;
     for (Settings s : main) s.validate();
     for (Settings s : main)
-      if (s.style().ramp() || !RoadProfile.catalog(s.style()).twoWay())
+      if (s.style().ramp() || !RoadProfile.catalog(s).twoWay())
         throw new IllegalArgumentException("预设立交的两条主路需要双向道路");
     V ab = nodes[1].position().sub(nodes[0].position()),
         cd = nodes[3].position().sub(nodes[2].position());

@@ -168,7 +168,10 @@ public final class LaneSections {
     double shift=(trimLow-trimHigh)/2,half=s.halfWidth()-(trimLow+trimHigh)/2;
     double min=layout.motorMin()+trimLow-shift,max=layout.motorMax()-trimHigh-shift;
     int retained=count;for(double value:removal)if(value>=.5)retained--;
-    var dividers=new ArrayList<Double>();for(double d:layout.dividers())dividers.add(Math.max(min,Math.min(max,d-shift)));
+    // A removed lane does not drag its old divider onto the moving outer edge.
+    // Keep the authored axis; paint is clipped by actual pavement. Clamping created
+    // a false diagonal merge guide during whole-lane DETACH (including reverse traffic).
+    var dividers=new ArrayList<Double>();for(double d:layout.dividers())dividers.add(d-shift);
     var catalog=c.twoWay()?c:new RoadProfile.Catalog(c.type(),Math.max(1,retained),false,c.median(),c.shoulder());
     return new Section(shift,half,new RoadProfile.Layout(catalog,layout.laneWidth(),layout.median(),min,max,
       layout.cycleWidth(),layout.curbWidth(),layout.shoulderWidth(),layout.outside(),List.copyOf(dividers),layout.medianCenter()-shift));

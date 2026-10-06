@@ -65,7 +65,7 @@ public final class LaneReopening {
   }
   /** Authored stations are retained even for curved roads. */
   public static Mesh laneSweep(Mesh host,int slot){
-    var raw=LaneSections.reference(host);var samples=new ArrayList<Sample>();int count=RoadProfile.catalog(raw.settings().style()).lanes();
+    var raw=LaneSections.reference(host);var samples=new ArrayList<Sample>();int count=RoadProfile.catalog(raw.settings()).lanes();
     for(var s:raw.samples()){
       if(RoadProfile.layout(raw,s).catalog().lanes()!=count)throw new IllegalArgumentException("自动恢复暂不跨车道数变化接缝，请在同一稳定断面内设置分离范围");
       var lane=LanePoints.lane(raw,s.distance(),slot);samples.add(new Sample(lane.position(),s.left(),s.distance(),lane.width()/2+SIDE_MARGIN));

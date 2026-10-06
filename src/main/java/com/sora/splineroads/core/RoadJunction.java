@@ -286,7 +286,7 @@ public final class RoadJunction {
         arrow(out, s.at(lateral, 0), s.left().left().mul(-sign), s.left().mul(sign));
       }
     }
-    if (merge != null) for (int lane = 0; lane < RoadProfile.catalog(mesh.settings().style()).lanes(); lane++) {
+    if (merge != null) for (int lane = 0; lane < RoadProfile.catalog(mesh.settings()).lanes(); lane++) {
       double back = Math.min(merge.nose - 2, Math.max(36, merge.nose * .60));
       // A two-lane ramp may expose its inner motor lane only just beyond the fork nose.
       for (; back < Math.max(merge.nose + 40, 110) && back < mesh.length() - 4; back += 1) {
@@ -543,7 +543,7 @@ public final class RoadJunction {
     double limit=forkLimit(pair);
     for(double d=0;d<limit;d+=.5){double e=Math.min(limit,d+.5);Sample aa=pair.a.at(d),bb=paired(pair.a,pair.b,d),ab=pair.a.at(e),bc=paired(pair.a,pair.b,e);
       boolean dash=((d+e)/2)%6<3;
-      int lanesA=RoadProfile.catalog(pair.a.mesh.settings().style()).lanes(),lanesB=RoadProfile.catalog(pair.b.mesh.settings().style()).lanes();
+      int lanesA=RoadProfile.catalog(pair.a.mesh.settings()).lanes(),lanesB=RoadProfile.catalog(pair.b.mesh.settings()).lanes();
       double separation=aa.center().sub(bb.center()).horizontalLength();
       double lane=Math.max(2.8,Math.min(pair.a.mesh.settings().width()/Math.max(1,lanesA),pair.b.mesh.settings().width()/Math.max(1,lanesB))*.8);
       if(d<pair.nose&&dash&&(lanesA>1||lanesB>1||separation>lane))forkStroke(out,median(aa,bb),median(ab,bc),.15,pair);
@@ -556,8 +556,8 @@ public final class RoadJunction {
 
   private static boolean twoLaneRamps(Mesh a, Mesh b) {
     return a.settings().style().ramp() && b.settings().style().ramp()
-        && RoadProfile.catalog(a.settings().style()).lanes() == 2
-        && RoadProfile.catalog(b.settings().style()).lanes() == 2;
+        && RoadProfile.catalog(a.settings()).lanes() == 2
+        && RoadProfile.catalog(b.settings()).lanes() == 2;
   }
 
   private static int meshOrder(Mesh a, Mesh b) {
@@ -585,8 +585,8 @@ public final class RoadJunction {
   }
 
   private static boolean twoLaneFork(Join pair) {
-    return RoadProfile.catalog(pair.a.mesh.settings().style()).lanes() == 2
-        && RoadProfile.catalog(pair.b.mesh.settings().style()).lanes() == 2;
+    return RoadProfile.catalog(pair.a.mesh.settings()).lanes() == 2
+        && RoadProfile.catalog(pair.b.mesh.settings()).lanes() == 2;
   }
 
   private static double forkLimit(Join pair) {

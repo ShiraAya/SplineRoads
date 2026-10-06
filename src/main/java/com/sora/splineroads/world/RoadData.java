@@ -1041,7 +1041,7 @@ public final class RoadData extends SavedData {
       timing.stage("structure_candidate_index");
       for (int i = 0; i < built.size(); i++) {
         var r = built.get(i);
-        RoadRecord planned = StructurePlanner.plan(level, r, planning, terrainFill, terrainCache,structureLookup);
+        RoadRecord planned = StructurePlanner.plan(level, r, planning, terrainFill, terrainOriginal, terrainCache,structureLookup);
         var next = r.planned(planned);
         built.set(i, next);
         int slot=planning.indexOf(r);planning.set(slot,next);structureLookup.replace(slot,next);
@@ -1054,7 +1054,7 @@ public final class RoadData extends SavedData {
         LaneTopology.reconcile(this,built,removed);
         planning.clear();for(var old:index.roads.values())if(!removed.contains(old.record.id()))planning.add(old);planning.addAll(built);
         structureLookup=new RoadPlanningIndex(planning,built.size());
-        for(int i=0;i<built.size();i++){var r=built.get(i);var next=r.planned(StructurePlanner.plan(level,r,planning,terrainFill,terrainCache,structureLookup));built.set(i,next);int slot=planning.indexOf(r);planning.set(slot,next);structureLookup.replace(slot,next);}
+        for(int i=0;i<built.size();i++){var r=built.get(i);var next=r.planned(StructurePlanner.plan(level,r,planning,terrainFill,terrainOriginal,terrainCache,structureLookup));built.set(i,next);int slot=planning.indexOf(r);planning.set(slot,next);structureLookup.replace(slot,next);}
       }
       timing.stage("dependent_replanning");
       var noseCaps =

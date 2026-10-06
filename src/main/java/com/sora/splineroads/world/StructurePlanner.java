@@ -21,6 +21,12 @@ final class StructurePlanner {
 
   static RoadRecord plan(ServerLevel level,RoadIndex.Built built,List<RoadIndex.Built> all,
       Map<Long,BlockState> originals,Map<BlockPos,List<AABB>> terrainCache,RoadPlanningIndex lookup) {
+    return plan(level,built,all,originals,Map.of(),terrainCache,lookup);
+  }
+
+  static RoadRecord plan(ServerLevel level,RoadIndex.Built built,List<RoadIndex.Built> all,
+      Map<Long,BlockState> retained,Map<Long,BlockState> originals,
+      Map<BlockPos,List<AABB>> terrainCache,RoadPlanningIndex lookup) {
     var nearby=lookup.near(built.mesh,3,built.record.id());
     // Only actual lane connectors opt into the new union-edge policy. Automatic
     // interchange/Y-fork semantics remain unchanged. UUID/depth gives one owner when
@@ -68,12 +74,10 @@ final class StructurePlanner {
                             BlockPos p = new BlockPos(key.getX(), y, key.getZ());
                             if (!level.hasChunkAt(p)) break;
                             BlockState state = level.getBlockState(p);
-                            if (RoadBlocks.isCollider(state) || state.is(SplineRoads.TUNNEL_AIR.get()))
-                              state =
-                                  originals.getOrDefault(
-                                      p.asLong(),
-                                      net.minecraft.world.level.block.Blocks.AIR
-                                          .defaultBlockState());
+                            state = RoadFoundation.source(p.asLong(),state,
+                                RoadBlocks.isCollider(state)||state.is(SplineRoads.TUNNEL_AIR.get()),
+                                state.isAir(),originals,retained,
+                                net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
                             if (state.is(net.minecraft.tags.BlockTags.LEAVES)
                                 || state.is(net.minecraft.tags.BlockTags.LOGS)
                                 || state.is(SplineRoads.NODE.get())

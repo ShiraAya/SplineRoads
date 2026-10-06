@@ -324,51 +324,19 @@ public final class InterchangeScreen extends Screen {
         button((axis == 2 ? "• " : "") + "CD 主路", x + half + 8, y, half, () -> axis = 2);
       }
       var road = mainSettings();
-      var catalog = RoadProfile.catalog(road.style());
-      button(
-          catalog.type() == RoadProfile.Type.HIGHWAY ? "高速道路 ▸" : "普通道路 ▸",
-          x,
-          y + 24,
-          half,
-          () -> {
-            var type =
-                catalog.type() == RoadProfile.Type.HIGHWAY
-                    ? RoadProfile.Type.ORDINARY
-                    : RoadProfile.Type.HIGHWAY;
-            changeStyle(
-                RoadProfile.choose(
-                    type,
-                    Math.max(type == RoadProfile.Type.HIGHWAY ? 4 : 2, catalog.lanes()),
-                    true,
-                    (catalog.median() == RoadProfile.Median.DASHED_YELLOW
-                            || catalog.median() == RoadProfile.Median.NONE)
-                        ? RoadProfile.Median.DOUBLE_YELLOW
-                        : catalog.median(),
-                    type == RoadProfile.Type.HIGHWAY));
-          });
-      button(
-          catalog.lanes() + " 车道 ▸",
-          x + half + 8,
-          y + 24,
-          half,
-          () -> {
-            int lanes =
-                catalog.lanes() == 6
-                    ? (catalog.type() == RoadProfile.Type.HIGHWAY ? 4 : 2)
-                    : catalog.lanes() + 2;
-            changeStyle(
-                RoadProfile.choose(
-                    catalog.type() == RoadProfile.Type.LEGACY
-                        ? RoadProfile.Type.ORDINARY
-                        : catalog.type(),
-                    lanes,
-                    true,
-                    (catalog.median() == RoadProfile.Median.DASHED_YELLOW
-                            || catalog.median() == RoadProfile.Median.NONE)
-                        ? RoadProfile.Median.DOUBLE_YELLOW
-                        : catalog.median(),
-                    catalog.shoulder()));
-          });
+      var catalog = RoadProfile.catalog(road);
+      button(catalog.type()==RoadProfile.Type.HIGHWAY?"高速道路 ▸":"普通道路 ▸",x,y+24,half,()->{
+        var type=catalog.type()==RoadProfile.Type.HIGHWAY?RoadProfile.Type.ORDINARY:RoadProfile.Type.HIGHWAY;
+        mainSettings(RoadLanes.configure(road,type,RoadLanes.counts(road),RoadProfile.layout(road,road.width()).laneWidth()));
+      });
+      button(RoadLanes.counts(road).label()+"…",x+half+8,y+24,half,()->{
+        final int editedAxis=axis;
+        minecraft.setScreen(new RoadLaneConfigScreen(this,catalog.type(),RoadLanes.counts(road),(type,counts)->{
+          axis=editedAxis;
+          mainSettings(RoadLanes.configure(mainSettings(),type,counts,RoadProfile.layout(road,road.width()).laneWidth()));
+          plan=null;stash();
+        },true));
+      });
       button(
           RoadProfile.medianName(catalog.median()) + " ▸",
           x,
@@ -382,15 +350,8 @@ public final class InterchangeScreen extends Screen {
                         RoadProfile.Median.DOUBLE_YELLOW,
                         RoadProfile.Median.RAIL,
                         RoadProfile.Median.GREEN);
-            changeStyle(
-                RoadProfile.choose(
-                    catalog.type() == RoadProfile.Type.LEGACY
-                        ? RoadProfile.Type.ORDINARY
-                        : catalog.type(),
-                    catalog.lanes(),
-                    true,
-                    medians.get((medians.indexOf(catalog.median()) + 1) % medians.size()),
-                    catalog.shoulder()));
+            changeStyle(RoadLanes.carrier(catalog.type(),RoadLanes.counts(road),
+                medians.get((medians.indexOf(catalog.median())+1)%medians.size())));
           });
       field("主路总宽 / 格", "mainWidth", road.width(), x, y + 72, half);
       field("路板厚度 / 格", "thickness", road.thickness(), x + half + 8, y + 72, half);

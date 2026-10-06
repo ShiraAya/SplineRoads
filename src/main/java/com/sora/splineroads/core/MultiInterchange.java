@@ -54,7 +54,7 @@ public final class MultiInterchange {
   private MultiInterchange(Node[] nodes,Settings[] main,Options options,double baseHeight){
     anchors=nodes.clone();n=nodes.length;settings=main.clone();this.options=options;
     if(n!=5&&n!=6||main.length!=3)throw new IllegalArgumentException("五、六向立交需要 AB、CD、E 或 EF 三组端点");
-    for(var s:settings){s.validate();if(!RoadProfile.catalog(s.style()).twoWay()||s.style().ramp())throw new IllegalArgumentException("主路必须为双向普通道路或高速道路");}
+    for(var s:settings){s.validate();if(!RoadProfile.catalog(s).twoWay()||s.style().ramp())throw new IllegalArgumentException("主路必须为双向普通道路或高速道路");}
     V a=nodes[0].position(),b=nodes[1].position(),c=nodes[2].position(),d=nodes[3].position();
     V ab=b.sub(a).horizontalUnit(),cd=d.sub(c).horizontalUnit();double det=cross(ab,cd);
     if(Math.abs(det)<.4)throw new IllegalArgumentException("AB 与 CD 夹角过小，请选择穿过同一中心的主路");
@@ -238,17 +238,19 @@ public final class MultiInterchange {
   private static void rHold(Route a,double start,double end){a.holdStart=Math.max(a.holdStart,start);a.holdEnd=Math.min(a.holdEnd,end);}
   private static void crossing(Route r,double distance){r.crossStart=Math.min(r.crossStart,distance);r.crossEnd=Math.max(r.crossEnd,distance);}
   private static String name(Route r){return "定向 "+(char)('A'+r.from)+" → "+(char)('A'+r.to);}
+  private static int directionLanes(Settings s,int arm,boolean arrival){var c=RoadLanes.counts(s);return (arm%2==0)!=arrival?c.forward():c.reverse();}
+  private static int directionSide(Settings s,int arm,boolean arrival){return ((arm%2==0)!=arrival?1:-1)*RoadProfile.trafficSign(s.options().leftTraffic());}
   private Route route(int from,int to){
     double sign=options.leftTraffic()?-1:1;V in=radial[from].mul(-1),out=radial[to];
     var a=RoadProfile.layout(settings[from/2],settings[from/2].width());var b=RoadProfile.layout(settings[to/2],settings[to/2].width());
-    if((from!=4||n!=5)&&a.catalog().lanes()/2<options.lanes()||(to!=4||n!=5)&&b.catalog().lanes()/2<options.lanes())throw new IllegalArgumentException("主路单向车道少于匝道车道，请增加主路车道或选择单车道匝道");
+    if((from!=4||n!=5)&&directionLanes(settings[from/2],from,false)<options.lanes()||(to!=4||n!=5)&&directionLanes(settings[to/2],to,true)<options.lanes())throw new IllegalArgumentException("主路单向车道少于匝道车道，请增加主路车道或选择单车道匝道");
     // Match the four-arm attachment: grow from the shoulder, never from a live
     // mainline lane. The five-arm E terminus instead supplies one common throat.
     boolean highwayA=a.catalog().type()==RoadProfile.Type.HIGHWAY;
     boolean highwayB=b.catalog().type()==RoadProfile.Type.HIGHWAY;
     double portA=highwayA?a.shoulderWidth():.5,portB=highwayB?b.shoulderWidth():.5;
-    double offsetA=highwayA?Math.abs(a.outer(1))+portA/2:settings[from/2].width()/2-.2+portA/2;
-    double offsetB=highwayB?Math.abs(b.outer(1))+portB/2:settings[to/2].width()/2-.2+portB/2;
+    double offsetA=highwayA?Math.abs(a.outer(directionSide(settings[from/2],from,false)))+portA/2:settings[from/2].width()/2-.2+portA/2;
+    double offsetB=highwayB?Math.abs(b.outer(directionSide(settings[to/2],to,true)))+portB/2:settings[to/2].width()/2-.2+portB/2;
     if(n==5&&from==4){var end=RoadProfile.layout(mains.get(2),mains.get(2).last());portA=2*end.laneWidth()+.5;offsetA=end.median()/2+portA/2;}
     if(n==5&&to==4){var end=RoadProfile.layout(mains.get(2),mains.get(2).last());portB=2*end.laneWidth()+.5;offsetB=end.median()/2+portB/2;}
     var departure=feeder(from,to,false,offsetA,portA);
@@ -286,7 +288,7 @@ public final class MultiInterchange {
     var out=new ArrayList<Sample>();
     var layout=RoadProfile.layout(settings[arm/2],settings[arm/2].width());
     boolean highway=!terminal&&layout.catalog().type()==RoadProfile.Type.HIGHWAY;
-    double auxiliary=highway?Math.abs(layout.outer(1))+(options.width()-1)/2:outer;
+    double auxiliary=highway?Math.abs(layout.outer(directionSide(settings[arm/2],arm,arrival)))+(options.width()-1)/2:outer;
     int steps=(int)Math.ceil(lead/STEP);
     for(int k=0;k<=steps;k++){
       double t=(double)k/steps,grow=Settings.smooth(Math.min(1,t/.32));
