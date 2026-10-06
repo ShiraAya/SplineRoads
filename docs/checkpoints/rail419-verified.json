@@ -1,0 +1,33 @@
+{
+  "repository":"ShiraAya/SplineRoads",
+  "branch":"chat/sr-0402",
+  "source_commit":"645edcf67329d371fe5de2eef2b9e3e58dd6dad7",
+  "run_id":37420405833,
+  "version":"0.40.11-alpha",
+  "save_version":38,
+  "network_protocol":"56",
+  "artifacts":[
+    {"id":11392623639,"bytes":9262384,"sha256":"6e5a215766e32bd1126733bb5d471efac1e835789ce688a8f9e1016093a660c0"},
+    {"id":11392783171,"bytes":4802310,"sha256":"986708c3545c7dfd0b37aaaac24b1faec19f048023220c5174a8b1a1fbca447e"}
+  ],
+  "complete_forge_build":"PASS: compileJava, compileGameTestJava, jar, reobfJar, BUILD SUCCESSFUL",
+  "downloaded_commit_matches":true,
+  "all_601_production_source_and_resource_files_match_local_review":true,
+  "production_java_changes_since_04010":[
+    "src/main/java/com/sora/splineroads/core/RoadRailJoin.java",
+    "src/main/java/com/sora/splineroads/core/RoadStructures.java",
+    "src/main/java/com/sora/splineroads/core/RoadSurface.java",
+    "src/main/java/com/sora/splineroads/world/StructurePlanner.java"
+  ],
+  "resources_unchanged_excluding_version":427,
+  "license_notice_files_unchanged":6,
+  "jar_class_major":61,
+  "zip_crc_and_download_digests":"PASS",
+  "tests":{"rail_contours":"14 scenarios / 87 checks","rail_edge_profiles":"11 scenarios / 291 checks","actual_marked_faces":"76 scenarios / 813 checks","actual_planning_record_delete":"12 scenarios / 4248 checks; explicit Ground/NBT/index adapters"},
+  "real_Minecraft_GPU_world_write_real_save_multiplayer_FPS":"NOT RUN",
+  "P2":"terrain and multithreading deferred until all P1",
+  "SplineRoads-0.40.11-alpha.jar":{"bytes":5468095,"sha256":"a010c71dcb6fe0d17345c09379d2d72dc4636691454de3a7f8086b28b7eec5dd"},
+  "SplineRoads-0.40.11-alpha-source.zip":{"bytes":10439631,"sha256":"c8bb5c53876a91040e9fa98db230915c281d5d2361171ee03ef1b07a2b6c8770"},
+  "SR_0411_Build_and_Test_Logs.zip":{"bytes":14664,"sha256":"99089a548e567a2ad138e0099aae9bd2abbfc2ddb3e4e62bc76fb8b3871d0da8"},
+  "notes":["Recovered prior stage2 a88ee2ee; its failed conversation reply did not imply lost code.","Final production edge fixes at e0f1b514; latest typed model test and release README in the exact tested 645edcf commit.","Q2-14/18 have code-path fixes pending real user-world validation; Q2-21 remains partial, not blanket solid paint.","Current document-only handoff commit is intentionally later than the source/JAR build commit."]
+}
