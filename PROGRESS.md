@@ -1,3 +1,13 @@
+# SR15 directional lanes and continuation — source saved, CI pending
+
+2026-10-06. Continued from 2e90ae6 without reverting stage1 repairs. Candidate 0.40.16-alpha-stage2, protocol61; branch SR-0.40.15 only.
+
+Written: independent authored forward/reverse 1-4 lane counts, asymmetric cross-sections and NBT, lane configuration sliders, physical merged endpoint snapshots and continuation inheritance without double trimming the donor host. Local Directional427 core116 cases/2738 checks passed; full Forge and old regression pending at this commit. See docs/checkpoints/SR15-directional-427.md.
+
+Current review: reversed/one-way port semantics, roundtrip codec and ordinary RoadData/AutoJunction interactions. No original-world, Minecraft client/GPU or live network acceptance. SR15-03/07/08 remain pending. Do not treat old CI success as this candidate acceptance.
+
+---
+## Historical checkpoint
 # SR-0.40.15：首批实际修复已保存并通过完整CI
 
 日期：2026-10-06。本轮从13:32 UTC开始，完成首批代码及检查点后暂停，等待下一轮继续。不是14项全部完成。

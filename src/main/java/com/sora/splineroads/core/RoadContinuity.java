@@ -12,9 +12,10 @@ public final class RoadContinuity {
   }
   public static boolean compatible(Mesh a,Mesh b,V shared){
     if(!eligible(a)||!eligible(b))return false;
-    var ac=RoadProfile.catalog(a.settings().style());var bc=RoadProfile.catalog(b.settings().style());
+    var ac=RoadProfile.catalog(a.settings());var bc=RoadProfile.catalog(b.settings());
     if(ac.lanes()!=bc.lanes()||ac.twoWay()!=bc.twoWay())return false;
     V ad=a.last().center().sub(a.first().center()).horizontalUnit(),bd=b.last().center().sub(b.first().center()).horizontalUnit();
+    if(!RoadLanes.counts(a.settings()).equals(ad.dot(bd)<0?RoadLanes.counts(b.settings()).mirrored():RoadLanes.counts(b.settings())))return false;
     if(Math.abs(ad.dot(bd))<1-1e-8||Math.abs(a.first().center().y()-b.first().center().y())>POSITION_EPS)return false;
     if(!ac.twoWay()&&ad.dot(bd)<0)return false;
     boolean af=a.first().center().distance(shared)<POSITION_EPS,bf=b.first().center().distance(shared)<POSITION_EPS;

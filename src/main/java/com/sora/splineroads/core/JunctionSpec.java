@@ -91,8 +91,8 @@ public record JunctionSpec(V center, Kind kind, boolean leftTraffic, double corn
   }
   public static Arm arm(Node node, V inward, Settings external, boolean incomingOneWay, int phase) {
     var layout=RoadProfile.layout(external,external.width()); var c=layout.catalog();
-    int in=c.twoWay()?c.lanes()/2:incomingOneWay?c.lanes():0;
-    int out=c.twoWay()?c.lanes()/2:incomingOneWay?0:c.lanes();
+    int in=c.twoWay()?RoadLanes.counts(external).forward():incomingOneWay?c.lanes():0;
+    int out=c.twoWay()?RoadLanes.counts(external).reverse():incomingOneWay?0:c.lanes();
     // Junction shoulders remain symmetric; account for the one-sided ordinary extras.
     double extras = c.twoWay()?1:.5;
     return new Arm(node,inward,external,in,out,external.width(),layout.median(),c.median(),

@@ -145,12 +145,12 @@ public final class LaneSections {
     }
     double trimLow=0,trimHigh=0;
     if(c.twoWay()) {
-      int per=count/2;
+      int per=layout.lanesOnSide(-1);
       for(int i=0;i<count;i++)if(removal[i]>.000001) {
         int outside=i<per?per-1:count-1;
         for(int j=i+1;j<=outside;j++)if(removal[j]<1-1e-6)
           throw new IllegalArgumentException("双向整车道分离须从当前位置的最外侧依次进行，不能挖走仍有外侧通行车道的内部车道");
-        if(count!=RoadProfile.catalog(raw.settings().style()).lanes())
+        if(count!=RoadProfile.catalog(raw.settings()).lanes())
           throw new IllegalArgumentException("分离区间不能跨越车道数变化接缝，请在同一稳定断面内设置接头");
         if(i<per)trimLow+=layout.laneWidth()*removal[i];else trimHigh+=layout.laneWidth()*removal[i];
       }

@@ -336,6 +336,7 @@ public record RoadRecord(
     t.putDouble("Tension", s.tension());
     t.putDouble("Angle", s.arcDegrees());
     var o = s.options();
+    if(o.lanes().explicit()){var lanes=new CompoundTag();lanes.putInt("Forward",o.lanes().forward());lanes.putInt("Reverse",o.lanes().reverse());t.put("DirectionalLanes",lanes);}
     ListTag lines=new ListTag();for(var line:o.laneLines()){var tag=new CompoundTag();tag.putString("Key",line.key());tag.putString("Pattern",line.pattern().name());tag.putDouble("Width",line.width());lines.add(tag);}t.put("LaneLines",lines);
     t.putBoolean("LeftTraffic", o.leftTraffic());
     t.putBoolean("CycleLane", o.cycle());t.putBoolean("CycleAsphalt",o.cycleAsphalt());
@@ -372,7 +373,7 @@ public record RoadRecord(
     if (o.ends().end() != null) t.put("EndSection", writeSection(o.ends().end()));
     t.putBoolean("KeepEndSections", o.ends().persistent());
     if(o.ends().trimmedStart()!=0||o.ends().trimmedEnd()!=0){t.putDouble("TrimmedStart",o.ends().trimmedStart());t.putDouble("TrimmedEnd",o.ends().trimmedEnd());}
-    if(o.ends().port()!=null){var p=o.ends().port();var c=new CompoundTag();c.putDouble("MotorMin",p.motorMin());c.putDouble("MotorMax",p.motorMax());c.putDouble("Median",p.median());c.putDouble("CurbLeft",p.curbLeft());c.putDouble("CurbRight",p.curbRight());var d=new ListTag();p.dividers().forEach(v->d.add(DoubleTag.valueOf(v)));c.put("Dividers",d);t.put("JunctionPort",c);}
+    if(o.ends().port()!=null){var p=o.ends().port();var c=new CompoundTag();c.putDouble("MotorMin",p.motorMin());c.putDouble("MotorMax",p.motorMax());c.putDouble("Median",p.median());c.putDouble("MedianCenter",p.medianCenter());c.putDouble("CurbLeft",p.curbLeft());c.putDouble("CurbRight",p.curbRight());var d=new ListTag();p.dividers().forEach(v->d.add(DoubleTag.valueOf(v)));c.put("Dividers",d);t.put("JunctionPort",c);}
     return t;
   }
 
@@ -439,13 +440,14 @@ public record RoadRecord(
                         t.contains("EndSection") ? readSection(t.getCompound("EndSection")) : null,
                         t.getBoolean("KeepEndSections"),t.getDouble("TrimmedStart"),t.getDouble("TrimmedEnd"),null)));
     if(t.contains("PaintPhase"))s=s.options(s.options().ends(s.options().ends().paintPhase(t.getDouble("PaintPhase"))));
-    if(t.contains("JunctionPort")){var p=t.getCompound("JunctionPort");var d=new ArrayList<Double>();for(Tag v:p.getList("Dividers",Tag.TAG_DOUBLE))d.add(((DoubleTag)v).getAsDouble());s=s.options(s.options().ends(s.options().ends().port(new RoadTransitions.Port(p.getDouble("MotorMin"),p.getDouble("MotorMax"),p.getDouble("Median"),d,p.getDouble("CurbLeft"),p.getDouble("CurbRight")))));}
+    if(t.contains("JunctionPort")){var p=t.getCompound("JunctionPort");var d=new ArrayList<Double>();for(Tag v:p.getList("Dividers",Tag.TAG_DOUBLE))d.add(((DoubleTag)v).getAsDouble());s=s.options(s.options().ends(s.options().ends().port(new RoadTransitions.Port(p.getDouble("MotorMin"),p.getDouble("MotorMax"),p.getDouble("Median"),d,p.getDouble("CurbLeft"),p.getDouble("CurbRight"),p.getDouble("MedianCenter")))));}
     if(t.contains("Sidewalk")) {
       var walk=t.getCompound("Sidewalk");s=s.options(s.options().sidewalk(new com.sora.splineroads.core.RoadSidewalks.Config(walk.getBoolean("Enabled"),com.sora.splineroads.core.RoadSidewalks.Side.valueOf(walk.getString("Side")),walk.getInt("Width"),walk.getString("Material"),walk.getBoolean("Smooth"),!walk.contains("Tactile")||walk.getBoolean("Tactile"))));
     }
     if(t.contains("Infrastructure")){var i=t.getCompound("Infrastructure");s=s.options(s.options().infrastructure(new com.sora.splineroads.core.RoadInfrastructure.Config(com.sora.splineroads.core.RoadInfrastructure.Bridge.valueOf(i.getString("Bridge")),i.getDouble("Span"),com.sora.splineroads.core.RoadInfrastructure.Tunnel.valueOf(i.getString("Tunnel")),i.getDouble("Headroom"),com.sora.splineroads.core.RoadInfrastructure.Gantry.valueOf(i.getString("Gantry")),i.getDouble("Spacing"),i.getDouble("TunnelDepth"),i.getList("GantryEdits",Tag.TAG_COMPOUND).stream().map(tag->{var e=(CompoundTag)tag;return new com.sora.splineroads.core.RoadGantry.Edit(e.getInt("Slot"),e.getDouble("Offset"),e.getDouble("Clearance"),com.sora.splineroads.core.RoadInfrastructure.Gantry.valueOf(e.getString("Kind")),e.getBoolean("Reverse"));}).toList(),i.contains("TunnelAdjustment")?com.sora.splineroads.core.RoadTunnelFit.Adjustment.valueOf(i.getString("TunnelAdjustment")):com.sora.splineroads.core.RoadTunnelFit.Adjustment.OFF,i.getInt("DipProfile")>=1,i.getDouble("BridgeRise"),i.getDouble("MaxGrade"),i.getBoolean("AutoSpan"),RoadSignCodec.read(i.getList("Signs",Tag.TAG_COMPOUND)))));}
     else s=s.options(s.options().infrastructure(s.options().infrastructure().grade(0).autoSpan(false)));
     var lines=new ArrayList<com.sora.splineroads.core.RoadLaneLines.Edit>();for(Tag tag:t.getList("LaneLines",Tag.TAG_COMPOUND)){var e=(CompoundTag)tag;lines.add(new com.sora.splineroads.core.RoadLaneLines.Edit(e.getString("Key"),com.sora.splineroads.core.RoadLaneLines.Pattern.valueOf(e.getString("Pattern")),e.getDouble("Width")));}s=s.options(s.options().laneLines(lines).hideArrows(t.getBoolean("HideArrows")).attachments(AttachedPointCodec.read(t.getCompound("AttachedRoadPoints"))).lanePoints(LanePointCodec.read(t.getCompound("LanePointsV2"))));
+    if(t.contains("DirectionalLanes")){var lanes=t.getCompound("DirectionalLanes");s=s.options(s.options().lanes(new com.sora.splineroads.core.RoadLanes.Counts(lanes.getInt("Forward"),lanes.getInt("Reverse"))));}
     s.validate();
     if(s.options().cycle()&&t.getBoolean("CycleAsphalt"))s=s.options(s.options().cycleFinish(RoadProfile.Options.CycleFinish.ASPHALT));
     if(t.contains("Streetscape")){var c=t.getCompound("Streetscape");s=s.options(s.options().streetscape(new com.sora.splineroads.core.RoadStreetscape.Config(com.sora.splineroads.core.RoadStreetscape.Separator.valueOf(c.getString("Separator")),c.getBoolean("Parking"),c.getDouble("LampSpacing"),c.getBoolean("WalkLamps"),c.getDouble("WalkLampSpacing"),com.sora.splineroads.core.RoadStreetscape.Planting.valueOf(c.getString("Planting")),c.getDouble("PlantingSpacing"))));var spans=new ArrayList<com.sora.splineroads.core.RoadStreetscape.Span>();for(var item:c.getList("Raised",Tag.TAG_COMPOUND)){var r=(CompoundTag)item;spans.add(new com.sora.splineroads.core.RoadStreetscape.Span(r.getDouble("From"),r.getDouble("To")));}s=s.options(s.options().streetscape(s.options().streetscape().raisedSpans(spans)));}
@@ -461,7 +463,7 @@ public record RoadRecord(
     CompoundTag flat = t.copy();
     flat.remove("StartSection");
     flat.remove("EndSection");
-    var settings=readSettings(flat);var section=com.sora.splineroads.core.RoadTransitions.Section.of(settings).port(settings.options().ends().port());return t.contains("Sidewalk")?section:new com.sora.splineroads.core.RoadTransitions.Section(section.style(),section.width(),section.cycle(),section.cycleRail(),section.curb(),section.outerRail(),null,section.cycleAsphalt(),section.port(),section.streetscape());
+    var settings=readSettings(flat);var section=com.sora.splineroads.core.RoadTransitions.Section.of(settings).port(settings.options().ends().port());return t.contains("Sidewalk")?section:new com.sora.splineroads.core.RoadTransitions.Section(section.style(),section.width(),section.cycle(),section.cycleRail(),section.curb(),section.outerRail(),null,section.cycleAsphalt(),section.port(),section.streetscape(),section.lanes());
   }
 
   public RoadRecord derivedStreetscape(com.sora.splineroads.core.RoadStreetscape.Config config){

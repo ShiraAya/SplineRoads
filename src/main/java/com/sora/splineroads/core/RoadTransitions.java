@@ -12,38 +12,41 @@ public final class RoadTransitions {
       boolean cycle,
       boolean cycleRail,
       boolean curb,
-      OuterRail outerRail,RoadSidewalks.Config sidewalk,boolean cycleAsphalt,Port port,RoadStreetscape.Config streetscape) {
+      OuterRail outerRail,RoadSidewalks.Config sidewalk,boolean cycleAsphalt,Port port,RoadStreetscape.Config streetscape,RoadLanes.Counts lanes) {
+    public Section(Style style,double width,boolean cycle,boolean cycleRail,boolean curb,OuterRail rail,RoadSidewalks.Config walk,boolean asphalt,Port port,RoadStreetscape.Config streetscape){this(style,width,cycle,cycleRail,curb,rail,walk,asphalt,port,streetscape,RoadLanes.Counts.AUTO);}
     public Section(Style style,double width,boolean cycle,boolean cycleRail,boolean curb,OuterRail rail,RoadSidewalks.Config walk,boolean asphalt,Port port){this(style,width,cycle,cycleRail,curb,rail,walk,asphalt,port,RoadStreetscape.Config.DEFAULT.separator(cycleRail?RoadStreetscape.Separator.RAIL:RoadStreetscape.Separator.LINE));}
     public Section(Style style,double width,boolean cycle,boolean cycleRail,boolean curb,OuterRail rail,RoadSidewalks.Config walk,boolean asphalt){this(style,width,cycle,cycleRail,curb,rail,walk,asphalt,null);}
     public Section(Style style,double width,boolean cycle,boolean cycleRail,boolean curb,OuterRail rail,RoadSidewalks.Config walk){this(style,width,cycle,cycleRail,curb,rail,walk,false);}
     public Section(Style style,double width,boolean cycle,boolean cycleRail,boolean curb,OuterRail outerRail){this(style,width,cycle,cycleRail,curb,outerRail,null);}
     public Section {
+      if(lanes==null)lanes=RoadLanes.Counts.AUTO;
       if (style == null || outerRail == null || !Double.isFinite(width) || width < 2 || width > 64)
         throw new IllegalArgumentException("接缝断面无效");
     }
 
     public static Section of(Settings s) {
       var o = s.options();
-      return new Section(s.style(), s.width(), o.cycle(), o.cycleRail(), o.curb(), o.outerRail(),o.sidewalk(),o.cycleAsphalt(),o.ends().port(),o.streetscape());
+      return new Section(s.style(), s.width(), o.cycle(), o.cycleRail(), o.curb(), o.outerRail(),o.sidewalk(),o.cycleAsphalt(),o.ends().port(),o.streetscape(),o.lanes());
     }
 
     public Settings settings(boolean left) {
       return new Settings(Mode.STRAIGHT, style, width, 1, .4, 90)
           .options(
-              Options.DEFAULT.traffic(left).extras(cycle, cycleRail, curb).cycleFinish(!cycle?Options.CycleFinish.NONE:cycleAsphalt?Options.CycleFinish.ASPHALT:Options.CycleFinish.GREEN).outerRail(outerRail).sidewalk(sidewalk==null?RoadSidewalks.Config.DEFAULT:sidewalk).ends(Ends.NONE.port(port)).streetscape(streetscape));
+              Options.DEFAULT.traffic(left).extras(cycle, cycleRail, curb).cycleFinish(!cycle?Options.CycleFinish.NONE:cycleAsphalt?Options.CycleFinish.ASPHALT:Options.CycleFinish.GREEN).outerRail(outerRail).sidewalk(sidewalk==null?RoadSidewalks.Config.DEFAULT:sidewalk).ends(Ends.NONE.port(port)).streetscape(streetscape).lanes(lanes));
     }
-    public Section port(Port value){return new Section(style,width,cycle,cycleRail,curb,outerRail,sidewalk,cycleAsphalt,value,streetscape);}
+    public Section port(Port value){return new Section(style,width,cycle,cycleRail,curb,outerRail,sidewalk,cycleAsphalt,value,streetscape,lanes);}
     public Layout layout(boolean left){
       var base=RoadProfile.layout(settings(left),width);
       if(port==null)return base;
-      return new Layout(base.catalog(),(port.motorMax()-port.motorMin()-port.median())/base.catalog().lanes(),port.median(),port.motorMin(),port.motorMax(),base.cycleWidth(),base.curbWidth(),base.shoulderWidth(),base.outside(),port.dividers());
+      return new Layout(base.catalog(),(port.motorMax()-port.motorMin()-port.median())/base.catalog().lanes(),port.median(),port.motorMin(),port.motorMax(),base.cycleWidth(),base.curbWidth(),base.shoulderWidth(),base.outside(),port.dividers(),port.medianCenter());
     }
   }
 
   /** Exact cross-section at a trimmed street / junction seam, in the approach frame. */
   public record Port(double motorMin,double motorMax,double median,List<Double> dividers,
-      double curbLeft,double curbRight) {
-    public Port {dividers=List.copyOf(dividers);if(!RoadGeometry.finite(motorMin,motorMax,median,curbLeft,curbRight)
+      double curbLeft,double curbRight,double medianCenter) {
+    public Port(double motorMin,double motorMax,double median,List<Double> dividers,double curbLeft,double curbRight){this(motorMin,motorMax,median,dividers,curbLeft,curbRight,0);}
+    public Port {dividers=List.copyOf(dividers);if(!RoadGeometry.finite(motorMin,motorMax,median,curbLeft,curbRight,medianCenter)
         ||motorMin>=motorMax||Math.abs(motorMin)>64||Math.abs(motorMax)>64||median>8||median<0||curbLeft<0||curbRight<0||curbLeft>8||curbRight>8||dividers.size()>10
         ||dividers.stream().anyMatch(d->!Double.isFinite(d)||Math.abs(d)>32))throw new IllegalArgumentException("路口接缝断面无效");}
   }
@@ -63,19 +66,20 @@ public final class RoadTransitions {
 
   public static boolean compatible(Settings a, Settings b) {
     if (a.style().ramp() || b.style().ramp()) return true;
-    var x = RoadProfile.catalog(a.style());
-    var y = RoadProfile.catalog(b.style());
+    var x = RoadProfile.catalog(a);
+    var y = RoadProfile.catalog(b);
     return (x.type() == y.type() || x.type() == Type.ORDINARY && y.type() == Type.HIGHWAY
         || x.type() == Type.HIGHWAY && y.type() == Type.ORDINARY)
         && x.twoWay() == y.twoWay()
-        && Math.abs(x.lanes() - y.lanes()) <= (x.twoWay() ? 2 : 1);
+        && Math.abs(RoadLanes.counts(a).forward()-RoadLanes.counts(b).forward())<=1
+        && Math.abs(RoadLanes.counts(a).reverse()-RoadLanes.counts(b).reverse())<=1;
   }
 
   public static void requireCompatible(Settings a, Settings b) {
     if (!compatible(a, b))
       throw new IllegalArgumentException("接点两侧断面不匹配："+description(a)+" ↔ "+description(b)+"；需单双向一致，且每方向车道数最多相差 1");
   }
-  private static String description(Settings s){var c=RoadProfile.catalog(s.style());return (c.twoWay()?"双向 ":"单向 ")+c.lanes()+" 车道";}
+  private static String description(Settings s){return RoadLanes.counts(s).label();}
 
   /**
    * Both sides independently choose the same complete section, even after rebuilding a neighbor.
@@ -84,7 +88,7 @@ public final class RoadTransitions {
     requireCompatible(a, b);
     Section x = Section.of(a), y = Section.of(b);
     Comparator<Section> order =
-        Comparator.comparingInt((Section s) -> RoadProfile.catalog(s.style()).lanes())
+        Comparator.comparingInt((Section s) -> RoadProfile.catalog(s.settings(false)).lanes())
             .thenComparingDouble(Section::width)
             .thenComparing(s -> s.style().name())
             .thenComparing(Section::cycle)
@@ -96,7 +100,7 @@ public final class RoadTransitions {
     Section chosen=order.compare(x,y)>=0?x:y;
     var wx=a.options().sidewalk();var wy=b.options().sidewalk();
     var walk=(wx.enabled()&&(!wy.enabled()||wx.width()>=wy.width())?wx:wy).tactile(wx.enabled()&&wy.enabled()&&wx.tactile()&&wy.tactile());
-    var shared=new Section(chosen.style(),chosen.width(),chosen.cycle(),chosen.cycleRail(),chosen.curb(),chosen.outerRail(),walk,chosen.cycleAsphalt(),chosen.port(),chosen.streetscape());
+    var shared=new Section(chosen.style(),chosen.width(),chosen.cycle(),chosen.cycleRail(),chosen.curb(),chosen.outerRail(),walk,chosen.cycleAsphalt(),chosen.port(),chosen.streetscape(),chosen.lanes());
     // The common material must be supported by BOTH sides. Keep the authored lane
     // axes in an exact port; replacing GREEN by a nominal RAIL section would widen lanes.
     return a.structure()==Structure.TUNNEL||b.structure()==Structure.TUNNEL?TunnelMedian.seam(shared):shared;
@@ -178,12 +182,12 @@ public final class RoadTransitions {
     for (Section end :
         new Section[] {
           mesh.settings().options().ends().start(), mesh.settings().options().ends().end()
-        }) if (end != null) lanes = Math.max(lanes, RoadProfile.catalog(end.style()).lanes());
+        }) if (end != null) lanes = Math.max(lanes, RoadProfile.catalog(end.settings(false)).lanes());
     List<Double> dividers = new ArrayList<>();
     if (a.catalog().twoWay()) {
       for (int sign : new int[] {-1, 1})
-        for (int n = 1; n < lanes / 2; n++)
-          dividers.add(sign * lerp(divider(a, n), divider(z, n), w));
+        for (int n = 1; n < Math.max(a.lanesOnSide(sign),z.lanesOnSide(sign)); n++)
+          dividers.add(lerp(divider(a, n, sign), divider(z, n, sign), w));
     } else {
       for (int n = 1; n < lanes; n++)
         dividers.add(
@@ -202,7 +206,7 @@ public final class RoadTransitions {
         lerp(a.curbWidth(), z.curbWidth(), w),
         lerp(a.shoulderWidth(), z.shoulderWidth(), w),
         a.outside(),
-        List.copyOf(dividers));
+        List.copyOf(dividers),lerp(a.medianCenter(),z.medianCenter(),w));
   }
 
   public static boolean greenCycle(Mesh mesh,Sample p){
@@ -223,8 +227,8 @@ public final class RoadTransitions {
   public static double dropBoundary(Mesh mesh, Sample p) {
     var e = mesh.settings().options().ends();
     if (!e.persistent() || e.end() == null) return Double.NaN;
-    int oldLanes = RoadProfile.catalog(mesh.settings().style()).lanes();
-    int newLanes = RoadProfile.catalog(e.end().style()).lanes();
+    int oldLanes = RoadProfile.catalog(mesh.settings()).lanes();
+    int newLanes = RoadProfile.catalog(e.end().settings(false)).lanes();
     if (newLanes >= oldLanes) return Double.NaN;
     double length=mesh.length()+e.trimmedStart()+e.trimmedEnd();
     double t = 1 - (mesh.length()+e.trimmedEnd()-p.distance()) / span(mesh.settings(),length);
@@ -235,8 +239,8 @@ public final class RoadTransitions {
     return outer - Math.max(0, outer - first) * Settings.smooth(Math.min(1, t * 4));
   }
 
-  private static double divider(Layout l, int lane) {
-    return Math.min(l.motorMax(), l.median() / 2 + lane * l.laneWidth());
+  private static double divider(Layout l, int lane,int side) {
+    return l.medianCenter()+side*Math.min(Math.abs(l.outer(side)-l.medianCenter()),l.median()/2+lane*l.laneWidth());
   }
 
   private static double lerp(double a, double b, double t) {

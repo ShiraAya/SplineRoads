@@ -142,6 +142,9 @@ public final class RoadTool extends Item {
                   .options(
                       saved
                           .options()
+                          .lanePoints(com.sora.splineroads.core.LanePoints.Data.EMPTY)
+                          .attachments(com.sora.splineroads.core.RoadAttachments.Data.EMPTY)
+                          .ends(com.sora.splineroads.core.RoadTransitions.Ends.NONE)
                           .infrastructure(saved.options().infrastructure().clearEdits())
                           .lift(.5, 0)
                           .route(saved.options().routing().offset(0, 0))
@@ -159,6 +162,12 @@ public final class RoadTool extends Item {
           t.putDouble("JoinWidthA", data.endpointWidth(a, null));
           t.putDouble("JoinWidthB", data.endpointWidth(pos, null));
           data.jointPayload(t, a, pos, null);
+          if(t.getBoolean("LiveSectionA")||t.getBoolean("LiveSectionB")){
+            var port=RoadRecord.readSettings(t.getCompound(t.getBoolean("LiveSectionA")?"JoinSectionA":"JoinSectionB"));
+            settings=com.sora.splineroads.core.RoadEndpointSections.inherit(settings,port);
+            t.put("Settings",RoadRecord.writeSettings(settings));
+          }
+
           t.put(
               "AutoA",
               RoadData.writeHint(

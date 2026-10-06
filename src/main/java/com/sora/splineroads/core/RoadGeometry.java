@@ -140,6 +140,7 @@ public final class RoadGeometry {
       RampTurn rampTurn,
       RoadProfile.Options options) {
     public Settings {
+      if(options!=null&&options.lanes().explicit()&&(style.ramp()||!RoadProfile.modern(style)))options=options.lanes(RoadLanes.Counts.AUTO);
       if(options!=null&&!RoadStreetscape.walkLampAllowed(options,structure,style)&&options.streetscape().walkLamps())options=options.streetscape(options.streetscape().walkLamps(false));
       if (options != null && options.sidewalk().enabled()
           && (structure==Structure.TUNNEL || style.ramp() || RoadProfile.catalog(style).type() == RoadProfile.Type.HIGHWAY))

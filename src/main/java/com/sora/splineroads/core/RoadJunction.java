@@ -279,10 +279,10 @@ public final class RoadJunction {
       for (int i = 0; i < c.lanes(); i++) {
         double lateral;
         if (c.twoWay()) {
-          int per = c.lanes() / 2, side = i < per ? -1 : 1;
-          lateral = l.medianCenter() + side * (l.median() / 2 + (i % per + .5) * l.laneWidth());
+          int per = l.lanesOnSide(-1), side = i < per ? -1 : 1;
+          lateral = l.medianCenter() + side * (l.median() / 2 + ((side < 0 ? i : i - per) + .5) * l.laneWidth());
         } else lateral = l.motorMin() + (i + .5) * l.laneWidth();
-        int sign = c.twoWay() && (lateral < 0 ? -1 : 1) != l.outside() ? -1 : 1;
+        int sign = c.twoWay() && (lateral < l.medianCenter() ? -1 : 1) != l.outside() ? -1 : 1;
         arrow(out, s.at(lateral, 0), s.left().left().mul(-sign), s.left().mul(sign));
       }
     }

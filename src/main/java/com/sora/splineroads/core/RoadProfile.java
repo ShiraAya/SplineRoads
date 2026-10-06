@@ -181,39 +181,44 @@ public final class RoadProfile {
       Ports ports,
       Routing routing,
       OuterRail outerRail,
-      RoadTransitions.Ends ends, RoadSidewalks.Config sidewalk, RoadInfrastructure.Config infrastructure, List<RoadLaneLines.Edit> laneLines, boolean cycleAsphalt, boolean hideArrows, RoadStreetscape.Config streetscape, RoadAttachments.Data attachments, LanePoints.Data lanePoints) {
+      RoadTransitions.Ends ends, RoadSidewalks.Config sidewalk, RoadInfrastructure.Config infrastructure, List<RoadLaneLines.Edit> laneLines, boolean cycleAsphalt, boolean hideArrows, RoadStreetscape.Config streetscape, RoadAttachments.Data attachments, LanePoints.Data lanePoints, RoadLanes.Counts lanes) {
+
+    public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,double liftPosition,double liftHeight,Ports ports,Routing routing,OuterRail outerRail,RoadTransitions.Ends ends,RoadSidewalks.Config sidewalk,RoadInfrastructure.Config infrastructure,List<RoadLaneLines.Edit> laneLines,boolean cycleAsphalt,boolean hideArrows,RoadStreetscape.Config streetscape,RoadAttachments.Data attachments,LanePoints.Data lanePoints){
+      this(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,attachments,lanePoints,RoadLanes.Counts.AUTO);
+    }
+    public Options lanes(RoadLanes.Counts value){return new Options(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,attachments,lanePoints,value);}
     public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,double liftPosition,double liftHeight,Ports ports,Routing routing,OuterRail outerRail,RoadTransitions.Ends ends,RoadSidewalks.Config sidewalk,RoadInfrastructure.Config infrastructure,List<RoadLaneLines.Edit> laneLines,boolean cycleAsphalt,boolean hideArrows,RoadStreetscape.Config streetscape){
       this(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,RoadAttachments.Data.EMPTY);
     }
     public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,double liftPosition,double liftHeight,Ports ports,Routing routing,OuterRail outerRail,RoadTransitions.Ends ends,RoadSidewalks.Config sidewalk,RoadInfrastructure.Config infrastructure,List<RoadLaneLines.Edit> laneLines,boolean cycleAsphalt,boolean hideArrows,RoadStreetscape.Config streetscape,RoadAttachments.Data attachments){
       this(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,attachments,LanePoints.Data.EMPTY);
     }
-    public Options lanePoints(LanePoints.Data value){return new Options(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,attachments,value);}
-    public Options attachments(RoadAttachments.Data value){return new Options(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,value,lanePoints);}
+    public Options lanePoints(LanePoints.Data value){return new Options(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,attachments,value,lanes);}
+    public Options attachments(RoadAttachments.Data value){return new Options(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,value,lanePoints,lanes);}
     public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,double liftPosition,double liftHeight,Ports ports,Routing routing,OuterRail outerRail,RoadTransitions.Ends ends,RoadSidewalks.Config sidewalk,RoadInfrastructure.Config infrastructure,List<RoadLaneLines.Edit> laneLines,boolean cycleAsphalt,boolean hideArrows){
       this(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,infrastructure,laneLines,cycleAsphalt,hideArrows,RoadStreetscape.Config.DEFAULT.separator(cycleRail?RoadStreetscape.Separator.RAIL:RoadStreetscape.Separator.LINE));
     }
-    public Options streetscape(RoadStreetscape.Config v){return new Options(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,infrastructure,laneLines,cycleAsphalt,hideArrows,v,attachments,lanePoints);}
+    public Options streetscape(RoadStreetscape.Config v){return new Options(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,infrastructure,laneLines,cycleAsphalt,hideArrows,v,attachments,lanePoints,lanes);}
     public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,double liftPosition,double liftHeight,Ports ports,Routing routing,OuterRail outerRail,RoadTransitions.Ends ends,RoadSidewalks.Config sidewalk,RoadInfrastructure.Config infrastructure,List<RoadLaneLines.Edit> laneLines,boolean cycleAsphalt){
       this(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,infrastructure,laneLines,cycleAsphalt,false);
     }
-    public Options hideArrows(boolean value){return new Options(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,infrastructure,laneLines,cycleAsphalt,value,streetscape,attachments,lanePoints);}
+    public Options hideArrows(boolean value){return new Options(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,infrastructure,laneLines,cycleAsphalt,value,streetscape,attachments,lanePoints,lanes);}
     public enum CycleFinish { NONE("无非机动车道"), GREEN("绿色非机动车道"), ASPHALT("沥青非机动车道"), PARKING("停车线（临时车位）");public final String label;CycleFinish(String s){label=s;} }
     public CycleFinish cycleFinish(){return !cycle?CycleFinish.NONE:streetscape.parking()?CycleFinish.PARKING:cycleAsphalt?CycleFinish.ASPHALT:CycleFinish.GREEN;}
-    public Options cycleFinish(CycleFinish value){return new Options(leftTraffic,value!=CycleFinish.NONE,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,infrastructure,laneLines,value==CycleFinish.ASPHALT||value==CycleFinish.PARKING,hideArrows,streetscape.parking(value==CycleFinish.PARKING),attachments,lanePoints);}
+    public Options cycleFinish(CycleFinish value){return new Options(leftTraffic,value!=CycleFinish.NONE,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,infrastructure,laneLines,value==CycleFinish.ASPHALT||value==CycleFinish.PARKING,hideArrows,streetscape.parking(value==CycleFinish.PARKING),attachments,lanePoints,lanes);}
 public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,double liftPosition,double liftHeight,Ports ports,Routing routing,OuterRail outerRail,RoadTransitions.Ends ends,RoadSidewalks.Config sidewalk,RoadInfrastructure.Config infrastructure,List<RoadLaneLines.Edit> laneLines){this(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,infrastructure,laneLines,false);}
     public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,double liftPosition,double liftHeight,Ports ports,Routing routing,OuterRail outerRail,RoadTransitions.Ends ends,RoadSidewalks.Config sidewalk,RoadInfrastructure.Config infrastructure){
       this(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,infrastructure,List.of());
     }
-    public Options laneLines(List<RoadLaneLines.Edit> value){return new Options(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,infrastructure,value,cycleAsphalt,hideArrows,streetscape,attachments,lanePoints);}
+    public Options laneLines(List<RoadLaneLines.Edit> value){return new Options(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,infrastructure,value,cycleAsphalt,hideArrows,streetscape,attachments,lanePoints,lanes);}
     public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,double liftPosition,double liftHeight,Ports ports,Routing routing,OuterRail outerRail,RoadTransitions.Ends ends,RoadSidewalks.Config sidewalk) {
       this(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,RoadInfrastructure.Config.DEFAULT);
     }
-    public Options infrastructure(RoadInfrastructure.Config value) {return new Options(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,value,laneLines,cycleAsphalt,hideArrows,streetscape,attachments,lanePoints);}
+    public Options infrastructure(RoadInfrastructure.Config value) {return new Options(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,sidewalk,value,laneLines,cycleAsphalt,hideArrows,streetscape,attachments,lanePoints,lanes);}
     public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,double liftPosition,double liftHeight,Ports ports,Routing routing,OuterRail outerRail,RoadTransitions.Ends ends) {
       this(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,RoadSidewalks.Config.DEFAULT);
     }
-    public Options sidewalk(RoadSidewalks.Config value) {return new Options(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,value,infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,attachments,lanePoints);}
+    public Options sidewalk(RoadSidewalks.Config value) {return new Options(leftTraffic,cycle,cycleRail,curb,liftPosition,liftHeight,ports,routing,outerRail,ends,value,infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,attachments,lanePoints,lanes);}
 
     public Options(
         boolean leftTraffic,
@@ -249,7 +254,7 @@ public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,
           ports,
           routing,
           outerRail,
-          value, sidewalk, infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,attachments,lanePoints);
+          value, sidewalk, infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,attachments,lanePoints,lanes);
     }
 
     public Options(
@@ -284,7 +289,7 @@ public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,
           ports,
           routing,
           value,
-          ends, sidewalk, infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,attachments,lanePoints);
+          ends, sidewalk, infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,attachments,lanePoints,lanes);
     }
 
     public Options(
@@ -306,6 +311,7 @@ public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,
     public static final Options DEFAULT = new Options(false, false, false, false, .5, 0);
 
     public Options {
+      if(lanes==null)lanes=RoadLanes.Counts.AUTO;
       if(lanePoints==null)lanePoints=LanePoints.Data.EMPTY;
       if(attachments==null)attachments=RoadAttachments.Data.EMPTY;
       Objects.requireNonNull(streetscape);
@@ -336,7 +342,7 @@ public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,
           value,
           routing,
           outerRail,
-          ends, sidewalk, infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,attachments,lanePoints);
+          ends, sidewalk, infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,attachments,lanePoints,lanes);
     }
 
 
@@ -373,22 +379,22 @@ public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,
           ports,
           value,
           outerRail,
-          ends, sidewalk, infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,attachments,lanePoints);
+          ends, sidewalk, infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,attachments,lanePoints,lanes);
     }
 
     public Options traffic(boolean value) {
       return new Options(
-          value, cycle, cycleRail, curb, liftPosition, liftHeight, ports, routing, outerRail, ends, sidewalk, infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,attachments,lanePoints);
+          value, cycle, cycleRail, curb, liftPosition, liftHeight, ports, routing, outerRail, ends, sidewalk, infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,attachments,lanePoints,lanes);
     }
 
     public Options extras(boolean bike, boolean rail, boolean edge) {
       return new Options(
-          leftTraffic, bike, rail, edge, liftPosition, liftHeight, ports, routing, outerRail, ends, sidewalk, infrastructure,laneLines,cycleAsphalt,hideArrows,rail!=cycleRail?streetscape.separator(rail?RoadStreetscape.Separator.RAIL:RoadStreetscape.Separator.LINE):streetscape,attachments,lanePoints);
+          leftTraffic, bike, rail, edge, liftPosition, liftHeight, ports, routing, outerRail, ends, sidewalk, infrastructure,laneLines,cycleAsphalt,hideArrows,rail!=cycleRail?streetscape.separator(rail?RoadStreetscape.Separator.RAIL:RoadStreetscape.Separator.LINE):streetscape,attachments,lanePoints,lanes);
     }
 
     public Options lift(double pos, double height) {
       return new Options(
-          leftTraffic, cycle, cycleRail, curb, pos, height, ports, routing, outerRail, ends, sidewalk, infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,attachments,lanePoints);
+          leftTraffic, cycle, cycleRail, curb, pos, height, ports, routing, outerRail, ends, sidewalk, infrastructure,laneLines,cycleAsphalt,hideArrows,streetscape,attachments,lanePoints,lanes);
     }
   }
 
@@ -407,6 +413,12 @@ public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,
   }
   /** Immutable catalog entries: do not allocate one for every sampled vertex/width query. */
   public static Catalog catalog(Style s) {return Catalogs.VALUES[s.ordinal()];}
+  public static Catalog catalog(Style s,Options o) {
+    Catalog c=catalog(s);var n=o.lanes();
+    return n.explicit() && (c.type()==Type.ORDINARY||c.type()==Type.HIGHWAY)
+        ?new Catalog(c.type(),n.total(),n.twoWay(),n.twoWay()?c.median():Median.NONE,c.shoulder()):c;
+  }
+  public static Catalog catalog(Settings s){return catalog(s.style(),s.options());}
   private static Catalog makeCatalog(Style s) {
     return switch (s) {
       case O8_YELLOW -> new Catalog(Type.ORDINARY, 8, true, Median.DOUBLE_YELLOW, false);
@@ -505,7 +517,7 @@ public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,
 
   public static double width(Style style, Options o, double laneWidth) {
     if(style.connectorRamp())return laneWidth;
-    var c = catalog(style);
+    var c = catalog(style,o);
     int sides = c.twoWay() ? 2 : 1;
     return c.lanes() * laneWidth
         + medianWidth(c)
@@ -559,7 +571,7 @@ public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,
       List<Double> out = new ArrayList<>();
       if (catalog.twoWay())
         for (int sign : new int[] {-1, 1})
-          for (int n = 1; n < catalog.lanes() / 2; n++)
+          for (int n = 1; n < lanesOnSide(sign); n++)
             out.add(medianCenter + sign * (median / 2 + n * laneWidth));
       else for (int n = 1; n < catalog.lanes(); n++) out.add(motorMin + n * laneWidth);
       return out;
@@ -571,13 +583,18 @@ public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,
   }
 
   public static Layout layout(Settings s, double actualWidth) {
-    var c = catalog(s.style());
+    var c = catalog(s);
     var o = s.options();
     // New precise lane connectors have one centred driveable strip. Inherit neither
     // ordinary-road verge nor the highway's asymmetric shoulder at a four-block lane port.
     // The persisted marker keeps old saved meshes unchanged until an explicit edit.
     if(s.style().connectorRamp()||o.lanePoints().link()!=null&&o.lanePoints().link().protectedMerge()&&c.lanes()==1)
       return new Layout(new Catalog(c.type(),1,false,Median.NONE,false),actualWidth,0,-actualWidth/2,actualWidth/2,0,0,0,trafficSign(o.leftTraffic()),null);
+    if(o.lanes().explicit() && o.ends().port()!=null){
+      var p=o.ends().port();var clean=s.options(o.ends(RoadTransitions.Ends.NONE));
+      var b=layout(clean,actualWidth);
+      return new Layout(c,(p.motorMax()-p.motorMin()-p.median())/c.lanes(),p.median(),p.motorMin(),p.motorMax(),b.cycleWidth(),b.curbWidth(),b.shoulderWidth(),b.outside(),p.dividers(),p.medianCenter());
+    }
     int sides = c.twoWay() ? 2 : 1, outside = trafficSign(o.leftTraffic());
     double cycle = c.type() == Type.ORDINARY && o.cycle() ? 2.5+RoadStreetscape.separatorWidth(o) : 0,
         curb = c.type() == Type.ORDINARY && o.curb() ? .5 : 0;
@@ -599,7 +616,8 @@ public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,
         curb * scale,
         shoulder * scale,
         outside,
-        null);
+        null,
+        c.twoWay()&&o.lanes().explicit()?(o.leftTraffic()?o.lanes().forward()-o.lanes().reverse():o.lanes().reverse()-o.lanes().forward())*lw/2:0);
   }
 
   public static Layout layout(Mesh mesh, Sample sample) {

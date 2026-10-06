@@ -67,8 +67,8 @@ public final class LanePoints {
   public static Lane lane(Mesh mesh,double station,int index){
     mesh=LaneSections.reference(mesh);Sample sample=RoadStructures.sample(mesh,Math.max(0,Math.min(mesh.length(),station)));var l=RoadProfile.layout(mesh,sample);var c=l.catalog();
     if(index<0||index>=c.lanes())throw new IllegalArgumentException("所选车道已不存在");
-    double offset;if(c.twoWay()){int per=c.lanes()/2,side=index<per?-1:1;offset=l.medianCenter()+side*(l.median()/2+(index%per+.5)*l.laneWidth());}else offset=l.motorMin()+(index+.5)*l.laneWidth();
-    int sign=c.twoWay()&&(offset<0?-1:1)!=l.outside()?-1:1;
+    double offset;if(c.twoWay()){int per=l.lanesOnSide(-1),side=index<per?-1:1;offset=l.medianCenter()+side*(l.median()/2+((side<0?index:index-per)+.5)*l.laneWidth());}else offset=l.motorMin()+(index+.5)*l.laneWidth();
+    int sign=c.twoWay()&&(offset<l.medianCenter()?-1:1)!=l.outside()?-1:1;
     return new Lane(index,sample.at(offset,0),sample.left().left().mul(-sign),l.laneWidth(),sample.distance(),sign);
   }
   public static Lane lane(Mesh mesh,Point point){return lane(mesh,RoadQueries.project(LaneSections.reference(mesh),point.anchor()==null?point.position():point.anchor()).sample().distance(),point.lane());}

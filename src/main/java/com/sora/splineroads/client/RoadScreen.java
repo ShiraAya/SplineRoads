@@ -1,4 +1,6 @@
 package com.sora.splineroads.client;
+import com.sora.splineroads.core.RoadLanes;
+import com.sora.splineroads.core.RoadTransitions;
 
 import com.sora.splineroads.core.RoadGeometry.*;
 import com.sora.splineroads.core.RoadPlanner;
@@ -115,11 +117,8 @@ public final class RoadScreen extends Screen {
                   Component.literal(typeName()),
                   b -> {
                     if ((!capture())) return;
-                    selectStyle(
-                        RoadProfile.highway(style)
-                            ? (laneRoad()?Style.C1_RAMP:Style.O2_YELLOW)
-                            : (laneRoad()?Style.C1_HIGHWAY_RAMP:Style.H4_RAIL),
-                        true);
+                    if(laneRoad())selectStyle(RoadProfile.highway(style)?Style.C1_RAMP:Style.C1_HIGHWAY_RAMP,true);
+                    else applyLaneConfiguration(RoadProfile.highway(style)?Type.ORDINARY:Type.HIGHWAY,RoadLanes.counts(style,options),true);
                   })
               .bounds(x, y, 98, 20)
               .build());
@@ -129,7 +128,7 @@ public final class RoadScreen extends Screen {
                       Component.literal(styleName()),
                       b -> {
                         if (!capture()) return;
-                        cycleLanes();
+                        openLaneConfiguration();
                       })
                   .bounds(x + 102, y, 162, 20)
                   .build());
@@ -462,6 +461,8 @@ public final class RoadScreen extends Screen {
                   true,
                   b.linked());
         }
+        if(payload.getBoolean("LiveSectionA")&&payload.contains("AutoA")){var n=RoadData.readHint(payload.getCompound("AutoA")).node();a=new RoadPlanner.Hint(new Node(n.position(),a.node().yaw(),a.node().grade()),a.headingLocked(),a.gradeLocked(),a.linked());}
+        if(payload.getBoolean("LiveSectionB")&&payload.contains("AutoB")){var n=RoadData.readHint(payload.getCompound("AutoB")).node();b=new RoadPlanner.Hint(new Node(n.position(),b.node().yaw(),b.node().grade()),b.headingLocked(),b.gradeLocked(),b.linked());}
         var plan = com.sora.splineroads.core.RoadTunnelFit.plan(a, b, s);
         var seamA=payload.contains("AutoA")?RoadData.readHint(payload.getCompound("AutoA")):null;
         var seamB=payload.contains("AutoB")?RoadData.readHint(payload.getCompound("AutoB")):null;
@@ -695,7 +696,7 @@ public final class RoadScreen extends Screen {
 
   private String styleName() {
     if(laneRoad()||style.connectorRamp())return "单车道匝道";
-    return RoadProfile.modern(style) ? RoadProfile.catalog(style).name() : STYLES[style.ordinal()];
+    return RoadProfile.modern(style) ? RoadLanes.counts(style,options).label()+" ▸" : STYLES[style.ordinal()];
   }
 
   private void selectStyle(Style next, boolean resetWidth) {
@@ -709,32 +710,16 @@ public final class RoadScreen extends Screen {
     rebuildWidgets();
   }
 
-  private void cycleLanes() {
+  private void openLaneConfiguration() {
     if(laneRoad()||style.connectorRamp())return;
-    var c = RoadProfile.catalog(style);
-    Type type = c.type();
-    if (type == Type.LEGACY) {
-      selectStyle(Style.O2_YELLOW, true);
-      return;
-    }
-
-    int[][] values =
-        type == Type.HIGHWAY
-            ? new int[][] {{4, 1}, {6, 1}, {8, 1}, {2, 0}, {3, 0}, {4, 0}}
-            : new int[][] {{2, 1}, {4, 1}, {6, 1}, {8, 1}, {1, 0}, {2, 0}, {3, 0}, {4, 0}};
-    int index = 0;
-    for (int i = 0; i < values.length; i++)
-      if (values[i][0] == c.lanes() && (values[i][1] == 1) == c.twoWay()) index = i;
-    var next = values[(index + 1) % values.length];
-    boolean two = next[1] == 1;
-    Median m =
-        two
-            ? (c.median() == Median.NONE
-                ? type == Type.HIGHWAY ? Median.RAIL : Median.DOUBLE_YELLOW
-                : c.median())
-            : Median.NONE;
-    if (m == Median.DASHED_YELLOW && next[0] != 2) m = Median.DOUBLE_YELLOW;
-    selectStyle(RoadProfile.choose(type, next[0], two, m, type == Type.HIGHWAY), false);
+    minecraft.setScreen(new RoadLaneConfigScreen(this,RoadProfile.highway(style)?Type.HIGHWAY:Type.ORDINARY,RoadLanes.counts(style,options)));
+  }
+  void applyLaneConfiguration(Type type,RoadLanes.Counts counts,boolean resetWidth) {
+    double lane=resetWidth?(type==Type.HIGHWAY?5:4):laneWidth();
+    style=RoadLanes.carrier(type,counts,RoadProfile.catalog(style).median());
+    options=options.lanes(counts).ends(RoadTransitions.Ends.NONE);
+    if(type==Type.HIGHWAY){payload.putBoolean("ForceJunction",false);options=options.sidewalk(options.sidewalk().enabled(false));}
+    setLaneWidth(lane);changed();rebuildWidgets();
   }
 
   private Button option(String text, int x, int y, int w, Runnable action) {
@@ -882,7 +867,7 @@ public final class RoadScreen extends Screen {
                                 : List.of(Median.DOUBLE_YELLOW, Median.RAIL, Median.GREEN);
                     Median m = choices.get((choices.indexOf(c.median()) + 1) % choices.size());
                     double lane = laneWidth();
-                    style = RoadProfile.choose(c.type(), c.lanes(), true, m, c.shoulder());
+                    style = RoadLanes.carrier(c.type(),RoadLanes.counts(style,options),m);
                     setLaneWidth(lane);
                   })
               .active =

@@ -22,6 +22,7 @@ import com.sora.splineroads.core.RoadPlanner;
 import com.sora.splineroads.core.RoadProfile;
 import com.sora.splineroads.core.RoadQueries;
 import com.sora.splineroads.core.RoadTransitions;
+import com.sora.splineroads.core.RoadEndpointSections;
 import com.sora.splineroads.core.RoadTimings;
 import com.sora.splineroads.net.RoadNetwork;
 import java.util.*;
@@ -221,6 +222,8 @@ public final class RoadData extends SavedData {
                 ? nb.constructionNode()
                 : new Node(
                     nb.constructionNode().position(), previous.end().yaw(), previous.end().grade());
+        if(liveEndpoint(a,replace))ma=new Node(seamA.node().position(),ma.yaw(),ma.grade());
+        if(liveEndpoint(b,replace))mb=new Node(seamB.node().position(),mb.yaw(),mb.grade());
         if (levelEnds) {
           ma = atGround(ma, a);
           mb = atGround(mb, b);
@@ -250,9 +253,9 @@ public final class RoadData extends SavedData {
       Node movedA = new Node(plan.start().position(), na.yaw, levelEnds ? 0 : na.grade),
           movedB = new Node(plan.end().position(), nb.yaw, levelEnds ? 0 : nb.grade);
       Map<BlockPos, Node> updates = new LinkedHashMap<>();
-      if (movedA.position().distance(na.node().position()) > 1e-8 || levelEnds)
+      if (!liveEndpoint(a,replace) && (movedA.position().distance(na.node().position()) > 1e-8 || levelEnds))
         updates.put(a, movedA);
-      if (movedB.position().distance(nb.node().position()) > 1e-8 || levelEnds)
+      if (!liveEndpoint(b,replace) && (movedB.position().distance(nb.node().position()) > 1e-8 || levelEnds))
         updates.put(b, movedB);
       // Migrate the connected legacy-default cluster together; no new half-level seam is
       // introduced.
@@ -359,7 +362,9 @@ public final class RoadData extends SavedData {
       ServerLevel level, BlockPos pos, boolean start, UUID exclude, V towards, boolean levelEnds) {
     var base = hint(level, pos, start, exclude, towards);
     Node n = requireNode(level, pos, null).constructionNode();
-    Node v = new Node(n.position(), base.node().yaw(), base.node().grade());
+    // A physical merge port may be laterally shifted from its logical marker.
+    // Keep the marker and authored host axis unchanged; only the new road starts at the live port.
+    Node v = new Node(liveEndpoint(pos,exclude)?base.node().position():n.position(), base.node().yaw(), base.node().grade());
     if (levelEnds) v = atGround(v, pos);
     return new RoadPlanner.Hint(
         v, base.headingLocked(), levelEnds || base.gradeLocked(), base.linked());
@@ -408,7 +413,7 @@ public final class RoadData extends SavedData {
     if (best != null) {
       V d = away(best, pos).mul(start ? -1 : 1);
       return new RoadPlanner.Hint(
-          new Node(n.position(), RoadPlanner.yaw(d), d.y()), true, true, true);
+          new Node(RoadEndpointSections.changed(best.mesh,best.record.a().equals(pos))?(best.record.a().equals(pos)?best.record.caps(0).mesh().first():best.record.caps(0).mesh().last()).center():n.position(), RoadPlanner.yaw(d), d.y()), true, true, true);
     }
     return new RoadPlanner.Hint(n, entity.headingLocked, entity.gradeLocked, false);
   }
@@ -438,9 +443,23 @@ public final class RoadData extends SavedData {
         .map(index.roads::get)
         .filter(r -> r != null && transitionEndpoint(r,p) && !r.record.settings().style().ramp())
         .sorted(Comparator.comparing(r -> r.record.id()))
-        .map(r -> r.record.assembly() == null && !r.record.settings().options().ends().persistent() ? authoredSection(r.record.settings()) : endpointSection(r, p))
+        .map(r -> RoadEndpointSections.changed(r.mesh,r.record.a().equals(p))?endpointSection(r,p):r.record.assembly() == null && !r.record.settings().options().ends().persistent() ? authoredSection(r.record.settings()) : endpointSection(r, p))
         .findFirst()
         .orElse(null);
+  }
+
+  private boolean liveEndpoint(BlockPos p,UUID exclude){
+    return index.atNode(p).stream().filter(id->!id.equals(exclude)).map(index.roads::get)
+        .anyMatch(r->transitionEndpoint(r,p)&&RoadEndpointSections.changed(r.mesh,r.record.a().equals(p)));
+  }
+  private Settings endpointSettings(BlockPos p,UUID exclude,boolean start){
+    var donor=index.atNode(p).stream().filter(id->!id.equals(exclude)).map(index.roads::get)
+        .filter(r->r!=null&&transitionEndpoint(r,p)&&!r.record.settings().style().ramp())
+        .sorted(Comparator.comparing(r->r.record.id())).findFirst();
+    if(donor.isEmpty())return null;var r=donor.get();boolean first=r.record.a().equals(p);
+    var section=RoadEndpointSections.changed(r.mesh,first)?endpointSection(r,p):
+        r.record.assembly()==null&&!r.record.settings().options().ends().persistent()?authoredSection(r.record.settings()):endpointSection(r,p);
+    return RoadEndpointSections.orient(section,first==start);
   }
 
   /** Never feed an automatically derived seam back into the next seam calculation. */
@@ -465,6 +484,7 @@ public final class RoadData extends SavedData {
   /** Read the section actually built at this end, including assembly grid padding/tapers. */
   static Settings endpointSection(RoadIndex.Built road, BlockPos pos) {
     boolean first = road.record.a().equals(pos);
+    if(RoadEndpointSections.changed(road.mesh,first))return RoadEndpointSections.section(road.record.caps(0).mesh(),first,false);
     var at = first ? road.mesh.first() : road.mesh.last();
     var base = road.record.junction()!=null&&road.record.junction().get().arm()>=0
         ? JunctionRoads.editable(road.record.junction().spec().arms().get(road.record.junction().get().arm()))
@@ -486,14 +506,16 @@ public final class RoadData extends SavedData {
 
   public void jointPayload(CompoundTag payload, BlockPos a, BlockPos b, UUID exclude) {
     payload.remove("JoinSectionA");payload.remove("JoinSectionB");
-    Settings start = endpointSettings(a, exclude), end = endpointSettings(b, exclude);
+    Settings start = endpointSettings(a, exclude,true), end = endpointSettings(b, exclude,false);
     if (start != null) payload.put("JoinSectionA", RoadRecord.writeSettings(start));
     if (end != null) payload.put("JoinSectionB", RoadRecord.writeSettings(end));
     payload.putBoolean("FixedSectionA",fixedEndpoint(a,exclude));
+    payload.putBoolean("LiveSectionA",liveEndpoint(a,exclude));
     payload.putBoolean("FixedSectionB",fixedEndpoint(b,exclude));
+    payload.putBoolean("LiveSectionB",liveEndpoint(b,exclude));
   }
 
-  private boolean fixedEndpoint(BlockPos p,UUID exclude){return index.atNode(p).stream().filter(id->!id.equals(exclude)).map(index.roads::get).anyMatch(r->r.record.assembly()!=null&&transitionEndpoint(r,p)&&!r.record.settings().style().ramp());}
+  private boolean fixedEndpoint(BlockPos p,UUID exclude){return index.atNode(p).stream().filter(id->!id.equals(exclude)).map(index.roads::get).anyMatch(r->(r.record.assembly()!=null||RoadEndpointSections.changed(r.mesh,r.record.a().equals(p)))&&transitionEndpoint(r,p)&&!r.record.settings().style().ramp());}
 
   public static Settings joinSections(Settings s, CompoundTag payload) {
     Settings joined=RoadTransitions.join(
@@ -784,7 +806,7 @@ public final class RoadData extends SavedData {
           double sign = dot < 0 ? -1 : 1;
           var sample = r.record.a().equals(p) ? r.mesh.first() : r.mesh.last();
           if (first.record.junction() == null && r.record.junction() == null)
-            RoadTransitions.requireCompatible(endpointSection(first,p), endpointSection(r,p));
+            RoadTransitions.requireCompatible(endpointSection(first,p), RoadEndpointSections.orient(endpointSection(r,p),origin.left().dot(sample.left())<0));
           if (Math.abs(origin.center().y()-sample.center().y()) > 1e-6)
             throw new IllegalArgumentException(String.format(java.util.Locale.ROOT,"接点高程不一致：两侧实际路面 Y=%.3f / %.3f（差 %.3f 格），请检查接头高程",origin.center().y(),sample.center().y(),Math.abs(origin.center().y()-sample.center().y())));
           if (origin.center().sub(sample.center()).horizontalLength() > 1e-6)
@@ -865,16 +887,18 @@ public final class RoadData extends SavedData {
 
   private static RoadTransitions.Section jointSection(
       RoadIndex.Built road, BlockPos pos, List<RoadIndex.Built> links, boolean deleting) {
-    var fixed=links.stream().filter(r->r.record.assembly()!=null).findFirst();
+    boolean first=road.record.a().equals(pos);
+    if(RoadEndpointSections.changed(road.mesh,first))return first?road.record.settings().options().ends().start():road.record.settings().options().ends().end();
+    var fixed=links.stream().filter(r->!r.record.id().equals(road.record.id())&&(r.record.assembly()!=null||RoadEndpointSections.changed(r.mesh,r.record.a().equals(pos)))).findFirst();
     if(fixed.isPresent()){
-      Settings target=endpointSection(fixed.get(),pos);if(deleting&&!RoadTransitions.compatible(road.record.settings(),target))return null;RoadTransitions.requireCompatible(road.record.settings(),target);
+      Settings target=RoadEndpointSections.orient(endpointSection(fixed.get(),pos),(fixed.get().record.a().equals(pos)?fixed.get().mesh.first():fixed.get().mesh.last()).left().dot((first?road.mesh.first():road.mesh.last()).left())<0);if(deleting&&!RoadTransitions.compatible(road.record.settings(),target))return null;RoadTransitions.requireCompatible(road.record.settings(),target);
       return RoadTransitions.Section.of(target);
     }
     RoadTransitions.Section section = null;
     for (RoadIndex.Built other : links) {
       if (other.record.id().equals(road.record.id())) continue;
       if(deleting&&!RoadTransitions.compatible(road.record.settings(),other.record.settings()))continue;
-      var next = RoadTransitions.common(authoredSection(road.record.settings()), authoredSection(other.record.settings()));
+      var next = RoadTransitions.common(authoredSection(road.record.settings()), RoadEndpointSections.orient(authoredSection(other.record.settings()),(other.record.a().equals(pos)?other.mesh.first():other.mesh.last()).left().dot((first?road.mesh.first():road.mesh.last()).left())<0));
       section =
           section == null
               ? next
