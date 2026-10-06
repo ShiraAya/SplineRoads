@@ -67,7 +67,7 @@ public final class LanePoints {
   public static Lane lane(Mesh mesh,double station,int index){
     mesh=LaneSections.reference(mesh);Sample sample=RoadStructures.sample(mesh,Math.max(0,Math.min(mesh.length(),station)));var l=RoadProfile.layout(mesh,sample);var c=l.catalog();
     if(index<0||index>=c.lanes())throw new IllegalArgumentException("所选车道已不存在");
-    double offset;if(c.twoWay()){int per=c.lanes()/2,side=index<per?-1:1;offset=side*(l.median()/2+(index%per+.5)*l.laneWidth());}else offset=l.motorMin()+(index+.5)*l.laneWidth();
+    double offset;if(c.twoWay()){int per=c.lanes()/2,side=index<per?-1:1;offset=l.medianCenter()+side*(l.median()/2+(index%per+.5)*l.laneWidth());}else offset=l.motorMin()+(index+.5)*l.laneWidth();
     int sign=c.twoWay()&&(offset<0?-1:1)!=l.outside()?-1:1;
     return new Lane(index,sample.at(offset,0),sample.left().left().mul(-sign),l.laneWidth(),sample.distance(),sign);
   }
@@ -94,7 +94,16 @@ public final class LanePoints {
     for(int i=0;i<l.catalog().lanes();i++){if(!LaneSections.active(mesh,q.sample().distance(),i))continue;var lane=lane(mesh,q.sample().distance(),i);double d=lane.position().sub(hit).horizontalLength();if(d<distance){distance=d;best=lane;}}
     if(best==null||distance>best.width()/2+.05||Math.abs(hit.y()-best.position().y())>2)throw new IllegalArgumentException("请点击机动车道内，不能在中央隔离带、人行道或非机动车道放点");return best;
   }
-  public static String label(Mesh mesh,int index){var lane=lane(mesh,mesh.length()/2,index);var c=RoadProfile.catalog(mesh.settings().style());return (c.twoWay()?(lane.sign()>0?"正向":"反向")+" ":"单向 ")+(c.twoWay()?index%(c.lanes()/2)+1:index+1)+" 车道";}
+  public static String label(Mesh mesh,int index){return label(mesh,mesh.length()/2,index);}
+  public static String label(Mesh mesh,double station,int index){
+    var chosen=lane(mesh,station,index);var live=LaneSections.live(mesh,station);
+    var same=live.lanes().stream().filter(l->l.sign()==chosen.sign()).toList();
+    int ordinal=1;for(var l:same){if(l.index()==index)break;ordinal++;}
+    boolean present=same.stream().anyMatch(l->l.index()==index);
+    boolean twoWay=RoadProfile.catalog(mesh.settings().style()).twoWay();
+    return (twoWay?(chosen.sign()>0?"正向":"反向")+" ":"单向 ")+
+        (present?ordinal+" / "+same.size()+" 车道"+(LaneSections.edge(mesh,station,index)?"（边缘）":""):"预留空位 "+(index+1));
+  }
   public static boolean supported(Settings s){var type=RoadProfile.catalog(s.style()).type();if(type!=RoadProfile.Type.ORDINARY&&type!=RoadProfile.Type.HIGHWAY&&!s.style().connectorRamp())return false;if(s.structure()==Structure.TUNNEL)return false;if(s.structure()!=Structure.BRIDGE)return true;return switch(s.options().infrastructure().bridge()){case STANDARD,BEAM,OVERPASS->true;default->false;};}
   public static boolean opening(Mesh mesh,V location){
     for(var opening:mesh.settings().options().lanePoints().openings())for(int i=1;i<opening.centerline().size();i++){

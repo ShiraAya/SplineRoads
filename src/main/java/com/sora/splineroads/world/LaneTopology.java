@@ -147,6 +147,7 @@ public final class LaneTopology {
     LaneCrossSections.reconcile(all,scope);
     Set<UUID> done=new HashSet<>(),visiting=new HashSet<>();for(var id:new ArrayList<>(all.keySet()))rebuild(data,id,all,done,visiting,scope);
     LaneCrossSections.reconcile(all,scope);
+    for(var r:new ArrayList<>(all.values()))if(independent(r)&&scope.contains(r.id()))all.put(r.id(),automatic(r,ends));
     assignPriorities(all);
     // Refresh only openings owned by affected connectors; preserve unrelated road records
     // byte-for-byte, including any old geometry that this edit did not ask to repair.

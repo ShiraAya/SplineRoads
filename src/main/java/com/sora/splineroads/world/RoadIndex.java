@@ -146,7 +146,8 @@ public final class RoadIndex {
     /** Point markers do not change the road ribbon, openings, furniture or collision. */
     public Built lanePoints(LanePoints.Data value) {
       var before = record.settings().options().lanePoints();
-      if (!Objects.equals(before.link(), value.link()) || !before.openings().equals(value.openings()))
+      if (!Objects.equals(before.link(), value.link()) || !before.openings().equals(value.openings())
+          || !before.cuts().equals(value.cuts()) || !LaneMerge.sameDefinitions(before,value))
         throw new IllegalArgumentException("几何变更必须通过道路建造流程");
       var next = new Built(record.withLanePoints(value), lazy, true, this);
       next.local = local;
@@ -173,6 +174,11 @@ public final class RoadIndex {
     }
 
     private Built(RoadRecord record, boolean lazy, boolean deferred, Built reuse) {
+      // A settings change can move the effective ribbon AND its authored slot frame.
+      // Wrapping already narrowed samples without Mesh.reference turned a 3->2
+      // road into a fresh three-lane road and moved markers onto its dividers.
+      // Derived raised medians also change the holes used by the collision raster.
+      if (reuse != null && !record.settings().equals(reuse.record.settings())) reuse = null;
       this.record = record;
       signalHeads = record.structures().stream().filter(RoadSignals::signal).toList();
       net.minecraft.world.phys.AABB signalBox = null;
@@ -189,7 +195,7 @@ public final class RoadIndex {
       this.lazy=lazy;this.deferred=deferred;
       cells=lazy?nearbyCells:new DeferredMap<>(()->{ensureRaster();return cellData;});
       columns=lazy?columnData:new DeferredMap<>(()->{ensureRaster();return columnData;});
-      mesh = reuse == null ? record.mesh() : record.settings().equals(reuse.mesh.settings())?reuse.mesh:new Mesh(reuse.mesh.samples(),record.settings(),reuse.mesh.min(),reuse.mesh.max(),reuse.mesh.length(),reuse.mesh.closed(),reuse.mesh.controlPoint());
+      mesh = reuse == null ? record.mesh() : reuse.mesh;
       chunks.addAll(RoadCoverage.chunks(mesh, 0));
       for (var part : record.structures()) {
         double pad = part.halfExtent();

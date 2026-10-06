@@ -1,3 +1,13 @@
+# SR-0.40.15 repair in progress — stage1 saved
+
+User authorized implementation on 2026-10-06. Base 376ceae.
+
+Saved actual RoadIndex canonical-mesh/reference fix, current-station live-lane/outside identity, sequential merge validation and final lane-point reconciliation. See docs/checkpoints/SR15-stage1-425.md. Local old regression and new actual-index adapter regression passed. The same new test fails against old RoadIndex with lost reference. Full CI is pending; NOT all 14 issues fixed and NOT Minecraft acceptance. Per-direction creation sliders and actual endpoint continuation remain unfinished.
+
+Current entry: bash tools/check_sr425.sh. Continue directly on SR-0.40.15; no changes to other branches.
+
+---
+## Historical pre-implementation checkpoint
 # SR-0.40.15：新一轮实机反馈已归档，尚未开始修复
 
 日期：2026-10-06。用户要求本轮只整理 11 张截图及文字反馈，并将现有 0.40.15 源码保存在新分支，下一轮再修复。

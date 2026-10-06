@@ -41,9 +41,9 @@ public final class LaneSections {
     for(Event event:ordered)if(event.kind()!=Kind.REPLACE&&event.kind()!=Kind.ARRIVE){
       var lane=LanePoints.lane(raw,event.station(),event.lane());
       var layout=RoadProfile.layout(raw,RoadStructures.sample(raw,event.station()));
-      var c=layout.catalog();int per=c.lanes()/2;
+      var c=layout.catalog();
       if(event.sign()!=lane.sign())throw new IllegalArgumentException("分离方向与所选车道的实际行驶方向不一致");
-      boolean outer=c.twoWay()?event.lane()==per-1||event.lane()==c.lanes()-1:event.lane()==0||event.lane()==c.lanes()-1;
+      boolean outer=edge(raw,event.station(),event.lane(),cuts,event.connection());
       if(!outer&&event.kind()!=Kind.TEMPORARY)throw new IllegalArgumentException(c.twoWay()?"双向整车道分离请选择该方向最外侧车道，不能挖走内部车道或中央隔离":"整车道分离须选择单向主线的一侧边缘车道");
       double remainder=event.sign()>0?raw.length()-event.station():event.station();
       if(remainder<.02)continue; // A free road end already has no downstream continuation.
@@ -82,6 +82,52 @@ public final class LaneSections {
     double removed=0;for(Cut cut:mesh.settings().options().lanePoints().cuts())if(cut.lane()==slot)removed=Math.max(removed,cut.removed(station));return removed;
   }
   public static boolean active(Mesh mesh,double station,int slot){return removed(mesh,station,slot)<.5;}
+  /** Current cross-section, with persistent slot identities kept separate from live counts. */
+  public record Live(List<LanePoints.Lane> lanes,int forward,int reverse) {
+    public Live {lanes=List.copyOf(lanes);}
+    public int count(int sign){return sign>0?forward:reverse;}
+    public String description(){return reverse==0?"单向 "+forward+" 车道":"双向 "+forward+"+"+reverse+" 车道";}
+  }
+  public static Live live(Mesh mesh,double station){
+    var raw=reference(mesh);var sample=RoadStructures.sample(raw,station);
+    int count=RoadProfile.layout(raw,sample).catalog().lanes(),forward=0,reverse=0;
+    var result=new ArrayList<LanePoints.Lane>();
+    for(int i=0;i<count;i++)if(active(mesh,station,i)){
+      var lane=LanePoints.lane(raw,station,i);result.add(lane);
+      if(lane.sign()>0)forward++;else reverse++;
+    }
+    return new Live(result,forward,reverse);
+  }
+  public static boolean edge(Mesh mesh,double station,int slot){
+    return edge(reference(mesh),station,slot,mesh.settings().options().lanePoints().cuts(),null);
+  }
+  static boolean edge(Mesh raw,double station,int slot,List<Cut> cuts,UUID excluded){
+    var chosen=LanePoints.lane(raw,station,slot);var layout=RoadProfile.layout(raw,RoadStructures.sample(raw,station));
+    int count=layout.catalog().lanes();
+    if(removed(cuts,station,slot,excluded)>=.5)return false;
+    double offset=chosen.position().sub(RoadStructures.sample(raw,station).center()).dot(RoadStructures.sample(raw,station).left());
+    boolean low=true,high=true;
+    for(int i=0;i<count;i++)if(i!=slot&&removed(cuts,station,i,excluded)<.5){
+      var other=LanePoints.lane(raw,station,i);if(other.sign()!=chosen.sign())continue;
+      double delta=other.position().sub(chosen.position()).dot(RoadStructures.sample(raw,station).left());
+      if(delta<-.001)low=false;if(delta>.001)high=false;
+    }
+    return layout.catalog().twoWay()?(offset<layout.medianCenter()?low:high):low||high;
+  }
+  static double removed(List<Cut> cuts,double station,int slot,UUID excluded){
+    double removed=0;for(var c:cuts)if(c.lane()==slot&&!c.connection().equals(excluded))removed=Math.max(removed,c.removed(station));return removed;
+  }
+  /** Nearest currently open lane in the SAME driving direction; never a vanished slot. */
+  public static int receiver(Mesh mesh,double station,int slot,UUID excluded){
+    var raw=reference(mesh);var chosen=LanePoints.lane(raw,station,slot);
+    int count=RoadProfile.layout(raw,RoadStructures.sample(raw,station)).catalog().lanes(),best=-1;double distance=Double.POSITIVE_INFINITY;
+    for(int i=0;i<count;i++)if(i!=slot&&removed(mesh.settings().options().lanePoints().cuts(),station,i,excluded)<.5){
+      var candidate=LanePoints.lane(raw,station,i);if(candidate.sign()!=chosen.sign())continue;
+      double d=candidate.position().distance(chosen.position());if(d<distance){distance=d;best=i;}
+    }
+    if(best<0)throw new IllegalArgumentException("当前位置该方向至少保留两条通行车道才能合流或整车道分离");
+    return best;
+  }
   private record Section(double shift,double half,RoadProfile.Layout layout){}
   private static Section section(Mesh raw,Sample s){
     var layout=RoadProfile.layout(raw,s);var c=layout.catalog();int count=c.lanes();
@@ -96,7 +142,9 @@ public final class LaneSections {
     if(c.twoWay()) {
       int per=count/2;
       for(int i=0;i<count;i++)if(removal[i]>.000001) {
-        if(i!=per-1&&i!=count-1)throw new IllegalArgumentException("双向整车道分离只支持各方向最外侧车道");
+        int outside=i<per?per-1:count-1;
+        for(int j=i+1;j<=outside;j++)if(removal[j]<1-1e-6)
+          throw new IllegalArgumentException("双向整车道分离须从当前位置的最外侧依次进行，不能挖走仍有外侧通行车道的内部车道");
         if(count!=RoadProfile.catalog(raw.settings().style()).lanes())
           throw new IllegalArgumentException("分离区间不能跨越车道数变化接缝，请在同一稳定断面内设置接头");
         if(i<per)trimLow+=layout.laneWidth()*removal[i];else trimHigh+=layout.laneWidth()*removal[i];

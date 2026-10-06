@@ -88,11 +88,11 @@ public final class LanePointScreen extends Screen {
       for(int row=0;row<viewH;row++)for(int col=0;col<viewW;){int start=col,color=image.pixels()[row*viewW+col];while(col<viewW&&image.pixels()[row*viewW+col]==color)col++;g.fill(viewX+start,viewY+row,viewX+col,viewY+row+1,color);}
       for(var marker:image.markers())if(marker.lane()==lane){int px=viewX+marker.x(),py=viewY+marker.y();g.fill(px-5,py-5,px+6,py+6,0xffbce7ff);g.fill(px-3,py-3,px+4,py+4,0xff2384ff);}
       int hover=image.laneAt(mx-viewX,my-viewY);
-      String label=hover>=0?LanePoints.label(mesh,hover):"道路实景俯视 · 沿路方向 ↑";
+      String label=hover>=0?LanePoints.label(mesh,LanePoints.lane(mesh,point).station(),hover):"道路实景俯视 · 沿路方向 ↑";
       g.fill(viewX+3,viewY+3,viewX+9+font.width(label),viewY+16,0xdd15222e);g.drawString(font,label,viewX+6,viewY+6,0xe7f2f9,false);
     }else g.drawCenteredString(font,"正在加载道路视图…",viewX+viewW/2,viewY+viewH/2,0xcbd9e5);
     int infoY=viewY+viewH+7;
-    String selected="所属："+LanePoints.label(mesh,lane)+(LaneSections.active(mesh,LanePoints.lane(mesh,point).station(),lane)?"":"（分离空位）")+"   匝道引用："+payload.getList("Dependencies",Tag.TAG_STRING).size()+" 条";
+    String selected="所属："+LanePoints.label(mesh,LanePoints.lane(mesh,point).station(),lane)+(LaneSections.active(mesh,LanePoints.lane(mesh,point).station(),lane)?"":"（分离空位）")+"   匝道引用："+payload.getList("Dependencies",Tag.TAG_STRING).size()+" 条";
     g.drawString(font,selected,x+12,infoY,0x99ccff,false);
     String hint=!status.isEmpty()?status:point.automatic()?"自动尽头点只能查看，不能换车道或删除。":payload.getBoolean("Supported")?"点击车道选择；灰色预留槽可用作补入目标，不可从空位汇出。":"可选择车道；此类道路不支持匝道连接器。";
     g.drawWordWrap(font,Component.literal(hint),x+12,infoY+14,w-24,0xffcf8c);

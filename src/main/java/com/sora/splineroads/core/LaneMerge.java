@@ -7,13 +7,11 @@ public final class LaneMerge {
   public static LaneSections.Event event(Mesh mesh,LanePoints.Point point){
     var raw=LaneSections.reference(mesh);var lane=LanePoints.lane(raw,point);var c=RoadProfile.catalog(raw.settings().style());
     if(point.automatic()||point.mergeLength()<8||!LanePoints.supported(raw.settings()))throw new IllegalArgumentException("请选择独立道路上的手动外侧车道点");
-    int per=c.twoWay()?c.lanes()/2:c.lanes();
-    if(per<2)throw new IllegalArgumentException("该方向至少两条车道才能向同向邻道合流，不能汇入对向车道");
-    boolean outer=c.twoWay()?point.lane()==per-1||point.lane()==c.lanes()-1:point.lane()==0||point.lane()==c.lanes()-1;
-    if(!outer)throw new IllegalArgumentException("合流缩减仅支持最外侧车道，不能挖走内部车道");
+    if(!LaneSections.edge(raw,lane.station(),point.lane(),mesh.settings().options().lanePoints().cuts(),point.id()))
+      throw new IllegalArgumentException("合流缩减仅支持当前位置的最外侧车道，不能挖走内部车道");
+    int neighbor=LaneSections.receiver(mesh,lane.station(),point.lane(),point.id());
     double remaining=lane.sign()>0?raw.length()-lane.station():lane.station();
     if(remaining<point.mergeLength()+2)throw new IllegalArgumentException("下游长度不足以完成合流渐变，请前移此车道点");
-    int neighbor=c.twoWay()?point.lane()-1:point.lane()==0?1:point.lane()-1;
     for(double d=0;d<=point.mergeLength();d+=.5){double at=lane.station()+lane.sign()*d;
       if(!LaneSections.active(mesh,at,neighbor))throw new IllegalArgumentException("同向接收车道在合流区已封闭，不能把车流导入空位");
     }
@@ -41,7 +39,7 @@ public final class LaneMerge {
     for(var point:mesh.settings().options().lanePoints().points())if(point.mergeLength()>0){
       var lane=LanePoints.lane(raw,point);double station=lane.station()+lane.sign()*Math.min(4,point.mergeLength()*.12);
       if(RoadAttachments.paint(mesh,station).hideArrows())continue;
-      var c=RoadProfile.catalog(raw.settings().style());int receiver=c.twoWay()?point.lane()-1:point.lane()==0?1:point.lane()-1;
+      int receiver=LaneSections.receiver(mesh,lane.station(),point.lane(),point.id());
       var at=LanePoints.lane(raw,station,point.lane());V lateral=at.direction().left();
       double side=Math.signum(LanePoints.lane(raw,station,receiver).position().sub(at.position()).dot(lateral));
       double[][][] shapes={{{-2,-.10},{-2,.10},{0,.10},{0,-.10}},{{0,-.10},{0,.10},{1.1,side*.6+.10},{1.1,side*.6-.10}},{{1.8,side*1.0},{.7,side*.6-.40},{.7,side*.6+.40}}};
