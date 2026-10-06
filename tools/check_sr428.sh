@@ -13,7 +13,9 @@ python - <<'PY'
 from pathlib import Path
 r=Path('src/main/java/com/sora/splineroads')
 s=(r/'world/RoadData.java').read_text()
-assert s.count('terrainFill,terrainOriginal,terrainCache,lookup')==2
+# Normalize formatting; require both production calls to retain the original terrain map.
+normalized=''.join(s.split())
+assert normalized.count('StructurePlanner.plan(level,r,planning,terrainFill,terrainOriginal,terrainCache,structureLookup)')==2
 assert 'RoadFoundation.source' in (r/'world/StructurePlanner.java').read_text()
 assert 'RoadContinuations.reconcile(records(data),all,scope)' in (r/'world/LaneTopology.java').read_text()
 assert 'RoadContinuations' in Path('tools/test_ramp39_model.sh').read_text()
