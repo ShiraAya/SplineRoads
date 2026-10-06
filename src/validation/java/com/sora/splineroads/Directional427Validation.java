@@ -49,9 +49,23 @@ public final class Directional427Validation {
    near(host.first().center().distance(LaneSections.apply(mesh(s.options(s.options().lanePoints(LanePoints.Data.EMPTY.cuts(cuts))))).first().center()),0,"host axis stays unchanged");
    check(LaneSections.live(host,120+sign*70).count(sign)==(sign>0?f:r)-1,"live after merge");
  }
+ static void raised(int f,int r,boolean left,Median median){
+   cases++;var base=settings(Type.ORDINARY,f,r,left);var style=RoadLanes.carrier(Type.ORDINARY,new RoadLanes.Counts(f,r),median);
+   var s=new Settings(Mode.STRAIGHT,style,RoadProfile.width(style,base.options(),4),1,.4,90).options(base.options()).structure(Structure.BRIDGE);
+   var m=mesh(s);var l=RoadProfile.layout(m,m.first());
+   int low=left?f:r,high=left?r:f;
+   near(l.medianEdge(-1)-l.motorMin(),low*l.laneWidth(),"raised negative side uses real count");
+   near(l.motorMax()-l.medianEdge(1),high*l.laneWidth(),"raised positive side uses real count");
+   for(int i=0;i<f+r;i++){var lane=LanePoints.lane(m,50,i);double o=lane.position().sub(RoadStructures.sample(m,50).center()).dot(m.first().left());
+     for(double d:l.dividers())check(Math.abs(o-d)>l.laneWidth()*.49,"raised lane off divider");
+   }
+   var snap=RoadEndpointSections.section(m,false,false);var at=RoadProfile.layout(mesh(snap),mesh(snap).first());
+   near(at.motorMin(),l.motorMin(),"raised snapshot min");near(at.medianCenter(),l.medianCenter(),"raised snapshot median");
+ }
  public static void main(String[] args){
    for(var type:List.of(Type.ORDINARY,Type.HIGHWAY))for(boolean left:new boolean[]{false,true})for(int f=1;f<=4;f++)for(int r=0;r<=4;r++)layout(settings(type,f,r,left));
    for(boolean left:new boolean[]{false,true})for(int f=2;f<=4;f++)for(int r=2;r<=4;r++)for(int sign:new int[]{-1,1})merge(f,r,left,sign);
+   for(boolean left:new boolean[]{false,true})for(int f=1;f<=4;f++)for(int r=1;r<=4;r++)for(var median:List.of(Median.GREEN,Median.DOUBLE_YELLOW))raised(f,r,left,median);
    var a=settings(Type.ORDINARY,4,1,false);var b=settings(Type.ORDINARY,1,4,false);
    check(!RoadTransitions.compatible(a,b),"total equal is not per-direction compatible");
    check(RoadTransitions.compatible(settings(Type.ORDINARY,2,1,false),settings(Type.ORDINARY,2,2,false)),"2+1 / 2+2 compatible");

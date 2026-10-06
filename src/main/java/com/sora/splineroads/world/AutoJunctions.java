@@ -23,7 +23,13 @@ public final class AutoJunctions {
     var result=new LinkedHashMap<UUID,RoadRecord>();data.index.roads.values().stream().map(b->b.record).filter(r->ordinary(r)||corridorStreet(data,r)).sorted(Comparator.comparing(RoadRecord::id)).forEach(r->result.put(r.id(),r));result.putAll(data.streets);return result;
   }
   private static boolean corridorStreet(RoadData d,RoadRecord r){var group=d.interchanges.get(r.assembly());return r.junction()==null&&group!=null&&group.contains("Corridor")&&RoadProfile.catalog(r.settings().style()).type()==RoadProfile.Type.ORDINARY;}
-  public static boolean incompatible(RoadData d,BlockPos a,BlockPos b,UUID id,Settings s){return logical(d).values().stream().anyMatch(r->!r.id().equals(id)&&(touches(r,a)||touches(r,b))&&!RoadTransitions.compatible(s,r.settings()));}
+  public static boolean incompatible(RoadData d,BlockPos a,BlockPos b,UUID id,Settings s){
+    for(var r:logical(d).values())if(!r.id().equals(id))for(boolean start:new boolean[]{true,false}){
+      BlockPos p=start?a:b;if(!touches(r,p))continue;boolean first=r.a().equals(p);
+      Settings target=RoadEndpointSections.changed(r.mesh(),first)?RoadData.endpointSection(new RoadIndex.Built(r),p):RoadData.authoredSection(r.settings());
+      if(!RoadTransitions.compatible(s,RoadEndpointSections.orient(target,first==start)))return true;
+    }return false;
+  }
   public static boolean forced(CompoundTag t,String side){return t.contains("ForceJunction"+side)?t.getBoolean("ForceJunction"+side):t.getBoolean("ForceJunction");}
   public static boolean requiresJunction(CompoundTag t,Settings s){
     if(RoadProfile.catalog(s.style()).type()!=RoadProfile.Type.ORDINARY)return false;
@@ -73,6 +79,8 @@ public final class AutoJunctions {
   public static RoadRecord proposed(CompoundTag command){
     var s=RoadRecord.readSettings(command.getCompound("Settings"));
     Node a=RoadRecord.readNode(command.getCompound("StartNode")),b=RoadRecord.readNode(command.getCompound("EndNode"));
+    if(command.getBoolean("LiveSectionA")&&command.contains("AutoA")){var n=RoadData.readHint(command.getCompound("AutoA")).node();a=new Node(n.position(),a.yaw(),a.grade());}
+    if(command.getBoolean("LiveSectionB")&&command.contains("AutoB")){var n=RoadData.readHint(command.getCompound("AutoB")).node();b=new Node(n.position(),b.yaw(),b.grade());}
     if(command.getBoolean("LevelEnds")){a=RoadData.atGround(a,BlockPos.of(command.getLong("A")));b=RoadData.atGround(b,BlockPos.of(command.getLong("B")));}
     V chord=b.position().sub(a.position()).horizontalUnit();
     boolean freeA=free(command,"A"),freeB=free(command,"B");
@@ -103,30 +111,34 @@ public final class AutoJunctions {
     if(config.contains("Spec")){var old=JunctionCodec.read(config.getCompound("Spec"));arms=new ArrayList<>(arms);for(Tag v:config.getList("ConnectorArms",Tag.TAG_COMPOUND)){var t=(CompoundTag)v;arms.add(RampJunctions.arm(old,LanePointCodec.position(t.getCompound("Mouth")),RoadRecord.readSettings(t.getCompound("Settings")),arms.size()));}return new JunctionSpec(center,old.kind(),old.leftTraffic(),old.cornerRadius(),old.islandRadius(),old.ringLanes(),old.ringLaneWidth(),old.thickness(),old.control(),old.greenSeconds(),old.yellowSeconds(),old.allRedSeconds(),old.timeOffset(),old.guides(),old.greenIsland(),old.outerRail(),arms);}
     return new JunctionSpec(center,Kind.INTERSECTION,false,4,12,1,4,1,Control.NONE,20,3,1,0,true,true,arms);
   }
-  private static Arm arm(End end,double distance,int i){Sample at=end.at(distance);V inward=end.away(distance).mul(-1);Node node=new Node(at.center(),RoadPlanner.yaw(inward),(end.first()?-1:1)*(end.first()?end.road().start():end.road().end()).grade());Settings external=end.road().settings().taper(at.halfWidth()*2,at.halfWidth()*2);if(end.first()&&external.options().sidewalk().side()!=RoadSidewalks.Side.BOTH)external=external.options(external.options().sidewalk(external.options().sidewalk().side(external.options().sidewalk().side()==RoadSidewalks.Side.LEFT?RoadSidewalks.Side.RIGHT:RoadSidewalks.Side.LEFT)));var l=RoadProfile.layout(end.mesh(),at);double orientation=end.first()?-1:1;
+  private static Arm arm(End end,double distance,int i){Sample at=end.at(distance);V inward=end.away(distance).mul(-1);Node node=new Node(at.center(),RoadPlanner.yaw(inward),(end.first()?-1:1)*(end.first()?end.road().start():end.road().end()).grade());Settings external=RoadEndpointSections.orient(end.road().settings().taper(at.halfWidth()*2,at.halfWidth()*2),end.first());if(end.first()&&external.options().sidewalk().side()!=RoadSidewalks.Side.BOTH)external=external.options(external.options().sidewalk(external.options().sidewalk().side(external.options().sidewalk().side()==RoadSidewalks.Side.LEFT?RoadSidewalks.Side.RIGHT:RoadSidewalks.Side.LEFT)));var l=RoadProfile.layout(end.mesh(),at);double orientation=end.first()?-1:1;
     var dividers=l.dividers().stream().map(d->d*orientation).sorted().toList();
     double left=RoadProfile.curbExtent(l,at,orientation<0?-1:1);
     double right=RoadProfile.curbExtent(l,at,orientation<0?1:-1);
-    var port=new RoadTransitions.Port(orientation<0?-l.motorMax():l.motorMin(),orientation<0?-l.motorMin():l.motorMax(),l.median(),dividers,Math.max(0,left),Math.max(0,right));
+    var port=new RoadTransitions.Port(orientation<0?-l.motorMax():l.motorMin(),orientation<0?-l.motorMin():l.motorMax(),l.median(),dividers,Math.max(0,left),Math.max(0,right),orientation*l.medianCenter());
     external=external.options(external.options().ends(external.options().ends().port(port)));
     return JunctionSpec.arm(node,inward,external,!end.first(),i%8).attached(true);}
   public static Draft plan(List<RoadRecord> streets,List<CompoundTag> saved){return plan(streets,saved,new CompoundTag());}
+  private static RoadTransitions.Section streetSection(RoadRecord own,BlockPos p,Map<BlockPos,List<RoadRecord>> links,Set<BlockPos> centers){
+    var peers=links.getOrDefault(p,List.of());if(peers.size()!=2||centers.contains(p))return null;
+    boolean first=own.a().equals(p);var ownMesh=own.caps(0).mesh();
+    if(RoadEndpointSections.changed(ownMesh,first))return first?own.settings().options().ends().start():own.settings().options().ends().end();
+    var other=peers.get(0).id().equals(own.id())?peers.get(1):peers.get(0);boolean otherFirst=other.a().equals(p);
+    if(other.assembly()!=null||RoadEndpointSections.changed(other.mesh(),otherFirst))
+      return RoadTransitions.Section.of(RoadEndpointSections.orient(RoadData.endpointSection(new RoadIndex.Built(other),p),first==otherFirst));
+    return RoadTransitions.common(RoadData.authoredSection(own.settings()),RoadEndpointSections.orient(RoadData.authoredSection(other.settings()),first==otherFirst));
+  }
   private static List<RoadRecord> normalizeStreetJoints(List<RoadRecord> streets,List<CompoundTag> saved,CompoundTag context) {
     var links=new HashMap<BlockPos,List<RoadRecord>>();var centers=new HashSet<BlockPos>();var active=new HashSet<BlockPos>();
     for(long p:context.getLongArray("ActiveNodes"))active.add(BlockPos.of(p));
     for(var t:saved){centers.add(BlockPos.of(t.getLong("CenterPos")));for(long p:t.getLongArray("Ports"))centers.add(BlockPos.of(p));}
     for(var r:streets)for(var p:List.of(r.a(),r.b()))links.computeIfAbsent(p,k->new ArrayList<>()).add(r);
-    var sections=new HashMap<BlockPos,RoadTransitions.Section>();
-    for(var e:links.entrySet())if(e.getValue().size()==2&&!centers.contains(e.getKey())&&(active.isEmpty()||active.contains(e.getKey()))) {
-      var a=e.getValue().get(0);var b=e.getValue().get(1);var fixed=a.assembly()!=null?a:b.assembly()!=null?b:null;
-      sections.put(e.getKey(),fixed==null?RoadTransitions.common(RoadData.authoredSection(a.settings()),RoadData.authoredSection(b.settings())):RoadTransitions.Section.of(RoadData.endpointSection(new RoadIndex.Built(fixed),e.getKey())));
-    }
     var result=new ArrayList<RoadRecord>();
     for(var r:streets){var ends=r.settings().options().ends();
       // Recompute active ends from authored profiles. Old automatic tapers are not inputs.
       // The far end outside this edit's graph remains exactly as saved.
-      var a=!active.isEmpty()&&!active.contains(r.a())?ends.start():sections.get(r.a());
-      var b=!active.isEmpty()&&!active.contains(r.b())?ends.end():sections.get(r.b());
+      var a=!active.isEmpty()&&!active.contains(r.a())?ends.start():streetSection(r,r.a(),links,centers);
+      var b=!active.isEmpty()&&!active.contains(r.b())?ends.end():streetSection(r,r.b(),links,centers);
       var settings=r.assembly()!=null?r.settings():RoadTransitions.ends(r.settings(),a,b);
       // A former free end may already include a half-block cap. Once it becomes a shared
       // port, remove that cap BEFORE trimming/baking alignment, not after it is irreversible.

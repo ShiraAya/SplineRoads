@@ -30,7 +30,7 @@ public final class RoadEndpointSections {
         .map(d->sign*d).sorted().distinct().toList();
     var port=new RoadTransitions.Port(reversed?-l.motorMax():l.motorMin(),reversed?-l.motorMin():l.motorMax(),l.median(),dividers,l.curbWidth(),l.curbWidth(),sign*l.medianCenter());
     var options=base.options().lanePoints(LanePoints.Data.EMPTY).attachments(RoadAttachments.Data.EMPTY)
-        .laneLines(List.of()).lanes(counts).ends(RoadTransitions.Ends.NONE.port(port))
+        .laneLines(List.of()).streetscape(base.options().streetscape().raisedSpans(List.of())).lanes(counts).ends(RoadTransitions.Ends.NONE.port(port))
         .route(base.options().routing().fit(false));
     var style=RoadLanes.carrier(c.type(),counts,c.median());
     var result=new Settings(Mode.STRAIGHT,style,at.halfWidth()*2,base.thickness(),base.tension(),base.arcDegrees()).structure(base.structure()).options(options);
@@ -39,7 +39,7 @@ public final class RoadEndpointSections {
   public static Settings orient(Settings s,boolean reverse){
     if(!reverse)return s;
     var o=s.options();var n=RoadLanes.counts(s);var p=o.ends().port();
-    if(n.twoWay())o=o.lanes(n.mirrored());
+    if(n.twoWay()&&o.lanes().explicit())o=o.lanes(n.mirrored());
     if(p!=null)o=o.ends(o.ends().port(new RoadTransitions.Port(-p.motorMax(),-p.motorMin(),p.median(),p.dividers().stream().map(d->-d).sorted().toList(),p.curbRight(),p.curbLeft(),-p.medianCenter())));
     return s.options(o);
   }

@@ -186,7 +186,7 @@ public final class RoadTransitions {
     List<Double> dividers = new ArrayList<>();
     if (a.catalog().twoWay()) {
       for (int sign : new int[] {-1, 1})
-        for (int n = 1; n < Math.max(a.lanesOnSide(sign),z.lanesOnSide(sign)); n++)
+        for (int n = 1; n < dividerLanes(mesh, a, sign); n++)
           dividers.add(lerp(divider(a, n, sign), divider(z, n, sign), w));
     } else {
       for (int n = 1; n < lanes; n++)
@@ -237,6 +237,14 @@ public final class RoadTransitions {
     double outer = Math.abs(layout.outer(1)) - .2;
     double first = Math.min(outer, layout.median() / 2 + newLanes / 2.0 * layout.laneWidth());
     return outer - Math.max(0, outer - first) * Settings.smooth(Math.min(1, t * 4));
+  }
+
+  /** Paint identity must remain stable even where both endpoint weights are zero. */
+  private static int dividerLanes(Mesh mesh,Layout base,int side){
+    int count=base.lanesOnSide(side);
+    for(Section end:new Section[]{mesh.settings().options().ends().start(),mesh.settings().options().ends().end()})
+      if(end!=null)count=Math.max(count,end.layout(mesh.settings().options().leftTraffic()).lanesOnSide(side));
+    return count;
   }
 
   private static double divider(Layout l, int lane,int side) {

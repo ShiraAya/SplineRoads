@@ -1,3 +1,11 @@
+# SR15 reviewed directional candidate — full CI pending
+
+Source 0.40.16-alpha-stage2, protocol61. The first full run 37481884813 saved e4dc04b but FAILED old Transition402 stripe identity checks before Forge. Production divider identity was repaired; the unchanged 966 valid/544 rejection old cases pass locally. Added asymmetric raised median correction and AutoJunction port orientation/normalization. New core180 cases/4114 checks and record model96 cases/961 checks passed locally. These are not Minecraft world/GUI acceptance.
+
+Run bash tools/check_sr427.sh; this exact candidate needs full old/new regression and Java17 Forge before delivery. SR15-03/07/08 remain pending. Review lifecycle when changing/removing a merge after a continuation exists; no claim of all possible dependent-network edits. All source saved in SR-0.40.15 only.
+
+---
+## Earlier checkpoint
 # SR15 directional lanes and continuation — source saved, CI pending
 
 2026-10-06. Continued from 2e90ae6 without reverting stage1 repairs. Candidate 0.40.16-alpha-stage2, protocol61; branch SR-0.40.15 only.
