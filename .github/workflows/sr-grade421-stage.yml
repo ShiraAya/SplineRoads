@@ -1,0 +1,76 @@
+name: SR P1 connector grade limits and left-path diagnostics
+on:
+  push:
+    branches: [chat/sr-0402]
+    paths: ['tools/patches/grade421*', '.github/workflows/sr-grade421-stage.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 3
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: save
+        run: |
+          python - <<'PY'
+          import base64, hashlib, json, lzma, subprocess
+          from pathlib import Path
+          m=json.loads(Path('tools/patches/grade421-manifest.json').read_text())
+          for entry in m['files']:
+            p=Path(entry['path'])
+            assert not p.is_absolute() and '..' not in p.parts and not entry['path'].startswith('.github/')
+            assert (hashlib.sha256(p.read_bytes()).hexdigest() if p.exists() else None)==entry['before'], str(p)
+          payload=''.join(Path('tools/patches/grade421.xz64.'+str(i)).read_text() for i in range(4))
+          patch=lzma.decompress(base64.b64decode(payload,validate=True))
+          assert hashlib.sha256(patch).hexdigest()==m['patch_sha256']
+          subprocess.run(['git','apply','--unidiff-zero','--check','-'],input=patch,check=True)
+          subprocess.run(['git','apply','--unidiff-zero','-'],input=patch,check=True)
+          for entry in m['files']:
+            assert hashlib.sha256(Path(entry['path']).read_bytes()).hexdigest()==entry['after'],entry['path']
+          subprocess.run(['git','add','--',*[entry['path'] for entry in m['files']]],check=True)
+          PY
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git -c core.whitespace=cr-at-eol diff --cached --check
+          git commit -m 'feat: enforce connector-only 20/25 percent grade policy and preserve requested LEFT route identity'
+          git push origin HEAD:refs/heads/chat/sr-0402
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  verify:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: All prior P1 regression, actual Forge build and connector grade/mirror checks
+        run: bash tools/check_grade421.sh
+      - name: Preserve exact committed sources and raw test logs
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr-grade421-logs-${{ github.sha }}
+          path: build/checkpoint-logs/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr-grade421-jar-${{ github.sha }}
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 30
