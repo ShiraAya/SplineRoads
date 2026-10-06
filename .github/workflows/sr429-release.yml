@@ -1,0 +1,112 @@
+name: SR429 release verification
+on:
+  push:
+    branches: [SR-0.40.15]
+    paths: ['.github/workflows/sr429-release.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - id: save
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import subprocess
+          subprocess.run(['git','diff','--exit-code','7f7c7fc98ab540ced54b04852e28266d08098ce5','--','src'],check=True)
+          p=Path('src/main/java/com/sora/splineroads/world/LaneRamps.java');s=p.read_text()
+          replacements=[('offset,maxGrade))try{','offset,maxGrade,errors))try{'),('double targetOffset,double maxGrade){\n    double[] leads=','double targetOffset,double maxGrade,Map<LanePoints.Path,String> errors){\n    double[] leads='),('catch(IllegalArgumentException ignored){ready=Collections.emptyIterator();}','catch(IllegalArgumentException failure){errors.putIfAbsent(options.path(),failure.getMessage());ready=Collections.emptyIterator();}')]
+          for a,b in replacements:
+            assert s.count(a)==1,a
+            s=s.replace(a,b)
+          p.write_text(s)
+          p=Path('src/gametest/java/com/sora/splineroads/world/Build429GameTests.java');s=p.read_text();assert s.count('var a=point(data,source,60,1);')==1
+          s=s.replace('var a=point(data,source,60,1);','// Slot 0 faces the target. Slot 1 would cross the other live lane immediately.\n  var a=point(data,source,60,0);');p.write_text(s)
+          PY
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git add src
+          git commit -m 'fix: retain infeasible route diagnostics; test outward rather than cross-lane branch'
+          git push origin HEAD:refs/heads/SR-0.40.15
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  regression:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Actual Forge and full regression
+        run: |
+          mkdir -p build/checkpoint-logs
+          set -o pipefail
+          bash tools/check_sr429.sh 2>&1 | tee build/checkpoint-logs/sr429-full.log
+      - name: Preserve exact source
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+          sha256sum build/libs/*.jar > build/checkpoint-logs/JAR-SHA256.txt 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr429-release-source-logs-${{ needs.preserve.outputs.saved }}
+          path: build/checkpoint-logs/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr429-release-jars-${{ needs.preserve.outputs.saved }}
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 30
+  minecraft:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Actual ServerLevel normal road and ADD ramp construction
+        run: |
+          mkdir -p build/repro429 run429
+          echo eula=true > run429/eula.txt
+          (for i in $(seq 1 20); do sleep 25; for p in $(jcmd -l | awk '/BootstrapLauncher/ {print $1}'); do jcmd "$p" Thread.print > "build/repro429/threads-$i-$p.txt" 2>&1 || true; done; done) &
+          monitor=$!
+          trap 'kill "$monitor" 2>/dev/null || true' EXIT
+          set -o pipefail
+          timeout 480s bash gradlew --no-daemon runGameTestServer -ProadRunDir=run429 -ProadTestNamespaces=splineroads_hotfix429 -ProadTestHeap=3G -Proad429Arrival=ADD 2>&1 | tee build/repro429/server.log
+          grep -q 'BUILD429 CONTINUATION_REAL_WORLD_MS=' build/repro429/server.log
+          grep -q 'BUILD429 RAMP_REAL_WORLD_MS=' build/repro429/server.log
+          grep -q 'All 2 required tests passed' build/repro429/server.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr429-release-minecraft-${{ needs.preserve.outputs.saved }}
+          path: |
+            build/repro429/
+            run429/logs/
+            run429/*.xml
+          retention-days: 30
