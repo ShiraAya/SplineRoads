@@ -26,10 +26,13 @@ jobs:
           subprocess.run(['git','apply','--check','-'],input=patch,check=True)
           subprocess.run(['git','apply','-'],input=patch,check=True)
           PY
+          # Workflow edits are submitted separately through the authorized connector.
+          # The build token has contents permission only, so retain its original workflow.
+          git restore .github/workflows/sr-checkpoint.yml
           git -c core.whitespace=cr-at-eol diff --check
           git config user.name 'SR checkpoint'
           git config user.email 'sr-checkpoint@users.noreply.github.com'
-          git add src/main tools/model-validation/com/sora/splineroads/world/Connector420ModelValidation.java tools/check_connector420.sh build.gradle .github/workflows/sr-checkpoint.yml
+          git add src/main tools/model-validation/com/sora/splineroads/world/Connector420ModelValidation.java tools/check_connector420.sh build.gradle
           git commit -m 'WIP: persist independent connector kinds, default gantry policy and fitted EXTRA merge guide'
           git push origin HEAD:refs/heads/chat/sr-0402
           echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
