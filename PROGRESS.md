@@ -1,7 +1,13 @@
-# SR429 urgent build hotfix checkpoint
+# SR429 热修候选已保存：建造计算、混合跨越、永久最外侧补入
 
-Work branch SR-0.40.15 only. Candidate 0.40.17-alpha-hotfix1, protocol63.
-User reports minutes waiting to construct, mixed crossing rejected near B, and replaces vacancy prerequisite with permanent outer-lane addition 1->2/2->3/3->4 (four rejects).
-Implemented lazy fallback route groups, node-adjacency traversal, mixed over/under AUTO corridors retaining final checks, explicit runtime failure replies and stage timings, owned persistent outer-lane growth with live directional limits, legacy REPLACE retained only for saved links.
-Local core/model chain passed and 48 outer-addition cases passed. Actual RC1 isolated normal construction baseline did NOT reproduce the minutes-long stall: 100m/200m roads completed in about0.5/0.85s in a real ServerLevel test. Do not claim this is the user world or a before/after speedup.
-This commit awaits full regression and new actual ServerLevel normal/ramp construction. No verified release or GPU/client/user-save acceptance yet.
+候选0.40.17-alpha-hotfix1，协议63。工作分支仅SR-0.40.15；main、SR-0.40.14、chat/sr-0402未改动。受测生产源码79adc7016614bb91e130f47f636f3e347102bc8a，后续为文档提交。
+
+本轮按用户要求更新：路线按需搜索而非提前生成全部组合；接头节点邻接遍历；没有车道变化时跳过续接传播，实际传播只处理相接路段并缓存几何；RuntimeException日志与失败回执、阶段耗时、等待秒数；AUTO混合上下跨越；ADD按实际汇入方向1->2、2->3、3->4永久新增外侧车道，4拒绝，反向独立，保存/删除归属及实时断面支持。
+
+Actions37503190242：regression作业112405132498成功，真实Java17 Forge、jar/reobf和完整旧回归、新混合跨越43检查、新ADD48案例528检查通过。minecraft作业112405132072失败：两项真实GameTest中普通道路建造通过（100m313.823205ms、200m续接951.768042ms），另一项在创建宿主道路时被82000,12,82394处方块实体挡住，未执行到ADD匝道建造。不能说整体Actions成功，也不能说ADD的真实世界闭环通过。
+
+已下载源码、JAR、真实服务端日志，核对外层SHA256、源码ZIP提交、JAR版本/关键类。本地1850个跟踪文件与归档对比，仅PROGRESS.md有工作流生成的预期差异，生产代码一致。详细结果、校验值和证据位置见docs/checkpoints/FINAL_VERIFICATION_429.md。
+
+仍待确认：用户原存档几分钟等待的唯一根因没有复现；需要同一次等待的latest.log或存档/线程堆栈，不能把普通道路简单测试当成用户世界速度保证。开发侧下一步记录并隔离GameTest宿主道路中的阻挡方块实体，再完成真实ADD事务；不得关闭保护伪造通过。图一图二的原布局未由截图完整复原，仍待原场景验收。复杂叠加ADD/合并/续接需要继续实机检验。
+
+本轮约45分钟已保存HOTFIX429-WIP.md；之后只修正上传缺括号、结束已启动验证并归档，没有继续扩展任务。当前为可安装测试候选，非全项目实机验收完成；源码和失败证据均已保存，不承诺后台修改。
