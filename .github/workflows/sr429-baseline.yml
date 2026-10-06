@@ -1,0 +1,39 @@
+name: SR429 RC1 real build reproduction
+on:
+  push:
+    branches: [SR-0.40.15]
+    paths: ['.github/workflows/sr429-baseline.yml']
+permissions:
+  contents: read
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Compile production and real GameTest
+        run: bash gradlew --no-daemon compileJava compileGameTestJava
+      - name: Real ServerLevel construction with diagnostic sampling
+        run: |
+          mkdir -p build/repro429 run429
+          echo eula=true > run429/eula.txt
+          (for i in $(seq 1 10); do sleep 25; for p in $(jcmd -l | awk '/BootstrapLauncher/ {print $1}'); do jcmd "$p" Thread.print > "build/repro429/threads-$i-$p.txt" 2>&1 || true; done; done) &
+          monitor=$!
+          trap 'kill "$monitor" 2>/dev/null || true' EXIT
+          set -o pipefail
+          timeout 280s bash gradlew --no-daemon runGameTestServer -ProadRunDir=run429 -ProadTestNamespaces=splineroads_hotfix429 -ProadTestHeap=3G 2>&1 | tee build/repro429/server.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr429-baseline-real-server
+          path: |
+            build/repro429/
+            run429/logs/
+            run429/*.xml
+          retention-days: 30
