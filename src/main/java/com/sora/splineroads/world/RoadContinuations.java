@@ -78,3 +78,4 @@ public final class RoadContinuations {
     }}while(added);
   }
   private RoadContinuations(){}
+}
