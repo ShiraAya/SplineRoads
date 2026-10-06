@@ -1,13 +1,15 @@
-# SR15 reviewed integrated RC — final verification pending
+# SR15 整合候选已完成构建与自动验证，等待统一实机测试
 
-The integration review additionally reproduced real main-road guide generation at DETACH/TEMPORARY source contacts. It now suppresses auxiliary merge guides only for the actual departing host, not genuine arrival/BRANCH/EXTRA guidance. Added 16 identity cases; the pre-fix RoadJunction fails the same source-guides test. Final full CI must cover this reviewed code, not the earlier 32c6e980 candidate. Version remains 0.40.16-alpha-rc1, protocol62; no new JAR has been delivered yet.
+版本 0.40.16-alpha-rc1，协议62，工作分支仅 SR-0.40.15。受测提交 0027371c82f55168446ff08c34ded5d90a03b21f；本后续文档提交不改受测代码。
 
-# SR15 integrated candidate saved — final CI pending
+最终 GitHub Actions 37492710964 / verify 112369274390 SUCCESS，bash tools/check_sr428.sh 的真实 Java17 Forge 编译、完整旧回归和本轮专项全部通过。已取回并核验 JAR 与源码：生产代码及测试与本地1836个跟踪文件一致，只有 PROGRESS.md 是预期工作流差异。详细结果/校验值见 docs/checkpoints/FINAL_VERIFICATION_428.md。
 
-2026-10-06. User requested all remaining changes before unified game testing. Work only on SR-0.40.15; baseline e9d4876 / production c62e440. Current candidate 0.40.16-alpha-rc1, network protocol62.
+本次收尾已汇入：SR15-03近地浅缝窄封边、SR15-07原始地形支撑分类防止绿化重建缺失、SR15-08分隔轴线与实际分离来源导线归属、修改/删除/恢复原合并后的普通续接联动、Y字及3–6向立交方向独立车道配置。前两批所有改动保留。全部14项处于代码与自动验证完成、待用户统一实机验收的状态，不宣称截图在原存档逐一结案。
 
-Implemented: SR15-03 narrow shallow foundation skirts, SR15-07 original-versus-visible terrain support classification, SR15-08 unchanged authored divider axes through consecutive merge/detach, transaction-local original-merge removal/restoration and continuation propagation, Y and 3–6 arm independent directional-lane configuration. Earlier stage1/stage2 changes retained. Details and acceptance sequence: docs/checkpoints/SR15-FINAL-428.md.
+本轮新增专项：核心135案例/19108检查、真实立交生成器8布局/216检查、原合并撤销/删除/恢复的实际记录拓扑及RoadIndex模型12案例/132检查。模型的NBT/世界API仍为适配器，不是游戏事务。完整旧保护断言保留。
 
-Local core, real generator and record/index tests ran, but final full regression and actual Forge build are pending for this saved commit. Run bash tools/check_sr428.sh. Do not substitute older CI passes for this source. No Minecraft client/GPU/original-world or real ServerLevel transaction acceptance. All original14 items await unified game acceptance, not screenshot closure.
+早先整合运行因最后静态断言匹配错误变量名/空白而失败，现精确匹配实际生产调用并重新完整跑通；不能把那个失败运行写成全面成功。来源导线补正后的全部生产代码均包含在最终受测提交中。
 
-Source is committed before CI; a following documentation-only checkpoint will record actual outcome and artifact hashes. Other branches unchanged. P2 terrain/shaders/multithreading not expanded. Previous checkpoint remains at e9d4876:PROGRESS.md and FINAL_VERIFICATION_427.md.
+下一步：用户已要求统一测试，先按 docs/checkpoints/SR15-RC1-ACCEPTANCE.md 收集实际反馈，不重新从0.40.14或stage1开始。没有运行Minecraft/GPU/原世界/车辆/真实ServerLevel或多人事务；不要把编译GameTest当作执行世界。渐变未完成、跨所有者或不满足既有过渡/净空规则仍明确拒绝。其他分支未修改，P2 terrain/光影/多线程未扩展。旧设施不在加载时强制全量重建。
+
+历史检查点 e9d4876、FINAL_VERIFICATION_427.md、FINAL_VERIFICATION_426.md 保留。源码已远端保存；本轮结束后无未保存的后台工作。
