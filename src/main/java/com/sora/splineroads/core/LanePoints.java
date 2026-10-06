@@ -7,12 +7,14 @@ import java.util.*;
 public final class LanePoints {
   public enum Origin { AUTOMATIC_START, AUTOMATIC_END, MANUAL }
   /** Anchor is the longitudinal position on the road spine; position is a derived lane-center cache. */
-  public record Point(UUID id,Origin origin,int lane,V position,V anchor) {
-    public Point {Objects.requireNonNull(id);Objects.requireNonNull(origin);if(lane<0||lane>31||position==null||!RoadGeometry.finite(position.x(),position.y(),position.z())||anchor!=null&&!RoadGeometry.finite(anchor.x(),anchor.y(),anchor.z()))throw new IllegalArgumentException("车道点数据无效");}
+  public record Point(UUID id,Origin origin,int lane,V position,V anchor,double mergeLength) {
+    public Point(UUID id,Origin origin,int lane,V position,V anchor){this(id,origin,lane,position,anchor,0);}
+    public Point {Objects.requireNonNull(id);Objects.requireNonNull(origin);if(!Double.isFinite(mergeLength)||mergeLength!=0&&(mergeLength<8||mergeLength>256)||origin!=Origin.MANUAL&&mergeLength!=0||lane<0||lane>31||position==null||!RoadGeometry.finite(position.x(),position.y(),position.z())||anchor!=null&&!RoadGeometry.finite(anchor.x(),anchor.y(),anchor.z()))throw new IllegalArgumentException("车道点数据无效");}
     /** Read compatibility for pre-anchor saves. Canonicalize once against the actual road mesh. */
     public Point(UUID id,Origin origin,int lane,V position){this(id,origin,lane,position,null);}
     public boolean automatic(){return origin!=Origin.MANUAL;}
-    public Point at(Lane selected,Mesh mesh){return new Point(id,origin,selected.index(),selected.position(),LaneSections.anchor(mesh,selected.station()));}
+    public Point at(Lane selected,Mesh mesh){return new Point(id,origin,selected.index(),selected.position(),LaneSections.anchor(mesh,selected.station()),mergeLength);}
+    public Point merge(double length){return new Point(id,origin,lane,position,anchor,length);}
   }
   public record Ref(UUID road,UUID point,UUID junction) {
     public Ref {if((junction!=null)==(road!=null||point!=null)||junction==null&&(road==null||point==null))throw new IllegalArgumentException("连接目标必须为具体车道点或路口中心");}

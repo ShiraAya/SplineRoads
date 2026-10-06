@@ -169,7 +169,7 @@ public final class LaneRamps {
     for(var sample:mesh.samples()){
       double ws=source.isEmpty()||link.options().separatesLane()?0:1-Settings.smooth(Math.max(0,Math.min(1,(sample.distance()-from)/ease)));
       double wt=target.isEmpty()||link.closesTarget()?0:1-Settings.smooth(Math.max(0,Math.min(1,(to-sample.distance())/ease)));
-      double dy=(ws>0?ws*hostHeightDelta(sample,source):0)+(wt>0?wt*hostHeightDelta(sample,target):0);
+      double dy=((ws>0?ws*hostHeightDelta(sample,source):0)+(wt>0?wt*hostHeightDelta(sample,target):0))/Math.max(1,ws+wt);
       samples.add(new Sample(sample.center().add(new V(0,dy,0)),sample.left(),sample.distance(),sample.halfWidth()));
     }
     return RoadRibbon.mesh(samples,mesh.settings());

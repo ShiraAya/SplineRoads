@@ -319,12 +319,18 @@ public final class RoadStructures {
   /** Classify the usable cross section, independently of blocks used to lay out its axis. */
   public static boolean elevated(Mesh mesh,Sample at,Ground ground){
     if(mesh.settings().structure()==Structure.BRIDGE)return true;
-    double threshold=Math.max(.5,mesh.settings().thickness()+.125);int unsupported=0;
-    for(int side:new int[]{-1,1})for(double fraction:new double[]{.2,.4,.65,.85}){
-      V p=at.at(side*at.halfWidth()*fraction,0);double top=ground.top(p.x(),p.z(),p.y());
-      if(!Double.isFinite(top)||p.y()-top>threshold)unsupported++;
+    if(mesh.settings().structure()==Structure.GROUND||mesh.settings().structure()==Structure.TUNNEL)return false;
+    // Longitudinal voting filters marker holes. Inspect each half separately: a bank
+    // under the opposite carriageway must not classify an overhanging deck as ground.
+    double threshold=Math.max(.5,mesh.settings().thickness()+.125);int raisedRows=0;
+    for(double step:new double[]{-.8,0,.8}){
+      var sample=sample(mesh,Math.max(0,Math.min(mesh.length(),at.distance()+step)));boolean raised=false;
+      for(int side:new int[]{-1,1}){int missing=0;for(double fraction:new double[]{.35,.65,.9}){
+        V p=sample.at(side*sample.halfWidth()*fraction,0);double top=ground.top(p.x(),p.z(),p.y());
+        if(!Double.isFinite(top)||p.y()-top>threshold)missing++;
+      }if(missing>=2)raised=true;}if(raised)raisedRows++;
     }
-    return unsupported>=5;
+    return raisedRows>=2;
   }
 
   /** The entire shaft plus its vehicle margin must fit within an uninterrupted lower median. */

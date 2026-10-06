@@ -25,6 +25,10 @@ public final class LaneCrossSections {
       if(hosts==null||hosts.contains(link.from().road())||hosts.contains(link.to().road()))
         add(events,records,road.id(),link,hosts,link.options().departure()==LanePoints.Departure.TEMPORARY||link.closesTarget()?road.rawMesh():null,road.structures());
     }
+    for(var road:records.values())if(hosts==null||hosts.contains(road.id()))for(var point:LaneTopology.metadata(road).points())if(point.mergeLength()>0){
+      var event=LaneMerge.event(road.rawMesh(),point);
+      events.computeIfAbsent(road.id(),k->new ArrayList<>()).add(event);
+    }
     if(proposal!=null)add(events,records,edited,proposal,hosts,candidate,List.of());
     for(var road:new ArrayList<>(records.values())){
       if(hosts!=null&&!hosts.contains(road.id()))continue;

@@ -40,12 +40,12 @@ public final class TactilePaths {
     for(int k=1;k<=n;k++){
       int i=(start+k)%n;
       if(open[i]){if(run.isEmpty())run.add(boundary.get(i));run.add(boundary.get((i+1)%n));}
-      else if(!run.isEmpty()){corner(out,s,approaches,run,sign,insetBend,trims);run.clear();}
+      else if(!run.isEmpty()){corner(out,s,approaches,run,sign,insetBend,trims,boundary);run.clear();}
     }
-    if(!run.isEmpty())corner(out,s,approaches,run,sign,insetBend,trims);
+    if(!run.isEmpty())corner(out,s,approaches,run,sign,insetBend,trims,boundary);
     return List.copyOf(out);
   }
-  private static void corner(List<Part> out,JunctionSpec spec,List<Mesh> approaches,List<V> edge,double sign,boolean insetBend,List<Trim> trims){
+  private static void corner(List<Part> out,JunctionSpec spec,List<Mesh> approaches,List<V> edge,double sign,boolean insetBend,List<Trim> trims,List<V> roadBoundary){
     edge=RoadSidewalks.closeCorner(spec,approaches,edge);
     if(edge.size()<2)return;
     End first=nearest(spec,approaches,edge.get(0)),last=nearest(spec,approaches,edge.get(edge.size()-1));
@@ -54,7 +54,7 @@ public final class TactilePaths {
       crossingTerminal(out,spec,approaches,first.enabled()?first:last,trims);return;
     }
     if(spec.kind()==JunctionSpec.Kind.ROUNDABOUT){roundCorner(out,spec,approaches,first,last,trims);return;}
-    if(tangentCorner(out,spec,approaches,edge,sign,first,last,trims))return;
+    if(tangentCorner(out,spec,approaches,edge,sign,first,last,trims,roadBoundary))return;
     var offset=new ArrayList<V>();double length=0,station=0;for(int i=1;i<edge.size();i++)length+=edge.get(i).distance(edge.get(i-1));
     for(int i=0;i<edge.size();i++){
       V normal;
@@ -111,7 +111,7 @@ public final class TactilePaths {
   }
   /** Offset circular corners can invert when the sidewalk is wider than their radius.
    * Construct one tangent fillet between the two approach rows instead of following that hook. */
-  private static boolean tangentCorner(List<Part> out,JunctionSpec spec,List<Mesh> approaches,List<V> edge,double sign,End first,End last,List<Trim> trims){
+  private static boolean tangentCorner(List<Part> out,JunctionSpec spec,List<Mesh> approaches,List<V> edge,double sign,End first,End last,List<Trim> trims,List<V> roadBoundary){
     V u=first.mouth().left().left().mul(-1),v=last.mouth().left().left();
     double den=cross(u,v),dot=Math.max(-1,Math.min(1,u.dot(v))),angle=Math.atan2(den,dot),turn=Math.abs(angle);
     if(turn<Math.toRadians(3)||turn>Math.toRadians(175)||Math.abs(den)<1e-8)return false;
@@ -121,18 +121,18 @@ public final class TactilePaths {
     if(angle*first.normal().dot(u.left())<0)return false;
     var paving=new ArrayList<>(RoadSidewalks.cornerPaving(spec,approaches,edge,sign));
     for(var e:List.of(first,last))paving.addAll(RoadSidewalks.parts(approaches.get(e.arm()),e.config()).stream().filter(part->part.material().name().startsWith("WALK_")).toList());
-    // Keep the corner inside the narrower walk. Blend the wider row on its approach,
-    // where space is available, rather than making an offset hook at the corner mouth.
+    // Use the true two offset rays. Reducing both to the narrower width and
+    // blending the wider approach made a visible inward S-bend before the corner.
     double common=Math.min(first.offset(),last.offset());
     // If the tangent at the authored row is not supported, use the actual corner
     // boundary below. Do not invent a narrower inset row and weave inward then out.
     for(double inset:new double[]{0}){
       double offset=common-inset;if(offset<.65)continue;
-      V p=first.mouth().at(first.side()*(first.mouth().halfWidth()+offset),0),q=last.mouth().at(last.side()*(last.mouth().halfWidth()+offset),0);
+      V p=first.mouth().at(first.side()*(first.mouth().halfWidth()+first.offset()),0),q=last.mouth().at(last.side()*(last.mouth().halfWidth()+last.offset()),0);
       V hit=p.add(u.mul(cross(q.sub(p),v)/den));
       for(double radius=Math.max(.85,spec.cornerRadius()-offset);radius>=.29;radius/=1.5){
         double distance=radius*Math.tan(turn/2);V begin=hit.sub(u.mul(distance)),end=hit.add(v.mul(distance));
-        double da=first.offset()-offset,db=last.offset()-offset,leadA=da>.01?2+da*4:0,leadB=db>.01?2+db*4:0;
+        double leadA=0,leadB=0; // Tangency is solved between ACTUAL offset rows, not a narrower common row.
         var a=anchor(approaches.get(first.arm()),first,begin.sub(u.mul(leadA)));var b=anchor(approaches.get(last.arm()),last,end.add(v.mul(leadB)));
         if(begin.sub(a.point()).dot(u)<-.05||b.point().sub(end).dot(v)<-.05)continue;
         V center=begin.add(u.left().mul(Math.signum(angle)*radius));double start=Math.atan2(begin.z()-center.z(),begin.x()-center.x());
@@ -140,7 +140,20 @@ public final class TactilePaths {
         int count=Math.max(12,(int)Math.ceil(radius*turn/.12));
         for(int k=1;k<count;k++){double fraction=k/(double)count,theta=start+angle*fraction;route.add(new V(center.x()+radius*Math.cos(theta),begin.y()+(end.y()-begin.y())*fraction,center.z()+radius*Math.sin(theta)));}
         route.add(end);blend(route,end,b.point(),v);
-        var pieces=parts(route,a.sample().left(),b.sample().left().mul(-1));if(!supported(pieces,paving))continue;
+        var pieces=parts(route,a.sample().left(),b.sample().left().mul(-1));
+        if(!supported(pieces,paving)){
+          // Unequal-width tangent rows may just miss the old quadratic paving edge.
+          // Supply the missing narrow backing only OUTSIDE the carriageways instead
+          // of moving the yellow row inward and then back out.
+          boolean safe=true;for(var part:pieces)if(part.height()<.018)for(V vertex:part.base()){
+            if(JunctionPaint.inside(roadBoundary,vertex)||approaches.stream().anyMatch(m->RoadQueries.contains(m,vertex,.02,.5))){safe=false;break;}
+          }
+          if(!safe)continue;
+          for(var part:pieces)if(part.height()<.018){
+            var config=first.config();V down=new V(0,-.5,0);
+            out.add(new Part(part.a().add(down),part.b().add(down),part.width()+.6,.5,false,RoadSidewalks.Finish.of(config.material()).material(),part.frameA().mul(2),part.frameB().mul(2)));
+          }
+        }
         trims.add(new Trim(first.arm(),first.side(),a.point(),a.sample().left().left().mul(-1)));
         trims.add(new Trim(last.arm(),last.side(),b.point(),b.sample().left().left().mul(-1)));
         out.addAll(pieces);return true;

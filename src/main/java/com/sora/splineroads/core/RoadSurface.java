@@ -157,9 +157,15 @@ public final class RoadSurface {
     var crossings = RoadJunction.intersections(mesh, neighbors);
     dividerCuts.addAll(crossings);
     Grid dividers = new Grid(dividerCuts);
-    for (var cut : RoadJunction.terminalCuts(mesh)) dividers.add(cut);
+    // Only real linked connector throats hide default host lane paint. An unrelated
+    // parallel road (or an overpass) must not erase markings by proximity alone.
+    var overlapCuts=new ArrayList<Mesh>(dividerCuts);
+    for(var neighbor:neighbors)if(LaneMerge.linkedTo(mesh,neighbor))overlapCuts.add(neighbor);
+    Grid defaultDividers=new Grid(overlapCuts);
+
+    for (var cut : RoadJunction.terminalCuts(mesh)){dividers.add(cut);defaultDividers.add(cut);}
     var approaches = RoadSignals.approaches(mesh, neighbors);
-    for (var cut : RoadSignals.paintCuts(approaches)) dividers.add(cut);
+    for (var cut : RoadSignals.paintCuts(approaches)){dividers.add(cut);defaultDividers.add(cut);}
     List<Face> pavement = new ArrayList<>(), markings = new ArrayList<>();
     var samples = markingSamples(mesh);
     var junctionZones = RoadJunction.dividerZones(mesh, neighbors);
@@ -260,7 +266,7 @@ public final class RoadSurface {
           for (int j = 0; j < Math.min(aa.size(),bb.size()); j++)
             if ((aa.get(j)>la.motorMin()+.12&&aa.get(j)<la.motorMax()-.12||bb.get(j)>lb.motorMin()+.12&&bb.get(j)<lb.motorMax()-.12) && !overrideLine(markings,mesh,a,b,"divider:"+j,aa.get(j),bb.get(j),dividers) && (dash || closedSlotBoundary(mesh,(a.distance()+b.distance())/2,(aa.get(j)+bb.get(j))/2) || RoadSignals.solid(approaches, (a.distance() + b.distance()) / 2,
                 (aa.get(j) + bb.get(j)-la.medianCenter()-lb.medianCenter()) / 2)))
-              stripe(markings, a, b, aa.get(j), bb.get(j), .12, false, dividers);
+              stripe(markings, a, b, aa.get(j), bb.get(j), .12, false, defaultDividers);
         }
         continue;
       }

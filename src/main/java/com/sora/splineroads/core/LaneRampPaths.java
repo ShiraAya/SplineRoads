@@ -118,7 +118,7 @@ public final class LaneRampPaths {
     double[] d=new double[frames.size()];for(int i=1;i<d.length;i++)d[i]=d[i-1]+frames.get(i).p().sub(frames.get(i-1).p()).horizontalLength();
     double length=d[d.length-1];if(length<4)throw new IllegalArgumentException("连接距离须至少 4 格");
     List<Sample> samples=new ArrayList<>();double lastY=0;
-    for(int i=0;i<frames.size();i++){double t=d[i]/length,u=1-t;double y=(2*t*t*t-3*t*t+1)*a.position().y()+(t*t*t-2*t*t+t)*length*a.grade()+(-2*t*t*t+3*t*t)*b.position().y()+(t*t*t-t*t)*length*b.grade()+lift*Math.pow(Math.sin(Math.PI*t),2);
+    for(int i=0;i<frames.size();i++){double t=d[i]/length,u=1-t;double y=(2*t*t*t-3*t*t+1)*a.position().y()+(t*t*t-2*t*t+t)*length*a.grade()+(-2*t*t*t+3*t*t)*b.position().y()+(t*t*t-t*t)*length*b.grade()+lift*Math.pow(Math.sin(Math.PI*t),2);if(settings.style().connectorRamp())y=LaneRampProfile.height(a.position().y(),b.position().y(),a.grade(),b.grade(),length,d[i])+lift*Math.pow(Math.sin(Math.PI*t),2);
       if(i>0&&LaneRampGrade.exceeds(y-lastY,d[i]-d[i-1],maxGrade))throw new IllegalArgumentException("匝道坡度超过 "+LaneRampGrade.label(maxGrade)+"，请扩大间距或降低高差");lastY=y;
       var f=frames.get(i);samples.add(new Sample(new V(f.p().x(),y,f.p().z()),f.d().left(),d[i],settings.width()/2));
     }

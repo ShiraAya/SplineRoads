@@ -74,7 +74,7 @@ public final class LaneSections {
       cuts.add(cut);
     }
     for(Event event:ordered)if(event.kind()==Kind.REPLACE&&!used.contains(event.connection()))
-      throw new IllegalArgumentException("补入模式需要同一车道上游已经整车道分离形成空位；普通汇入请选并入现有车道");
+      throw new IllegalArgumentException("补入模式需要上游已有整车道分离或车道点合流缩减形成空位；普通汇入请选并入现有车道");
     return List.copyOf(cuts);
   }
   public static Mesh reference(Mesh mesh){return mesh.reference()==null?mesh:mesh.reference();}

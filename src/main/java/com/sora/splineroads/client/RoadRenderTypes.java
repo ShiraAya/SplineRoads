@@ -59,7 +59,7 @@ public final class RoadRenderTypes extends RenderType {
         false,
         false,
         CompositeState.builder()
-            .setShaderState(RENDERTYPE_ENTITY_CUTOUT_NO_CULL_SHADER)
+            .setShaderState(new ShaderStateShard(RoadShaders::solid))
             .setTextureState(new TextureStateShard(texture, false, false))
             .setLightmapState(LIGHTMAP)
             .setOverlayState(OVERLAY)
