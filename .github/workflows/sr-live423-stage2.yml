@@ -1,0 +1,82 @@
+name: SR live423 recovered fixes and full regression
+on:
+  push:
+    branches: [chat/sr-0402]
+    paths: ['tools/patches/live423s2.xz64', '.github/workflows/sr-live423-stage2.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 3
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: save
+        run: |
+          python - <<'PY'
+          import base64,lzma,hashlib,subprocess
+          from pathlib import Path
+          subprocess.run(['git','diff','--exit-code','20be8837a66d472a198cda20f98914fb551d2e15','--','src'],check=True)
+          patch=lzma.decompress(base64.b64decode(Path('tools/patches/live423s2.xz64').read_text(),validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='73f105aae1141af4bd714fb34e9366eb0e6678ba010aea49b1d11f3ad8bb5280'
+          subprocess.run(['git','apply','--check','-'],input=patch,check=True)
+          subprocess.run(['git','apply','-'],input=patch,check=True)
+          p=Path('PROGRESS.md');p.write_text('# SR 0.40.15 实机反馈恢复检查点\n\n本轮恢复开始UTC2026-10-06T10:42:07Z。已核验20be8837候选的真实Forge编译通过；当前基于该远端源码继续，不重做、不把0.40.14旧成功当作本轮结果。\n\n补正：全路径坡度包络之后前向选取实际可达单调解；护栏共享边界按原始路面而非内缩栏杆面裁切，避免额外汇入隔栏；普通绿化床独立部件局部裁切，叶子碰匝道不能整米删除底座。新增30核心场景10509检查本地通过。\n\n当前全量回归与真实Forge正在执行，结果未核验；普通汇流、307米8米高差和实际标线/预览边界继续核查。P1最新截图仍未实机结案；P2 terrain与多线程暂停。\n\n保留已有FLOW枚举、全事务写入前预检、EXTRA邻道保护、孔区临空护栏以及共享普通道路绿化床。未运行Minecraft客户端、GPU或真实世界读写/保存重进。后续先核实本次CI，再从新回归继续，45分钟收尾50分钟检查点暂停。\n',encoding='utf8')
+          subprocess.run(['git','add','--','src','PROGRESS.md'],check=True)
+          PY
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git diff --cached --check
+          git commit -m 'WIP: recover and refine monotone ramp solution, merge rail union and complete planting beds'
+          git push origin HEAD:refs/heads/chat/sr-0402
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  verify:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Full previous regression and Forge compilation
+        run: |
+          mkdir -p build/checkpoint-logs
+          set -o pipefail
+          bash tools/check_q2final422.sh 2>&1 | tee build/checkpoint-logs/full-regression.log
+      - name: New live screenshot core invariants
+        if: always()
+        run: |
+          set -o pipefail
+          CP=build/ramp39-core/classes
+          javac --release 17 -encoding UTF-8 -cp "$CP" -d "$CP" src/validation/java/com/sora/splineroads/Live423Validation.java
+          java -Dfile.encoding=UTF-8 -Xmx1500m -cp "$CP" com.sora.splineroads.Live423Validation | tee build/checkpoint-logs/Live423Validation.txt
+      - name: Preserve exact source and logs
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr-live423s2-logs-${{ github.sha }}
+          path: build/checkpoint-logs/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr-live423s2-jar-${{ github.sha }}
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 30
