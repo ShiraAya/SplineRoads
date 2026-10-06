@@ -1,0 +1,17 @@
+{
+ "repository":"ShiraAya/SplineRoads","branch":"chat/sr-0402",
+ "source_commit":"16cebd055dcf69e2605b8e3244fe81dbb8c220b2","workflow_wrapper_commit":"c6393751a990b0a0fb0c92cf9dcfc6d79df737c3","run_id":37430977987,
+ "version":"0.40.13-alpha","save_version":40,"network_protocol":"58","jar_class_major":61,
+ "artifacts":[{"id":11397118227,"bytes":9319365,"sha256":"decd2024f85f9b72b818b6188d55d333177a269746322976c9a012279022625b"},{"id":11396883618,"bytes":4810908,"sha256":"cd77d85c2fafe79c66efea845551097f68004dd785f40f1f59c200f91e62f0a8"}],
+ "complete_forge_build":"PASS: compileJava, compileGameTestJava, jar, reobfJar, BUILD SUCCESSFUL",
+ "all_603_production_source_resource_files_match_local_review":true,"zip_crc_download_digest_and_staged_patch_digest":"PASS",
+ "production_java_changes_since_f69e0573":["client/LaneRampScreen.java","client/RoadScreen.java","core/LanePoints.java","core/LaneRampGrade.java","core/LaneRampHeights.java","core/LaneRampPaths.java","core/RoadGantry.java","net/RoadNetwork.java","world/LanePointCodec.java","world/LaneRamps.java","world/RoadData.java","world/RoadTool.java"],
+ "resources_unchanged_excluding_version":427,"licenses_notices_unchanged":6,
+ "tests":{"grade_and_mirror_core":"38 cases / 31598 checks","real_planning_codec_reconfigure_delete":"49 cases / 359 checks","connector_stage_regression":"26 cases / 582 checks","verbatim_editor_guard_math":"12 checks / failures=0"},
+ "adapters":"Ground, NBT, index and Widget adapters are explicit; math and production planner are real code",
+ "real_game_world_write_disk_save_multiplayer_GPU_FPS":"NOT RUN",
+ "P2":"terrain and multithreading deferred until all P1",
+ "resumed_previous_hotfix":{"commit":"a478e35deeabc60188db2d539d3019005528f1db","run_id":37428926376,"downloaded_and_verified":true,"included_in_final":true},
+ "outputs":{"SplineRoads-0.40.13-alpha.jar":{"bytes":5476818,"sha256":"fd320dc2bd3f10ffb626f0b3d081c06cd731509a7ea2e98cccfc84f602f89d7e"},"SplineRoads-0.40.13-alpha-source.zip":{"bytes":10498109,"sha256":"725c06bbe13f5494cd33a56fdac126508c876ccb91635cc28d98b487e849b2c8"},"SR_0413_Build_and_Test_Logs.zip":{"bytes":17394,"sha256":"51b9a2d61d982e8ba37c415f8d09d17ef96dfe6fd2fd5fa10cc7e9d23b46dc38"}},
+ "notes":["Final source/JAR are exact to16cebd, not the earlier WIP or this later documentation commit.","Logs include separately labelled local-only before/after LEFT probe; it is not presented as GitHub Actions or real client output.","Old root readme in the exact source archive predates these verification notes; build metadata and complete source match0.40.13."]
+}

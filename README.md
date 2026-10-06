@@ -1,22 +1,15 @@
-# Spline Roads 0.40.11-alpha — P1 匝道护栏与封闭槽位标线
+# Spline Roads 0.40.13-alpha
 
-Minecraft Java 1.20.1 / Forge 47.4.20 / Java 17。工作分支 `chat/sr-0402`，保留用户SR.zip编译修正后的基线。
+Minecraft 1.20.1 / Forge 47.4.20 / Java17。当前交付源码和JAR精确生产提交：`16cebd055dcf69e2605b8e3244fe81dbb8c220b2`；专用CI `37430977987` 已完成完整Forge构建和新旧回归，下载产物/摘要/源码字节已核验。本README等验收文档晚于该生产构建提交，不冒充在其源码ZIP内。
 
-**第一优先级是《问题2》全部24项；第二优先级是《问题3》terrain四项及多线程专项，必须在全部P1处理后开始。** [优先级](docs/PRIORITIES.md) · [完整当前状态](docs/issues/problem2-batch5-status.md) · [实时交接](PROGRESS.md)。用户实机反馈不能被旧离线通过记录覆盖。
+本轮恢复0.40.12自由匝道编辑入口、旧Link精确宽度和显式AUTO龙门架补正；新增连接器专属坡比：普通默认20%/超限25%，涉及高速默认原15%/超限20%，开关默认关闭。服务器按真实两端及关联链判定，并在生成、升降拟合及最终路面验证；自动立交不受影响。定向左转保留实际LEFT轨迹和请求诊断，不再漏出内部镜像求解的右转空间文字。
 
-本版按真实材料轮廓/孔区/高度保留并裁切连接器外侧护栏；兼容同高程接缝共享切面与末柱归属，关闭护栏、隔音墙、混合栏型和高度台阶不会冒领不存在的末柱。封闭槽位旁成为实际材料边缘的位置默认连续标线；双活车道虚线和显式线型覆盖保留。详见[范围与限制](docs/checkpoints/rail419-scope.md)。
+当前《问题2》仍全P1，《问题3》terrain及多线程全P2，必须先处理完P1。完整状态见 `docs/issues/problem2-batch6-status.md`，实际范围见 `docs/checkpoints/grade421-release.md`，构建证据见 `docs/checkpoints/grade421-verified.json`，续接见 `PROGRESS.md`。
 
-最终源码/JAR对应 `645edcf67329d371fe5de2eef2b9e3e58dd6dad7`，GitHub Actions37420405833真实完整Forge构建成功，下载后逐字节和摘要核验。[最终证据](docs/checkpoints/rail419-verified.json)。本README是后续交接文档，不伪称已经包含于之前归档的源码ZIP。根SOURCE_BASELINE.json为历史0.40.1阶段记录，不是当前构建状态。
-
-```powershell
-.\gradlew.bat compileJava compileGameTestJava jar
-```
 ```bash
-bash tools/check_rail419.sh
+bash tools/check_grade421.sh
 ```
 
-测试适配器不进入JAR。GameTest类编译不等于世界运行；尚未实际测试Minecraft客户端、GPU/光影、方块写入、水流、磁盘保存重进、模组车辆或多人/FPS。
+该入口包含实际Forge compileJava/compileGameTestJava/jar/reobfJar；分层数学/规划/控件测试有显式地形、NBT和Widget适配器。没有真实Minecraft客户端、GPU/光影、方块写入、磁盘保存重进或多人验收。
 
-存档38、网络协议56不变。先备份世界，客户端/服务端同步更新，不并装两份SR。旧护栏/设施可能需要更新有关道路或连接才重新生成，不在载入时强制重建全图。本轮未新增所有孔内边的护栏、所有不同造型的通用过渡，Q2-21非封闭重合归属仍部分待处理。
-
-保留任意槽位临时分离、整车道分离原限制、目标汇入封闭及矩形/地面绿化规则；无跨多实际路段的封闭传播。P2、多线程、独立匝道种类、默认龙门架/箭头和新坡比规则没有被悄悄提前实现。历史一次性apply脚本禁止在后续源码重跑。
+**存档40/协议58。先备份世界，客户端和服务端同时更新，不用旧版打开新版保存数据。** 不在载入旧存档时全图重建；编辑旧连接会按新类型与规则检查。资源与许可保持。

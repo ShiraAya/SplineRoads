@@ -21,8 +21,8 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: P1 rail, lane-closure, prior regressions and complete Forge build
-        run: bash tools/check_rail419.sh
+      - name: P1 grade, LEFT identity, connector compatibility, prior regression and complete Forge build
+        run: bash tools/check_grade421.sh
       - name: Retain original solid material and visibility binding checks
         run: |
           python - <<'PY'
