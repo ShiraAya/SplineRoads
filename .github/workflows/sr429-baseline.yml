@@ -17,6 +17,11 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+      - name: Configure isolated test namespace without changing production
+        run: |
+          mkdir -p src/gametest/resources/data/splineroads_hotfix429/structures
+          cp src/gametest/resources/data/splineroads_revision32/structures/empty.nbt src/gametest/resources/data/splineroads_hotfix429/structures/empty.nbt
+          sed -i 's/templateNamespace="splineroads_revision32"/batch="splineroads_hotfix429",templateNamespace="splineroads_hotfix429"/' src/gametest/java/com/sora/splineroads/world/Build429GameTests.java
       - name: Compile production and real GameTest
         run: bash gradlew --no-daemon compileJava compileGameTestJava
       - name: Real ServerLevel construction with diagnostic sampling
@@ -28,6 +33,7 @@ jobs:
           trap 'kill "$monitor" 2>/dev/null || true' EXIT
           set -o pipefail
           timeout 280s bash gradlew --no-daemon runGameTestServer -ProadRunDir=run429 -ProadTestNamespaces=splineroads_hotfix429 -ProadTestHeap=3G 2>&1 | tee build/repro429/server.log
+          grep -q 'BUILD429 CONTINUATION_REAL_WORLD_MS=' build/repro429/server.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -36,4 +42,5 @@ jobs:
             build/repro429/
             run429/logs/
             run429/*.xml
+            src/gametest/java/com/sora/splineroads/world/Build429GameTests.java
           retention-days: 30
