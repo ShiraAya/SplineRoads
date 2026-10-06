@@ -286,7 +286,9 @@ public final class LaneRamps {
     var reply=new CompoundTag();reply.putString("Kind","laneRampCheck");reply.putString("ResolvedPath",generated.path().name());reply.putLong("Request",t.getLong("Request"));reply.put("Road",r.header());reply.putUUID("Token",checked.getUUID("Token"));reply.putDouble("TargetOffset",LaneTopology.metadata(r).link().targetOffset());
     var changed=new ListTag();for(var next:staging.values())if(next.id().equals(id)||all.containsKey(next.id())&&!next.equals(all.get(next.id())))changed.add(next.header());reply.put("ChangedRoads",changed);
     if(options.departure()==LanePoints.Departure.TEMPORARY)for(var cut:LaneTopology.metadata(staging.get(from.road())).cuts())if(cut.connection().equals(id)){
-      reply.putBoolean("TemporaryClosure",true);reply.putDouble("ReopenAfter",cut.sign()*(cut.end()-cut.begin())-cut.transition());reply.putDouble("RestoredAfter",cut.sign()*(cut.end()-cut.begin()));break;
+      double length=cut.sign()*(cut.end()-cut.begin());
+      reply.putBoolean("TemporaryClosure",true);reply.putBoolean("RectangularClosure",cut.rectangular());
+      reply.putDouble("ReopenAfter",cut.rectangular()?length:length-cut.transition());reply.putDouble("RestoredAfter",length);break;
     }
     if(LaneTopology.metadata(r).link().closesTarget())for(var cut:LaneTopology.metadata(staging.get(to.road())).cuts())if(cut.connection().equals(id)&&cut.arrival()){
       reply.putBoolean("TargetClosure",true);reply.putDouble("TargetClosedBefore",cut.sign()*(cut.end()-Math.max(0,Math.min(staging.get(to.road()).rawMesh().length(),cut.begin()))));break;

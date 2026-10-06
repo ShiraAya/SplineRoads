@@ -53,7 +53,7 @@ public final class LaneRampScreen extends Screen {
     addRenderableWidget(Button.builder(Component.literal("返回实景"),b->onClose()).bounds(x+243,y+185,99,20).build());
   }
   private void invalidate(){token=null;checkedMesh=null;checkedRoads=List.of();pending=false;if(build!=null)build.active=false;if(previewButton!=null)previewButton.active=true;ClientRoads.preview=null;ClientRoads.nodePreviews=List.of();request=++sequence;status=switch(departure){
-      case TEMPORARY -> "保留车道分离：直连匝道，主路暂时关闭该车道；净空安全后渐变恢复。请预览。";
+      case TEMPORARY -> "保留车道分离：直连匝道，主路暂时关闭该车道；净空安全后恢复。地面封闭绿化、高架直角孔区。请预览。";
       case DETACH -> "整车道分离：直连匝道，主路下游取消该车道。请预览。";
       case BRANCH -> "普通分流：原车道继续直行；不是先关闭再恢复。请预览。";
       case EXTRA -> "额外扩出：保持既有车道，另拓出匝道。请预览。";
@@ -65,7 +65,7 @@ public final class LaneRampScreen extends Screen {
     if(t.contains("Error")){failed(t.getString("Error"));return;}
     try{var r=RoadRecord.load(t.getCompound("Road"));checkedMesh=r.mesh();var views=new ArrayList<RoadGeometry.Mesh>();for(Tag value:t.getList("ChangedRoads",Tag.TAG_COMPOUND))views.add(RoadRecord.load((CompoundTag)value).mesh());checkedRoads=views.isEmpty()?List.of(checkedMesh):List.copyOf(views);ClientRoads.preview=checkedMesh;ClientRoads.nodePreviews=checkedRoads;token=t.getUUID("Token");build.active=true;previewButton.active=true;
       double offset=t.getDouble("TargetOffset");String landing=payload.getCompound("To").hasUUID("Junction")?"":String.format(Locale.ROOT," 汇入口：沿 B 行驶方向 %+.1f 格。",offset);
-      String closure=t.getBoolean("TemporaryClosure")?String.format(Locale.ROOT," 主路从A暂时关闭此车道，下游 %.1f 格开始恢复、%.1f 格恢复完整。",t.getDouble("ReopenAfter"),t.getDouble("RestoredAfter")):"";
+      String closure=t.getBoolean("TemporaryClosure")?(t.getBoolean("RectangularClosure")?String.format(Locale.ROOT," 主路从 A 暂时关闭此车道，下游 %.1f 格处恢复；封闭区不收尖。",t.getDouble("RestoredAfter")):String.format(Locale.ROOT," 主路从A暂时关闭此车道，下游 %.1f 格开始恢复、%.1f 格恢复完整。",t.getDouble("ReopenAfter"),t.getDouble("RestoredAfter"))):"";
       String targetClosure=t.getBoolean("TargetClosure")?String.format(Locale.ROOT," 目标车道在汇入口前 %.1f 格开始封闭，到匝道完整接入后开放；其他车道保持通行。",t.getDouble("TargetClosedBefore")):"";
       status=String.format(Locale.ROOT,"预览有效：%s，长 %.1f 格。%s%s%s 右键空气返回并建造。",t.contains("ResolvedPath")?LanePoints.Path.valueOf(t.getString("ResolvedPath")).label:path.label,r.mesh().length(),landing,closure,targetClosure);
       if(Minecraft.getInstance().screen==this)Minecraft.getInstance().setScreen(null);
