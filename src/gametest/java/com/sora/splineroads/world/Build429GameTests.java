@@ -28,7 +28,8 @@ public final class Build429GameTests {
   var sa=Revision32GameTests.marker(h,81920,2,82040,0);var sb=Revision32GameTests.marker(h,81920,2,82220,0);
   var target=data.connect(level,null,ta,tb,Revision32GameTests.road(Style.O3_ONE,Structure.AUTO),null);
   var source=data.connect(level,null,sa,sb,Revision32GameTests.road(Style.O2_ONE,Structure.AUTO),null);
-  var a=point(data,source,60,1);var b=point(data,target,400,2);
+  // Slot 0 faces the target. Slot 1 would cross the other live lane immediately.
+  var a=point(data,source,60,0);var b=point(data,target,400,2);
   var arrival=LanePoints.Arrival.valueOf(System.getProperty("sr.test429.arrival","MERGE"));
   var opt=new LanePoints.Options(LanePoints.Path.AUTO,LanePoints.Departure.BRANCH,arrival,24,32,LanePoints.Elevation.AUTO,LanePoints.Landing.EXACT);
   long start=System.nanoTime();var r=LaneRamps.generate(data,LaneTopology.records(data),UUID.randomUUID(),source.owner(),new LanePoints.Link(a,b,opt,null));

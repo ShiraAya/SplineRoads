@@ -89,7 +89,7 @@ public final class LaneRamps {
       target=b;
       var md=(old==null?LanePoints.Data.EMPTY:LaneTopology.metadata(old)).link(actual).openings(List.of());
       var settings=base.options(base.options().lanePoints(md));
-      for(var candidate:routeCandidates(a,b,settings,link.options(),source,p,link.to().road()==null?null:host(context,link.to()),link.to().road()==null?null:LaneTopology.point(host(context,link.to()),link.to().point()),offset,maxGrade))try{
+      for(var candidate:routeCandidates(a,b,settings,link.options(),source,p,link.to().road()==null?null:host(context,link.to()),link.to().road()==null?null:LaneTopology.point(host(context,link.to()),link.to().point()),offset,maxGrade,errors))try{
         var baseMesh=fitHostContacts(LaneRampAlignment.fit(candidate.mesh(),lane.width(),targetLaneWidth,link.options().transition()),context,actual);
         for(Mesh mesh:heightCandidates(baseMesh,context,id,actual,errors,candidate.path()))try{
           if(data!=null&&!data.withinHeight(mesh))throw new IllegalArgumentException("上跨／下穿超出世界高度范围");
@@ -114,7 +114,7 @@ public final class LaneRamps {
   /** Generate expensive fallback ribbons only when the preceding candidate actually failed.
    * RC1 eagerly built the entire source-lead x target-tail cross product even when
    * the first direct candidate was valid. No route or safety check is removed. */
-  private static Iterable<LaneRampPaths.Candidate> routeCandidates(LaneRampPaths.Port a,LaneRampPaths.Port b,Settings settings,LanePoints.Options options,RoadRecord source,LanePoints.Point point,RoadRecord target,LanePoints.Point targetPoint,double targetOffset,double maxGrade){
+  private static Iterable<LaneRampPaths.Candidate> routeCandidates(LaneRampPaths.Port a,LaneRampPaths.Port b,Settings settings,LanePoints.Options options,RoadRecord source,LanePoints.Point point,RoadRecord target,LanePoints.Point targetPoint,double targetOffset,double maxGrade,Map<LanePoints.Path,String> errors){
     double[] leads=options.departure()==LanePoints.Departure.TEMPORARY?new double[]{0,32,64,96,128}:new double[]{0};
     boolean tail=target!=null&&(options.arrival()==LanePoints.Arrival.MERGE||options.arrival()==LanePoints.Arrival.FLOW||options.arrival()==LanePoints.Arrival.ADD);
     double[] tails=tail?new double[]{0,16,32,48,64,96,128}:new double[]{0};
@@ -124,7 +124,7 @@ public final class LaneRamps {
         while(!ready.hasNext()&&ti<tails.length){
           double lead=leads[li++],endLength=tails[ti];if(li==leads.length){li=0;ti++;}
           try{ready=routeGroup(a,b,settings,options,source,point,target,targetPoint,targetOffset,maxGrade,lead,endLength).iterator();}
-          catch(IllegalArgumentException ignored){ready=Collections.emptyIterator();}
+          catch(IllegalArgumentException failure){errors.putIfAbsent(options.path(),failure.getMessage());ready=Collections.emptyIterator();}
         }
         return ready.hasNext();
       }
