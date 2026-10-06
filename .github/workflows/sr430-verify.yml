@@ -1,0 +1,112 @@
+name: SR430 freeze and median verification
+on:
+  push:
+    branches: [SR-0.40.15]
+    paths: ['.github/workflows/sr430-verify.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: write
+    outputs:
+      sha: ${{ steps.save.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - name: Verify and commit exact production source
+        id: save
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import base64,lzma,hashlib,subprocess
+          from pathlib import Path
+          payload=''.join(Path(f'tools/patches/sr430.part{i}').read_text().strip() for i in range(1,4))
+          patch=lzma.decompress(base64.b64decode(payload))
+          assert hashlib.sha256(patch).hexdigest()=='2cf862fb2266401fafa852682b7fbf93ca635fe4eccbad577c769296e26db423'
+          Path('/tmp/sr430.patch').write_bytes(patch)
+          subprocess.run(['git','apply','--index','--unidiff-zero','/tmp/sr430.patch'],check=True)
+          PY
+          git diff --cached --check
+          git config user.name 'SR source checkpoint'
+          git config user.email '173142163+ShiraAya@users.noreply.github.com'
+          test "$(git ls-remote origin refs/heads/SR-0.40.15 | cut -f1)" = "$EXPECTED_HEAD"
+          git commit -m "fix: move ramp search off server thread, bound/cancel work, index reopening and anchor median to nodes"
+          git push origin HEAD:refs/heads/SR-0.40.15
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  regression:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Actual Forge and full regression including user report
+        run: |
+          mkdir -p build/checkpoint-logs
+          set -o pipefail
+          bash tools/check_sr430.sh 2>&1 | tee build/checkpoint-logs/sr430-full.log
+      - name: Preserve exact source and build checksums
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+          sha256sum build/libs/*.jar > build/checkpoint-logs/JAR-SHA256.txt 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr430-source-logs-${{ needs.preserve.outputs.sha }}
+          path: build/checkpoint-logs/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr430-jars-${{ needs.preserve.outputs.sha }}
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 30
+  minecraft:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Real ServerLevel ADD save delete and temporary highway merge
+        run: |
+          mkdir -p build/repro430 run430
+          echo eula=true > run430/eula.txt
+          (for i in $(seq 1 24); do sleep 20; for p in $(jcmd -l | awk '/BootstrapLauncher/ {print $1}'); do jcmd "$p" Thread.print > "build/repro430/threads-$i-$p.txt" 2>&1 || true; done; done) &
+          monitor=$!
+          trap 'kill "$monitor" 2>/dev/null || true' EXIT
+          set -o pipefail
+          timeout 480s bash gradlew --no-daemon runGameTestServer -ProadRunDir=run430 -ProadTestNamespaces=splineroads_hotfix430 -ProadTestHeap=3G 2>&1 | tee build/repro430/server.log
+          grep -q 'BUILD430 ADD_SAVE_DELETE_PASS' build/repro430/server.log
+          grep -q 'BUILD430 TEMPORARY_DELETE_PASS' build/repro430/server.log
+          grep -q 'All 2 required tests passed' build/repro430/server.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr430-minecraft-${{ needs.preserve.outputs.sha }}
+          path: |
+            build/repro430/
+            run430/logs/
+            run430/*.xml
+          retention-days: 30
