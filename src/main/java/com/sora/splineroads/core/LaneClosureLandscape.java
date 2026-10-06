@@ -87,9 +87,13 @@ public final class LaneClosureLandscape {
   private static void addUnblocked(List<Part> out,Part part,Ground ground,int depth){
     if(!ground.blocked(part)){out.add(part);return;}
     if(depth>=4||part.a().sub(part.b()).horizontalLength()<.125)return;
-    V mid=part.a().add(part.b()).mul(.5),frame=part.frameA().add(part.frameB()).mul(.5);
-    addUnblocked(out,new Part(part.a(),mid,part.width(),part.height(),false,part.material()).frames(part.frameA(),frame),ground,depth+1);
-    addUnblocked(out,new Part(mid,part.b(),part.width(),part.height(),false,part.material()).frames(frame,part.frameB()),ground,depth+1);
+    // Unframed end kerbs use Part.base()'s implicit lateral frame. Do not dereference null,
+    // and preserve this same prism when subdivision makes the frames explicit.
+    V side=part.pier()||part.b().sub(part.a()).horizontalLength()<1e-8?new V(part.width()/2,0,0):part.b().sub(part.a()).horizontalUnit().left().mul(part.width()/2);
+    V first=part.frameA()==null?side:part.frameA(),last=part.frameB()==null?side:part.frameB();
+    V mid=part.a().add(part.b()).mul(.5),frame=first.add(last).mul(.5);
+    addUnblocked(out,new Part(part.a(),mid,part.width(),part.height(),part.pier(),part.material(),first,frame,part.model()),ground,depth+1);
+    addUnblocked(out,new Part(mid,part.b(),part.width(),part.height(),part.pier(),part.material(),frame,last,part.model()),ground,depth+1);
   }
   private LaneClosureLandscape(){}
 }
