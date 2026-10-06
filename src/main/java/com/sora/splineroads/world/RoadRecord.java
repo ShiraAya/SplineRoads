@@ -587,6 +587,6 @@ public record RoadRecord(
       return com.sora.splineroads.core.RoadAttachments.deform(mesh,settings);
     }
     return RoadGeometry.endCaps(
-        RoadGeometry.build(start, end, settings), endCaps, start.grade(), end.grade());
+        (assembly==null?com.sora.splineroads.core.RoadMedianAnchor.apply(RoadGeometry.build(start,end,settings)):RoadGeometry.build(start,end,settings)), endCaps, start.grade(), end.grade());
   }
 }

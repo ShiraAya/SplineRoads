@@ -62,6 +62,13 @@ public final class RoadClearance {
   }
   public static Prepared prepare(Mesh mesh){return new Prepared(mesh);}
   public static List<Contact> contacts(Mesh a,Prepared other){return contacts(a,other.mesh,null,other.grid);}
+  public static List<Contact> contacts(Prepared ours,Mesh b){
+    Mesh a=ours.mesh;
+    if(a.max().x()<=b.min().x()+EPS||b.max().x()<=a.min().x()+EPS||a.max().z()<=b.min().z()+EPS||b.max().z()<=a.min().z()+EPS)return List.of();
+    var out=new ArrayList<Contact>();
+    for(Triangle q:triangles(b)){RoadPlanningBudget.check();for(Triangle t:ours.grid.near(q))appendContact(out,a,b,t,q);}
+    return List.copyOf(out);
+  }
   public static void check(Mesh a,Mesh b){check(a,b,null);}
   public static void check(Mesh a,Mesh b,Mesh previous){
     for(Contact c:contacts(a,b,previous))if(c.blocked())throw new Conflict(c);
@@ -75,10 +82,17 @@ public final class RoadClearance {
   private static List<Contact> contacts(Mesh a,Mesh b,Mesh previous,Grid grid){
     var out=new ArrayList<Contact>();
     for(Triangle t:triangles(a)){
+      RoadPlanningBudget.check();
       // Preserve only already-built, unchanged material during a non-ramp road edit.
       if(previous!=null&&t.polygon().stream().allMatch(v->RoadQueries.contains(previous,v,.015,.02)))continue;
       for(Triangle q:grid.near(t)){
-        List<V> polygon=intersection(t.polygon(),q.polygon());if(area(polygon)<AREA_EPS)continue;
+        appendContact(out,a,b,t,q);
+      }
+    }
+    return List.copyOf(out);
+  }
+  private static void appendContact(List<Contact> out,Mesh a,Mesh b,Triangle t,Triangle q){
+        List<V> polygon=intersection(t.polygon(),q.polygon());if(area(polygon)<AREA_EPS)return;
         double from=Double.POSITIVE_INFINITY,to=Double.NEGATIVE_INFINITY,min=Double.POSITIVE_INFINITY;
         double raise=0,lower=0,minDiff=Double.POSITIVE_INFINITY,maxDiff=Double.NEGATIVE_INFINITY;
         V ours=null,other=null,negative=null,positive=null;
@@ -98,9 +112,6 @@ public final class RoadClearance {
           min=-Math.min(a.settings().thickness(),b.settings().thickness());
         }
         out.add(new Contact(from,to,ours,other,min,raise,lower));
-      }
-    }
-    return List.copyOf(out);
   }
   /** Exact swept road travel-volume vs an actual framed structural prism.
    * The old shell check combined the entire part's vertical bounds with one midpoint
@@ -127,6 +138,7 @@ public final class RoadClearance {
   private static List<Triangle> triangles(Mesh mesh){
     var out=new ArrayList<Triangle>();var samples=mesh.samples();
     for(int i=1;i<samples.size();i++){
+      if((i&63)==0)RoadPlanningBudget.check();
       var a=samples.get(i-1);var b=samples.get(i);
       for(var strip:LaneDeck.strips(mesh,a,b)) {
         V al=strip.al(),ar=strip.ar(),bl=strip.bl(),br=strip.br();

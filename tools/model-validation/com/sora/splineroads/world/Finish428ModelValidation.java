@@ -16,7 +16,7 @@ public final class Finish428ModelValidation {
   h=h.withLanePoints(LanePoints.Data.EMPTY.points(List.of(p)));var before=new LinkedHashMap<UUID,RoadRecord>();before.put(h.id(),h);LaneCrossSections.reconcile(before);h=before.get(h.id());
   boolean sourceFirst=sign<0;var mesh=h.caps(0).mesh();var end=sourceFirst?mesh.first():mesh.last();
   var section=RoadEndpointSections.section(mesh,sourceFirst,sourceFirst);var settings=RoadEndpointSections.inherit(h.settings(),section);
-  V direction=end.left().left().mul(sourceFirst?1:-1);var a=new Node(end.center(),RoadPlanner.yaw(direction),0);var b=new Node(end.center().add(direction.mul(180)),a.yaw(),0);
+  V direction=end.left().left().mul(sourceFirst?1:-1);var anchor=RoadMedianAnchor.position(mesh,sourceFirst);var a=new Node(anchor,RoadPlanner.yaw(direction),0);var b=new Node(anchor.add(direction.mul(180)),a.yaw(),0);
   var child=new RoadRecord(UUID.randomUUID(),h.owner(),sourceFirst?h.a():h.b(),new BlockPos(0,8,sourceFirst?-180:480),a,b,settings,true,4);
   before.put(child.id(),child);var all=new LinkedHashMap<>(before);
   all.put(h.id(),h.withLanePoints(LaneTopology.metadata(h).points(viaTopology?List.of():List.of(p.merge(0)))));

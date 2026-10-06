@@ -1,1 +1,1 @@
-package net.minecraft.server.level;public class ServerLevel {public Dimension dimension(){return new Dimension();}public static class Dimension {public String location(){return "test-only:not-a-world";}}}
+package net.minecraft.server.level;public class ServerLevel {public int getMinBuildHeight(){return -64;}public int getMaxBuildHeight(){return 320;}public Dimension dimension(){return new Dimension();}public static class Dimension {public String location(){return "test-only:not-a-world";}}}

@@ -39,7 +39,15 @@ public final class RoadLaneConfigScreen extends Screen {
     CountSlider(int x,int y,int count,boolean along){super(x,y,280,20,Component.empty(),(count-1)/3.0);this.along=along;updateMessage();}
     int count(){return Math.max(1,Math.min(4,1+(int)Math.round(value*3)));}
     @Override protected void updateMessage(){setMessage(Component.literal((along?"A → B":"B → A")+"："+count()+" 车道（1–4）"));}
-    @Override protected void applyValue(){if(along)forward=count();else{reverse=count();savedReverse=reverse;}}
+    @Override protected void applyValue(){
+      int snapped=count();value=(snapped-1)/3.0;
+      if(along)forward=snapped;else{reverse=snapped;savedReverse=reverse;}
+      updateMessage();
+    }
+    @Override public boolean keyPressed(int key,int scan,int mods){
+      if(key==263||key==262){value=(Math.max(1,Math.min(4,count()+(key==262?1:-1)))-1)/3.0;applyValue();return true;}
+      return super.keyPressed(key,scan,mods);
+    }
   }
   @Override public void render(GuiGraphics g,int mx,int my,float dt){
     renderBackground(g);g.fill(x-8,y-6,x+288,y+190,0xEF12212C);

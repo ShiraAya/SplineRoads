@@ -19,6 +19,8 @@ public final class RoadQueries {
     return found;
   }
 
+  public static void clearThreadCache(){PROJECTIONS.remove();}
+
   public static Projection project(Mesh mesh, V point) {
     return index(mesh).project(point, false);
   }

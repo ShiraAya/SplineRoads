@@ -8,9 +8,9 @@ public final class LaneReopening {
   private static final double SIDE_MARGIN=.30, END_MARGIN=1.0;
   public static double restoreStation(Mesh host,int slot,double begin,Mesh ramp,List<RoadStructures.Part> parts,double transition){
     var raw=LaneSections.reference(host);int sign=LanePoints.lane(raw,begin,slot).sign();var sweep=laneSweep(raw,slot);
-    double last=sign*begin;
-    last=lastBlocked(sweep,ramp,begin,sign,last);
-    for(var part:parts)last=lastBlocked(sweep,envelope(part,ramp.settings()),begin,sign,last);
+    var prepared=RoadClearance.prepare(sweep);double last=sign*begin;
+    last=lastBlocked(prepared,ramp,begin,sign,last);
+    for(var part:parts){RoadPlanningBudget.check();last=lastBlocked(prepared,envelope(part,ramp.settings()),begin,sign,last);}
     double reopen=Math.max(sign*begin+2*transition,last+END_MARGIN),end=(reopen+transition)*sign;
     if(end<.001||end>raw.length()-.001)throw new IllegalArgumentException("匝道/结构未在本路段让出通行空间，或不足以渐变恢复车道；请延长主路或调整汇入位置/高程");
     return end;
@@ -19,8 +19,8 @@ public final class LaneReopening {
    * right up to B, where the connector terminates on its lane axis. Other slots are unchanged. */
   public static double closeBeforeStation(Mesh host,int slot,double end,Mesh ramp,List<RoadStructures.Part> parts,double transition){
     var raw=LaneSections.reference(host);int sign=LanePoints.lane(raw,end,slot).sign();
-    var sweep=laneSweep(raw,slot);double first=sign*end;
-    for(var contact:RoadClearance.contacts(sweep,ramp))if(contact.blocked()){
+    var sweep=laneSweep(raw,slot);var prepared=RoadClearance.prepare(sweep);double first=sign*end;
+    for(var contact:RoadClearance.contacts(prepared,ramp))if(contact.blocked()){
       double lo=sign>0?contact.from():-contact.to();if(lo<=sign*end+.01)first=Math.min(first,lo);
       double hi=sign>0?contact.to():-contact.from();
       if(hi>sign*end+.10&&!terminalSeam(raw,slot,end,ramp,contact))
@@ -28,7 +28,7 @@ public final class LaneReopening {
     }
     var downstream=downstreamLane(raw,slot,end,sign);
     for(var part:parts){
-      for(var contact:RoadClearance.contacts(sweep,envelope(part,ramp.settings())))if(contact.blocked()){
+      for(var contact:RoadClearance.contacts(prepared,envelope(part,ramp.settings())))if(contact.blocked()){
         double lo=sign>0?contact.from():-contact.to();if(lo<=sign*end+.01)first=Math.min(first,lo);
       }
       if(downstream!=null&&RoadClearance.structureInvades(part,downstream,RoadClearance.REQUIRED))
@@ -58,7 +58,8 @@ public final class LaneReopening {
     var settings=raw.settings().options(raw.settings().options().lanePoints(LanePoints.Data.EMPTY));
     var m=RoadRibbon.mesh(samples,settings);return new Mesh(samples,settings,m.min(),m.max(),raw.length(),false,null);
   }
-  private static double lastBlocked(Mesh sweep,Mesh obstacle,double begin,int sign,double last){
+  private static double lastBlocked(Mesh sweep,Mesh obstacle,double begin,int sign,double last){return lastBlocked(RoadClearance.prepare(sweep),obstacle,begin,sign,last);}
+  private static double lastBlocked(RoadClearance.Prepared sweep,Mesh obstacle,double begin,int sign,double last){
     for(var c:RoadClearance.contacts(sweep,obstacle))if(c.blocked()){
       double d=sign>0?c.to():-c.from();if(d>=sign*begin-.01)last=Math.max(last,d);
     }return last;

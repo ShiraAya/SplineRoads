@@ -304,40 +304,8 @@ public final class RoadJunction {
         if (laneCenter < Math.min(inside, outside) + .7
             || laneCenter > Math.max(inside, outside) - .7) continue;
         if (width < 2) continue;
-        V f = at.left().left().mul(-1), toward = at.left().mul(sign);
-        double shift = Math.min(.95, width * .22);
-        // Center the whole silhouette in the available lane, including its inward head.
-        V center = at.at(laneCenter - sign * shift * .5, 0);
-        V tail = center.sub(f.mul(2.2)), bend = center.add(f.mul(.2));
-        V base = bend.add(f.mul(1.55)).add(toward.mul(shift));
-        V aim = base.sub(bend).horizontalUnit(), cross = aim.left();
-        V normal = f.left().add(cross).horizontalUnit();
-        V miter = normal.mul(.11 / Math.max(.5, normal.dot(f.left())));
-        V a = tail.add(f.left().mul(.11)), b = tail.sub(f.left().mul(.11));
-        V c = bend.add(miter), d = bend.sub(miter);
-        V e = base.add(cross.mul(.11)), g = base.sub(cross.mul(.11));
         int firstPaint = out.size();
-        out.add(new Paint(List.of(a, b, d, c), 0xEDEEE2));
-        out.add(new Paint(List.of(c, d, g, e), 0xEDEEE2));
-        out.add(
-            new Paint(
-                List.of(base.add(aim.mul(1.1)), base.sub(cross.mul(.52)), base.add(cross.mul(.52))),
-                0xEDEEE2));
-        double min =
-            out.subList(firstPaint, out.size()).stream()
-                .flatMap(p -> p.points().stream())
-                .mapToDouble(p -> p.sub(at.center()).dot(at.left()))
-                .min()
-                .orElse(0);
-        double max =
-            out.subList(firstPaint, out.size()).stream()
-                .flatMap(p -> p.points().stream())
-                .mapToDouble(p -> p.sub(at.center()).dot(at.left()))
-                .max()
-                .orElse(0);
-        V correction = at.left().mul(laneCenter - (min + max) / 2);
-        out.subList(firstPaint, out.size()).replaceAll(
-            p -> new Paint(p.points().stream().map(v -> v.add(correction)).toList(), p.color()));
+        out.addAll(RoadMergeArrow.flat(at.center(),at.left().left().mul(-1),at.left(),laneCenter,width,sign));
         // Fit the complete arrow (including its head) in this lane at every vertex.
         // Per-face closure filtering used to remove the outer arrowhead while leaving
         // its shaft; a center-only check let the inner head cross the main boundary.

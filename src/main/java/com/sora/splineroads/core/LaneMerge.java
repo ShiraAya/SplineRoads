@@ -42,12 +42,11 @@ public final class LaneMerge {
       int receiver=LaneSections.receiver(mesh,lane.station(),point.lane(),point.id());
       var at=LanePoints.lane(raw,station,point.lane());V lateral=at.direction().left();
       double side=Math.signum(LanePoints.lane(raw,station,receiver).position().sub(at.position()).dot(lateral));
-      double[][][] shapes={{{-2,-.10},{-2,.10},{0,.10},{0,-.10}},{{0,-.10},{0,.10},{1.1,side*.6+.10},{1.1,side*.6-.10}},{{1.8,side*1.0},{.7,side*.6-.40},{.7,side*.6+.40}}};
       var group=new ArrayList<RoadJunction.Paint>();boolean fits=true;
-      for(var poly:shapes){var vs=new ArrayList<V>();for(var q:poly){
-        var frame=LanePoints.lane(raw,station+lane.sign()*q[0],point.lane());V v=frame.position().add(frame.direction().left().mul(q[1]));
+      for(var poly:RoadMergeArrow.local(at.width(),side)){var vs=new ArrayList<V>();for(var q:poly.points()){
+        var frame=LanePoints.lane(raw,station+lane.sign()*q.x(),point.lane());V v=frame.position().add(frame.direction().left().mul(q.z()));
         if(!RoadQueries.contains(mesh,v,-.1,.1))fits=false;vs.add(v);
-      }group.add(new RoadJunction.Paint(List.copyOf(vs),0xEDEEE2));}
+      }group.add(new RoadJunction.Paint(List.copyOf(vs),poly.color()));}
       if(fits)out.addAll(group);
     }return List.copyOf(out);
   }

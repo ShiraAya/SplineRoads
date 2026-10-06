@@ -89,6 +89,7 @@ public final class LaneRampPaths {
   /** The geometry is evaluated in a canonical right-turn frame, but diagnostic
    * ownership always remains with the requested path. No LEFT -> RIGHT fallback. */
   private static Mesh generateOriented(Port a,Port b,Settings settings,LanePoints.Options o,LanePoints.Path kind,double lift,double maxGrade,LanePoints.Path requested){
+    RoadPlanningBudget.check();
     if(LaneRampGrade.exceeds(a.grade(),1,maxGrade)||LaneRampGrade.exceeds(b.grade(),1,maxGrade))
       throw new IllegalArgumentException("端口坡度超过 "+LaneRampGrade.label(maxGrade)+"，不能破坏接缝来强行连接");
     if(a.position().sub(b.position()).horizontalLength()>2048)throw new IllegalArgumentException("匝道端点距离不能超过 2048 格");
@@ -139,7 +140,7 @@ public final class LaneRampPaths {
     }
     Mesh mesh=RoadRibbon.mesh(samples,settings);if(RoadRibbon.minRadius(mesh)<Math.max(settings.width()/2+.5,3))throw new IllegalArgumentException("接头内侧半径不足，请增大过渡长度");RoadRibbon.checkSelfIntersections(mesh,4);checkVolume(mesh);return mesh;
   }
-  public static void checkVolume(Mesh mesh){var p=mesh.samples();double width=mesh.samples().stream().mapToDouble(s->s.halfWidth()*2).max().orElse(mesh.settings().width()),clearance=4+mesh.settings().thickness();for(int i=0;i<p.size();i+=3)for(int j=i+3;j<p.size();j+=3){var a=p.get(i);var b=p.get(j);if(b.distance()-a.distance()<width*3)continue;double horizontal=a.center().sub(b.center()).horizontalLength();if(horizontal<a.halfWidth()+b.halfWidth()+.35&&Math.abs(a.center().y()-b.center().y())<clearance-.05)throw new IllegalArgumentException("回环路面体积净空不足，请增大半径、间距或过渡长度");}}
+  public static void checkVolume(Mesh mesh){var p=mesh.samples();double width=mesh.samples().stream().mapToDouble(s->s.halfWidth()*2).max().orElse(mesh.settings().width()),clearance=4+mesh.settings().thickness();for(int i=0;i<p.size();i+=3){RoadPlanningBudget.check();for(int j=i+3;j<p.size();j+=3){var a=p.get(i);var b=p.get(j);if(b.distance()-a.distance()<width*3)continue;double horizontal=a.center().sub(b.center()).horizontalLength();if(horizontal<a.halfWidth()+b.halfWidth()+.35&&Math.abs(a.center().y()-b.center().y())<clearance-.05)throw new IllegalArgumentException("回环路面体积净空不足，请增大半径、间距或过渡长度");}}}
   private static V reflect(V p){return new V(p.x(),p.y(),-p.z());}
   private static Port reflect(Port p){return new Port(reflect(p.position()),reflect(p.direction()),reflect(p.outside()),p.extraWidth(),p.grade());}
   private static double angle(V d){return Math.atan2(d.z(),d.x());}

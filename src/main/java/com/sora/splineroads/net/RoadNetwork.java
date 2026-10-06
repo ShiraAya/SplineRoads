@@ -18,7 +18,7 @@ import net.minecraftforge.network.*;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public final class RoadNetwork {
-  private static final String PROTOCOL = "63";
+  private static final String PROTOCOL = "64";
   public static final SimpleChannel CHANNEL =
       NetworkRegistry.newSimpleChannel(
           ResourceLocation.fromNamespaceAndPath(SplineRoads.ID, "roads"),
@@ -234,12 +234,14 @@ public final class RoadNetwork {
   private static final Map<UUID, Long> LAST_PREVIEW = new HashMap<>();
 
   public static void forget(UUID id) {
+    RoadPlanningJobs.cancel(id);
     LAST_ACTION.remove(id);
     LAST_PREVIEW.remove(id);
     WATCHING.remove(id);
   }
 
   private static void act(ServerPlayer player, CompoundTag t) {
+    if(t.getString("Action").equals("laneRampCancel")){RoadPlanningJobs.cancel(player.getUUID(),t.getLong("Request"));return;}
     if(t.getString("Action").equals("lanePointReady")) {
       if(t.hasUUID("Interaction")) LanePointTool.acknowledge(player,t.getUUID("Interaction"));
       return;
@@ -260,7 +262,7 @@ public final class RoadNetwork {
       result(player, true, perform(player, t));
     } catch (RuntimeException e) {
       if(!(e instanceof IllegalArgumentException))System.getLogger("SplineRoads/build").log(System.Logger.Level.ERROR,"Road action failed: "+t.getString("Action"),e);
-      result(player, false, e instanceof IllegalArgumentException?(e.getMessage()==null?"道路参数无效":e.getMessage()):"建造异常已结束等待："+e.getClass().getSimpleName()+"；完整原因见 latest.log（SplineRoads/build）");
+      result(player, false, (e instanceof IllegalArgumentException||e instanceof com.sora.splineroads.core.RoadPlanningBudget.Aborted)?(e.getMessage()==null?"道路参数无效":e.getMessage()):"建造异常已结束等待："+e.getClass().getSimpleName()+"；完整原因见 latest.log（SplineRoads/build）");
     }
   }
 
@@ -297,7 +299,7 @@ public final class RoadNetwork {
     switch (action) {
       case "lanePoint" -> {if(!(tool.getItem() instanceof LanePointTool))throw new IllegalArgumentException("请手持车道点工具");return LanePointTool.edit(level,player,t);}
       case "laneRampRoad" -> {if(!(tool.getItem() instanceof RoadTool))throw new IllegalArgumentException("请手持道路连接器");return LaneRamps.editRoad(level,player,t);}
-      case "laneRampPreview" -> {if(!(tool.getItem() instanceof LaneRampTool))throw new IllegalArgumentException("请手持匝道连接器");open(player,LaneRamps.preview(player,tool,t));return "匝道预览已校验";}
+      case "laneRampPreview" -> {if(!(tool.getItem() instanceof LaneRampTool))throw new IllegalArgumentException("请手持匝道连接器");RoadPlanningJobs.begin(player,tool,t);return "匝道正在后台规划";}
       case "laneRamp" -> {if(!(tool.getItem() instanceof LaneRampTool))throw new IllegalArgumentException("请手持匝道连接器");return LaneRamps.build(player,tool,t);}
       case "attachedPoint" -> {if(!(tool.getItem() instanceof AttachedPointTool))throw new IllegalArgumentException("请手持端点创建器");return AttachedPointTool.edit(level,player,t);}
       case "laneLines" -> {if(!(tool.getItem() instanceof LaneLineTool))throw new IllegalArgumentException("请手持车道线编辑器");data.editLaneLine(level,player,t);return t.contains("HideArrows")?(t.getBoolean("HideArrows")?"所选路段的方向箭头已隐藏":"所选路段的方向箭头已显示"):"所选路段的单根车道线已更新";}

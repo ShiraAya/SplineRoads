@@ -33,7 +33,7 @@ public final class Directional427ModelValidation {
    var at=sign<0?h.mesh().first():h.mesh().last();var section=RoadEndpointSections.section(h.caps(0).mesh(),sign<0,sign<0);
    var s=RoadEndpointSections.inherit(h.settings(),section);var counts=RoadLanes.counts(s);
    check(counts.total()==f+r-1,"live endpoint count after merge");check(s.options().lanePoints().equals(LanePoints.Data.EMPTY),"new road copied merge ownership");
-   V dir=at.left().left().mul(sign<0?1:-1);var a=new Node(at.center(),RoadPlanner.yaw(dir),0);var b=new Node(at.center().add(dir.mul(140)),a.yaw(),0);
+   V dir=at.left().left().mul(sign<0?1:-1);var anchor=RoadMedianAnchor.position(h.caps(0).mesh(),sign<0);var a=new Node(anchor,RoadPlanner.yaw(dir),0);var b=new Node(anchor.add(dir.mul(140)),a.yaw(),0);
    var child=new RoadRecord(id(),h.owner(),sign<0?h.a():h.b(),new BlockPos(0,8,sign<0?-140:440),a,b,s,true,4);
    all.put(child.id(),child);LaneCrossSections.reconcile(all);
    check(all.get(h.id()).header().equals(h.header()),"continuation changed original merge");

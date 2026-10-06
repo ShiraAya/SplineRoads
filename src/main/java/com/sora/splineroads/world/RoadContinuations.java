@@ -60,7 +60,7 @@ public final class RoadContinuations {
           var settings=RoadTransitions.ends(next.settings(),nextFirst?RoadTransitions.Section.of(section):ends.start(),nextFirst?ends.end():RoadTransitions.Section.of(section));
           V dir=target.left().left().mul(reverse?1:-1);
           double grade=(first?now.start():now.end()).grade()*(reverse?-1:1);
-          var pinned=new Node(target.center(),RoadPlanner.yaw(dir),grade);
+          var pinned=new Node(RoadMedianAnchor.position(view.mesh(now),first),RoadPlanner.yaw(dir),grade);
           Node a=nextFirst?pinned:next.start(),b=nextFirst?next.end():pinned;
           var plan=RoadPlanner.plan(new RoadPlanner.Hint(a,true,true,true),new RoadPlanner.Hint(b,true,true,true),RoadPlanner.mode(settings,Mode.AUTO,settings.arcDegrees()));
           var moved=new RoadRecord(next.id(),next.owner(),next.a(),next.b(),a,b,plan.settings(),next.automatic(),next.clearance(),List.of(),next.endCaps(),next.buildVersion(),null,List.of(),next.furniturePhase(),null);

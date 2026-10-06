@@ -74,6 +74,7 @@ public final class RoadRibbon {
   public static void checkSelfIntersections(Mesh mesh, double clearance) {
     var samples = mesh.samples();
     for (int i = 1; i < samples.size(); i++) {
+      RoadPlanningBudget.check();
       V a = samples.get(i - 1).center(), b = samples.get(i).center();
       for (int j = i + 3; j < samples.size(); j++) {
         V c = samples.get(j - 1).center(), d = samples.get(j).center();

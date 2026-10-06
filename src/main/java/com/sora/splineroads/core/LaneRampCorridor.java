@@ -28,6 +28,7 @@ public final class LaneRampCorridor {
     // Zero-lift contacts still constrain already-clear decks: relaxing a prior
     // crest must not erase a real over/under relationship elsewhere on the route.
     for(var c:constraints){
+      RoadPlanningBudget.check();
       if(c.amount()>48)throw new IllegalArgumentException("自动跨越需要升降超过 48 格，请扩大道路间距或修改端点高度");
       for(int i=0;i<n;i++){
         double station=base.samples().get(i).distance();

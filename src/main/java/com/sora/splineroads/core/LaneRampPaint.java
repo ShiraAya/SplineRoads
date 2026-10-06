@@ -48,18 +48,11 @@ public final class LaneRampPaint {
   }
 
   private static List<Paint> guide(Mesh mesh,double station,double side){
-    // Local (along, lateral): 4.4-block long bent merge arrow. Map every vertex to
-    // sampled road height/frame, so both slopes and curved auxiliary lanes stay coplanar.
-    double[][][] polygon={
-      {{-2.2,-side*.40-.11},{-2.2,-side*.40+.11},{0,-side*.40+.11},{0,-side*.40-.11}},
-      {{0,-side*.40-.11},{0,-side*.40+.11},{1.25,side*.32+.11},{1.25,side*.32-.11}},
-      {{2.2,side*.88},{.95,side*.32-.48},{.95,side*.32+.48}}
-    };
-    var out=new ArrayList<Paint>();
-    for(var shape:polygon){var vertices=new ArrayList<V>();for(var p:shape){
-      var at=RoadStructures.sample(mesh,station+p[0]);var profile=RoadProfile.layout(mesh,at);
-      vertices.add(at.at(profile.motorCenter()+p[1],0));
-    }out.add(new Paint(List.copyOf(vertices),0xEDEEE2));}
+    var out=new ArrayList<Paint>();double width=RoadProfile.layout(mesh,RoadStructures.sample(mesh,station)).laneWidth();
+    for(var shape:RoadMergeArrow.local(width,side)){var vertices=new ArrayList<V>();for(var p:shape.points()){
+      var at=RoadStructures.sample(mesh,station+p.x());var profile=RoadProfile.layout(mesh,at);
+      vertices.add(at.at(profile.motorCenter()+p.z(),0));
+    }out.add(new Paint(List.copyOf(vertices),shape.color()));}
     return List.copyOf(out);
   }
   private LaneRampPaint(){}

@@ -413,7 +413,7 @@ public final class RoadData extends SavedData {
     if (best != null) {
       V d = away(best, pos).mul(start ? -1 : 1);
       return new RoadPlanner.Hint(
-          new Node(RoadEndpointSections.changed(best.mesh,best.record.a().equals(pos))?(best.record.a().equals(pos)?best.record.caps(0).mesh().first():best.record.caps(0).mesh().last()).center():n.position(), RoadPlanner.yaw(d), d.y()), true, true, true);
+          new Node(RoadEndpointSections.changed(best.mesh,best.record.a().equals(pos))?com.sora.splineroads.core.RoadMedianAnchor.position(best.record.caps(0).mesh(),best.record.a().equals(pos)):n.position(), RoadPlanner.yaw(d), d.y()), true, true, true);
     }
     return new RoadPlanner.Hint(n, entity.headingLocked, entity.gradeLocked, false);
   }
@@ -960,7 +960,8 @@ public final class RoadData extends SavedData {
     return List.copyOf(result);
   }
   private void replaceBatch(ServerLevel level,ServerPlayer player,List<RoadIndex.Built> built,Set<UUID> removed,boolean assembly,Set<BlockPos> selectedNodes,List<NodeMove> moves,int editCellLimit,Set<UUID> deletedPoints,List<RoadIndex.Built> previewResult) {
-    try (var timing=RoadTimings.start("edit",index.roads.size(),built.size());
+    try (var budget=com.sora.splineroads.core.RoadPlanningBudget.open("道路事务预检查",6);
+         var timing=RoadTimings.start("edit",index.roads.size(),built.size());
          var workChunks = RoadWorkChunks.open(level)) {
       boolean deleting=built.isEmpty();
       built = new ArrayList<>(built);
@@ -968,7 +969,7 @@ public final class RoadData extends SavedData {
       removed.addAll(confirmedLaneDeletes);
       built.removeIf(b->confirmedLaneDeletes.contains(b.record.id()));
       if(built.stream().noneMatch(r->r.record.junction()!=null))normalizeTransitions(built, removed, player,deleting);
-      timing.stage("normalize_transitions");
+      timing.stage("normalize_transitions");com.sora.splineroads.core.RoadPlanningBudget.phase("normalize_transitions");
       List<RoadIndex.Built> requested = new ArrayList<>(built);
       for (UUID id : removed) if (index.roads.containsKey(id)) requested.add(index.roads.get(id));
       // Re-plan neighboring elevated structures when adding a ground road or a junction.
@@ -983,11 +984,11 @@ public final class RoadData extends SavedData {
       var supportGroups=new HashSet<UUID>();
       for(var r:built)if(r.record.junction()!=null)supportGroups.add(r.record.assembly());
       for(var old:index.roads.values())if(old.record.junction()!=null&&supportGroups.contains(old.record.assembly())&&!removed.contains(old.record.id())&&built.stream().noneMatch(r->r.record.id().equals(old.record.id()))){built.add(old.structures(List.of()));removed.add(old.record.id());}
-      timing.stage("affected_structures");
+      timing.stage("affected_structures");com.sora.splineroads.core.RoadPlanningBudget.phase("affected_structures");
       AttachedPoints.reconcile(this,built,removed,deleting,deletedPoints);
-      timing.stage("attached_points");
+      timing.stage("attached_points");com.sora.splineroads.core.RoadPlanningBudget.phase("attached_points");
       LaneTopology.reconcile(this,built,removed);
-      timing.stage("topology");
+      timing.stage("topology");com.sora.splineroads.core.RoadPlanningBudget.phase("topology");
       built.sort(Comparator.comparing(r -> r.record.id()));
       List<RoadIndex.Built> planning = new ArrayList<>();
       for (var old : index.roads.values())
@@ -1022,9 +1023,9 @@ public final class RoadData extends SavedData {
         return descriptor!=null&&descriptor.getLongArray("Points").length>=5;
       });
       if(largeAssembly){workChunks.multiInterchange();editCellLimit=Math.max(editCellLimit,RoadLimits.MAX_MULTI_INTERCHANGE_EDIT_CELLS);}
-      timing.stage("caps_and_dependencies");
+      timing.stage("caps_and_dependencies");com.sora.splineroads.core.RoadPlanningBudget.phase("caps_and_dependencies");
       workChunks.roads(terrainRoads);
-      timing.stage("terrain_chunk_access");
+      timing.stage("terrain_chunk_access");com.sora.splineroads.core.RoadPlanningBudget.phase("terrain_chunk_access");
       Map<BlockPos, List<net.minecraft.world.phys.AABB>> terrainCache = new HashMap<>();
       // Keep saved origins; anchor newly added sections to the already-built connected road.
       List<RoadIndex.Built> spacingReferences = new ArrayList<>(index.roads.values());
@@ -1036,9 +1037,9 @@ public final class RoadData extends SavedData {
         spacingReferences.removeIf(o -> o.record.id().equals(r.record.id()));
         spacingReferences.add(next);
       }
-      timing.stage("furniture_phase");
+      timing.stage("furniture_phase");com.sora.splineroads.core.RoadPlanningBudget.phase("furniture_phase");
       var structureLookup=new RoadPlanningIndex(planning,built.size());
-      timing.stage("structure_candidate_index");
+      timing.stage("structure_candidate_index");com.sora.splineroads.core.RoadPlanningBudget.phase("structure_candidate_index");
       for (int i = 0; i < built.size(); i++) {
         var r = built.get(i);
         RoadRecord planned = StructurePlanner.plan(level, r, planning, terrainFill, terrainOriginal, terrainCache,structureLookup);
@@ -1046,7 +1047,7 @@ public final class RoadData extends SavedData {
         built.set(i, next);
         int slot=planning.indexOf(r);planning.set(slot,next);structureLookup.replace(slot,next);
       }
-      timing.stage("structure_plan");
+      timing.stage("structure_plan");com.sora.splineroads.core.RoadPlanningBudget.phase("structure_plan");
       // Terrain-derived raised medians can change a lane center after planning. Resolve
       // dependent ports again before any world write; never save an off-center marker.
       for(int pass=0;(LaneTopology.needsRefresh(this,planning,built.stream().map(b->b.record.id()).toList())||LaneCrossSections.needsRestoreRefresh(planning,built.stream().map(b->b.record.id()).toList()));pass++){
@@ -1056,7 +1057,7 @@ public final class RoadData extends SavedData {
         structureLookup=new RoadPlanningIndex(planning,built.size());
         for(int i=0;i<built.size();i++){var r=built.get(i);var next=r.planned(StructurePlanner.plan(level,r,planning,terrainFill,terrainOriginal,terrainCache,structureLookup));built.set(i,next);int slot=planning.indexOf(r);planning.set(slot,next);structureLookup.replace(slot,next);}
       }
-      timing.stage("dependent_replanning");
+      timing.stage("dependent_replanning");com.sora.splineroads.core.RoadPlanningBudget.phase("dependent_replanning");
       var noseCaps =
           RoadNoses.connectors(
               built.stream().map(r -> r.mesh).toList(),
@@ -1076,7 +1077,7 @@ public final class RoadData extends SavedData {
       var shellChanged=new HashSet<UUID>();for(var changed:built)shellChanged.add(changed.record.id());
       TunnelShellValidation.check(shellFinal,shellChanged,index.roads);
       if(!deleting)checkJoints(built, removed);
-      timing.stage("caps_shell_and_joint_validation");
+      timing.stage("caps_shell_and_joint_validation");com.sora.splineroads.core.RoadPlanningBudget.phase("caps_shell_and_joint_validation");
       final List<RoadIndex.Built> committed = built;
       final Set<UUID> removedIds = removed;
       Set<Long> touched = new it.unimi.dsi.fastutil.longs.LongOpenHashSet();
@@ -1106,12 +1107,12 @@ public final class RoadData extends SavedData {
       List<RoadIndex.Built> finalRoads = new ArrayList<>();
       for (var r : index.roads.values()) if (!removed.contains(r.record.id())) finalRoads.add(r);
       finalRoads.addAll(built);
-      timing.stage("edit_raster");
+      timing.stage("edit_raster");com.sora.splineroads.core.RoadPlanningBudget.phase("edit_raster");
       Map<Long,BlockState> sidewalks=SmartSidewalks.plan(finalRoads,level,terrainFill,sidewalkPlaced,built,terrainRoads);
       for(var e:sidewalkPlaced.entrySet())if(!e.getValue().equals(sidewalks.get(e.getKey())))touched.add(e.getKey());
       for(var e:sidewalks.entrySet())if(!e.getValue().equals(sidewalkPlaced.get(e.getKey())))touched.add(e.getKey());
       if(touched.size()>scanLimit)throw new IllegalArgumentException("包含人行道的修改范围过大，请分段建造");
-      timing.stage("sidewalks");
+      timing.stage("sidewalks");com.sora.splineroads.core.RoadPlanningBudget.phase("sidewalks");
       Map<Long, List<RoadIndex.Built>> body = new HashMap<>();
       Set<Long> air = new it.unimi.dsi.fastutil.longs.LongOpenHashSet();
       Set<Long> dry = new it.unimi.dsi.fastutil.longs.LongOpenHashSet();
@@ -1138,7 +1139,7 @@ public final class RoadData extends SavedData {
           }
         }
       }
-      timing.stage("local_collision");
+      timing.stage("local_collision");com.sora.splineroads.core.RoadPlanningBudget.phase("local_collision");
       Set<BlockPos> endpoints = new HashSet<>(selectedNodes);
       // Explicit node moves are validated below and committed atomically with the road.
       // Their old markers may lie inside the extended deck until that transaction commits.
@@ -1246,6 +1247,8 @@ public final class RoadData extends SavedData {
       }
       if(changed>editCellLimit)throw new IllegalArgumentException("实际需修改 "+changed+" 个方块，超过本次上限 "+editCellLimit);
       if(previewResult!=null){previewResult.addAll(built);return;}
+      com.sora.splineroads.core.RoadPlanningBudget.check();
+      com.sora.splineroads.core.RoadPlanningBudget.committing();
       // All range/permission/geometry checks completed before any block is cleared.
       for (UUID id : removed) index.remove(id);
       for (var r : built) {

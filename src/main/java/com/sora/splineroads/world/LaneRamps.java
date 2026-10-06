@@ -15,11 +15,13 @@ public final class LaneRamps {
   private static final class Planning implements AutoCloseable {
     final IdentityHashMap<RoadRecord,Mesh> meshes=new IdentityHashMap<>();
     final IdentityHashMap<Mesh,RoadClearance.Prepared> decks=new IdentityHashMap<>();
+    V junctionDirection;double minimumHeight=Double.NEGATIVE_INFINITY,maximumHeight=Double.POSITIVE_INFINITY;
+    Planning(Map<RoadRecord,Mesh> seeds,V direction,double minHeight,double maxHeight){root=CURRENT.get()==null;if(root){CURRENT.set(this);meshes.putAll(seeds);junctionDirection=direction;minimumHeight=minHeight;maximumHeight=maxHeight;}}
     final boolean root;
     Planning(RoadData data){root=CURRENT.get()==null;if(root){CURRENT.set(this);if(data!=null)for(var b:data.index.roads.values())meshes.put(b.record,b.mesh);}}
     public void close(){if(root)CURRENT.remove();}
   }
-  private static Mesh mesh(RoadRecord road){var plan=CURRENT.get();return plan==null?road.mesh():plan.meshes.computeIfAbsent(road,RoadRecord::mesh);}
+  private static Mesh mesh(RoadRecord road){var plan=CURRENT.get();if(plan==null)return road.mesh();if(plan.meshes.size()>512)plan.meshes.clear();return plan.meshes.computeIfAbsent(road,RoadRecord::mesh);}
   private static List<RoadClearance.Contact> contacts(Mesh proposed,Mesh existing){
     var plan=CURRENT.get();if(plan==null)return RoadClearance.contacts(proposed,existing);
     if(plan.decks.size()>32)plan.decks.clear();
@@ -49,7 +51,7 @@ public final class LaneRamps {
     return generateChoice(data,all,old.id(),old.owner(),LaneTopology.metadata(old).link(),requested).road();
   }
   private static Generated generateChoice(RoadData data,Map<UUID,RoadRecord> all,UUID id,UUID owner,LanePoints.Link link,Settings edited){
-    try(var ignored=new Planning(data)){return generatePlanned(data,all,id,owner,link,edited);}
+    try(var budget=RoadPlanningBudget.open("匝道路线/净空搜索",8);var ignored=new Planning(data)){return generatePlanned(data,all,id,owner,link,edited);}
   }
   private static Generated generatePlanned(RoadData data,Map<UUID,RoadRecord> all,UUID id,UUID owner,LanePoints.Link link,Settings edited){
     link=link.withProtectedMerge().withRectangularClosure();
@@ -71,7 +73,8 @@ public final class LaneRamps {
     var offsets=new LinkedHashSet<Double>();if(Math.abs(link.targetOffset())<=targetReach(link.options()))offsets.add(link.targetOffset());offsets.add(0d);
     if(link.to().road()!=null&&link.options().landing()!=LanePoints.Landing.EXACT){double reach=targetReach(link.options());for(double step=8;step<reach;step+=8){offsets.add(step);offsets.add(-step);}offsets.add(reach);offsets.add(-reach);}
     var errors=new EnumMap<LanePoints.Path,String>(LanePoints.Path.class);String error="所选范围内没有可用汇入口";LaneRampPaths.Port target=null;
-    for(double offset:offsets)try{
+    for(boolean fallback:new boolean[]{false,true})for(double offset:offsets)try{
+      RoadPlanningBudget.check();
       var actual=link.targetOffset(offset);
       var context=LaneCrossSections.staged(all,id,actual);
       var currentSource=host(context,actual.from());
@@ -82,17 +85,18 @@ public final class LaneRamps {
         b=link.options().targetExtra()?approach(road,point,offset,false,base,link.options().transition()):arrivalPort(road,point,offset,actual,id);
       }else{
         if(link.options().targetExtra())throw new IllegalArgumentException("路口中心接入口不设置沿主路的额外汇入车道");
-        V direction=data!=null?RampJunctions.spec(data,link.to().junction()).center().sub(link.junctionMouth()).horizontalUnit():old!=null?old.end().direction():null;
+        V direction=data!=null?RampJunctions.spec(data,link.to().junction()).center().sub(link.junctionMouth()).horizontalUnit():CURRENT.get()!=null&&CURRENT.get().junctionDirection!=null?CURRENT.get().junctionDirection:old!=null?old.end().direction():null;
         if(direction==null)throw new IllegalArgumentException("缺少路口接入方向");
         b=new LaneRampPaths.Port(link.junctionMouth(),direction,direction.left(),lane.width(),0);
       }
       target=b;
       var md=(old==null?LanePoints.Data.EMPTY:LaneTopology.metadata(old)).link(actual).openings(List.of());
       var settings=base.options(base.options().lanePoints(md));
-      for(var candidate:routeCandidates(a,b,settings,link.options(),source,p,link.to().road()==null?null:host(context,link.to()),link.to().road()==null?null:LaneTopology.point(host(context,link.to()),link.to().point()),offset,maxGrade,errors))try{
+      for(var candidate:routeCandidates(a,b,settings,link.options(),source,p,link.to().road()==null?null:host(context,link.to()),link.to().road()==null?null:LaneTopology.point(host(context,link.to()),link.to().point()),offset,maxGrade,errors,fallback))try{
+        RoadPlanningBudget.check();
         var baseMesh=fitHostContacts(LaneRampAlignment.fit(candidate.mesh(),lane.width(),targetLaneWidth,link.options().transition()),context,actual);
         for(Mesh mesh:heightCandidates(baseMesh,context,id,actual,errors,candidate.path()))try{
-          if(data!=null&&!data.withinHeight(mesh))throw new IllegalArgumentException("上跨／下穿超出世界高度范围");
+          if(data!=null&&!data.withinHeight(mesh)||data==null&&CURRENT.get()!=null&&(mesh.min().y()-mesh.settings().thickness()<CURRENT.get().minimumHeight||mesh.max().y()+4>=CURRENT.get().maximumHeight))throw new IllegalArgumentException("上跨／下穿超出世界高度范围");
           var finalContext=actual.options().departure()==LanePoints.Departure.TEMPORARY||actual.closesTarget()?
               LaneCrossSections.staged(all,id,actual,mesh):context;
           validate(mesh,finalContext,id,actual);
@@ -114,16 +118,20 @@ public final class LaneRamps {
   /** Generate expensive fallback ribbons only when the preceding candidate actually failed.
    * RC1 eagerly built the entire source-lead x target-tail cross product even when
    * the first direct candidate was valid. No route or safety check is removed. */
-  private static Iterable<LaneRampPaths.Candidate> routeCandidates(LaneRampPaths.Port a,LaneRampPaths.Port b,Settings settings,LanePoints.Options options,RoadRecord source,LanePoints.Point point,RoadRecord target,LanePoints.Point targetPoint,double targetOffset,double maxGrade,Map<LanePoints.Path,String> errors){
+  private static Iterable<LaneRampPaths.Candidate> routeCandidates(LaneRampPaths.Port a,LaneRampPaths.Port b,Settings settings,LanePoints.Options options,RoadRecord source,LanePoints.Point point,RoadRecord target,LanePoints.Point targetPoint,double targetOffset,double maxGrade,Map<LanePoints.Path,String> errors,boolean fallback){
     double[] leads=options.departure()==LanePoints.Departure.TEMPORARY?new double[]{0,32,64,96,128}:new double[]{0};
     boolean tail=target!=null&&(options.arrival()==LanePoints.Arrival.MERGE||options.arrival()==LanePoints.Arrival.FLOW||options.arrival()==LanePoints.Arrival.ADD);
     double[] tails=tail?new double[]{0,16,32,48,64,96,128}:new double[]{0};
     return ()->new Iterator<>(){
-      int li,ti;Iterator<LaneRampPaths.Candidate> ready=Collections.emptyIterator();
+      int li,ti,ki;final List<LanePoints.Path> kinds=options.path()==LanePoints.Path.AUTO?List.of(LanePoints.Path.DIRECT,LanePoints.Path.RIGHT,LanePoints.Path.LEFT,LanePoints.Path.LEFT_LOOP):List.of(options.path());
+      Iterator<LaneRampPaths.Candidate> ready=Collections.emptyIterator();
       public boolean hasNext(){
         while(!ready.hasNext()&&ti<tails.length){
-          double lead=leads[li++],endLength=tails[ti];if(li==leads.length){li=0;ti++;}
-          try{ready=routeGroup(a,b,settings,options,source,point,target,targetPoint,targetOffset,maxGrade,lead,endLength).iterator();}
+          RoadPlanningBudget.check();
+          double lead=leads[li],endLength=tails[ti];var kind=kinds.get(ki++);if(ki==kinds.size()){ki=0;if(++li==leads.length){li=0;ti++;}}
+          if(fallback==(lead==0&&endLength==0))continue;
+          var specific=new LanePoints.Options(kind,options.departure(),options.arrival(),options.radius(),options.transition(),options.elevation(),options.landing(),options.gradeOverride());
+          try{ready=routeGroup(a,b,settings,specific,source,point,target,targetPoint,targetOffset,maxGrade,lead,endLength).iterator();}
           catch(IllegalArgumentException failure){errors.putIfAbsent(options.path(),failure.getMessage());ready=Collections.emptyIterator();}
         }
         return ready.hasNext();
@@ -233,6 +241,7 @@ public final class LaneRamps {
     double sourceLimit=mesh.samples().get(contactEnd(mesh,all,sourceHosts,true)).distance();
     double targetLimit=mesh.samples().get(contactEnd(mesh,all,targetHosts,false)).distance();
     for(var road:all.values()){
+      RoadPlanningBudget.check();
       if(changed!=null&&!changed.contains(road.id()))continue;
       if(road.id().equals(id)||road.junction()!=null&&Objects.equals(road.assembly(),link.to().junction()))continue;
       var other=LaneTopology.metadata(road).link();
@@ -392,12 +401,39 @@ public final class LaneRamps {
     t.put("Settings",RoadRecord.writeSettings(road.settings()));t.putLong("A",road.a().asLong());t.putLong("B",road.b().asLong());t.put("StartNode",RoadRecord.writeNode(road.start()));t.put("EndNode",RoadRecord.writeNode(road.end()));
     return t;
   }
-  public static CompoundTag preview(ServerPlayer player,ItemStack tool,CompoundTag t){
+  /** Immutable route snapshot. The worker never touches a ServerLevel, RoadData or ItemStack. */
+  public static final class PreviewWork {
+    private final Map<UUID,RoadRecord> all;
+    private final Map<RoadRecord,Mesh> seeds;
+    private final UUID id,owner;private final LanePoints.Link link;private final V junctionDirection;
+    public final long revision;private final double minHeight,maxHeight;
+    private PreviewWork(Map<UUID,RoadRecord> all,Map<RoadRecord,Mesh> seeds,UUID id,UUID owner,LanePoints.Link link,V direction,long revision,double minHeight,double maxHeight){
+      this.all=Collections.unmodifiableMap(new LinkedHashMap<>(all));this.seeds=Collections.unmodifiableMap(new IdentityHashMap<>(seeds));
+      this.id=id;this.owner=owner;this.link=link;this.junctionDirection=direction;this.revision=revision;this.minHeight=minHeight;this.maxHeight=maxHeight;
+    }
+    public PreviewRoute compute(){try(var scope=new Planning(seeds,junctionDirection,minHeight,maxHeight)){
+      var generated=generateChoice(null,all,id,owner,link,null);return new PreviewRoute(generated.road(),generated.path());
+    }}
+  }
+  public record PreviewRoute(RoadRecord road,LanePoints.Path path){}
+  public static PreviewWork preparePreview(ServerPlayer player,ItemStack tool,CompoundTag t){
     selection(player,tool,t);var data=RoadData.get(player.serverLevel());var from=LanePointCodec.ref(t.getCompound("From"));var to=LanePointCodec.ref(t.getCompound("To"));var options=LanePointCodec.options(t.getCompound("Options"));var all=LaneTopology.records(data);var source=host(all,from);RoadData.requireOwner(player,source.owner());
     if(to.road()!=null)RoadData.requireOwner(player,host(all,to).owner());else RoadData.requireOwner(player,data.junctions.getOrDefault(to.junction(),new CompoundTag()).getUUID("Owner"));
     V mouth=to.junction()==null?null:RampJunctions.mouth(data,to.junction(),LaneTopology.point(source,from.point()).position(),new Settings(Mode.STRAIGHT,Style.O1_ONE,Math.max(4,LanePoints.lane(mesh(source),LaneTopology.point(source,from.point())).width()+1),1,.35,90));
+    V direction=to.junction()==null?null:RampJunctions.spec(data,to.junction()).center().sub(mouth).horizontalUnit();
     UUID id=t.hasUUID("Id")?t.getUUID("Id"):UUID.randomUUID();double previousOffset=t.hasUUID("Id")?LaneTopology.metadata(all.get(id)).link().targetOffset():0;
-    var link=new LanePoints.Link(from,to,options,mouth,previousOffset);var generated=generateChoice(data,all,id,t.hasUUID("Id")?all.get(id).owner():player.getUUID(),link,null);RoadRecord r=generated.road();
+    var seeds=new IdentityHashMap<RoadRecord,Mesh>();for(var built:data.index.roads.values())seeds.put(built.record,built.mesh);
+    return new PreviewWork(all,seeds,id,t.hasUUID("Id")?all.get(id).owner():player.getUUID(),new LanePoints.Link(from,to,options,mouth,previousOffset),direction,data.index.revision(),player.serverLevel().getMinBuildHeight(),player.serverLevel().getMaxBuildHeight());
+  }
+  public static CompoundTag preview(ServerPlayer player,ItemStack tool,CompoundTag t){
+    var work=preparePreview(player,tool,t);return finishPreview(player,tool,t,work,work.compute());
+  }
+  /** Main-thread validation/publish. Reject stale work before touching any live state. */
+  public static CompoundTag finishPreview(ServerPlayer player,ItemStack tool,CompoundTag t,PreviewWork work,PreviewRoute generated){
+    selection(player,tool,t);var data=RoadData.get(player.serverLevel());
+    if(data.index.revision()!=work.revision)throw new IllegalArgumentException("计算期间道路已改变，旧预览已丢弃，请重新预览");
+    var all=work.all;var id=work.id;var from=work.link.from();var to=work.link.to();var options=work.link.options();
+    RoadRecord r=generated.road();if(!data.withinHeight(r.mesh()))throw new IllegalArgumentException("上跨／下穿超出世界高度范围");
     var planned=new ArrayList<RoadIndex.Built>();planned.add(new RoadIndex.Built(r));
     var removed=new HashSet<UUID>();if(all.containsKey(id))removed.add(id);
     var request=assemblyRequest(data,r);
