@@ -3,8 +3,9 @@ set -euo pipefail
 export LANG=C.UTF-8 LC_ALL=C.UTF-8
 bash tools/check_arrival417.sh
 CP=build/tunnel406/core/classes:src/main/resources
-javac --release 17 -encoding UTF-8 -cp "$CP" -d build/tunnel406/core/classes src/validation/java/com/sora/splineroads/Closure418Validation.java
+javac --release 17 -encoding UTF-8 -cp "$CP" -d build/tunnel406/core/classes src/validation/java/com/sora/splineroads/Closure418Validation.java src/validation/java/com/sora/splineroads/Closure418GroundDepthValidation.java
 java -Dfile.encoding=UTF-8 -Xmx1500m -XX:ActiveProcessorCount=2 -cp "$CP" com.sora.splineroads.Closure418Validation | tee build/checkpoint-logs/Closure418Validation.txt
+java -Dfile.encoding=UTF-8 -Xmx1500m -XX:ActiveProcessorCount=2 -cp "$CP" com.sora.splineroads.Closure418GroundDepthValidation | tee build/checkpoint-logs/Closure418GroundDepthValidation.txt
 CP=build/tunnel406/core/classes:build/tunnel406/model/classes:src/main/resources
 javac --release 17 -encoding UTF-8 -cp "$CP" -d build/tunnel406/model/classes tools/model-validation/com/sora/splineroads/world/Closure418ModelValidation.java
 java -Dfile.encoding=UTF-8 -Xmx1500m -XX:ActiveProcessorCount=2 -cp "$CP" com.sora.splineroads.world.Closure418ModelValidation | tee build/checkpoint-logs/Closure418ModelValidation.txt

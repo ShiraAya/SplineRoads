@@ -43,8 +43,11 @@ public final class LaneClosureLandscape {
         // Only the chosen lane. Inset leaves slightly; neighboring lane axes and
         // available widths are never shifted to make room for this landscaping.
         double halfA=Math.max(.01,la.width()/2-.02),halfB=Math.max(.01,lb.width()/2-.02);
-        var soil=new Part(la.position().add(new V(0,-.24,0)),lb.position().add(new V(0,-.24,0)),
-            2*Math.max(halfA,halfB),.24,false,Material.SOIL).frames(a.left().mul(halfA),b.left().mul(halfB));
+        // Fill to at least the removed slab underside plus the classification tolerance,
+        // rather than leave a thin planted skin floating over the former one-block slab.
+        double depth=Math.max(.5,raw.settings().thickness()+.125);
+        var soil=new Part(la.position().add(new V(0,-depth,0)),lb.position().add(new V(0,-depth,0)),
+            2*Math.max(halfA,halfB),depth,false,Material.SOIL).frames(a.left().mul(halfA),b.left().mul(halfB));
         var green=new Part(la.position(),lb.position(),2*Math.max(.01,Math.max(halfA,halfB)-.08),.20,false,Material.OAK_LEAVES)
             .frames(a.left().mul(Math.max(.01,halfA-.08)),b.left().mul(Math.max(.01,halfB-.08)));
         // Ramp and other-road solids win. Do not fill a below-grade ramp portal or

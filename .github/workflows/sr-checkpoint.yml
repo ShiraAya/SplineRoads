@@ -12,7 +12,7 @@ concurrency:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
@@ -21,8 +21,8 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: P1 tunnel/seam checks, prior regressions and complete Forge build
-        run: bash tools/check_tunnel415.sh
+      - name: P1 closed-lane solids, prior regressions and complete Forge build
+        run: bash tools/check_closure418.sh
       - name: Retain original solid material and visibility binding checks
         run: |
           python - <<'PY'
