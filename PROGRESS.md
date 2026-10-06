@@ -1,49 +1,21 @@
-# SR15 reviewed directional candidate — full CI pending
+# SR15 第二批修复已保存：方向独立车道数与实际端点续接
 
-Source 0.40.16-alpha-stage2, protocol61. The first full run 37481884813 saved e4dc04b but FAILED old Transition402 stripe identity checks before Forge. Production divider identity was repaired; the unchanged 966 valid/544 rejection old cases pass locally. Added asymmetric raised median correction and AutoJunction port orientation/normalization. New core180 cases/4114 checks and record model96 cases/961 checks passed locally. These are not Minecraft world/GUI acceptance.
+2026-10-06。本轮从2e90ae6继续，开始UTC14:26:43。工作分支仅SR-0.40.15；main、SR-0.40.14、chat/sr-0402不修改。
 
-Run bash tools/check_sr427.sh; this exact candidate needs full old/new regression and Java17 Forge before delivery. SR15-03/07/08 remain pending. Review lifecycle when changing/removing a merge after a continuation exists; no claim of all possible dependent-network edits. All source saved in SR-0.40.15 only.
+候选0.40.16-alpha-stage2，协议61。最终受测代码c62e440a8af4633cad8089d5dabacdf2fc4b5ff7。GitHub Actions 37483428488成功；verify作业112337331178，执行bash tools/check_sr427.sh。实际Java17 Forge编译、compileGameTestJava、jar/reobfJar及完整新旧回归通过。没有运行GameTest服务端或Minecraft客户端。
 
----
-## Earlier checkpoint
-# SR15 directional lanes and continuation — source saved, CI pending
+本轮SR15-09/10/11：RoadLanes显式A→B/B→A每方向1–4数量、RoadProfile/RoadTransitions非对称断面及NBT；RoadLaneConfigScreen滑块；RoadEndpointSections快照当前永久合并后的物理端口；RoadTool/RoadData/AutoJunctions使用实际中心、宽度和方向，新续接不复制源路合并归属、不重复裁切原路。RaisedRoadProfile非对称分隔带变换与过渡标线身份已修正。旧记录无DirectionalLanes字段仍按旧预设读取。
 
-2026-10-06. Continued from 2e90ae6 without reverting stage1 repairs. Candidate 0.40.16-alpha-stage2, protocol61; branch SR-0.40.15 only.
+新核心Directional427：180案例/4114检查；记录/断面模型Directional427Model：96案例/961检查，均在最终CI中PASS。原Transition402的966合法/544拒绝/11789409检查保留且PASS。首次运行37481884813曾在该回归失败、未进入Forge，已修正生产代码，没有删掉拒绝断言。
 
-Written: independent authored forward/reverse 1-4 lane counts, asymmetric cross-sections and NBT, lane configuration sliders, physical merged endpoint snapshots and continuation inheritance without double trimming the donor host. Local Directional427 core116 cases/2738 checks passed; full Forge and old regression pending at this commit. See docs/checkpoints/SR15-directional-427.md.
+已取回源码/日志与JAR，核对Actions归档SHA256、源码ZIP提交注释、JAR版本及新类；本地1821个跟踪文件对比仅PROGRESS.md存在预期工作流生成差别，生产代码一致。交付校验值及边界见docs/checkpoints/FINAL_VERIFICATION_427.md。本提交仅文档，不改变受测代码。
 
-Current review: reversed/one-way port semantics, roundtrip codec and ordinary RoadData/AutoJunction interactions. No original-world, Minecraft client/GPU or live network acceptance. SR15-03/07/08 remain pending. Do not treat old CI success as this candidate acceptance.
+## 还未完成与下一轮入口
 
----
-## Historical checkpoint
-# SR-0.40.15：首批实际修复已保存并通过完整CI
+SR15-03侧壁缝隙、SR15-07新匝道影响旧绿化、SR15-08整车道分离多余导线仍待修。后续先读docs/feedback/SR-0.40.15-2026-10-06.md与FINAL_VERIFICATION_427.md，并核验分支头；不能将原14项全部标为结案。
 
-日期：2026-10-06。本轮从13:32 UTC开始，完成首批代码及检查点后暂停，等待下一轮继续。不是14项全部完成。
+实时断面仍需补已有续接后再修改/移除原合并的依赖传播与接缝重建；本轮只验证创建/删除续接不破坏原合并，不代表删除源合并也已自动重建整网。专项Y字/多向立交生成器保留旧模板接口，尚未整体改为非对称输入。A/B是道路自身方向，单向没有新增逆向单行或自动交换选点。
 
-## 已核实的源码与产物
+未运行用户原世界、Minecraft/GPU、实际鼠标滑块、车辆、真实服务器/多人事务；SR15-09/10/11状态为代码实现及核心/记录/编译验证完成，待实机闭环，而非原截图已全部复现。旧stage1设施与纵坡修复保留。P2 terrain/光影/多线程不扩展。
 
-- 工作分支：SR-0.40.15；基线376ceae / 0.40.15-alpha-p1.1。
-- 当前候选版本：0.40.16-alpha-stage1。
-- 受测代码提交：f196c42d2db27ad98d93ed924d02179dab8e2d13。
-- 完整GitHub Actions：37476740057；verify作业112314068550，SUCCESS。入口bash tools/check_sr426.sh。真实Java17 Forge编译及所有串联旧/新回归成功。
-- JAR SHA256：50fc1348a171adf91d3f2925545e5d8fb777b4109ef192d12c63c969c2e16ea2。
-- 源码ZIP SHA256：c8f99e60b16dcd38e82c441d5a674d8f6d6c34ca402ba5930c58bb4d4e26462e。
-- 已下载并核对Actions归档摘要、源码Git提交、1804个本地跟踪文件逐字节一致；唯一跟踪差别PROGRESS.md来自工作流写入的新检查点，生产代码无差别。
-
-## 当前进度
-
-已实现待实机验收：01失败详情及定位、02绿化端部收口、04整体纵坡目标、05孔洞端部护栏、06前方叉号、12索引原始车道参照保留、13断面后点位重对齐、14当前外侧身份。10当前站位分方向计数已加入但未贯通所有续接。实际RoadIndex丢失reference在旧代码上复现；新测试通过。第一阶段完整CI发现封闭邻道被越过的回归，现已修正生产保护，未删除原拒绝测试。
-
-仍待修复：03侧墙小缝隙；07新匝道破坏既有绿化专项；08DETACH多余合流导线；09普通道路续接实际匹配（当前仅正确区分高程差与横向偏移）；10端点完整实时断面接入；11每方向1–4滑块与2+1持久数据模型。没有把这些项目宣称已完成。
-
-详细状态：docs/checkpoints/SR15-stage2-426.md；本轮最终证据：docs/checkpoints/FINAL_VERIFICATION_426.md。原问题及11图索引：docs/feedback/SR-0.40.15-2026-10-06.md。
-
-## 下一轮直接继续的入口
-
-优先实现每方向车道数量/端点实际断面的一致模型。重点RoadData.hint、endpointSettings、endpointSection、jointSection、normalizeTransitions。NodeEntity原轴心与合并后物理端点可能横向不同；续接要对齐真实端口，但不能将已经收窄的宽度再次输入原有Cut造成二次收窄。持久槽位ID不改，显示序号/当前外侧独立计算。RoadProfile.Catalog、Layout、RoadTransitions.Port、Options/codec及RoadScreen必须共同支持高速/普通→单向/双向→每方向1–4；不能只改标签伪装2+1。
-
-之后排查03/07/08：RoadStructures侧墙端面；StructurePlanner与LaneClosureLandscape既有结构裁切；RoadJunction.mainGuides/terminalMarkings是否错误将DETACH当辅助合流。上述为待验证方向，不是已证实根因。
-
-额外本地探针tools/check_former_outer426.sh验证4种单/双向和左右行驶组合：先外侧合并，再原中间车道DETACH→同宿主FLOW，删除后保留早先合并。该探针不在上述CI链内，记录与源码单独保存。
-
-无用户原存档、Minecraft客户端/GPU/车辆/真实多人验收。源码及测试已保存；先备份存档使用测试候选，不强制读档全量重建。网络协议仍60。本轮未改其他分支。terrain、光影、多线程不自动扩展。历史检查点见376ceae、76e4c9fe、f196c42d的PROGRESS.md。
+本轮源码和进度均已远端保存；结束后不承诺继续后台修改。历史进度保留在c62e440、2e90ae6及先前检查点提交。
