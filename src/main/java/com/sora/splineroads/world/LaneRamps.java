@@ -52,6 +52,7 @@ public final class LaneRamps {
     var previous=all.get(id);var old=previous!=null&&LaneTopology.metadata(previous).link()!=null?previous:null;
     Style style=RoadProfile.catalog(source.settings().style()).type()==RoadProfile.Type.HIGHWAY?Style.H1_ONE:Style.O1_ONE;
     Settings base=edited!=null?edited:old!=null?old.settings():new Settings(Mode.CURVE,style,Math.max(4,lane.width()),source.settings().thickness(),.35,90).structure(Structure.AUTO).options(RoadProfile.Options.DEFAULT.traffic(source.settings().options().leftTraffic()).lanePoints(LanePoints.Data.EMPTY.link(link)));
+    base=base.options(base.options().lanePoints(base.options().lanePoints().link(link)));
     base.validate();
     var a=port(source,p);if(link.options().sourceExtra())a=approach(source,p,0,true,base,link.options().transition());
     var offsets=new LinkedHashSet<Double>();if(Math.abs(link.targetOffset())<=targetReach(link.options()))offsets.add(link.targetOffset());offsets.add(0d);
@@ -288,7 +289,7 @@ public final class LaneRamps {
       reply.putBoolean("TemporaryClosure",true);reply.putDouble("ReopenAfter",cut.sign()*(cut.end()-cut.begin())-cut.transition());reply.putDouble("RestoredAfter",cut.sign()*(cut.end()-cut.begin()));break;
     }
     if(LaneTopology.metadata(r).link().closesTarget())for(var cut:LaneTopology.metadata(staging.get(to.road())).cuts())if(cut.connection().equals(id)&&cut.arrival()){
-      reply.putBoolean("TargetClosure",true);reply.putDouble("TargetClosedBefore",cut.sign()*(cut.end()-cut.begin()));break;
+      reply.putBoolean("TargetClosure",true);reply.putDouble("TargetClosedBefore",cut.sign()*(cut.end()-Math.max(0,Math.min(staging.get(to.road()).rawMesh().length(),cut.begin()))));break;
     }
     return reply;
   }
