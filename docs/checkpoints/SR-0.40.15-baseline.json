@@ -1,0 +1,15 @@
+{
+  "repository": "ShiraAya/SplineRoads",
+  "branch": "SR-0.40.15",
+  "version": "0.40.15-alpha-p1.1",
+  "code_commit": "61400caa43c89d4fd2c4b6d17fe80ca9b8cf93d9",
+  "archive_tree_sha": "dc69468166ecb7f99d8914af2b7ac310835a75c0",
+  "archive_file_count": 1798,
+  "branch_base_commit": "f5b2cfc29f55de038e2108d7b88e99f267cdfdc0",
+  "source_archive": "SplineRoads-0.40.15-alpha-p1.1-source.zip",
+  "source_archive_sha256": "bb5a74c77c448005b98fc26f207a2e5a5879b6231193ae3acd9352c3f963074a",
+  "source_archive_bytes": 10627413,
+  "scope": "Documentation and baseline checkpoint only; no production code, resource, build script or version changes. All SR15-01..14 are unimplemented in this turn.",
+  "report_path": "docs/feedback/SR-0.40.15-2026-10-06.md",
+  "screenshots": 11
+}

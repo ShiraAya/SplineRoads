@@ -1,0 +1,93 @@
+{
+  "note": "All 11 original PNGs are included in the downloadable handoff ZIP; GitHub contains this index, not the PNG bytes.",
+  "items": [
+    {
+      "figure": 1,
+      "title": "建造失败提示",
+      "source_file_id": "file_00000000cf208206b0202bc5f464c03a",
+      "archive_path": "assets/01_build_rejection.png",
+      "bytes": 1541853,
+      "sha256": "f01098e5cf8d1031f2f45b01a6d3ec7b71fbf3596c9a4558071e085c9cd36d09"
+    },
+    {
+      "figure": 2,
+      "title": "绿化带尽头底座缺失",
+      "source_file_id": "file_000000004b7c8206a217580798405849",
+      "archive_path": "assets/02_planter_end_base.png",
+      "bytes": 3013810,
+      "sha256": "ab88e801ec09a0bdb308cdea4f2f39533fd4c6a50e2ee6590ae7672d3cf0969d"
+    },
+    {
+      "figure": 3,
+      "title": "侧壁底部缝隙",
+      "source_file_id": "file_000000004b3482119529dc12df20bc4a",
+      "archive_path": "assets/03_sidewall_bottom_gap.png",
+      "bytes": 847087,
+      "sha256": "63f2fa0bd6d8ed8fb2d46cadb5b099b5b6d23cb86556242af7072caa1a3a959a"
+    },
+    {
+      "figure": 4,
+      "title": "匝道预览先降后升与断续爬升",
+      "source_file_id": "file_000000006c088209a9e643639c09d33c",
+      "archive_path": "assets/04_profile_preview.png",
+      "bytes": 2360670,
+      "sha256": "c5ad0d31507e5eb9001904c8189a41ca83bbd19176821d60f1dc3f7e0e14ee94"
+    },
+    {
+      "figure": 5,
+      "title": "对应匝道建成实机",
+      "source_file_id": "file_0000000001108207a6bc8c98cd22c56e",
+      "archive_path": "assets/05_profile_built.png",
+      "bytes": 2756191,
+      "sha256": "2f545867302adcbd3923081885d1f3d8cb663eb58a649e930f6479cceb0148ae"
+    },
+    {
+      "figure": 6,
+      "title": "缺口端部护栏和上游叉号警告",
+      "source_file_id": "file_00000000f8888206ba6f154729f24529",
+      "archive_path": "assets/06_barrier_and_warning_cross.png",
+      "bytes": 4073112,
+      "sha256": "d2af38c7173d3e39c784172f2902c82fa2c02acbdc66dba91d52b78c10d05e3a"
+    },
+    {
+      "figure": 7,
+      "title": "新建匝道后原绿化带受影响",
+      "source_file_id": "file_0000000090988209bd0d8fd1490734f9",
+      "archive_path": "assets/07_existing_planter_corruption.png",
+      "bytes": 3686217,
+      "sha256": "a15ca76606580b6593f2d1ed5afd2829e2bf7752ed2d4016406a0f0f3b320350"
+    },
+    {
+      "figure": 8,
+      "title": "整车道分离的多余导线",
+      "source_file_id": "file_000000002734820699cfe09053202a33",
+      "archive_path": "assets/08_detach_stray_marking.png",
+      "bytes": 2665708,
+      "sha256": "f5336b5a320591cbf956953763a1d8db5efa5e19067b672ebb85f9cf4789d4e3"
+    },
+    {
+      "figure": 9,
+      "title": "合并后继续接路的接点高程错误",
+      "source_file_id": "file_000000002b248209abb27a51f15cdec3",
+      "archive_path": "assets/09_continuation_height_error.png",
+      "bytes": 3744364,
+      "sha256": "d735266f2bcb1aad568fd244ff0b4887915d0d194129382453c48c1052f0cb2d"
+    },
+    {
+      "figure": 10,
+      "title": "合并后车道点偏至标线",
+      "source_file_id": "file_00000000ffc08211a33dd9132877b1e0",
+      "archive_path": "assets/10_lane_point_offset.png",
+      "bytes": 3257974,
+      "sha256": "16a01b39d7fef9b7c1a1f4af650c73f6018dff3dcb457acab499236e600e330a"
+    },
+    {
+      "figure": 11,
+      "title": "断面与车道点未能稳定",
+      "source_file_id": "file_00000000cdcc8206a4ff10dd63c198fa",
+      "archive_path": "assets/11_section_unstable.png",
+      "bytes": 1416825,
+      "sha256": "b7c08e4ef5cba0fa20bf1a783770a1d42c34bb122e361d72a6b8253f5d5fa5d8"
+    }
+  ]
+}
