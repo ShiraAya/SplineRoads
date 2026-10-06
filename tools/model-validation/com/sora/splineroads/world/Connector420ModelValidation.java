@@ -16,10 +16,16 @@ public final class Connector420ModelValidation {
     for(boolean left:new boolean[]{false,true})for(Style style:List.of(Style.O2_ONE,Style.O4_RAIL,Style.H4_RAIL))for(int side:new int[]{-1,1})for(var arrival:List.of(LanePoints.Arrival.MERGE,LanePoints.Arrival.EXTRA)){
       var all=new LinkedHashMap<UUID,RoadRecord>();var target=road(new V(0,100,0),new V(0,100,1400),style,left);
       int n=RoadProfile.catalog(style).lanes();int slot=RoadProfile.catalog(style).twoWay()?(side<0?n/2-1:n-1):(side<0?0:n-1);
-      var lane=LanePoints.lane(target.rawMesh(),900,slot);V begin=lane.position().sub(lane.direction().mul(400)).add(lane.direction().left().mul(200));
+      // EXTRA's fixed taper must start at the actual outer lane, not sweep across a live lane.
+      // MERGE retains both original target slots; both modes still cover approach sides.
+      if(arrival==LanePoints.Arrival.EXTRA)slot=RoadProfile.catalog(style).twoWay()?(side<0?n/2-1:n-1):(left?0:n-1);
+      var lane=LanePoints.lane(target.rawMesh(),900,slot);V begin=lane.position().sub(lane.direction().mul(750)).add(lane.direction().left().mul(side*200));
       var source=road(begin.sub(lane.direction().mul(100)),begin,RoadProfile.highway(style)?Style.H1_ONE:Style.O1_ONE,left);all.put(source.id(),source);all.put(target.id(),target);
       var a=point(all,source,80,0);var b=point(all,target,900,slot);var options=new LanePoints.Options(LanePoints.Path.AUTO,LanePoints.Departure.BRANCH,arrival,32,32,LanePoints.Elevation.AUTO,LanePoints.Landing.EXACT);
       var rid=id();var connector=LaneRamps.generate(null,all,rid,id(),new LanePoints.Link(a,b,options,null));all.put(rid,connector);LaneCrossSections.reconcile(all);var mesh=all.get(rid).mesh();var hosts=List.of(all.get(source.id()).mesh(),all.get(target.id()).mesh());cases++;
+      check(RoadClearance.contacts(mesh,LaneDeck.excludingSlot(LaneDeck.motorOnly(hosts.get(1)),slot)).stream().noneMatch(RoadClearance.Contact::blocked),"late intake intrudes live nonselected lanes");
+      check(mesh.last().center().distance(lane.position())<1e-6,"early alignment relocated exact B instead of fitting upstream");
+      LaneRampGrade.validate(mesh,RoadProfile.highway(style)?.15:.2);
       check(mesh.settings().style().connectorRamp()&&RoadProfile.catalog(mesh.settings().style()).type()==RoadProfile.Type.RAMP,"not an independent ramp kind");
       check(RoadProfile.highway(mesh.settings().style())==RoadProfile.highway(style),"highway lineage lost");
       check(LanePoints.supported(mesh.settings()),"manual lane points no longer work on generated ramp");
@@ -43,7 +49,23 @@ public final class Connector420ModelValidation {
       all.remove(rid);LaneCrossSections.reconcile(all);check(LaneTopology.metadata(all.get(target.id())).cuts().isEmpty(),"deleting independent ramp leaves host reservation");
     }
     legacyAndChain();
+    illegalExtraMustStayRejected();
     System.out.println("Connector420ModelValidation: "+cases+" cases / "+checks+" checks; actual LaneRamps/paint/gantry/record/closure, explicit world and NBT adapters; NO Minecraft/GPU/network test.");
+  }
+  static void illegalExtraMustStayRejected(){
+    for(boolean left:new boolean[]{false,true})for(boolean departure:new boolean[]{false,true}){
+      var all=new LinkedHashMap<UUID,RoadRecord>();var host=road(new V(0,100,0),new V(0,100,1400),Style.O2_ONE,left);
+      int inner=left?1:0;var lane=LanePoints.lane(host.rawMesh(),700,inner);
+      V begin=lane.position().add(lane.direction().mul(departure?750:-750)).add(lane.direction().left().mul(200));
+      var remote=road(begin.sub(lane.direction().mul(100)),begin,Style.O1_ONE,left);all.put(host.id(),host);all.put(remote.id(),remote);
+      var a=point(all,remote,80,0);var b=point(all,host,700,inner);
+      var options=new LanePoints.Options(LanePoints.Path.AUTO,departure?LanePoints.Departure.EXTRA:LanePoints.Departure.BRANCH,departure?LanePoints.Arrival.MERGE:LanePoints.Arrival.EXTRA,32,32,LanePoints.Elevation.AUTO,LanePoints.Landing.EXACT);
+      var before=new LinkedHashMap<>(all);boolean rejected=false;
+      try { LaneRamps.generate(null,all,id(),id(),new LanePoints.Link(departure?b:a,departure?a:b,options,null)); }
+      catch(IllegalArgumentException e){rejected=true;check(e.getMessage().contains("固定接头")||e.getMessage().contains("净空")||e.getMessage().contains("约束"),"wrong EXTRA rejection: "+e.getMessage());}
+      check(rejected,"illegal internal-slot EXTRA was allowed across a live nonselected lane");
+      check(all.equals(before),"rejected EXTRA mutates existing roads");cases++;
+    }
   }
   static void legacyAndChain(){
     var all=new LinkedHashMap<UUID,RoadRecord>();var a=road(new V(0,100,0),new V(0,100,600),Style.H1_ONE,false);var b=road(new V(-200,100,800),new V(-200,100,1800),Style.H1_ONE,false);all.put(a.id(),a);all.put(b.id(),b);

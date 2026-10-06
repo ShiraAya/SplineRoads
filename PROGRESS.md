@@ -8,6 +8,8 @@ That candidate compiled with Forge but its full regression stopped at Closure418
 
 Current changes: integrated monotone signed endpoint-grade profiles; cap-aware feasible flat-port grade transitions; real obstacle-only corridor bounds (including already-clear zero-lift contacts); union overlapping closure planting intervals; preserve native five-component planting assertions, full depth/collision tests, and grade fixtures that distinguish real infeasibility from a discarded local hump heuristic.
 
+Additional repair: automatic 64/96/128m early alignment before EXTRA intake, with the original B and fixed auxiliary tail preserved and all nonselected lanes still protected. Updated legal mirrored model fixtures; explicit illegal inner-slot EXTRA rejection and no-mutation cases remain. Source and acceptance matrix are in docs/checkpoints/SR-0.40.14-P1-review.md.
+
 Verification is in progress. Local core/adapters are not Minecraft world/GPU tests. All P1-01..11 remain awaiting user in-game acceptance. P2 terrain/shaders/multithreading remain deferred. Do not mass-rebuild old saves or claim old fixtures are actual screenshots/world saves.
 
 ---

@@ -37,9 +37,24 @@ public final class LaneRampPaths {
     var plain=o.withoutApproaches();
     var result=new ArrayList<Candidate>();
     String error="扩出后的路径净空不足";
-    for(var c:candidates(start,end,settings,plain,maxGrade))try{
-      var samples=new ArrayList<Sample>();append(samples,prefix);append(samples,c.mesh().samples());append(samples,suffix);
-      Mesh mesh=RoadRibbon.mesh(samples,settings);LaneRampGrade.validate(mesh,maxGrade);RoadRibbon.checkSelfIntersections(mesh,4);checkVolume(mesh);result.add(new Candidate(c.path(),mesh));
+    // A fixed auxiliary taper must remain host-aligned, but the free route may
+    // align earlier. Otherwise a same-height approach from the opposite side can
+    // cross the last live lane too close to the locked tail to descend safely,
+    // despite hundreds of metres of unused route. These are additional candidates,
+    // not relocated B points or exemptions: the normal full-road corridor still
+    // checks every sample, and only the original auxiliary approach is locked.
+    for(double lead:o.targetExtra()?new double[]{0,64,96,128}:new double[]{0})try{
+      V extension=end.direction().mul(lead).add(new V(0,end.grade()*lead,0));
+      Port early=lead==0?end:new Port(end.position().sub(extension),end.direction(),end.outside(),end.extraWidth(),end.grade());
+      for(var c:candidates(start,early,settings,plain,maxGrade))try{
+        var samples=new ArrayList<Sample>();append(samples,prefix);append(samples,c.mesh().samples());
+        if(lead>0){int count=(int)Math.ceil(lead/.5);var run=new ArrayList<Sample>();
+          for(int i=1;i<=count;i++)run.add(new Sample(early.position().add(extension.mul((double)i/count)),end.direction().left(),lead*i/count,settings.width()/2));
+          append(samples,run);
+        }
+        append(samples,suffix);
+        Mesh mesh=RoadRibbon.mesh(samples,settings);LaneRampGrade.validate(mesh,maxGrade);RoadRibbon.checkSelfIntersections(mesh,4);checkVolume(mesh);result.add(new Candidate(c.path(),mesh));
+      }catch(IllegalArgumentException e){error=e.getMessage();}
     }catch(IllegalArgumentException e){error=e.getMessage();}
     if(result.isEmpty())throw new IllegalArgumentException(error);
     return List.copyOf(result);
