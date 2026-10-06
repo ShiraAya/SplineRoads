@@ -270,7 +270,7 @@ public final class RoadJunction {
       if(mesh.reference()!=null) {
         var raw=LaneSections.reference(mesh);
         int slots=RoadProfile.layout(raw,RoadStructures.sample(raw,d)).catalog().lanes();
-        for(int slot=0;slot<slots;slot++)if(LaneSections.active(mesh,d,slot)&&!LaneMerge.merging(mesh,d,slot)) {
+        for(int slot=0;slot<slots;slot++)if(LaneSections.active(mesh,d,slot)&&!LaneMerge.merging(mesh,d,slot)&&!LaneClosureWarnings.covers(mesh,d,slot)) {
           var lane=LanePoints.lane(raw,d,slot);
           arrow(out,lane.position(),lane.direction(),s.left().mul(lane.sign()));
         }

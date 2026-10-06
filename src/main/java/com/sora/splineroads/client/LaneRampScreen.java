@@ -20,7 +20,7 @@ public final class LaneRampScreen extends Screen {
   private LanePoints.Elevation elevation;private LanePoints.Landing landing;
   private List<RoadGeometry.Mesh> checkedRoads=List.of();
   private String radiusText,transitionText;
-  private EditBox radius,transition;private Button build,previewButton;private UUID token;private RoadGeometry.Mesh checkedMesh;
+  private EditBox radius,transition;private Button build,previewButton,details;private boolean diagnostic;private UUID token;private RoadGeometry.Mesh checkedMesh;
   private long request=++sequence;private int x,y;
   private String status="预览后进入实景；右键空气返回设置。Shift＋右键清除选点。";
   public LaneRampScreen(CompoundTag t){
@@ -52,8 +52,11 @@ public final class LaneRampScreen extends Screen {
     previewButton=addRenderableWidget(Button.builder(Component.literal("实景预览"),b->preview()).bounds(x+12,y+209,105,20).build());previewButton.active=!pending;
     build=addRenderableWidget(Button.builder(Component.literal(payload.hasUUID("Id")?"保存匝道":"建造 A → B"),b->submit()).bounds(x+125,y+209,110,20).build());build.active=token!=null&&!pending;
     addRenderableWidget(Button.builder(Component.literal("返回实景"),b->onClose()).bounds(x+243,y+209,99,20).build());
+    details=addRenderableWidget(Button.builder(Component.literal("失败详情"),b->Minecraft.getInstance().setScreen(new FailureDetails(this,status))).bounds(x+273,y+233,69,18).build());
+    details.visible=diagnostic;details.active=diagnostic;
+
   }
-  private void invalidate(){token=null;checkedMesh=null;checkedRoads=List.of();pending=false;if(build!=null)build.active=false;if(previewButton!=null)previewButton.active=true;ClientRoads.preview=null;ClientRoads.nodePreviews=List.of();request=++sequence;status=switch(departure){
+  private void invalidate(){diagnostic=false;if(details!=null){details.visible=false;details.active=false;}token=null;checkedMesh=null;checkedRoads=List.of();pending=false;if(build!=null)build.active=false;if(previewButton!=null)previewButton.active=true;ClientRoads.preview=null;ClientRoads.nodePreviews=List.of();request=++sequence;status=switch(departure){
       case TEMPORARY -> "保留车道分离：直连匝道，主路暂时关闭该车道；净空安全后恢复。地面封闭绿化、高架直角孔区。请预览。";
       case DETACH -> "整车道分离：直连匝道，主路下游取消该车道。请预览。";
       case BRANCH -> "普通分流：原车道继续直行；不是先关闭再恢复。请预览。";
@@ -75,8 +78,27 @@ public final class LaneRampScreen extends Screen {
     }catch(IllegalArgumentException e){failed(e.getMessage());}
   }
   private void submit(){try{if(token==null||pending)return;var t=command("laneRamp");t.putUUID("Token",token);pending=true;build.active=false;previewButton.active=false;RoadNetwork.CHANNEL.sendToServer(new RoadNetwork.Action(t));}catch(IllegalArgumentException e){failed(e.getMessage());}}
-  public void failed(String s){status=s;pending=false;if(build!=null)build.active=false;if(previewButton!=null)previewButton.active=true;token=null;checkedMesh=null;checkedRoads=List.of();ClientRoads.preview=null;ClientRoads.nodePreviews=List.of();}
+  public void failed(String s){status=s;diagnostic=true;if(details!=null){details.visible=true;details.active=true;}pending=false;if(build!=null)build.active=false;if(previewButton!=null)previewButton.active=true;token=null;checkedMesh=null;checkedRoads=List.of();ClientRoads.preview=null;ClientRoads.nodePreviews=List.of();}
+  private static String brief(String message){
+    int end=message.indexOf('；');if(end<0)end=message.indexOf('。');
+    String first=end>0?message.substring(0,end):message;
+    return (first.length()>70?first.substring(0,70)+"…":first)+"。点击“失败详情”查看冲突坐标和完整原因。";
+  }
+  /** Full diagnostic page instead of overflowing the six-line connector footer. */
+  private static final class FailureDetails extends Screen {
+    private final LaneRampScreen parent;private final String message;
+    FailureDetails(LaneRampScreen parent,String message){super(Component.literal("匝道建造失败详情"));this.parent=parent;this.message=message;}
+    @Override protected void init(){addRenderableWidget(Button.builder(Component.literal("返回匝道设置"),b->onClose()).bounds((width-160)/2,height-30,160,20).build());}
+    @Override public void render(GuiGraphics g,int mx,int my,float dt){
+      g.fill(12,12,width-12,height-12,0xf015222e);
+      g.drawString(font,"建造未通过：完整诊断",24,24,0xffcf8c,false);
+      g.drawWordWrap(font,Component.literal(message),24,44,Math.max(100,width-48),0xffffff);
+      super.render(g,mx,my,dt);
+    }
+    @Override public void onClose(){Minecraft.getInstance().setScreen(parent);}
+    @Override public boolean isPauseScreen(){return false;}
+  }
   @Override public void onClose(){super.onClose();}
   @Override public boolean isPauseScreen(){return false;}
-  @Override public void render(GuiGraphics g,int mx,int my,float dt){g.fill(x,y,x+354,y+306,0xea15222e);g.drawString(font,payload.hasUUID("Id")?"编辑匝道 · A 汇出 → B 汇入":"匝道连接器 · A 汇出 → B 汇入",x+12,y+12,0x66b5ff,false);g.drawString(font,payload.getCompound("To").hasUUID("Junction")?"目标：所选路口的实际新增接入口":landing==LanePoints.Landing.EXACT?"目标：精确锁定 B，不移动通道口":"目标：B 点附近同车道，保持行驶方向",x+12,y+32,0xd2e2ed,false);g.drawString(font,"半径",x+12,y+150,0xffffff,false);g.drawString(font,"过渡长度",x+184,y+150,0xffffff,false);g.drawWordWrap(font,Component.literal(status),x+12,y+242,330,0xffcf8c);super.render(g,mx,my,dt);}
+  @Override public void render(GuiGraphics g,int mx,int my,float dt){g.fill(x,y,x+354,y+306,0xea15222e);g.drawString(font,payload.hasUUID("Id")?"编辑匝道 · A 汇出 → B 汇入":"匝道连接器 · A 汇出 → B 汇入",x+12,y+12,0x66b5ff,false);g.drawString(font,payload.getCompound("To").hasUUID("Junction")?"目标：所选路口的实际新增接入口":landing==LanePoints.Landing.EXACT?"目标：精确锁定 B，不移动通道口":"目标：B 点附近同车道，保持行驶方向",x+12,y+32,0xd2e2ed,false);g.drawString(font,"半径",x+12,y+150,0xffffff,false);g.drawString(font,"过渡长度",x+184,y+150,0xffffff,false);g.drawWordWrap(font,Component.literal(diagnostic?brief(status):status),x+12,y+255,330,0xffcf8c);super.render(g,mx,my,dt);}
 }

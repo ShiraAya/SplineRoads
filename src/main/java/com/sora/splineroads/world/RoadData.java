@@ -785,8 +785,10 @@ public final class RoadData extends SavedData {
           var sample = r.record.a().equals(p) ? r.mesh.first() : r.mesh.last();
           if (first.record.junction() == null && r.record.junction() == null)
             RoadTransitions.requireCompatible(endpointSection(first,p), endpointSection(r,p));
-          if (origin.center().distance(sample.center()) > 1e-6)
-            throw new IllegalArgumentException("接点高程不一致，请对该路段使用两端贴地或调整端点");
+          if (Math.abs(origin.center().y()-sample.center().y()) > 1e-6)
+            throw new IllegalArgumentException(String.format(java.util.Locale.ROOT,"接点高程不一致：两侧实际路面 Y=%.3f / %.3f（差 %.3f 格），请检查接头高程",origin.center().y(),sample.center().y(),Math.abs(origin.center().y()-sample.center().y())));
+          if (origin.center().sub(sample.center()).horizontalLength() > 1e-6)
+            throw new IllegalArgumentException(String.format(java.util.Locale.ROOT,"接点横向断面未对齐（并非高程不同）：两侧中心偏移 %.3f 格；合并后的实际断面需要续接匹配",origin.center().sub(sample.center()).horizontalLength()));
           if (Math.abs(origin.halfWidth() - sample.halfWidth()) > 1e-6)
             throw new IllegalArgumentException("接缝过渡宽度不一致，请重新连接此接点");
           if (Math.abs(dot) < .99999999

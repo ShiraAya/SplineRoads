@@ -13,7 +13,7 @@ public final class Ramp39WidgetValidation {
  public static void main(String[] args)throws Exception{
   var payload=new CompoundTag();var from=LanePoints.Ref.lane(new UUID(0,1),new UUID(0,2));var to=LanePoints.Ref.lane(new UUID(0,3),new UUID(0,4));payload.put("From",LanePointCodec.ref(from));payload.put("To",LanePointCodec.ref(to));payload.put("Options",LanePointCodec.options(LanePoints.Options.DEFAULT));
   LaneRampScreen.open(payload);var s=(LaneRampScreen)Minecraft.getInstance().screen;
-  check(s.children().stream().filter(w->w instanceof Button).count()==13,"five paths, four mode selectors, one grade selector, three actions");
+  check(s.children().stream().filter(w->w instanceof Button).count()==14,"five paths, four mode selectors, one grade selector, three actions and failure details");
   check(!((Boolean)value(s,"gradeOverride")),"override is off for existing/default payload");press(s,"坡比超限：");check((Boolean)value(s,"gradeOverride"),"override selector changes actual state");
   for(var path:LanePoints.Path.values()){s.children().stream().filter(w->w instanceof Button b&&b.getMessage().getString().endsWith(path.label)).map(w->(Button)w).findFirst().orElseThrow().onPress();check(value(s,"path")==path,"path button changes actual state");}
   press(s,"汇出：");check(value(s,"departure")==LanePoints.Departure.DETACH,"departure changes to DETACH");check(value(s,"arrival")==LanePoints.Arrival.MERGE,"arrival is independent");press(s,"汇入：");press(s,"自动避让");press(s,"同车道弹性落点");
@@ -23,6 +23,12 @@ public final class Ramp39WidgetValidation {
   var method=s.getClass().getDeclaredMethod("command",String.class);method.setAccessible(true);var command=(CompoundTag)method.invoke(s,"laneRampPreview");var options=LanePointCodec.options(command.getCompound("Options"));
   check(options.gradeOverride()&&options.radius()==48&&options.transition()==40&&options.departure()==LanePoints.Departure.DETACH&&options.arrival()==LanePoints.Arrival.REPLACE&&options.landing()==LanePoints.Landing.EXACT,"outgoing command contains displayed settings");
   check((Boolean)value(s,"gradeOverride"),"override survives resize and other options");
+  check(!((Button)value(s,"details")).visible,"failure details visible before a failure");
+  s.failed("固定接头冲突；X=12 Y=20 Z=34；输入坡比合法但净空不可达");
+  check(((Button)value(s,"details")).visible&&((Button)value(s,"details")).active,"failure details unavailable");
+  check(!((Button)value(s,"build")).active&&value(s,"token")==null,"failed draft remains buildable");
+  press(s,"失败详情");var page=Minecraft.getInstance().screen;check(page!=s,"details page did not open");
+  page.onClose();check(Minecraft.getInstance().screen==s,"details close loses selected connector");
   LaneRampScreen.clear();check(ClientRoads.preview==null&&ClientRoads.nodePreviews.isEmpty(),"clear releases both shared preview fields");
   System.out.println("Ramp39WidgetValidation: "+checks+" checks passed; real screen state with test-only widgets, no Minecraft/GPU/network test");
  }

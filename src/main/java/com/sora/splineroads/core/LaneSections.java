@@ -126,6 +126,11 @@ public final class LaneSections {
       double d=candidate.position().distance(chosen.position());if(d<distance){distance=d;best=i;}
     }
     if(best<0)throw new IllegalArgumentException("当前位置该方向至少保留两条通行车道才能合流或整车道分离");
+    // A temporarily closed neighbour is a physical hole, not permission to skip
+    // across it into a more distant open lane. Removed OUTER slots never lie
+    // between the newly outer lane and its immediate inward receiver.
+    if(distance>chosen.width()*1.01)
+      throw new IllegalArgumentException("合流接收车道被封闭，不能跨越中间空位并入更远车道");
     return best;
   }
   private record Section(double shift,double half,RoadProfile.Layout layout){}

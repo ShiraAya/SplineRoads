@@ -55,6 +55,10 @@ public final class LaneRampCorridor {
     // therefore has a feasible continuation to the fixed destination, including its
     // actual tangent. Do this before smoothing, rather than hoping relaxation will
     // eventually remove a 300-metre sag.
+    // Fit through the feasible corridor, not through the old local bump/plateau
+    // samples. The old samples are only evidence for obstacle bounds and locked
+    // ports; using them as the objective preserves long, unnecessary level steps.
+    double[] desired=tautProfile(x,lo,hi,y[0],y[n-1]);
     y[0]=clamp(y[0],lo[0],hi[0]);
     for(int i=1;i<n;i++){
       double dx=x[i]-x[i-1];
@@ -62,7 +66,7 @@ public final class LaneRampCorridor {
       double up=monotone==-1||monotone==0?0:grade*dx;
       double low=Math.max(lo[i],y[i-1]-down),high=Math.min(hi[i],y[i-1]+up);
       if(low>high+1e-7)throw failure(base,freeFrom,freeTo,grade,i,"坡线连续解不可达");
-      y[i]=clamp(y[i],low,high);
+      y[i]=clamp(desired[i],low,high);
     }
     // Relax curvature while staying inside both the physical corridor and
     // neighbouring grade/direction limits; feasibility is already established.
@@ -89,6 +93,26 @@ public final class LaneRampCorridor {
     }
     Mesh mesh=RoadRibbon.mesh(result,base.settings());RoadRibbon.checkSelfIntersections(mesh,4);LaneRampPaths.checkVolume(mesh);return mesh;
   }
+  /** Piecewise linear whole-span target, split only at a binding corridor wall.
+   * Stack-based to bound recursion depth. The following reachability pass still
+   * enforces every grade and direction constraint; this is not a safety bypass. */
+  private static double[] tautProfile(double[] x,double[] lo,double[] hi,double first,double last){
+    int n=x.length;double[] result=new double[n];result[0]=first;result[n-1]=last;
+    var spans=new ArrayDeque<int[]>();spans.push(new int[]{0,n-1});
+    while(!spans.isEmpty()){
+      var span=spans.pop();int a=span[0],b=span[1],split=-1;double worst=1e-7,value=0;
+      double length=x[b]-x[a];
+      for(int i=a+1;i<b;i++){
+        double t=length<1e-9?0:(x[i]-x[a])/length;
+        double target=result[a]+t*(result[b]-result[a]);
+        double bound=clamp(target,lo[i],hi[i]),violation=Math.abs(target-bound);
+        if(violation>worst){worst=violation;split=i;value=bound;}
+        result[i]=target;
+      }
+      if(split>=0){result[split]=value;spans.push(new int[]{split,b});spans.push(new int[]{a,split});}
+    }
+    return result;
+  }
   private static boolean propagate(double[] x,double[] lo,double[] hi,double grade,int monotone){
     for(int pass=0;pass<2;pass++){
       for(int i=1;i<x.length;i++){
@@ -107,7 +131,14 @@ public final class LaneRampCorridor {
   private static IllegalArgumentException failure(Mesh m,double from,double to,double grade,int i,String reason){
     var metrics=LaneRampGrade.report(m,from,to,grade);
     double rise=Math.abs(m.last().center().y()-m.first().center().y());
-    return new IllegalArgumentException(String.format(Locale.ROOT,"%s：总水平路径 %.1f 格，可布坡 %.1f 格，端点变高至少需 %.1f 格，输入最大坡比 %.2f%%（上限 %s），冲突站位 %.1f；真实障碍/固定接头约束不满足，不能只按平均坡比判断",reason,metrics.horizontal(),metrics.available(),rise/grade,metrics.maximum()*100,LaneRampGrade.label(grade),m.samples().get(i).distance()));
+    var sample=m.samples().get(i);var point=sample.center();
+    boolean locked=i<=1||i>=m.samples().size()-2||sample.distance()<=from+1e-7||sample.distance()>=to-1e-7;
+    return new IllegalArgumentException(String.format(Locale.ROOT,
+        "%s；冲突在%s X=%.1f Y=%.1f Z=%.1f（冲突站位／距 A 沿线 %.1f 格，距 B %.1f 格）。%s输入最大坡比 %.2f%% / 上限 %s；总水平路径 %.1f 格，可布坡 %.1f 格，端点变高至少需 %.1f 格。%s",
+        reason,locked?"固定接头":"可调坡段",point.x(),point.y(),point.z(),sample.distance(),Math.max(0,m.length()-sample.distance()),
+        metrics.maximum()<=grade+1e-7?"这不是输入坡比超限，而是接头／障碍所需高程与局部可达范围冲突。":"输入路线自身也存在坡比超限。",
+        metrics.maximum()*100,LaneRampGrade.label(grade),metrics.horizontal(),metrics.available(),rise/grade,
+        locked?"此处必须保持原车道高度；请改变跨越位置或接头位置，单纯提高坡比不能解除固定接头碰撞。":"请检查该位置的上下跨越关系及距固定接头的升降空间；总长度足够不代表局部净空可达。"));
   }
   private LaneRampCorridor(){}
 }

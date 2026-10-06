@@ -291,6 +291,24 @@ public final class RoadStructures {
         emitRailRun(out,run,mesh,ground,modern,highway,side);
       }
     }
+    // Transverse ends are also exposed edges. Previously only the two sides of
+    // the hole had rails, allowing vehicles to enter the void straight ahead.
+    for(var cap:LaneDeck.caps(mesh)){
+      V axis=cap.b().sub(cap.a()).horizontalUnit(),mid=cap.a().add(cap.b()).mul(.5);
+      boolean raised=mesh.settings().structure()==Structure.BRIDGE||elevated(mesh,mid,ground.top(mid.x(),mid.z(),mid.y()),ground);
+      if(!raised)continue;
+      V first=cap.a().sub(axis.mul(RoadRailJoin.INSET)),last=cap.b().add(axis.mul(RoadRailJoin.INSET));
+      V outside=mid.sub(axis.left().mul(.4));
+      for(var span:ground.railSpans(first,last,outside)){
+        int steps=Math.max(1,(int)Math.ceil(span.a().distance(span.b())/.5));
+        for(int j=0;j<steps;j++){
+          V a=span.a().add(span.b().sub(span.a()).mul(j/(double)steps));
+          V b=span.a().add(span.b().sub(span.a()).mul((j+1)/(double)steps));
+          var pieces=new ArrayList<Part>();barrier(pieces,a,b,highway,true,j*.5);
+          if(pieces.stream().noneMatch(ground::blocked))out.addAll(pieces);
+        }
+      }
+    }
   }
   private record RailSpan(V a,V b,boolean raised,double distance,double endDistance){}
   private static void emitRailRun(List<Part> out,List<RailSpan> run,Mesh mesh,Ground ground,boolean modern,boolean highway,int side){

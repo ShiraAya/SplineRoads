@@ -328,6 +328,8 @@ public final class RoadSurface {
       else for(var poly:visible(paint.points(),owners,.025))paintOnRoad(markings,new RoadJunction.Paint(poly,paint.color()),paving);
     }
 
+    for(var warning:LaneClosureWarnings.paint(mesh))paintOnRoad(markings,warning,paving);
+
     if(LaneDeck.hasOpenings(mesh)) {
       Grid holes=new Grid(List.of());var points=mesh.samples();
       for(int i=1;i<points.size();i++)for(var q:LaneDeck.holeQuads(mesh,points.get(i-1),points.get(i))) {

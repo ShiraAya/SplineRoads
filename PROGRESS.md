@@ -1,3 +1,15 @@
+# SR-0.40.15 repair — first candidate saved, full CI pending
+
+User authorized implementation on 2026-10-06. Candidate version 0.40.16-alpha-stage1; branch remains SR-0.40.15.
+
+Stage1 actual RoadIndex reference/mesh preservation and live lane identity are retained. Stage2 corrects the closed-neighbor receiver guard found by the first full CI, adds union planter end caps, exposed hole-end rails, upstream X warnings, whole-span corridor targets and readable failure details. Actual continuation and asymmetric creation UI remain unfinished. See docs/checkpoints/SR15-stage2-426.md for all 14 statuses.
+
+Run bash tools/check_sr426.sh. Full Java17 Forge and regression result is pending at this commit; no Minecraft runtime/original world acceptance. Stage1 run 37473665897 compiled with Forge but failed a genuine receiver-protection regression; that production guard was corrected and the unchanged rejection test passed locally. Do not label the failed stage1 run a full success.
+
+Next priority: SR15-09/10 endpoint continuation against current physical cross-sections without double trimming authored geometry; SR15-11 per-direction 1-4 lane controls; then SR15-03/07/08. No other branch modified.
+
+---
+## Historical checkpoint
 # SR-0.40.15 repair in progress — stage1 saved
 
 User authorized implementation on 2026-10-06. Base 376ceae.

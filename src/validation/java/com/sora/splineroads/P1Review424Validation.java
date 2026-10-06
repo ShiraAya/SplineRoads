@@ -86,13 +86,14 @@ public final class P1Review424Validation {
       check(new HashSet<>(union).size()==union.size(),"duplicate physical planter component");
     }
     var restored=LaneClosureLandscape.plan(closed(List.of()),GROUND);check(restored.isEmpty(),"deletion leaves planting behind");
-    cases++;check(original.size()==350,"expected 70 m of complete five-component native bed");
-    for(int i=0;i<original.size();i+=5){
+    cases++;check(original.size()==352,"expected 70 m of native bed and two transverse end kerbs");
+    for(int i=0;i<350;i+=5){
       var run=original.subList(i,i+5);
       check(run.stream().filter(p->p.material()==Material.SOIL).count()==1,"missing foundation");
       check(run.stream().filter(p->p.material()==Material.GREEN).count()==2,"missing native leaf layers");
       check(run.stream().filter(p->p.material()==Material.CONCRETE).count()==2,"missing both curbs");
     }
+    for(var cap:original.subList(350,352))check(cap.material()==Material.CONCRETE&&cap.a().sub(cap.b()).horizontalLength()>3,"missing transverse kerb closure");
   }
   public static void main(String[] args){profiles();corridors();planting();System.out.println("P1Review424Validation: "+cases+" scenes / "+checks+" checks PASS. Actual core geometry; NOT Minecraft world transactions/GPU acceptance.");}
 }

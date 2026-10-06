@@ -47,6 +47,16 @@ public final class LaneClosureLandscape {
         // Once the rising deck clears the bed, the complete normal-road bed resumes.
         for(var part:bed)addUnblocked(result,part,ground,0);
       }
+      // Close both exposed ends, after unioning reservations. Longitudinal kerbs
+      // alone leave bare soil at a rectangular closure's front/back face.
+      for(double d:new double[]{start+.1,end-.1})if(d>=start&&d<=end&&!raised(mesh,cut.lane(),d,ground)){
+        var at=RoadStructures.sample(raw,d);var lane=LanePoints.lane(raw,d,cut.lane());
+        double half=(Math.max(.08,lane.width()-.12-.3))/2+.2;
+        double depth=Math.max(.5,raw.settings().thickness()+.125);
+        V center=lane.position().add(new V(0,-depth,0));
+        var cap=new Part(center.sub(at.left().mul(half)),center.add(at.left().mul(half)),.2,depth+.35,false,Material.CONCRETE);
+        addUnblocked(result,cap,ground,0);
+      }
     }
     return List.copyOf(result);
   }
