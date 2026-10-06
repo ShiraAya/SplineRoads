@@ -1,0 +1,69 @@
+name: SR P1 rail edge-profile verification
+on:
+  push:
+    branches: [chat/sr-0402]
+    paths: ['tools/patches/rail419-edge.z64.*', '.github/workflows/sr-rail419-edge.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 3
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: save
+        run: |
+          python - <<'PY'
+          import base64,hashlib,subprocess,zlib
+          from pathlib import Path
+          encoded=b''.join(Path('tools/patches/rail419-edge.z64.'+str(i)).read_bytes() for i in range(4))
+          patch=zlib.decompress(base64.b64decode(encoded,validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='4ada4fd8654662d6fe2ce517b51c7fd1fc5ca38ec39f497c74f4ea9150b8461e'
+          subprocess.run(['git','apply','--check','-'],input=patch,check=True)
+          subprocess.run(['git','apply','-'],input=patch,check=True)
+          PY
+          git -c core.whitespace=cr-at-eol diff --check
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git add src/main/java/com/sora/splineroads/core/RoadRailJoin.java src/main/java/com/sora/splineroads/core/RoadStructures.java src/main/java/com/sora/splineroads/world/StructurePlanner.java src/validation/java/com/sora/splineroads/Rail419EdgeValidation.java tools/check_rail419.sh
+          git commit -m 'fix: retain real terminal supports across disabled, mixed-profile and stepped rail neighbors'
+          git push origin HEAD:refs/heads/chat/sr-0402
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  verify:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Prior P1 regression, full Forge compile, exact rail and marking edge checks
+        run: bash tools/check_rail419.sh
+      - name: Preserve exact tested commit and source
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr-rail419-edge-logs-${{ github.sha }}
+          path: build/checkpoint-logs/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr-rail419-edge-jar-${{ github.sha }}
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 30

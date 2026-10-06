@@ -2,7 +2,7 @@ name: SR checkpoint validation
 on:
   push:
     branches: [chat/sr-0402]
-    paths: ['src/**', 'tools/**', 'build.gradle', 'settings.gradle', 'gradle.properties', 'gradle/**', 'gradlew', '.github/workflows/sr-checkpoint.yml']
+    paths: ['src/**', 'tools/**', '!tools/patches/**', 'build.gradle', 'settings.gradle', 'gradle.properties', 'gradle/**', 'gradlew', '.github/workflows/sr-checkpoint.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -21,8 +21,8 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: P1 closed-lane solids, prior regressions and complete Forge build
-        run: bash tools/check_closure418.sh
+      - name: P1 rail, lane-closure, prior regressions and complete Forge build
+        run: bash tools/check_rail419.sh
       - name: Retain original solid material and visibility binding checks
         run: |
           python - <<'PY'
