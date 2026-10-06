@@ -9,7 +9,7 @@ public final class LanePointCodec {
   public static V position(CompoundTag tag){return RoadRecord.readNode(tag).position();}
   public static CompoundTag ref(Ref r){var t=new CompoundTag();if(r.junction()!=null)t.putUUID("Junction",r.junction());else {t.putUUID("Road",r.road());t.putUUID("Point",r.point());}return t;}
   public static Ref ref(CompoundTag t){return t.hasUUID("Junction")?Ref.junction(t.getUUID("Junction")):Ref.lane(t.getUUID("Road"),t.getUUID("Point"));}
-  public static CompoundTag options(Options o){var t=new CompoundTag();t.putString("Path",o.path().name());t.putBoolean("SourceExtra",o.sourceExtra());t.putBoolean("TargetExtra",o.targetExtra());t.putDouble("Radius",o.radius());t.putDouble("Transition",o.transition());t.putString("Departure",o.departure().name());t.putString("Arrival",o.arrival().name());t.putString("Elevation",o.elevation().name());t.putString("Landing",o.landing().name());return t;}
+  public static CompoundTag options(Options o){var t=new CompoundTag();t.putString("Path",o.path().name());t.putBoolean("SourceExtra",o.sourceExtra());t.putBoolean("TargetExtra",o.targetExtra());t.putDouble("Radius",o.radius());t.putDouble("Transition",o.transition());t.putString("Departure",o.departure().name());t.putString("Arrival",o.arrival().name());t.putString("Elevation",o.elevation().name());t.putString("Landing",o.landing().name());t.putBoolean("GradeOverride",o.gradeOverride());return t;}
   public static Options options(CompoundTag t){
     if(t.isEmpty())return Options.DEFAULT;
     return new Options(Path.valueOf(t.getString("Path")),
@@ -17,7 +17,8 @@ public final class LanePointCodec {
       t.contains("Arrival")?Arrival.valueOf(t.getString("Arrival")):t.getBoolean("TargetExtra")?Arrival.EXTRA:Arrival.MERGE,
       t.getDouble("Radius"),t.getDouble("Transition"),
       t.contains("Elevation")?Elevation.valueOf(t.getString("Elevation")):Elevation.AUTO,
-      t.contains("Landing")?Landing.valueOf(t.getString("Landing")):Landing.FLEXIBLE);
+      t.contains("Landing")?Landing.valueOf(t.getString("Landing")):Landing.FLEXIBLE,
+      t.getBoolean("GradeOverride"));
   }
   public static CompoundTag link(Link link){var t=new CompoundTag();t.put("From",ref(link.from()));t.put("To",ref(link.to()));t.put("Options",options(link.options()));t.putDouble("TargetOffset",link.targetOffset());t.putBoolean("ProtectedMerge",link.protectedMerge());t.putBoolean("RectangularClosure",link.rectangularClosure());if(link.junctionMouth()!=null)t.put("JunctionMouth",position(link.junctionMouth()));return t;}
   public static Link link(CompoundTag t){return new Link(ref(t.getCompound("From")),ref(t.getCompound("To")),options(t.getCompound("Options")),t.contains("JunctionMouth")?position(t.getCompound("JunctionMouth")):null,t.getDouble("TargetOffset"),t.getBoolean("ProtectedMerge"),t.getBoolean("RectangularClosure"));}

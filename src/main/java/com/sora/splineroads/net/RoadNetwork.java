@@ -18,7 +18,7 @@ import net.minecraftforge.network.*;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public final class RoadNetwork {
-  private static final String PROTOCOL = "57";
+  private static final String PROTOCOL = "58";
   public static final SimpleChannel CHANNEL =
       NetworkRegistry.newSimpleChannel(
           ResourceLocation.fromNamespaceAndPath(SplineRoads.ID, "roads"),

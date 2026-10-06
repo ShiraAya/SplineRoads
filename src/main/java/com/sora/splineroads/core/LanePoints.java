@@ -24,7 +24,8 @@ public final class LanePoints {
   public enum Arrival { MERGE("并入现有车道"), REPLACE("补入车道空位"), EXTRA("额外扩入"); public final String label; Arrival(String label){this.label=label;} }
   public enum Elevation { AUTO("自动避让"), OVER("上跨既有道路"), UNDER("下穿既有道路"), KEEP("保持原高程"); public final String label; Elevation(String label){this.label=label;} }
   public enum Landing { FLEXIBLE("同车道弹性落点"), EXACT("精确锁定 B"); public final String label; Landing(String label){this.label=label;} }
-  public record Options(Path path,Departure departure,Arrival arrival,double radius,double transition,Elevation elevation,Landing landing) {
+  public record Options(Path path,Departure departure,Arrival arrival,double radius,double transition,Elevation elevation,Landing landing,boolean gradeOverride) {
+    public Options(Path path,Departure departure,Arrival arrival,double radius,double transition,Elevation elevation,Landing landing){this(path,departure,arrival,radius,transition,elevation,landing,false);}
     // Existing saves and ordinary branching keep their original meaning. DETACH is explicit.
     public static final Options DEFAULT=new Options(Path.AUTO,Departure.BRANCH,Arrival.MERGE,24,32,Elevation.AUTO,Landing.FLEXIBLE);
     public Options(Path path,boolean sourceExtra,boolean targetExtra,double radius,double transition){this(path,sourceExtra?Departure.EXTRA:Departure.BRANCH,targetExtra?Arrival.EXTRA:Arrival.MERGE,radius,transition,Elevation.AUTO,Landing.FLEXIBLE);}
@@ -32,7 +33,7 @@ public final class LanePoints {
     public boolean sourceExtra(){return departure==Departure.EXTRA;}
     public boolean separatesLane(){return departure==Departure.DETACH||departure==Departure.TEMPORARY;}
     public boolean targetExtra(){return arrival==Arrival.EXTRA;}
-    public Options withoutApproaches(){return new Options(path,Departure.BRANCH,Arrival.MERGE,radius,transition,elevation,landing);}
+    public Options withoutApproaches(){return new Options(path,Departure.BRANCH,Arrival.MERGE,radius,transition,elevation,landing,gradeOverride);}
   }
   /** Target offset is measured along the selected lane's driving direction, never another lane. */
   public record Link(Ref from,Ref to,Options options,V junctionMouth,double targetOffset,boolean protectedMerge,boolean rectangularClosure) {

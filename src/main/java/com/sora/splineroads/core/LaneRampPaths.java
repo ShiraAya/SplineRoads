@@ -12,10 +12,14 @@ public final class LaneRampPaths {
   public record Candidate(LanePoints.Path path,Mesh mesh){}
   private record Frame(V p,V d){}
   public static List<Candidate> candidates(Port a,Port b,Settings settings,LanePoints.Options options){
-    if(options.sourceExtra()||options.targetExtra())return expanded(a,b,settings,options);
+    return candidates(a,b,settings,options,LaneRampGrade.LEGACY);
+  }
+  public static List<Candidate> candidates(Port a,Port b,Settings settings,LanePoints.Options options,double maxGrade){
+    LaneRampGrade.checked(maxGrade);
+    if(options.sourceExtra()||options.targetExtra())return expanded(a,b,settings,options,maxGrade);
     List<Candidate> out=new ArrayList<>();var errors=new EnumMap<LanePoints.Path,String>(LanePoints.Path.class);
     for(var kind:options.path()==LanePoints.Path.AUTO?List.of(LanePoints.Path.DIRECT,LanePoints.Path.RIGHT,LanePoints.Path.LEFT,LanePoints.Path.LEFT_LOOP):List.of(options.path()))for(double lift:loopLifts(kind,options.elevation()))try{
-      out.add(new Candidate(kind,generate(a,b,settings,options,kind,lift)));
+      out.add(new Candidate(kind,generate(a,b,settings,options,kind,lift,maxGrade)));
     }catch(IllegalArgumentException e){errors.put(kind,e.getMessage());}
     if(out.isEmpty())throw new IllegalArgumentException(failure(a,b,options,errors));
     out.sort(Comparator.comparingDouble(c->c.mesh().length()));return List.copyOf(out);
@@ -26,16 +30,16 @@ public final class LaneRampPaths {
     if(elevation==LanePoints.Elevation.UNDER)return new double[]{0,-6,-8,-10,-12,-16,-24};
     return new double[]{0,6,-6,8,-8,10,-10,12,-12,16,-16,24,-24};
   }
-  private static List<Candidate> expanded(Port a,Port b,Settings settings,LanePoints.Options o){
+  private static List<Candidate> expanded(Port a,Port b,Settings settings,LanePoints.Options o,double maxGrade){
     List<Sample> prefix=o.sourceExtra()?approach(a,true,settings.width(),o.transition()):List.of();
     List<Sample> suffix=o.targetExtra()?approach(b,false,settings.width(),o.transition()):List.of();
     Port start=prefix.isEmpty()?a:approachPort(prefix,false,a),end=suffix.isEmpty()?b:approachPort(suffix,true,b);
     var plain=o.withoutApproaches();
     var result=new ArrayList<Candidate>();
     String error="扩出后的路径净空不足";
-    for(var c:candidates(start,end,settings,plain))try{
+    for(var c:candidates(start,end,settings,plain,maxGrade))try{
       var samples=new ArrayList<Sample>();append(samples,prefix);append(samples,c.mesh().samples());append(samples,suffix);
-      Mesh mesh=RoadRibbon.mesh(samples,settings);RoadRibbon.checkSelfIntersections(mesh,4);checkVolume(mesh);result.add(new Candidate(c.path(),mesh));
+      Mesh mesh=RoadRibbon.mesh(samples,settings);LaneRampGrade.validate(mesh,maxGrade);RoadRibbon.checkSelfIntersections(mesh,4);checkVolume(mesh);result.add(new Candidate(c.path(),mesh));
     }catch(IllegalArgumentException e){error=e.getMessage();}
     if(result.isEmpty())throw new IllegalArgumentException(error);
     return List.copyOf(result);
@@ -59,18 +63,25 @@ public final class LaneRampPaths {
     String error=errors.get(preferred);if(error==null)return "自动未找到可用路径："+String.join("；",errors.values());
     return (options.path()==LanePoints.Path.AUTO?"自动 / ":"")+preferred.label+"："+error;
   }
-  private static Mesh generate(Port a,Port b,Settings settings,LanePoints.Options o,LanePoints.Path kind,double lift){
+  private static Mesh generate(Port a,Port b,Settings settings,LanePoints.Options o,LanePoints.Path kind,double lift,double maxGrade){
     if(kind==LanePoints.Path.LEFT){
-      Mesh mirrored=generate(reflect(a),reflect(b),settings,o,LanePoints.Path.RIGHT,lift);
+      Mesh mirrored=generateOriented(reflect(a),reflect(b),settings,o,LanePoints.Path.RIGHT,lift,maxGrade,LanePoints.Path.LEFT);
       var samples=mirrored.samples().stream().map(s->new Sample(reflect(s.center()),reflect(s.left()).mul(-1),s.distance(),s.halfWidth())).toList();
       return RoadRibbon.mesh(samples,settings);
     }
+    return generateOriented(a,b,settings,o,kind,lift,maxGrade,kind);
+  }
+  /** The geometry is evaluated in a canonical right-turn frame, but diagnostic
+   * ownership always remains with the requested path. No LEFT -> RIGHT fallback. */
+  private static Mesh generateOriented(Port a,Port b,Settings settings,LanePoints.Options o,LanePoints.Path kind,double lift,double maxGrade,LanePoints.Path requested){
+    if(LaneRampGrade.exceeds(a.grade(),1,maxGrade)||LaneRampGrade.exceeds(b.grade(),1,maxGrade))
+      throw new IllegalArgumentException("端口坡度超过 "+LaneRampGrade.label(maxGrade)+"，不能破坏接缝来强行连接");
     if(a.position().sub(b.position()).horizontalLength()>2048)throw new IllegalArgumentException("匝道端点距离不能超过 2048 格");
     double transition=o.transition();V pa=a.position(),pb=b.position();List<Frame> frames=new ArrayList<>();
     double leadA=transition,leadB=transition;
     if(kind==LanePoints.Path.RIGHT){
       double turn=positive(angle(b.direction())-angle(a.direction()));
-      if(turn>Math.PI+1e-5)throw new IllegalArgumentException("所选车道方向需要左转，右转样式不能反转车道方向");
+      if(turn>Math.PI+1e-5)throw new IllegalArgumentException("所选车道方向不符合"+requested.label+"；不能反转车道方向");
       double cross=a.direction().x()*b.direction().z()-a.direction().z()*b.direction().x();
       if(cross>1e-6){
         V delta=pb.sub(pa);double tangent=o.radius()*Math.tan(turn/2);
@@ -95,7 +106,7 @@ public final class LaneRampPaths {
       }else{
       if(delta.horizontalLength()<1e-6)throw new IllegalArgumentException("回环圆心重合，请调整半径或点位");V tangent=delta.horizontalUnit();if(kind==LanePoints.Path.LEFT_LOOP){double length=delta.horizontalLength();if(length<=2*r)throw new IllegalArgumentException("回环内公切线空间不足，请扩大间距");double theta=angle(tangent)+Math.asin(2*r/length);tangent=new V(Math.cos(theta),0,Math.sin(theta));}
       double aa=angle(a.direction()),bb=angle(b.direction()),tt=angle(tangent),turnA=positive(tt-aa),turnB=positive(kind==LanePoints.Path.LEFT_LOOP?tt-bb:bb-tt),turn=kind==LanePoints.Path.LEFT_LOOP?turnA-turnB:turnA+turnB;
-      if(kind==LanePoints.Path.RIGHT&&turn>Math.PI+1e-5)throw new IllegalArgumentException("当前半径或扩出过渡放不进右转空间，请减小半径、关闭扩出或调整选点");
+      if(kind==LanePoints.Path.RIGHT&&turn>Math.PI+1e-5)throw new IllegalArgumentException("当前半径或扩出过渡放不进"+requested.label+"空间，请减小半径、关闭扩出或调整选点");
       if(kind==LanePoints.Path.LEFT_LOOP&&turn<Math.PI+1e-5)throw new IllegalArgumentException("当前布局没有左转回环空间，请移动点位或改用其他样式");
       arc(frames,ca,r,aa,turnA);V ta=ca.sub(tangent.left().mul(r)),tb=cb.sub(tangent.left().mul(kind==LanePoints.Path.LEFT_LOOP?-r:r));line(frames,ta,tb,tangent);if(kind==LanePoints.Path.LEFT_LOOP)arcLeft(frames,cb,r,tt,turnB);else arc(frames,cb,r,tt,turnB);
       }
@@ -108,7 +119,7 @@ public final class LaneRampPaths {
     double length=d[d.length-1];if(length<4)throw new IllegalArgumentException("连接距离须至少 4 格");
     List<Sample> samples=new ArrayList<>();double lastY=0;
     for(int i=0;i<frames.size();i++){double t=d[i]/length,u=1-t;double y=(2*t*t*t-3*t*t+1)*a.position().y()+(t*t*t-2*t*t+t)*length*a.grade()+(-2*t*t*t+3*t*t)*b.position().y()+(t*t*t-t*t)*length*b.grade()+lift*Math.pow(Math.sin(Math.PI*t),2);
-      if(i>0&&Math.abs(y-lastY)>.15001*(d[i]-d[i-1]))throw new IllegalArgumentException("匝道坡度超过 15%，请扩大间距或降低高差");lastY=y;
+      if(i>0&&LaneRampGrade.exceeds(y-lastY,d[i]-d[i-1],maxGrade))throw new IllegalArgumentException("匝道坡度超过 "+LaneRampGrade.label(maxGrade)+"，请扩大间距或降低高差");lastY=y;
       var f=frames.get(i);samples.add(new Sample(new V(f.p().x(),y,f.p().z()),f.d().left(),d[i],settings.width()/2));
     }
     Mesh mesh=RoadRibbon.mesh(samples,settings);if(RoadRibbon.minRadius(mesh)<Math.max(settings.width()/2+.5,3))throw new IllegalArgumentException("接头内侧半径不足，请增大过渡长度");RoadRibbon.checkSelfIntersections(mesh,4);checkVolume(mesh);return mesh;
