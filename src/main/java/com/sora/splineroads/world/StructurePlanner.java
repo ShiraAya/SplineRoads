@@ -22,6 +22,12 @@ final class StructurePlanner {
   static RoadRecord plan(ServerLevel level,RoadIndex.Built built,List<RoadIndex.Built> all,
       Map<Long,BlockState> originals,Map<BlockPos,List<AABB>> terrainCache,RoadPlanningIndex lookup) {
     var nearby=lookup.near(built.mesh,3,built.record.id());
+    // Only actual lane connectors opt into the new union-edge policy. Automatic
+    // interchange/Y-fork semantics remain unchanged. UUID/depth gives one owner when
+    // the rail centrelines coincide; no capsule or distance-only opening can erase them.
+    boolean laneEdges=LaneTopology.metadata(built.record).link()!=null||nearby.stream().anyMatch(r->LaneTopology.metadata(r.record).link()!=null);
+    var railJoin=laneEdges?new RoadRailJoin(nearby.stream().map(r->new RoadRailJoin.Neighbor(r.mesh,
+        RoadSurface.higherPriority(r.record.id(),r.mesh,built.record.id(),built.mesh))).toList()):null;
     var approaches = built.record.assembly() == null ? List.<RoadSignals.Approach>of()
         : RoadSignals.approaches(built.mesh, nearby.stream()
             .filter(r -> built.record.assembly().equals(r.record.assembly()))
@@ -92,6 +98,10 @@ final class StructurePlanner {
                       // A block beginning at the probe plane is overhead, not a foundation.
                       && box.minY < deckY - 1e-7) return Math.min(box.maxY,deckY);
                 return Double.NaN;
+              }
+
+              public List<RoadRailJoin.Span> railSpans(V a,V b,V outside) {
+                return railJoin==null?RoadStructures.Ground.super.railSpans(a,b,outside):railJoin.exposed(a,b);
               }
 
               public boolean joined(V point) {

@@ -165,6 +165,12 @@ public final class RoadStructures {
     /** An overlapping deck at the same height: omit its internal guardrail. */
     boolean joined(V point);
 
+    /** Fine boundary clipping is separate from broad furniture openings. Legacy callers
+     * retain their old policy; the lane-connector planner supplies exact material clips. */
+    default List<RoadRailJoin.Span> railSpans(V a,V b,V outside) {
+      return joined(outside)?List.of():List.of(new RoadRailJoin.Span(a,b));
+    }
+
     /** Leave the node's editing target clear of raised median furniture. */
     default boolean marker(V point) {
       return false;
@@ -191,7 +197,7 @@ public final class RoadStructures {
       var run=new ArrayList<RailSpan>();
       for(double d=0;d<mesh.length()-1e-6;d+=.5) {
         Sample a=sample(mesh,d),b=sample(mesh,Math.min(mesh.length(),d+.5));
-        V aa=a.at(side*(a.halfWidth()-.16),0),bb=b.at(side*(b.halfWidth()-.16),0),mid=aa.add(bb).mul(.5);
+        V aa=a.at(side*(a.halfWidth()-RoadRailJoin.INSET),0),bb=b.at(side*(b.halfWidth()-RoadRailJoin.INSET),0),mid=aa.add(bb).mul(.5);
         boolean raised=mesh.settings().structure()==Structure.BRIDGE;
         for(V point:List.of(aa,mid,bb))raised|=elevated(mesh,point,ground.top(point.x(),point.z(),point.y()),ground);
         V sum=a.left().add(b.left());V normal=sum.horizontalLength()<1e-7?a.left():sum.horizontalUnit();
@@ -200,10 +206,15 @@ public final class RoadStructures {
             && mesh.settings().options().outerRail()!=RoadProfile.OuterRail.OFF
             && (mesh.settings().options().outerRail()==RoadProfile.OuterRail.ON || highway
                 ||modern&&mesh.settings().style().ramp() ||mesh.settings().structure()==Structure.BRIDGE
-                ||mesh.settings().structure()!=Structure.GROUND&&raised)
-            && !ground.joined(outside);
-        if(visible)run.add(new RailSpan(aa,bb,raised,d));
-        else {emitRailRun(out,run,mesh,ground,modern,highway,side);run.clear();}
+                ||mesh.settings().structure()!=Structure.GROUND&&raised);
+        var spans=visible?ground.railSpans(aa,bb,outside):List.<RoadRailJoin.Span>of();
+        if(spans.isEmpty()){emitRailRun(out,run,mesh,ground,modern,highway,side);run.clear();}
+        for(var span:spans){
+          if(!run.isEmpty()&&run.get(run.size()-1).b().distance(span.a())>1e-5){emitRailRun(out,run,mesh,ground,modern,highway,side);run.clear();}
+          double fraction=aa.sub(bb).horizontalLength()<1e-9?0:aa.sub(span.a()).horizontalLength()/aa.sub(bb).horizontalLength();
+          run.add(new RailSpan(span.a(),span.b(),raised,d+fraction*(b.distance()-a.distance())));
+        }
+        if(!spans.isEmpty()&&spans.get(spans.size()-1).b().distance(bb)>1e-5){emitRailRun(out,run,mesh,ground,modern,highway,side);run.clear();}
       }
       emitRailRun(out,run,mesh,ground,modern,highway,side);
     }
@@ -258,7 +269,7 @@ public final class RoadStructures {
   private static void emitRailRun(List<Part> out,List<RailSpan> run,Mesh mesh,Ground ground,boolean modern,boolean highway,int side){
     if(run.isEmpty())return;
     double length=run.stream().mapToDouble(r->r.a.distance(r.b)).sum();
-    if(modern && mesh.length()>8 && length<3
+    if(modern && mesh.settings().options().lanePoints().link()==null && mesh.settings().options().lanePoints().openings().isEmpty() && mesh.length()>8 && length<3
         && mesh.settings().options().outerRail()==RoadProfile.OuterRail.AUTO)return;
     if(modern&&!mesh.settings().style().ramp()&&mesh.settings().options().outerRail().sound(side)){
       var ordinary=new ArrayList<RailSpan>();
