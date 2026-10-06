@@ -23,7 +23,7 @@ public final class LanePoints {
   }
   public enum Path { AUTO("自动"),RIGHT("右转"),LEFT_LOOP("左转回环"),DIRECT("直接连接"),LEFT("定向左转");public final String label;Path(String label){this.label=label;} }
   public enum Departure { BRANCH("普通分流（原车道直行）"), DETACH("整车道分离"), EXTRA("额外扩出"), TEMPORARY("保留车道分离"); public final String label; Departure(String label){this.label=label;} }
-  public enum Arrival { MERGE("并入现有车道"), REPLACE("补入车道空位"), EXTRA("额外扩入"); public final String label; Arrival(String label){this.label=label;} }
+  public enum Arrival { MERGE("并入现有车道"), REPLACE("补入车道空位"), EXTRA("额外扩入"), FLOW("普通汇流（主路不断行）"); public final String label; Arrival(String label){this.label=label;} }
   public enum Elevation { AUTO("自动避让"), OVER("上跨既有道路"), UNDER("下穿既有道路"), KEEP("保持原高程"); public final String label; Elevation(String label){this.label=label;} }
   public enum Landing { FLEXIBLE("同车道弹性落点"), EXACT("精确锁定 B"); public final String label; Landing(String label){this.label=label;} }
   public record Options(Path path,Departure departure,Arrival arrival,double radius,double transition,Elevation elevation,Landing landing,boolean gradeOverride) {

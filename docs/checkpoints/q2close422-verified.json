@@ -1,0 +1,17 @@
+{
+ "repository":"ShiraAya/SplineRoads","branch":"chat/sr-0402",
+ "source_and_jar_commit":"e87cec55171ed247db78c8e7951c5242713ed164","workflow_run_id":37437611241,
+ "version":"0.40.14-alpha","save_version":41,"network_protocol":"59","jar_class_major":61,
+ "complete_forge":"PASS: compileJava, compileGameTestJava, jar, reobfJar, BUILD SUCCESSFUL",
+ "all609_production_files_exact_to_local_review":true,"changed_production_java":19,
+ "old427_resources_unchanged_except_version":true,"new_resources":["assets/splineroads/shaders/core/road_world_solid.vsh","assets/splineroads/shaders/core/road_world_solid.json"],"all6_license_NOTICE_files_unchanged":true,
+ "tests":{"new_core":"94 cases / 173137 checks","new_real_model_with_explicit_adapters":"24 cases / 402 checks","old_grade_core":"38 cases / 31598 checks","old_grade_model":"49 cases / 359 checks","previous_Q2_chain":"PASS"},
+ "downloaded_artifacts":[{"id":11400017000,"bytes":9359541,"sha256":"3c96dc775ddd826c1a0fc1388abe7a571c29252556d11bceb881cf51861ee290"},{"id":11400181742,"bytes":4821935,"sha256":"d790574673999595dbd689459b098791e439671f444f7b564dc1584a26867626"}],
+ "source_comment_COMMIT_CRC_digest_and_shader_bytes":"PASS",
+ "outputs":{"SplineRoads-0.40.14-alpha.jar":{"bytes":5489085,"sha256":"7410a5922452fe6aed01a4d71b64fbcd00753f35ddc221b101a0a8020ab17d3c"},"SplineRoads-0.40.14-alpha-source.zip":{"bytes":10539956,"sha256":"b50662a8fc8a0e55848108525fc27b307f205942dccf8755270007c9b1aee8f5"},"SR_0414_Build_and_Test_Logs.zip":{"bytes":28048,"sha256":"262ec59d3ed439a3f0251ade8053009a53627296ead85026d9c7508ab2a6150c"}},
+ "prior_failures":[{"run":37435385486,"reason":"complete Forge succeeded; old Closure418 asserted the now-corrected whole-road majority defect. Updated expectation without dropping local lane protection tests."},{"run":37436634661,"reason":"complete Forge succeeded; unchanged Grade421 caught quintic instead of original cubic flat-port interpolation. Fixed production code, preserved original grade checks."}],
+ "no_runtime_claim":"No real Minecraft client, GLSL/OpenGL, world writes, fluid tick, disk save/reload, vehicle, multiplayer or FPS tests. Ground/NBT/index adapters explicit.",
+ "Q2_status":"All remaining01/06/19 and partial10/17/21 code paths implemented; all24 ready for unified user acceptance, not declared screenshot-perfect.",
+ "P2":"terrain four defects and multithreading remain deferred",
+ "note":"This verification/handoff commit follows the compiled source commit. Exact source ZIP and JAR both e87cec; later text is not silently inserted into that archive."
+}

@@ -58,7 +58,7 @@ public final class RoadData extends SavedData {
 
   private static boolean rSign(RoadStructures.Part p){return p.material()==RoadStructures.Material.SIGN_GREEN||p.material()==RoadStructures.Material.SIGN_BLUE;}
   public static RoadData load(CompoundTag root) {
-    if (root.getInt("Version") > 41)
+    if (root.getInt("Version") > 42)
       throw new IllegalStateException("Spline Roads save is newer than this mod");
     long loadStarted=System.nanoTime();
     RoadData data = new RoadData();
@@ -93,7 +93,7 @@ public final class RoadData extends SavedData {
 
   @Override
   public CompoundTag save(CompoundTag root) {
-    root.putInt("Version", 41);
+    root.putInt("Version", 42);
     var cleanup=new ListTag();retiredSignsByChunk.forEach((chunk,parts)->{var t=new CompoundTag();t.putLong("Chunk",chunk);t.putByteArray("Parts",RoadRecord.packStructures(parts));cleanup.add(t);});root.put("RetiredSignCleanup",cleanup);
     ListTag logical=new ListTag();streets.values().forEach(r->logical.add(r.save()));root.put("LogicalStreets",logical);
     ListTag roads = new ListTag();
@@ -925,6 +925,15 @@ public final class RoadData extends SavedData {
     replaceBatch(level,player,built,removed,assembly,selectedNodes,moves,editCellLimit,Set.of());
   }
   private void replaceBatch(ServerLevel level,ServerPlayer player,List<RoadIndex.Built> built,Set<UUID> removed,boolean assembly,Set<BlockPos> selectedNodes,List<NodeMove> moves,int editCellLimit,Set<UUID> deletedPoints) {
+    replaceBatch(level,player,built,removed,assembly,selectedNodes,moves,editCellLimit,deletedPoints,null);
+  }
+  List<RoadIndex.Built> previewAssembly(ServerLevel level,ServerPlayer player,List<RoadIndex.Built> built,
+      Set<UUID> removed,Set<BlockPos> selectedNodes,List<NodeMove> moves){
+    var result=new ArrayList<RoadIndex.Built>();
+    replaceBatch(level,player,built,removed,true,selectedNodes,moves,RoadLimits.MAX_EDIT_CELLS,Set.of(),result);
+    return List.copyOf(result);
+  }
+  private void replaceBatch(ServerLevel level,ServerPlayer player,List<RoadIndex.Built> built,Set<UUID> removed,boolean assembly,Set<BlockPos> selectedNodes,List<NodeMove> moves,int editCellLimit,Set<UUID> deletedPoints,List<RoadIndex.Built> previewResult) {
     try (var timing=RoadTimings.start("edit",index.roads.size(),built.size());
          var workChunks = RoadWorkChunks.open(level)) {
       boolean deleting=built.isEmpty();
@@ -1210,6 +1219,7 @@ public final class RoadData extends SavedData {
         if(RoadBlocks.isCollider(current)||current.is(SplineRoads.TUNNEL_AIR.get())||current.equals(sidewalkPlaced.get(key)))changed++;
       }
       if(changed>editCellLimit)throw new IllegalArgumentException("实际需修改 "+changed+" 个方块，超过本次上限 "+editCellLimit);
+      if(previewResult!=null){previewResult.addAll(built);return;}
       // All range/permission/geometry checks completed before any block is cleared.
       for (UUID id : removed) index.remove(id);
       for (var r : built) {

@@ -40,23 +40,25 @@ public final class LaneClosureLandscape {
         if(raised(mesh,cut.lane(),mid,ground))continue;
         var a=RoadStructures.sample(raw,d);var b=RoadStructures.sample(raw,next);
         var la=LanePoints.lane(raw,d,cut.lane());var lb=LanePoints.lane(raw,next,cut.lane());
-        // Only the chosen lane. Inset leaves slightly; neighboring lane axes and
-        // available widths are never shifted to make room for this landscaping.
-        double halfA=Math.max(.01,la.width()/2-.02),halfB=Math.max(.01,lb.width()/2-.02);
-        // Fill to at least the removed slab underside plus the classification tolerance,
-        // rather than leave a thin planted skin floating over the former one-block slab.
-        double depth=Math.max(.5,raw.settings().thickness()+.125);
-        var soil=new Part(la.position().add(new V(0,-depth,0)),lb.position().add(new V(0,-depth,0)),
-            2*Math.max(halfA,halfB),depth,false,Material.SOIL).frames(a.left().mul(halfA),b.left().mul(halfB));
-        var green=new Part(la.position(),lb.position(),2*Math.max(.01,Math.max(halfA,halfB)-.08),.20,false,Material.OAK_LEAVES)
-            .frames(a.left().mul(Math.max(.01,halfA-.08)),b.left().mul(Math.max(.01,halfB-.08)));
-        // Ramp and other-road solids win. Do not fill a below-grade ramp portal or
-        // create vegetation intersecting the directly connected lane at A/B.
-        if(ground.blocked(soil)||ground.blocked(green))continue;
-        result.add(soil);result.add(green);
+        var bed=RoadStructures.planting(la.position(),lb.position(),a.left(),b.left(),la.width()-.12,lb.width()-.12,1,
+            Math.max(.5,raw.settings().thickness()+.125));
+        // Each actual solid is checked separately. Foliage intersecting a ramp at
+        // the mouth must not remove the nonintersecting subgrade foundation/curbs.
+        // Once the rising deck clears the bed, the complete normal-road bed resumes.
+        for(var part:bed)addUnblocked(result,part,ground,0);
       }
     }
     return List.copyOf(result);
+  }
+  /** Clip an obstructed component locally; never discard its unobstructed soil or
+   * kerbs because a leaf layer meets the rising ramp. A bounded subdivision avoids
+   * full 1-metre gaps at a partial crossing and retains the same framed solid/UVs. */
+  private static void addUnblocked(List<Part> out,Part part,Ground ground,int depth){
+    if(!ground.blocked(part)){out.add(part);return;}
+    if(depth>=4||part.a().sub(part.b()).horizontalLength()<.125)return;
+    V mid=part.a().add(part.b()).mul(.5),frame=part.frameA().add(part.frameB()).mul(.5);
+    addUnblocked(out,new Part(part.a(),mid,part.width(),part.height(),false,part.material()).frames(part.frameA(),frame),ground,depth+1);
+    addUnblocked(out,new Part(mid,part.b(),part.width(),part.height(),false,part.material()).frames(frame,part.frameB()),ground,depth+1);
   }
   private LaneClosureLandscape(){}
 }

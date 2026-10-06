@@ -51,12 +51,18 @@ public final class RoadRailJoin {
   }
   private static int profile(boolean highway,boolean raised){return (highway?2:0)+(raised?1:0);}
   private final Map<Long,List<Face>> grid=new HashMap<>();
+  private final Map<Long,List<Face>> material=new HashMap<>();
   private final Map<Long,List<Edge>> edges=new HashMap<>();
   public RoadRailJoin(List<Neighbor> neighbors){
     for(var neighbor:neighbors){var mesh=neighbor.mesh();
       for(int i=1;i<mesh.samples().size();i++){
         var a=mesh.samples().get(i-1);var b=mesh.samples().get(i);
         for(var strip:LaneDeck.strips(mesh,a,b)) {
+          // The rail is inset but the supporting pavement is not. A .15-block
+          // welded overlap used by an auxiliary lane used to disappear after both
+          // faces were inset .16, leaving a barrier across an otherwise open merge.
+          add(material,strip.al(),strip.ar(),strip.br(),true);
+          add(material,strip.al(),strip.br(),strip.bl(),true);
           // Only exposed band boundaries get an inset. Zero-size slots split a
           // continuous face too, but those split lines must not become false gutters.
           V al=strip.al().sub(a.left().mul(strip.highWall()?INSET:0));
@@ -78,13 +84,14 @@ public final class RoadRailJoin {
       }
     }
   }
-  private void add(V a,V b,V c,boolean owner){
+  private void add(V a,V b,V c,boolean owner){add(grid,a,b,c,owner);}
+  private void add(Map<Long,List<Face>> target,V a,V b,V c,boolean owner){
     double area=(b.x()-a.x())*(c.z()-a.z())-(b.z()-a.z())*(c.x()-a.x());
     if(Math.abs(area)<1e-10)return;if(area<0){V swap=b;b=c;c=swap;}
     var face=new Face(a,b,c,owner);
     for(int x=cell(Math.min(a.x(),Math.min(b.x(),c.x()))-1e-6);x<=cell(Math.max(a.x(),Math.max(b.x(),c.x()))+1e-6);x++)
       for(int z=cell(Math.min(a.z(),Math.min(b.z(),c.z()))-1e-6);z<=cell(Math.max(a.z(),Math.max(b.z(),c.z()))+1e-6);z++)
-        grid.computeIfAbsent(key(x,z),k->new ArrayList<>()).add(face);
+        target.computeIfAbsent(key(x,z),k->new ArrayList<>()).add(face);
   }
   private void edge(V a,V b,boolean owner,int profile){
     if(profile==NONE||a.sub(b).horizontalLength()<1e-9)return;var edge=new Edge(a,b,owner,profile);
@@ -119,18 +126,34 @@ public final class RoadRailJoin {
     return true;
   }
   /** Exact continuous cut positions, not rounded .5-block visibility samples. */
-  public List<Span> exposed(V a,V b){
+  public List<Span> exposed(V a,V b){return exposed(grid,a,b);}
+  private List<Span> exposed(Map<Long,List<Face>> surface,V a,V b){
     if(a.sub(b).horizontalLength()<1e-9)return List.of();
     var faces=new LinkedHashSet<Face>();
     for(int x=cell(Math.min(a.x(),b.x())-1e-6);x<=cell(Math.max(a.x(),b.x())+1e-6);x++)
       for(int z=cell(Math.min(a.z(),b.z())-1e-6);z<=cell(Math.max(a.z(),b.z())+1e-6);z++)
-        faces.addAll(grid.getOrDefault(key(x,z),List.of()));
+        faces.addAll(surface.getOrDefault(key(x,z),List.of()));
     var cuts=new ArrayList<Range>();for(var face:faces){var hit=face.intersection(a,b);if(hit!=null)cuts.add(hit);}
     cuts.sort(Comparator.comparingDouble(Range::from));
     var result=new ArrayList<Span>();double at=0;V d=b.sub(a);
     double epsilon=1e-5/d.horizontalLength(); // Reject only sub-numerical cracks between adjacent triangle faces.
     for(var cut:cuts){if(cut.from()>at+epsilon)result.add(new Span(a.add(d.mul(at)),a.add(d.mul(cut.from()))));at=Math.max(at,cut.to());}
     if(at<1-epsilon)result.add(new Span(a.add(d.mul(at)),b));return List.copyOf(result);
+  }
+  public List<Span> exposed(V a,V b,V outside){
+    V mid=a.add(b).mul(.5),direction=outside.sub(mid);
+    if(direction.horizontalLength()<1e-8)return exposed(a,b);
+    // Clip shared merge seams against actual neighboring pavement at the outer
+    // edge, not its inset rail. Real positive gaps and height separation retain rails.
+    V shift=direction.horizontalUnit().mul(INSET+1e-5);
+    var inside=exposed(a,b);var boundary=exposed(material,a.add(shift),b.add(shift));
+    var out=new ArrayList<Span>();V d=b.sub(a);double length=d.dot(d);
+    for(var first:inside)for(var second:boundary){
+      double lo=Math.max(first.a().sub(a).dot(d)/length,second.a().sub(shift).sub(a).dot(d)/length);
+      double hi=Math.min(first.b().sub(a).dot(d)/length,second.b().sub(shift).sub(a).dot(d)/length);
+      if(hi-lo>1e-7)out.add(new Span(a.add(d.mul(lo)),a.add(d.mul(hi))));
+    }
+    return List.copyOf(out);
   }
   private static boolean clip(double[] t,double a,double b,double min){
     double d=b-a;if(Math.abs(d)<1e-12)return a>=min;

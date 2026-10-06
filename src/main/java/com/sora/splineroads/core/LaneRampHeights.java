@@ -28,6 +28,7 @@ public final class LaneRampHeights {
   public static Mesh solve(Mesh base,double freeFrom,double freeTo,List<Constraint> constraints,boolean over,double maxGrade){
     LaneRampGrade.checked(maxGrade);
     if(constraints.isEmpty())return base;
+    if(base.settings().style().connectorRamp())return LaneRampCorridor.solve(base,freeFrom,freeTo,constraints,over,maxGrade);
     int n=base.samples().size();double[] horizontal=new double[n];
     for(int i=1;i<n;i++)horizontal[i]=horizontal[i-1]+base.samples().get(i).center().sub(base.samples().get(i-1).center()).horizontalLength();
     double lo=horizontalAt(base,horizontal,freeFrom),hi=horizontalAt(base,horizontal,freeTo);
