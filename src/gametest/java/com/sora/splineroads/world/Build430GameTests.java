@@ -11,7 +11,7 @@ import java.util.*;
 public final class Build430GameTests {
  // Raised deterministic test surface, above generated structures. No production protection disabled.
  static void floor(GameTestHelper h,int x1,int x2,int z1,int z2){var l=h.getLevel();for(int x=x1;x<=x2;x++)for(int z=z1;z<=z2;z++){var p=new BlockPos(x,80,z);l.getChunkAt(p);l.setBlock(p,Blocks.GRASS_BLOCK.defaultBlockState(),2);}}
- @GameTest(batch="splineroads_hotfix430",template="empty",templateNamespace="splineroads_hotfix429",timeoutTicks=12000)
+ @GameTest(batch="splineroads_hotfix430",template="empty",templateNamespace="splineroads_hotfix430",timeoutTicks=12000)
  public static void addLaneActualBuildSaveDelete(GameTestHelper h){
   System.setProperty("sr.profile","true");var l=h.getLevel();var d=RoadData.get(l);floor(h,91890,92030,91980,92620);
   var ta=Revision32GameTests.marker(h,92000,90,92000,0);var tb=Revision32GameTests.marker(h,92000,90,92600,0);
@@ -29,7 +29,7 @@ public final class Build430GameTests {
   d.remove(l,null,r.id());h.assertTrue(!d.index.roads.containsKey(r.id()),"ramp delete");h.assertTrue(LaneSections.live(d.index.roads.get(target.id()).mesh,500).forward()==3,"delete restores 3 host lanes");
   System.out.println("BUILD430 ADD_SAVE_DELETE_PASS");h.succeed();
  }
- @GameTest(batch="splineroads_hotfix430",template="empty",templateNamespace="splineroads_hotfix429",timeoutTicks=12000)
+ @GameTest(batch="splineroads_hotfix430",template="empty",templateNamespace="splineroads_hotfix430",timeoutTicks=12000)
  public static void temporaryMergeWithHighwayFurniture(GameTestHelper h){
   System.setProperty("sr.profile","true");var l=h.getLevel();var d=RoadData.get(l);floor(h,94720,95280,94980,95620);
   var ta=Revision32GameTests.marker(h,95000,100,95000,0);var tb=Revision32GameTests.marker(h,95000,100,95600,0);
