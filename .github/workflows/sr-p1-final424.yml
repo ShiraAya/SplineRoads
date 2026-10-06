@@ -1,0 +1,77 @@
+name: SR-0.40.14 P1 final verification
+on:
+  push:
+    branches: [SR-0.40.14]
+    paths: ['tools/patches/p1final424.xz64', '.github/workflows/sr-p1-final424.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    if: github.ref == 'refs/heads/SR-0.40.14'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 3
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - id: save
+        run: |
+          python - <<'PY'
+          import base64, hashlib, lzma, subprocess
+          from pathlib import Path
+          subprocess.run(['git','diff','--exit-code','e4e3f47a60d594f618e5d9696c40f52aaeed1e37','--','src','tools/model-validation','build.gradle','PROGRESS.md','docs'],check=True)
+          patch=lzma.decompress(base64.b64decode(Path('tools/patches/p1final424.xz64').read_text(),validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='7c6fe00843e415c9b19dae83ea9458b397cc0d598485c006b69ae35434c6dfc1'
+          subprocess.run(['git','apply','--check','-'],input=patch,check=True)
+          subprocess.run(['git','apply','-'],input=patch,check=True)
+          subprocess.run(['git','add','--','src','tools/model-validation','PROGRESS.md','docs/checkpoints/SR-0.40.14-P1-review.md'],check=True)
+          PY
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git diff --cached --check
+          git commit -m 'fix: align EXTRA before its fixed intake and verify protected-lane regressions'
+          git push origin HEAD:refs/heads/SR-0.40.14
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  verify:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Full regression and actual Forge build on saved source
+        run: |
+          mkdir -p build/checkpoint-logs
+          set -o pipefail
+          bash tools/check_p1review424.sh 2>&1 | tee build/checkpoint-logs/p1final424-full.log
+      - name: Preserve exact source and evidence
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+          sha256sum build/libs/*.jar > build/checkpoint-logs/JAR-SHA256.txt 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr-p1final424-source-logs-${{ needs.preserve.outputs.saved }}
+          path: build/checkpoint-logs/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr-p1final424-jar-${{ needs.preserve.outputs.saved }}
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 30
