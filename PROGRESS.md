@@ -1,47 +1,31 @@
-# SR-0.40.15 repair — first candidate saved, full CI pending
+# SR-0.40.15：首批实际修复已保存并通过完整CI
 
-User authorized implementation on 2026-10-06. Candidate version 0.40.16-alpha-stage1; branch remains SR-0.40.15.
+日期：2026-10-06。本轮从13:32 UTC开始，完成首批代码及检查点后暂停，等待下一轮继续。不是14项全部完成。
 
-Stage1 actual RoadIndex reference/mesh preservation and live lane identity are retained. Stage2 corrects the closed-neighbor receiver guard found by the first full CI, adds union planter end caps, exposed hole-end rails, upstream X warnings, whole-span corridor targets and readable failure details. Actual continuation and asymmetric creation UI remain unfinished. See docs/checkpoints/SR15-stage2-426.md for all 14 statuses.
+## 已核实的源码与产物
 
-Run bash tools/check_sr426.sh. Full Java17 Forge and regression result is pending at this commit; no Minecraft runtime/original world acceptance. Stage1 run 37473665897 compiled with Forge but failed a genuine receiver-protection regression; that production guard was corrected and the unchanged rejection test passed locally. Do not label the failed stage1 run a full success.
+- 工作分支：SR-0.40.15；基线376ceae / 0.40.15-alpha-p1.1。
+- 当前候选版本：0.40.16-alpha-stage1。
+- 受测代码提交：f196c42d2db27ad98d93ed924d02179dab8e2d13。
+- 完整GitHub Actions：37476740057；verify作业112314068550，SUCCESS。入口bash tools/check_sr426.sh。真实Java17 Forge编译及所有串联旧/新回归成功。
+- JAR SHA256：50fc1348a171adf91d3f2925545e5d8fb777b4109ef192d12c63c969c2e16ea2。
+- 源码ZIP SHA256：c8f99e60b16dcd38e82c441d5a674d8f6d6c34ca402ba5930c58bb4d4e26462e。
+- 已下载并核对Actions归档摘要、源码Git提交、1804个本地跟踪文件逐字节一致；唯一跟踪差别PROGRESS.md来自工作流写入的新检查点，生产代码无差别。
 
-Next priority: SR15-09/10 endpoint continuation against current physical cross-sections without double trimming authored geometry; SR15-11 per-direction 1-4 lane controls; then SR15-03/07/08. No other branch modified.
+## 当前进度
 
----
-## Historical checkpoint
-# SR-0.40.15 repair in progress — stage1 saved
+已实现待实机验收：01失败详情及定位、02绿化端部收口、04整体纵坡目标、05孔洞端部护栏、06前方叉号、12索引原始车道参照保留、13断面后点位重对齐、14当前外侧身份。10当前站位分方向计数已加入但未贯通所有续接。实际RoadIndex丢失reference在旧代码上复现；新测试通过。第一阶段完整CI发现封闭邻道被越过的回归，现已修正生产保护，未删除原拒绝测试。
 
-User authorized implementation on 2026-10-06. Base 376ceae.
+仍待修复：03侧墙小缝隙；07新匝道破坏既有绿化专项；08DETACH多余合流导线；09普通道路续接实际匹配（当前仅正确区分高程差与横向偏移）；10端点完整实时断面接入；11每方向1–4滑块与2+1持久数据模型。没有把这些项目宣称已完成。
 
-Saved actual RoadIndex canonical-mesh/reference fix, current-station live-lane/outside identity, sequential merge validation and final lane-point reconciliation. See docs/checkpoints/SR15-stage1-425.md. Local old regression and new actual-index adapter regression passed. The same new test fails against old RoadIndex with lost reference. Full CI is pending; NOT all 14 issues fixed and NOT Minecraft acceptance. Per-direction creation sliders and actual endpoint continuation remain unfinished.
+详细状态：docs/checkpoints/SR15-stage2-426.md；本轮最终证据：docs/checkpoints/FINAL_VERIFICATION_426.md。原问题及11图索引：docs/feedback/SR-0.40.15-2026-10-06.md。
 
-Current entry: bash tools/check_sr425.sh. Continue directly on SR-0.40.15; no changes to other branches.
+## 下一轮直接继续的入口
 
----
-## Historical pre-implementation checkpoint
-# SR-0.40.15：新一轮实机反馈已归档，尚未开始修复
+优先实现每方向车道数量/端点实际断面的一致模型。重点RoadData.hint、endpointSettings、endpointSection、jointSection、normalizeTransitions。NodeEntity原轴心与合并后物理端点可能横向不同；续接要对齐真实端口，但不能将已经收窄的宽度再次输入原有Cut造成二次收窄。持久槽位ID不改，显示序号/当前外侧独立计算。RoadProfile.Catalog、Layout、RoadTransitions.Port、Options/codec及RoadScreen必须共同支持高速/普通→单向/双向→每方向1–4；不能只改标签伪装2+1。
 
-日期：2026-10-06。用户要求本轮只整理 11 张截图及文字反馈，并将现有 0.40.15 源码保存在新分支，下一轮再修复。
+之后排查03/07/08：RoadStructures侧墙端面；StructurePlanner与LaneClosureLandscape既有结构裁切；RoadJunction.mainGuides/terminalMarkings是否错误将DETACH当辅助合流。上述为待验证方向，不是已证实根因。
 
-## 当前基线
+额外本地探针tools/check_former_outer426.sh验证4种单/双向和左右行驶组合：先外侧合并，再原中间车道DETACH→同宿主FLOW，删除后保留早先合并。该探针不在上述CI链内，记录与源码单独保存。
 
-仓库：ShiraAya/SplineRoads；工作分支：SR-0.40.15。
-
-实际版本：0.40.15-alpha-p1.1。源码提交：61400caa43c89d4fd2c4b6d17fe80ca9b8cf93d9。
-
-分支从 f5b2cfc29f55de038e2108d7b88e99f267cdfdc0 创建；与源码提交相比只有历史验证文档的差别，代码一致。源码 ZIP 已核对 SHA-256，并由其中 1798 个文件重算 Git tree 为 dc69468166ecb7f99d8914af2b7ac310835a75c0。
-
-## 下一轮入口
-
-先读 docs/feedback/SR-0.40.15-2026-10-06.md。原始文字、截图索引、源码基线分别保存在同目录的 original.md、screenshots.json 以及 docs/checkpoints/SR-0.40.15-baseline.json。
-
-条目 SR15-01 至 SR15-14 全部待修复，不能因为旧自动测试通过就标为解决。核心新增要求是实时端点断面、合并后车道点居中与外侧身份更新，以及高速/普通→单向/双向→每方向1–4车道滑块，支持双向2+1。
-
-11 张原始 PNG 随本轮下载的问题包保存；GitHub 源码树保存截图编号与校验索引，不包含这 11 张 PNG。本轮没有用户原始世界存档，不得将截图玩家坐标视为道路端点坐标。
-
-本轮仅写文档和创建分支；未修改 Java、资源、构建脚本或版本，未开始修复，未重新编译。main、SR-0.40.14、chat/sr-0402 未改动。后续等待用户下一轮指令，从这个分支继续，不回退到0.40.14。
-
-## 历史记录
-
-上一轮进度保留在提交 f5b2cfc29f55de038e2108d7b88e99f267cdfdc0 的 PROGRESS.md；上一轮验证记录仍在 docs/checkpoints/FINAL_VERIFICATION_424.md。其成功构建不覆盖本轮截图中报告的缺陷。terrain、光影和多线程旧待办不在本轮自动扩展范围内。
+无用户原存档、Minecraft客户端/GPU/车辆/真实多人验收。源码及测试已保存；先备份存档使用测试候选，不强制读档全量重建。网络协议仍60。本轮未改其他分支。terrain、光影、多线程不自动扩展。历史检查点见376ceae、76e4c9fe、f196c42d的PROGRESS.md。
