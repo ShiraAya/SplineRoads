@@ -22,20 +22,23 @@ public final class Grade421Validation {
    var opt=options(LanePoints.Path.DIRECT,cap==.25);var candidate=LaneRampPaths.candidates(a,b,settings(),opt,cap).get(0);cases++;
    check(candidate.path()==LanePoints.Path.DIRECT,"path changed to consume extra grade");check(grade(candidate.mesh())<=cap+.000002&&grade(candidate.mesh())>cap-.025,"exact sampled cap not used");
    check(candidate.mesh().first().center().distance(a.position())<1e-7&&candidate.mesh().last().center().distance(b.position())<1e-7,"endpoints moved");
-   var tooHigh=port(turn(new V(200,200*(cap+.02)/1.5*sign,0),angle,origin),direction);
+   var tooHigh=port(turn(new V(200,200*(cap+.02)*sign,0),angle,origin),direction);
    check(denied(()->LaneRampPaths.candidates(a,tooHigh,settings(),opt,cap)).contains(LaneRampGrade.label(cap)),"failure contains stale 15 percent");
-   if(cap>.15)denied(()->LaneRampPaths.candidates(a,b,settings(),opt)); // legacy overload is deliberately unchanged
+   if(cap>.15){ // Legacy overload retains a 15% cap, not a particular Hermite shape.
+    var steepLegacy=new LaneRampPaths.Port(b.position(),b.direction(),b.outside(),4,cap-.005);
+    denied(()->LaneRampPaths.candidates(a,steepLegacy,settings(),opt));
+   }
    var endpointSteep=new LaneRampPaths.Port(b.position(),b.direction(),b.outside(),4,cap+.01);
    denied(()->LaneRampPaths.candidates(a,endpointSteep,settings(),opt,cap));
   }
   var samples=new ArrayList<Sample>();for(int d=0;d<=120;d++)samples.add(new Sample(new V(d,100,0),new V(0,0,1),d,2));
   var base=RoadRibbon.mesh(samples,settings());
   for(boolean over:new boolean[]{false,true}){
-   var obstacles=List.of(new LaneRampHeights.Constraint(50,70,4.8));
+   var obstacles=List.of(new LaneRampHeights.Constraint(50,70,8));
    denied(()->LaneRampHeights.solve(base,0,120,obstacles,over,.15));
    var solved=LaneRampHeights.solve(base,0,120,obstacles,over,.20);cases++;
    check(grade(solved)>.15&&grade(solved)<=.200002,"obstacle solver does not use selected cap");
-   check(Math.abs(RoadStructures.sample(solved,60).center().y()-(over?104.8:95.2))<1e-7,"plateau clearance not met");
+   check(Math.abs(RoadStructures.sample(solved,60).center().y()-(over?108:92))<1e-7,"plateau clearance not met");
    check(solved.first().center().equals(base.first().center())&&solved.last().center().equals(base.last().center()),"solver moved mouth");
    denied(()->LaneRampHeights.adjust(base,0,120,(over?1:-1)*7));
    var adjusted=LaneRampHeights.adjust(base,0,120,(over?1:-1)*7,.20);check(grade(adjusted)>.15&&grade(adjusted)<.20,"adjust uses stale constant");

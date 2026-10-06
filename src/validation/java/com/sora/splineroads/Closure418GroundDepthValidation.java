@@ -16,7 +16,7 @@ public final class Closure418GroundDepthValidation {
    for(var p:parts)if(p.material()==Material.SOIL){
     if(p.height()<depth-1e-8)throw new AssertionError("soil floats over removed slab");checks++;
     for(V v:List.of(p.a(),p.b())){var q=RoadQueries.horizontal(raw,v);var top=LanePoints.lane(raw,q.sample().distance(),1).position().y();
-     if(Math.abs(v.y()+p.height()-top)>1e-5)throw new AssertionError("planting top moved off roadway");checks++;}
+     if(Math.abs(v.y()+p.height()-(top+.3))>1e-5)throw new AssertionError("native soil must finish 0.3m above roadway, like the shared median bed");checks++;}
    }
   }
   System.out.println("Closure418GroundDepthValidation: 6 real volume cases, "+checks+" checks; NO world writes.");

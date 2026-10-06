@@ -13,9 +13,14 @@ public final class LaneRampCorridor {
     for(int i=0;i<n;i++){
       var s=base.samples().get(i);y[i]=s.center().y();
       if(i>0)x[i]=x[i-1]+s.center().sub(base.samples().get(i-1).center()).horizontalLength();
-      lo[i]=over?y[i]:Double.NEGATIVE_INFINITY;hi[i]=over?Double.POSITIVE_INFINITY:y[i];
+      // An old height bump is not an obstacle. Only real crossing windows and
+      // fixed ports bound the new profile; otherwise a spurious crest above B
+      // makes a genuinely feasible monotone route appear impossible.
+      lo[i]=Double.NEGATIVE_INFINITY;hi[i]=Double.POSITIVE_INFINITY;
     }
-    for(var c:constraints)if(c.amount()>.001){
+    // Zero-lift contacts still constrain already-clear decks: relaxing a prior
+    // crest must not erase a real over/under relationship elsewhere on the route.
+    for(var c:constraints){
       if(c.amount()>48)throw new IllegalArgumentException("自动跨越需要升降超过 48 格，请扩大道路间距或修改端点高度");
       for(int i=0;i<n;i++){
         double station=base.samples().get(i).distance();
@@ -100,8 +105,9 @@ public final class LaneRampCorridor {
   private static int firstConflict(double[] lo,double[] hi){for(int i=0;i<lo.length;i++)if(lo[i]>hi[i]+1e-7)return i;return 0;}
   private static double clamp(double v,double lo,double hi){return Math.max(lo,Math.min(hi,v));}
   private static IllegalArgumentException failure(Mesh m,double from,double to,double grade,int i,String reason){
-    double horizontal=0;for(int k=1;k<m.samples().size();k++)horizontal+=m.samples().get(k).center().sub(m.samples().get(k-1).center()).horizontalLength();
-    return new IllegalArgumentException(String.format(Locale.ROOT,"%s：总水平路径 %.1f 格，可调整区间 %.1f–%.1f 格，冲突站位 %.1f，端点高差 %.2f 格，上限 %s；请检查接头方向/相交位置，而非仅按端点平均坡比判断",reason,horizontal,from,to,m.samples().get(i).distance(),m.last().center().y()-m.first().center().y(),LaneRampGrade.label(grade)));
+    var metrics=LaneRampGrade.report(m,from,to,grade);
+    double rise=Math.abs(m.last().center().y()-m.first().center().y());
+    return new IllegalArgumentException(String.format(Locale.ROOT,"%s：总水平路径 %.1f 格，可布坡 %.1f 格，端点变高至少需 %.1f 格，输入最大坡比 %.2f%%（上限 %s），冲突站位 %.1f；真实障碍/固定接头约束不满足，不能只按平均坡比判断",reason,metrics.horizontal(),metrics.available(),rise/grade,metrics.maximum()*100,LaneRampGrade.label(grade),m.samples().get(i).distance()));
   }
   private LaneRampCorridor(){}
 }

@@ -31,10 +31,10 @@ public final class LaneClosureLandscape {
   public static List<Part> plan(Mesh mesh,Ground ground){
     if(mesh.settings().structure()==Structure.TUNNEL)return List.of();
     var raw=LaneSections.reference(mesh);var result=new ArrayList<Part>();
-    for(var cut:mesh.settings().options().lanePoints().cuts()){
-      if(!cut.temporary()||!cut.rectangular())continue;
-      double start=Math.max(raw.first().distance(),Math.min(cut.begin(),cut.end()));
-      double end=Math.min(raw.last().distance(),Math.max(cut.begin(),cut.end()));
+    // Multiple live links may reserve overlapping pieces of the same slot.
+    // Materialize their union once, rather than stacking duplicate soil/kerbs/leaves.
+    for(var cut:closedIntervals(mesh)){
+      double start=cut.begin(),end=cut.end();
       for(double d=start;d<end-1e-7;d+=1){
         double next=Math.min(end,d+1),mid=(d+next)/2;
         if(raised(mesh,cut.lane(),mid,ground))continue;
@@ -49,6 +49,27 @@ public final class LaneClosureLandscape {
       }
     }
     return List.copyOf(result);
+  }
+  private record Interval(int lane,double begin,double end){}
+  private static List<Interval> closedIntervals(Mesh mesh){
+    var raw=LaneSections.reference(mesh);var intervals=new ArrayList<Interval>();
+    for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.temporary()&&cut.rectangular()){
+      double a=Math.max(raw.first().distance(),Math.min(cut.begin(),cut.end()));
+      double b=Math.min(raw.last().distance(),Math.max(cut.begin(),cut.end()));
+      if(b>a+1e-7)intervals.add(new Interval(cut.lane(),a,b));
+    }
+    intervals.sort(Comparator.comparingInt(Interval::lane).thenComparingDouble(Interval::begin));
+    var merged=new ArrayList<Interval>();
+    for(var next:intervals){
+      if(!merged.isEmpty()){
+        var last=merged.get(merged.size()-1);
+        if(last.lane()==next.lane()&&next.begin()<=last.end()+1e-7){
+          merged.set(merged.size()-1,new Interval(last.lane(),last.begin(),Math.max(last.end(),next.end())));continue;
+        }
+      }
+      merged.add(next);
+    }
+    return merged;
   }
   /** Clip an obstructed component locally; never discard its unobstructed soil or
    * kerbs because a leaf layer meets the rising ramp. A bounded subdivision avoids

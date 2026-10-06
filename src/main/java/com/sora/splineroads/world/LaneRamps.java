@@ -339,6 +339,11 @@ public final class LaneRamps {
     if(t.hasUUID("Id")){checked.putUUID("Id",id);checked.putInt("Signature",t.getInt("Signature"));}
     tool.getOrCreateTag().put("LanePreview",checked);
     var reply=new CompoundTag();reply.putString("Kind","laneRampCheck");reply.putString("ResolvedPath",generated.path().name());reply.putLong("Request",t.getLong("Request"));reply.put("Road",r.header());reply.putUUID("Token",checked.getUUID("Token"));reply.putDouble("TargetOffset",LaneTopology.metadata(r).link().targetOffset());reply.putDouble("GradeLimit",gradeLimit(staging,LaneTopology.metadata(r).link()));
+    var finalLink=LaneTopology.metadata(r).link();var finalMesh=r.mesh();
+    var metrics=LaneRampGrade.report(finalMesh,fixedApproach(finalMesh,staging,finalLink,true),
+        finalMesh.length()-fixedApproach(finalMesh,staging,finalLink,false),gradeLimit(staging,finalLink));
+    reply.putDouble("GradeHorizontal",metrics.horizontal());reply.putDouble("GradeAvailable",metrics.available());
+    reply.putDouble("GradeMinimum",metrics.minimum());reply.putDouble("ActualGrade",metrics.maximum());
     var changed=new ListTag();for(var next:staging.values())if(next.id().equals(id)||all.containsKey(next.id())&&!next.equals(all.get(next.id())))changed.add(next.header());reply.put("ChangedRoads",changed);
     if(options.departure()==LanePoints.Departure.TEMPORARY)for(var cut:LaneTopology.metadata(staging.get(from.road())).cuts())if(cut.connection().equals(id)){
       double length=cut.sign()*(cut.end()-cut.begin());

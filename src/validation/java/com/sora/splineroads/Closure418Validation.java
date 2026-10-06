@@ -43,12 +43,13 @@ public final class Closure418Validation {
    var raw=road(Style.O6_RAIL,Structure.AUTO,false,curve,y);
    for(int slot:new int[]{0,1,5}){
     var lane=LanePoints.lane(raw,150,slot);int sign=lane.sign();var cut=new LaneSections.Cut(new UUID(419,slot+1),slot,sign,sign>0?80.25:260.75,sign>0?260.75:80.25,32,null,true,false,true);var mesh=apply(raw,List.of(cut));
-    var plants=LaneClosureLandscape.plan(mesh,terrain(.3));check(!plants.isEmpty()&&plants.size()%2==0,"supported ground has no real planting");
-    for(var p:plants){check(p.material()==Material.SOIL||p.material()==Material.OAK_LEAVES,"closure not soil/leaf solids");for(V v:p.base()){
+    var plants=LaneClosureLandscape.plan(mesh,terrain(.3));check(!plants.isEmpty()&&plants.size()%5==0,"supported ground has no complete native planting bed");
+    check(plants.stream().anyMatch(p->p.material()==Material.SOIL)&&plants.stream().anyMatch(p->p.material()==Material.GREEN)&&plants.stream().anyMatch(p->p.material()==Material.CONCRETE),"native soil/foliage/kerb missing");
+    for(var p:plants){check(p.material()==Material.SOIL||p.material()==Material.GREEN||p.material()==Material.CONCRETE,"closure not soil/leaf solids");for(V v:p.base()){
       var q=RoadQueries.horizontal(raw,v);var l=LanePoints.lane(raw,q.sample().distance(),slot);check(Math.abs(v.sub(l.position()).dot(q.sample().left()))<=l.width()/2+.02,"planting moved into another lane");
       check(q.sample().distance()>=80.24&&q.sample().distance()<=260.76,"planting extends past closure");}
     }
-    var plant=plants.get(plants.size()/2);var pos=plant.a().add(plant.b()).mul(.5);var cell=new RoadRaster.Cell((int)Math.floor(pos.x()),(int)Math.floor(pos.y()),(int)Math.floor(pos.z()));
+    var plant=plants.stream().filter(p->p.material()==Material.SOIL).skip(plants.size()/10).findFirst().orElseThrow();var pos=plant.a().add(plant.b()).mul(.5);var cell=new RoadRaster.Cell((int)Math.floor(pos.x()),(int)Math.floor(pos.y()),(int)Math.floor(pos.z()));
     check(!RoadRaster.structures(plants,cell).isEmpty(),"planting has no collision raster");check(LaneClosureLandscape.plan(mesh,terrain(20)).isEmpty(),"AUTO unsupported ground has floating planting");
     check(LaneClosureLandscape.plan(mesh,terrain(Double.NaN)).isEmpty(),"unknown original terrain fabricated as ground");
     var obstacle=new Part(LanePoints.lane(raw,160,slot).position().add(new V(0,-1,0)),LanePoints.lane(raw,190,slot).position(),4,2,false,Material.CONCRETE);

@@ -1,3 +1,17 @@
+# SR-0.40.14 — P1 repair checkpoint (2026-10-06)
+
+User baseline: `e87cec55171ed247db78c8e7951c5242713ed164`; ZIP SHA256 `b50662a8fc8a0e55848108525fc27b307f205942dccf8755270007c9b1aee8f5`.
+Requested branch: `SR-0.40.14`; main and chat/sr-0402 are not modified.
+
+Recovered existing P1 implementation from b0062c0, with provenance commit a6951038.
+That candidate compiled with Forge but its full regression stopped at Closure418's obsolete two-component planter expectation. It was NOT an accepted release.
+
+Current changes: integrated monotone signed endpoint-grade profiles; cap-aware feasible flat-port grade transitions; real obstacle-only corridor bounds (including already-clear zero-lift contacts); union overlapping closure planting intervals; preserve native five-component planting assertions, full depth/collision tests, and grade fixtures that distinguish real infeasibility from a discarded local hump heuristic.
+
+Verification is in progress. Local core/adapters are not Minecraft world/GPU tests. All P1-01..11 remain awaiting user in-game acceptance. P2 terrain/shaders/multithreading remain deferred. Do not mass-rebuild old saves or claim old fixtures are actual screenshots/world saves.
+
+---
+## Prior checkpoint (historical, not current validation)
 # SR 0.40.15 实机反馈恢复检查点
 
 本轮恢复开始UTC2026-10-06T10:42:07Z。已核验20be8837候选的真实Forge编译通过；当前基于该远端源码继续，不重做、不把0.40.14旧成功当作本轮结果。
