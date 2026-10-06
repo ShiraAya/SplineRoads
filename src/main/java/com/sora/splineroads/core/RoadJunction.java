@@ -519,6 +519,15 @@ public final class RoadJunction {
         for (Mesh ramp : neighbors) {
           if (!ramp.settings().style().ramp() && ramp.settings().options().lanePoints().link()==null) continue;
           var q = RoadQueries.horizontal(ramp, edge);
+          // A lane carried away in its entirety is not an auxiliary lane joining
+          // the mainline. Keep its normal exposed edge, not an invented merge guide.
+          var link=ramp.settings().options().lanePoints().link();
+          if(link!=null&&link.options().separatesLane()){
+            var points=main.settings().options().lanePoints().points();
+            boolean source=points.stream().anyMatch(p->p.id().equals(link.from().point()));
+            boolean target=points.stream().anyMatch(p->p.id().equals(link.to().point()));
+            if(source&&(!target||q.sample().distance()<ramp.length()/2))continue;
+          }
           if (Math.abs(q.sample().center().y() - mid.center().y()) > .12
               || q.horizontalDistance() > q.sample().halfWidth() + .12
               || Math.abs(q.sample().left().dot(mid.left())) < .90

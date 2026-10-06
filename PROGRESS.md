@@ -1,3 +1,7 @@
+# SR15 reviewed integrated RC — final verification pending
+
+The integration review additionally reproduced real main-road guide generation at DETACH/TEMPORARY source contacts. It now suppresses auxiliary merge guides only for the actual departing host, not genuine arrival/BRANCH/EXTRA guidance. Added 16 identity cases; the pre-fix RoadJunction fails the same source-guides test. Final full CI must cover this reviewed code, not the earlier 32c6e980 candidate. Version remains 0.40.16-alpha-rc1, protocol62; no new JAR has been delivered yet.
+
 # SR15 integrated candidate saved — final CI pending
 
 2026-10-06. User requested all remaining changes before unified game testing. Work only on SR-0.40.15; baseline e9d4876 / production c62e440. Current candidate 0.40.16-alpha-rc1, network protocol62.

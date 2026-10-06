@@ -77,5 +77,20 @@ public final class Finish428Validation {
    }
   }
  }
- public static void main(String[]args){if(args.length>0&&args[0].equals("divider-only")){detachment();System.out.println("divider-only PASS "+checks);return;}foundation();skirts();detachment();yJunction();legacyY();System.out.println("Finish428Validation: "+cases+" core cases / "+checks+" checks PASS; history policy, planter preservation, slit closure, divider axes and asymmetric Y. NOT Minecraft/GPU");}
+ static void sourceGuides(){
+  for(boolean left:new boolean[]{false,true})for(var dep:LanePoints.Departure.values())for(boolean source:new boolean[]{false,true}){
+   cases++;var s=road(Type.ORDINARY,2,0,left);var raw=RoadGeometry.build(new Node(new V(0,2,0),0,0),new Node(new V(0,2,160),0,0),s);
+   var p=LanePoints.point(UUID.randomUUID(),LanePoints.Origin.MANUAL,raw,20,1);
+   var main=RoadRibbon.mesh(raw.samples(),s.options(s.options().lanePoints(LanePoints.Data.EMPTY.points(List.of(p)))));
+   var ours=LanePoints.Ref.lane(UUID.randomUUID(),p.id());var other=LanePoints.Ref.lane(UUID.randomUUID(),UUID.randomUUID());
+   var options=new LanePoints.Options(LanePoints.Path.DIRECT,dep,LanePoints.Arrival.EXTRA,24,32,LanePoints.Elevation.KEEP,LanePoints.Landing.EXACT);
+   var link=new LanePoints.Link(source?ours:other,source?other:ours,options,null);
+   var rs=new Settings(Mode.STRAIGHT,Style.C1_RAMP,4,1,.4,90).options(Options.DEFAULT.lanePoints(LanePoints.Data.EMPTY.link(link)));
+   double x=raw.first().halfWidth()+1;var ramp=RoadGeometry.build(new Node(new V(x,2,0),0,0),new Node(new V(x,2,160),0,0),rs);
+   var paints=RoadJunction.markings(main,List.of(ramp),List.of(ramp),true);
+   if(source&&options.separatesLane())check(paints.isEmpty(),"whole-lane departure still draws auxiliary merge guides");
+   else check(!paints.isEmpty(),"legitimate BRANCH/EXTRA arrival guide lost");
+  }
+ }
+ public static void main(String[]args){if(args.length>0&&args[0].equals("source-guides")){sourceGuides();System.out.println("source-guides PASS "+checks);return;}if(args.length>0&&args[0].equals("divider-only")){detachment();System.out.println("divider-only PASS "+checks);return;}foundation();skirts();detachment();sourceGuides();yJunction();legacyY();System.out.println("Finish428Validation: "+cases+" core cases / "+checks+" checks PASS; history policy, planter preservation, slit closure, divider axes and asymmetric Y. NOT Minecraft/GPU");}
 }
