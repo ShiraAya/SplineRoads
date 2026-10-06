@@ -1,0 +1,68 @@
+name: SR resume pending arrival verification
+on:
+  push:
+    branches: [chat/sr-0402]
+    paths: ['.github/workflows/sr-resume418.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: save
+        run: |
+          python - <<'PY'
+          import hashlib,subprocess
+          from pathlib import Path
+          p=Path('tools/patches/arrival417-stage3.patch').read_bytes()
+          assert hashlib.sha256(p).hexdigest()=='c9a20025acc75254fecd1ec1e5779cb54efc8e30639e82b548ef5c0c64471732'
+          subprocess.run(['git','apply','--check','--unidiff-zero','-'],input=p,check=True)
+          subprocess.run(['git','apply','--unidiff-zero','-'],input=p,check=True)
+          PY
+          git diff --check
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git add src
+          git commit -m 'fix: apply preserved legacy-edit profile and target preview distance corrections'
+          git push origin HEAD:refs/heads/chat/sr-0402
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  verify:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Real Forge and preserved arrival checks
+        run: bash tools/check_arrival417.sh
+      - name: Preserve source and logs even on failure
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr-resume418-source-logs
+          path: build/checkpoint-logs/
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr-resume418-jar
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 14
