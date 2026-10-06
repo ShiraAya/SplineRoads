@@ -1,0 +1,64 @@
+name: SR P1 rail seams and closed-slot markings
+on:
+  push:
+    branches: [chat/sr-0402]
+    paths: ['tools/patches/rail419-stage2.patch', '.github/workflows/sr-rail419-stage2.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 3
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: save
+        run: |
+          python - <<'PY'
+          import hashlib,subprocess
+          from pathlib import Path
+          p=Path('tools/patches/rail419-stage2.patch').read_bytes()
+          assert hashlib.sha256(p).hexdigest()=='7990b646e72ed8c0f00b4b0995f083e3facd5f1df6300028b9e917a8fab4f977'
+          subprocess.run(['git','-c','core.whitespace=cr-at-eol','apply','--check','--unidiff-zero','-'],input=p,check=True)
+          subprocess.run(['git','-c','core.whitespace=cr-at-eol','apply','--unidiff-zero','-'],input=p,check=True)
+          PY
+          git -c core.whitespace=cr-at-eol diff --check
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git add src build.gradle
+          git commit -m 'fix: join lane-connector rail faces and mark actual closed-slot boundaries continuously'
+          git push origin HEAD:refs/heads/chat/sr-0402
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  verify:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - run: bash tools/check_rail419.sh
+      - if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr-rail419-stage2-logs-${{ github.sha }}
+          path: build/checkpoint-logs/
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr-rail419-stage2-jar-${{ github.sha }}
+          path: build/libs/*.jar
+          if-no-files-found: error

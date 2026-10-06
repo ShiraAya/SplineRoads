@@ -1,0 +1,110 @@
+diff --git a/build.gradle b/build.gradle
+index 3e456b6..19d2b78 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -7 +7 @@ group = 'com.sora.splineroads'
+-version = '0.40.10-alpha'
++version = '0.40.11-alpha'
+diff --git a/src/main/java/com/sora/splineroads/core/RoadRailJoin.java b/src/main/java/com/sora/splineroads/core/RoadRailJoin.java
+index 8f592f5..4e81949 100644
+--- a/src/main/java/com/sora/splineroads/core/RoadRailJoin.java
++++ b/src/main/java/com/sora/splineroads/core/RoadRailJoin.java
+@@ -36,0 +37 @@ public final class RoadRailJoin {
++  private record Edge(V a,V b,boolean ownsBoundary) {}
+@@ -37,0 +39 @@ public final class RoadRailJoin {
++  private final Map<Long,List<Edge>> edges=new HashMap<>();
+@@ -50,0 +53,2 @@ public final class RoadRailJoin {
++          if(strip.highWall())edge(al,bl,neighbor.ownsBoundary());
++          if(strip.lowWall())edge(ar,br,neighbor.ownsBoundary());
+@@ -62,0 +67,28 @@ public final class RoadRailJoin {
++  private void edge(V a,V b,boolean owner){
++    if(a.sub(b).horizontalLength()<1e-9)return;var edge=new Edge(a,b,owner);
++    for(int x=cell(Math.min(a.x(),b.x())-1e-5);x<=cell(Math.max(a.x(),b.x())+1e-5);x++)
++      for(int z=cell(Math.min(a.z(),b.z())-1e-5);z<=cell(Math.max(a.z(),b.z())+1e-5);z++)
++        edges.computeIfAbsent(key(x,z),k->new ArrayList<>()).add(edge);
++  }
++  private boolean touches(Edge edge,V point){
++    V d=edge.b().sub(edge.a());double length=d.x()*d.x()+d.z()*d.z();
++    double t=((point.x()-edge.a().x())*d.x()+(point.z()-edge.a().z())*d.z())/length;
++    if(t< -1e-6||t>1+1e-6)return false;V at=edge.a().add(d.mul(Math.max(0,Math.min(1,t))));
++    return point.sub(at).horizontalLength()<5e-5&&Math.abs(point.y()-at.y())<.120001;
++  }
++  /** Reciprocal mitres share their cut face across records, not just their centre.
++   * Frames are unit-width and may be sign-reversed on a reversed reference direction. */
++  public V joint(V point,V direction){
++    V a=direction.horizontalUnit(),found=null;double smallest=1;
++    for(var edge:edges.getOrDefault(key(cell(point.x()),cell(point.z())),List.of()))if(touches(edge,point)){
++      V b=edge.b().sub(edge.a()).horizontalUnit();double dot=a.dot(b);if(dot<0){b=b.mul(-1);dot=-dot;}
++      if(dot<.25||dot>=smallest-1e-9)continue;smallest=dot;found=a.left().add(b.left()).mul(1/(1+dot));
++    }
++    return found;
++  }
++  /** One terminal post at a shared edge, with the same stable owner as the rail. */
++  public boolean ownsPost(V point){
++    for(var edge:edges.getOrDefault(key(cell(point.x()),cell(point.z())),List.of()))
++      if(edge.ownsBoundary()&&touches(edge,point))return false;
++    return true;
++  }
+@@ -73,2 +105,3 @@ public final class RoadRailJoin {
+-    for(var cut:cuts){if(cut.from()>at+1e-6)result.add(new Span(a.add(d.mul(at)),a.add(d.mul(cut.from()))));at=Math.max(at,cut.to());}
+-    if(at<1-1e-6)result.add(new Span(a.add(d.mul(at)),b));return List.copyOf(result);
++    double epsilon=1e-5/d.horizontalLength(); // Reject only sub-numerical cracks between adjacent triangle faces.
++    for(var cut:cuts){if(cut.from()>at+epsilon)result.add(new Span(a.add(d.mul(at)),a.add(d.mul(cut.from()))));at=Math.max(at,cut.to());}
++    if(at<1-epsilon)result.add(new Span(a.add(d.mul(at)),b));return List.copyOf(result);
+diff --git a/src/main/java/com/sora/splineroads/core/RoadStructures.java b/src/main/java/com/sora/splineroads/core/RoadStructures.java
+index a28a758..55bf4c1 100644
+--- a/src/main/java/com/sora/splineroads/core/RoadStructures.java
++++ b/src/main/java/com/sora/splineroads/core/RoadStructures.java
+@@ -169,0 +170,2 @@ public final class RoadStructures {
++    default V railJoint(V position,V direction){return null;}
++    default boolean railPost(V position){return true;}
+@@ -221 +223 @@ public final class RoadStructures {
+-    if (modern) { furniture(mesh, ground, out, phase); terminalPosts(out); }
++    if (modern) { furniture(mesh, ground, out, phase); terminalPosts(out,ground); }
+@@ -289 +291,10 @@ public final class RoadStructures {
+-      if(modern)barrier(out,r.a,r.b,highway,r.raised,r.distance);
++      if(modern){
++        var pieces=new ArrayList<Part>();barrier(pieces,r.a,r.b,highway,r.raised,r.distance);
++        V direction=r.b.sub(r.a),first=ground.railJoint(r.a,direction),last=ground.railJoint(r.b,direction);
++        for(var piece:pieces){
++          if(piece.material()==Material.DARK_STEEL&&!ground.railPost(r.a))continue;
++          if(piece.a().sub(r.a).horizontalLength()<1e-6&&piece.b().sub(r.b).horizontalLength()<1e-6)
++            piece=piece.frames(first==null?piece.frameA():first.mul(piece.width()/2),last==null?piece.frameB():last.mul(piece.width()/2));
++          add(out,piece);
++        }
++      }
+@@ -578 +589,2 @@ public final class RoadStructures {
+-  public static void terminalPosts(List<Part> parts) {
++  public static void terminalPosts(List<Part> parts) {terminalPosts(parts,null);}
++  private static void terminalPosts(List<Part> parts,Ground ground) {
+@@ -596,0 +609 @@ public final class RoadStructures {
++      if(ground!=null&&!ground.railPost(base))continue;
+diff --git a/src/main/java/com/sora/splineroads/core/RoadSurface.java b/src/main/java/com/sora/splineroads/core/RoadSurface.java
+index edd07e7..4bba6a6 100644
+--- a/src/main/java/com/sora/splineroads/core/RoadSurface.java
++++ b/src/main/java/com/sora/splineroads/core/RoadSurface.java
+@@ -261 +261 @@ public final class RoadSurface {
+-            if ((aa.get(j)>la.motorMin()+.12&&aa.get(j)<la.motorMax()-.12||bb.get(j)>lb.motorMin()+.12&&bb.get(j)<lb.motorMax()-.12) && !overrideLine(markings,mesh,a,b,"divider:"+j,aa.get(j),bb.get(j),dividers) && (dash || RoadSignals.solid(approaches, (a.distance() + b.distance()) / 2,
++            if ((aa.get(j)>la.motorMin()+.12&&aa.get(j)<la.motorMax()-.12||bb.get(j)>lb.motorMin()+.12&&bb.get(j)<lb.motorMax()-.12) && !overrideLine(markings,mesh,a,b,"divider:"+j,aa.get(j),bb.get(j),dividers) && (dash || closedSlotBoundary(mesh,(a.distance()+b.distance())/2,(aa.get(j)+bb.get(j))/2) || RoadSignals.solid(approaches, (a.distance() + b.distance()) / 2,
+@@ -542,0 +543,7 @@ public final class RoadSurface {
++  /** A divider bordering a physically closed slot is no longer a divider between
++   * two through lanes. Keep that short boundary continuous; do not turn the whole
++   * host road solid and do not override an explicit line-editor selection. */
++  public static boolean closedSlotBoundary(Mesh mesh,double station,double lateral){
++    if(!LaneDeck.hasOpenings(mesh))return false;var sample=RoadStructures.sample(mesh,station);
++    return LaneDeck.present(mesh,sample,lateral-.14,0)!=LaneDeck.present(mesh,sample,lateral+.14,0);
++  }
+diff --git a/src/main/java/com/sora/splineroads/world/StructurePlanner.java b/src/main/java/com/sora/splineroads/world/StructurePlanner.java
+index 1e608a5..050a7d8 100644
+--- a/src/main/java/com/sora/splineroads/world/StructurePlanner.java
++++ b/src/main/java/com/sora/splineroads/world/StructurePlanner.java
+@@ -102,0 +103,2 @@ final class StructurePlanner {
++              public V railJoint(V p,V direction){return railJoin==null?null:railJoin.joint(p,direction);}
++              public boolean railPost(V p){return railJoin==null||railJoin.ownsPost(p);}
+diff --git a/src/main/resources/META-INF/mods.toml b/src/main/resources/META-INF/mods.toml
+index ea2cd54..72790de 100644
+--- a/src/main/resources/META-INF/mods.toml
++++ b/src/main/resources/META-INF/mods.toml
+@@ -6 +6 @@ modId="splineroads"
+-version="0.40.10-alpha"
++version="0.40.11-alpha"
