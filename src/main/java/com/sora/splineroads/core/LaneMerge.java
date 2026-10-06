@@ -28,5 +28,30 @@ public final class LaneMerge {
     for(var point:host.settings().options().lanePoints().points())if(point.id().equals(l.from().point())||point.id().equals(l.to().point()))return true;
     return false;
   }
+  public static boolean merging(Mesh mesh,double station,int slot){
+    for(var p:mesh.settings().options().lanePoints().points())if(p.mergeLength()>0&&p.lane()==slot){
+      var at=LanePoints.lane(reference(mesh),p);double d=at.sign()*(station-at.station());
+      if(d>=-8&&d<=p.mergeLength())return true;
+    }return false;
+  }
+  private static Mesh reference(Mesh m){return LaneSections.reference(m);}
+  /** One inward guide before the narrowing lane disappears; never points across a median. */
+  public static List<RoadJunction.Paint> guides(Mesh mesh){
+    var out=new ArrayList<RoadJunction.Paint>();var raw=reference(mesh);
+    for(var point:mesh.settings().options().lanePoints().points())if(point.mergeLength()>0){
+      var lane=LanePoints.lane(raw,point);double station=lane.station()+lane.sign()*Math.min(4,point.mergeLength()*.12);
+      if(RoadAttachments.paint(mesh,station).hideArrows())continue;
+      var c=RoadProfile.catalog(raw.settings().style());int receiver=c.twoWay()?point.lane()-1:point.lane()==0?1:point.lane()-1;
+      var at=LanePoints.lane(raw,station,point.lane());V lateral=at.direction().left();
+      double side=Math.signum(LanePoints.lane(raw,station,receiver).position().sub(at.position()).dot(lateral));
+      double[][][] shapes={{{-2,-.10},{-2,.10},{0,.10},{0,-.10}},{{0,-.10},{0,.10},{1.1,side*.6+.10},{1.1,side*.6-.10}},{{1.8,side*1.0},{.7,side*.6-.40},{.7,side*.6+.40}}};
+      var group=new ArrayList<RoadJunction.Paint>();boolean fits=true;
+      for(var poly:shapes){var vs=new ArrayList<V>();for(var q:poly){
+        var frame=LanePoints.lane(raw,station+lane.sign()*q[0],point.lane());V v=frame.position().add(frame.direction().left().mul(q[1]));
+        if(!RoadQueries.contains(mesh,v,-.1,.1))fits=false;vs.add(v);
+      }group.add(new RoadJunction.Paint(List.copyOf(vs),0xEDEEE2));}
+      if(fits)out.addAll(group);
+    }return List.copyOf(out);
+  }
   private LaneMerge(){}
 }

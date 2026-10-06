@@ -65,7 +65,8 @@ public final class Closure418Validation {
   Ground hole=new Ground(){public double top(double x,double z,double y){return Math.abs(x-lane.position().x())<.4&&Math.abs(z-lane.position().z())<.4?Double.NaN:y-.3;}public boolean blocked(Part p){return false;}public boolean joined(V p){return false;}};
   check(!LaneClosureLandscape.raised(raw,slot,150,hole),"single marker hole classified whole lane elevated");
   Ground trench=new Ground(){public double top(double x,double z,double y){return Math.abs(x-lane.position().x())<2.1?y-20:y-.3;}public boolean blocked(Part p){return false;}public boolean joined(V p){return false;}};
-  check(!RoadStructures.elevated(raw,RoadStructures.sample(raw,150),trench),"fixture must reproduce road-wide ground majority");
+  // Q2-17 now fixes the road-wide classifier too; do not keep asserting its old bug.
+  check(RoadStructures.elevated(raw,RoadStructures.sample(raw,150),trench),"unsupported half must no longer be masked by old road-wide majority");
   check(LaneClosureLandscape.raised(raw,slot,150,trench),"unrelated supported half hides unsupported selected lane");
   Ground ledge=new Ground(){public double top(double x,double z,double y){return Math.abs(x-lane.position().x())<2.1?y-.3:y-20;}public boolean blocked(Part p){return false;}public boolean joined(V p){return false;}};
   check(!LaneClosureLandscape.raised(raw,slot,150,ledge),"unrelated suspended half hides supported selected lane");

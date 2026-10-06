@@ -37,7 +37,10 @@ public final class LaneCrossSections {
       if(!cuts.equals(md.cuts()))records.put(road.id(),road.withLanePoints(md.cuts(cuts)));
     }
     // Materialize now: all checks happen before the first world cell is written.
-    for(UUID id:events.keySet())records.get(id).mesh();
+    for(UUID id:events.keySet()){
+      var host=records.get(id);var effective=host.mesh();
+      for(var point:LaneTopology.metadata(host).points())if(point.mergeLength()>0)LaneMerge.event(effective,point);
+    }
   }
   private static void add(Map<UUID,List<LaneSections.Event>> events,Map<UUID,RoadRecord> all,UUID connection,LanePoints.Link link,Set<UUID> hosts,RoadGeometry.Mesh candidate,List<RoadStructures.Part> parts){
     if(link==null)return;

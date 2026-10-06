@@ -248,7 +248,7 @@ public final class RoadJunction {
 
   /** Arrow direction follows the configured traffic side; all offsets exclude shoulders/medians. */
   private static List<Paint> laneArrows(Mesh mesh, List<Mesh> neighbors) {
-    List<Paint> out = new ArrayList<>();
+    List<Paint> out = new ArrayList<>(LaneMerge.guides(mesh));
     Join merge = null;
     var closures = closureZones(mesh, neighbors);
     if (mesh.settings().style().ramp())
@@ -270,7 +270,7 @@ public final class RoadJunction {
       if(mesh.reference()!=null) {
         var raw=LaneSections.reference(mesh);
         int slots=RoadProfile.layout(raw,RoadStructures.sample(raw,d)).catalog().lanes();
-        for(int slot=0;slot<slots;slot++)if(LaneSections.active(mesh,d,slot)) {
+        for(int slot=0;slot<slots;slot++)if(LaneSections.active(mesh,d,slot)&&!LaneMerge.merging(mesh,d,slot)) {
           var lane=LanePoints.lane(raw,d,slot);
           arrow(out,lane.position(),lane.direction(),s.left().mul(lane.sign()));
         }
