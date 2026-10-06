@@ -1,0 +1,79 @@
+name: SR15 reviewed directional lane verification
+on:
+  push:
+    branches: [SR-0.40.15]
+    paths: ['tools/patches/sr427-review.xz64', '.github/workflows/sr427-review.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 3
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - id: save
+        run: |
+          git config core.whitespace blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+          python - <<'PY'
+          import base64, hashlib, lzma, subprocess
+          from pathlib import Path
+          subprocess.run(['git','diff','--exit-code','e4dc04b3597a7215fc02126c385c0436c3108f46','--','src','tools/model-validation','tools/check_sr427.sh','docs/checkpoints/SR15-directional-427.md'],check=True)
+          patch=lzma.decompress(base64.b64decode(Path('tools/patches/sr427-review.xz64').read_text(),validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='977b054d5ec5ac3fd3c12d5a79ab1b2ad006ccecc24321ef2c8171061cf222ec'
+          subprocess.run(['git','apply','--check','-'],input=patch,check=True)
+          subprocess.run(['git','apply','-'],input=patch,check=True)
+          p=Path('PROGRESS.md');old=p.read_text()
+          p.write_text('# SR15 reviewed directional candidate — full CI pending\n\nSource 0.40.16-alpha-stage2, protocol61. The first full run 37481884813 saved e4dc04b but FAILED old Transition402 stripe identity checks before Forge. Production divider identity was repaired; the unchanged 966 valid/544 rejection old cases pass locally. Added asymmetric raised median correction and AutoJunction port orientation/normalization. New core180 cases/4114 checks and record model96 cases/961 checks passed locally. These are not Minecraft world/GUI acceptance.\n\nRun bash tools/check_sr427.sh; this exact candidate needs full old/new regression and Java17 Forge before delivery. SR15-03/07/08 remain pending. Review lifecycle when changing/removing a merge after a continuation exists; no claim of all possible dependent-network edits. All source saved in SR-0.40.15 only.\n\n---\n## Earlier checkpoint\n'+old)
+          subprocess.run(['git','add','--','src','tools/check_sr427.sh','tools/model-validation','docs/checkpoints/SR15-directional-427.md','PROGRESS.md'],check=True)
+          PY
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git diff --cached --check
+          git commit -m 'fix: preserve lane paint identity and asymmetric raised and junction port geometry'
+          git push origin HEAD:refs/heads/SR-0.40.15
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  verify:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Actual Forge and complete old/new regression
+        run: |
+          mkdir -p build/checkpoint-logs
+          set -o pipefail
+          bash tools/check_sr427.sh 2>&1 | tee build/checkpoint-logs/sr427-reviewed-full.log
+      - name: Save exact evidence
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+          sha256sum build/libs/*.jar > build/checkpoint-logs/JAR-SHA256.txt 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr427-reviewed-source-logs-${{ needs.preserve.outputs.saved }}
+          path: build/checkpoint-logs/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr427-reviewed-jars-${{ needs.preserve.outputs.saved }}
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 30
