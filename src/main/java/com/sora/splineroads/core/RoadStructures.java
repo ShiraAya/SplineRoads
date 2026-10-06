@@ -223,6 +223,7 @@ public final class RoadStructures {
       }
       emitRailRun(out,run,mesh,ground,modern,highway,side);
     }
+    closureRails(out,mesh,ground,modern,highway);
     if (modern) { furniture(mesh, ground, out, phase); terminalPosts(out,ground); }
     out.addAll(RoadInfrastructure.plan(mesh,ground));
     out.addAll(LaneClosureLandscape.plan(mesh,ground));
@@ -270,11 +271,32 @@ public final class RoadStructures {
     return List.copyOf(out);
   }
 
+  private static void closureRails(List<Part> out,Mesh mesh,Ground ground,boolean modern,boolean highway){
+    if(!LaneDeck.hasOpenings(mesh)||mesh.settings().structure()==Structure.GROUND||mesh.settings().structure()==Structure.TUNNEL
+        ||mesh.settings().options().outerRail()==RoadProfile.OuterRail.OFF)return;
+    var samples=mesh.samples();
+    for(int i=1;i<samples.size();i++){
+      var a=samples.get(i-1);var b=samples.get(i);double station=(a.distance()+b.distance())/2;
+      for(var strip:LaneDeck.strips(mesh,a,b))for(int side:new int[]{-1,1}){
+        boolean wall=side>0?strip.highWall():strip.lowWall();if(!wall)continue;
+        V first=side>0?strip.al():strip.ar(),last=side>0?strip.bl():strip.br();
+        if(first.distance(a.at(side*a.halfWidth(),0))<1e-6&&last.distance(b.at(side*b.halfWidth(),0))<1e-6)continue;
+        double widthA=strip.al().distance(strip.ar()),widthB=strip.bl().distance(strip.br());if(Math.min(widthA,widthB)<.5)continue;
+        first=first.sub(a.left().mul(side*RoadRailJoin.INSET));last=last.sub(b.left().mul(side*RoadRailJoin.INSET));
+        V mid=first.add(last).mul(.5);
+        boolean raised=mesh.settings().structure()==Structure.BRIDGE||elevated(mesh,mid,ground.top(mid.x(),mid.z(),mid.y()),ground);
+        if(!raised)continue;
+        V outside=mid.add(a.left().add(b.left()).horizontalUnit().mul(side*.4));
+        var run=new ArrayList<RailSpan>();for(var span:ground.railSpans(first,last,outside))run.add(new RailSpan(span.a(),span.b(),true,a.distance(),b.distance()));
+        emitRailRun(out,run,mesh,ground,modern,highway,side);
+      }
+    }
+  }
   private record RailSpan(V a,V b,boolean raised,double distance,double endDistance){}
   private static void emitRailRun(List<Part> out,List<RailSpan> run,Mesh mesh,Ground ground,boolean modern,boolean highway,int side){
     if(run.isEmpty())return;
     double length=run.stream().mapToDouble(r->r.a.distance(r.b)).sum();
-    if(modern && mesh.settings().options().lanePoints().link()==null && mesh.settings().options().lanePoints().openings().isEmpty() && mesh.length()>8 && length<3
+    if(modern && !LaneDeck.hasOpenings(mesh) && mesh.settings().options().lanePoints().link()==null && mesh.settings().options().lanePoints().openings().isEmpty() && mesh.length()>8 && length<3
         && mesh.settings().options().outerRail()==RoadProfile.OuterRail.AUTO)return;
     if(modern&&(!mesh.settings().style().ramp()||mesh.settings().style().connectorRamp())&&mesh.settings().options().outerRail().sound(side)){
       var ordinary=new ArrayList<RailSpan>();
@@ -475,42 +497,27 @@ public final class RoadStructures {
       barrier(out, a.at(la.medianCenter(),0), b.at(lb.medianCenter(),0), highway, raised, d);
     }
     if (green >= .12 && median > .5) {
-      double soilWidth = Math.max(.08, (median - .3) * green);
-      add(
-          out,
-          new Part(a.at(la.medianCenter(),0), b.at(lb.medianCenter(),0), soilWidth, .3, false, Material.SOIL)
-              .frames(
-                  a.left().mul(Math.max(.04, (la.median() - .3) * green / 2)),
-                  b.left().mul(Math.max(.04, (lb.median() - .3) * green / 2))));
-      add(
-          out,
-          new Part(
-              a.at(la.medianCenter(),0).add(new V(0, .3, 0)),
-              b.at(lb.medianCenter(),0).add(new V(0, .3, 0)),
-              Math.max(.06, (median - .5) * green),
-              .55 * green,
-              false,
-              Material.GREEN));
-      add(
-          out,
-          new Part(
-              a.at(la.medianCenter(),0).add(new V(0, .3 + .52 * green, 0)),
-              b.at(lb.medianCenter(),0).add(new V(0, .3 + .52 * green, 0)),
-              Math.max(.04, (median - .85) * green),
-              .25 * green,
-              false,
-              Material.GREEN));
-      for (int side : new int[] {-1, 1})
-        add(
-            out,
-            new Part(
-                a.at(la.medianCenter()+side * (soilWidth / 2 + .1), 0),
-                b.at(lb.medianCenter()+side * (soilWidth / 2 + .1), 0),
-                .2,
-                .35,
-                false,
-                Material.CONCRETE));
+      out.addAll(planting(a.at(la.medianCenter(),0),b.at(lb.medianCenter(),0),a.left(),b.left(),
+          la.median(),lb.median(),green,0));
     }
+  }
+
+  /** Common raised planting bed: normal medians and temporarily closed ground lanes.
+   * Negative foundationDepth extends the soil below the removed deck; the visible
+   * curb/soil/foliage heights remain the same as a normal-road median. */
+  public static List<Part> planting(V a,V b,V leftA,V leftB,double widthA,double widthB,double green,double foundationDepth){
+    var out=new ArrayList<Part>();double wa=Math.max(.08,(widthA-.3)*green),wb=Math.max(.08,(widthB-.3)*green);
+    double depth=Math.max(0,foundationDepth);
+    out.add(new Part(a.add(new V(0,-depth,0)),b.add(new V(0,-depth,0)),Math.max(wa,wb),depth+.3,false,Material.SOIL)
+        .frames(leftA.mul(wa/2),leftB.mul(wb/2)));
+    out.add(new Part(a.add(new V(0,.3,0)),b.add(new V(0,.3,0)),Math.max(.06,(Math.min(widthA,widthB)-.5)*green),.55*green,false,Material.GREEN)
+        .frames(leftA.mul(Math.max(.03,(widthA-.5)*green/2)),leftB.mul(Math.max(.03,(widthB-.5)*green/2))));
+    out.add(new Part(a.add(new V(0,.3+.52*green,0)),b.add(new V(0,.3+.52*green,0)),Math.max(.04,(Math.min(widthA,widthB)-.85)*green),.25*green,false,Material.GREEN)
+        .frames(leftA.mul(Math.max(.02,(widthA-.85)*green/2)),leftB.mul(Math.max(.02,(widthB-.85)*green/2))));
+    for(int side:new int[]{-1,1})out.add(new Part(a.add(leftA.mul(side*(wa/2+.1))).add(new V(0,-depth,0)),
+        b.add(leftB.mul(side*(wb/2+.1))).add(new V(0,-depth,0)),.2,depth+.35,false,Material.CONCRETE)
+        .frames(leftA.mul(.1),leftB.mul(.1)));
+    return List.copyOf(out);
   }
 
   /** Tapered pole, collar, swept arm, housing and recessed LED lens. */

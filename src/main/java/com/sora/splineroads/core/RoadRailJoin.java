@@ -132,6 +132,21 @@ public final class RoadRailJoin {
     for(var cut:cuts){if(cut.from()>at+epsilon)result.add(new Span(a.add(d.mul(at)),a.add(d.mul(cut.from()))));at=Math.max(at,cut.to());}
     if(at<1-epsilon)result.add(new Span(a.add(d.mul(at)),b));return List.copyOf(result);
   }
+  public List<Span> exposed(V a,V b,V outside){
+    V mid=a.add(b).mul(.5),direction=outside.sub(mid);
+    if(direction.horizontalLength()<1e-8)return exposed(a,b);
+    // Confirm the material continuously covers the actual outer pavement edge and
+    // the rail line: a real empty gap must retain both protective boundaries.
+    V shift=direction.horizontalUnit().mul(INSET+1e-5);
+    var inside=exposed(a,b);var boundary=exposed(a.add(shift),b.add(shift));
+    var out=new ArrayList<Span>();V d=b.sub(a);double length=d.dot(d);
+    for(var first:inside)for(var second:boundary){
+      double lo=Math.max(first.a().sub(a).dot(d)/length,second.a().sub(shift).sub(a).dot(d)/length);
+      double hi=Math.min(first.b().sub(a).dot(d)/length,second.b().sub(shift).sub(a).dot(d)/length);
+      if(hi-lo>1e-7)out.add(new Span(a.add(d.mul(lo)),a.add(d.mul(hi))));
+    }
+    return List.copyOf(out);
+  }
   private static boolean clip(double[] t,double a,double b,double min){
     double d=b-a;if(Math.abs(d)<1e-12)return a>=min;
     double crossing=(min-a)/d;if(d>0)t[0]=Math.max(t[0],crossing);else t[1]=Math.min(t[1],crossing);

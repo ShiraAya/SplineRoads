@@ -105,7 +105,7 @@ final class StructurePlanner {
               public V railJoint(V p,V direction,boolean highway,boolean raised){return railJoin==null?null:railJoin.joint(p,direction,highway,raised);}
               public boolean railPost(V p,boolean highway,boolean raised){return railJoin==null||railJoin.ownsPost(p,highway,raised);}
               public List<RoadRailJoin.Span> railSpans(V a,V b,V outside) {
-                return railJoin==null?RoadStructures.Ground.super.railSpans(a,b,outside):railJoin.exposed(a,b);
+                return railJoin==null?RoadStructures.Ground.super.railSpans(a,b,outside):railJoin.exposed(a,b,outside);
               }
 
               public boolean joined(V point) {
@@ -147,6 +147,10 @@ final class StructurePlanner {
                     continue;
                   }
                   if(part.pier()&&part.material()==RoadStructures.Material.CONCRETE&&RoadSidewalks.blocksTactile(part,other.mesh))return true;
+                  if(!part.pier()){
+                    if(RoadClearance.structureInvades(part,other.mesh,Math.max(4.25,RoadInfrastructure.clearance(other.record.settings()))))return true;
+                    continue;
+                  }
                   if (part.pier() && RoadStructures.fitsMedian(part, other.mesh,
                       nearby.stream().map(r -> r.mesh).toList())) continue;
                   // Voxel columns are a broad phase, not proof that a shaft occupies a lane.

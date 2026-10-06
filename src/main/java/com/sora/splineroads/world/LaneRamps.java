@@ -73,7 +73,7 @@ public final class LaneRamps {
       if(!LaneSections.active(mesh(currentSource),lane.station(),p.lane()))throw new IllegalArgumentException("汇出车道已在此位置分离，不能从车道空位再次汇出");
       LaneRampPaths.Port b;double targetLaneWidth=lane.width();
       if(link.to().road()!=null){var road=host(context,link.to());var point=LaneTopology.point(road,link.to().point());var selectedLane=LanePoints.lane(mesh(road),point);
-        if(link.options().arrival()==LanePoints.Arrival.MERGE&&!LaneSections.active(mesh(road),selectedLane.station()+selectedLane.sign()*offset,point.lane()))throw new IllegalArgumentException("B 位于已分离的车道空位，请选择补入车道空位而非普通并线");targetLaneWidth=LanePoints.lane(mesh(road),selectedLane.station()+selectedLane.sign()*offset,point.lane()).width();
+        if((link.options().arrival()==LanePoints.Arrival.MERGE||link.options().arrival()==LanePoints.Arrival.FLOW)&&!LaneSections.active(mesh(road),selectedLane.station()+selectedLane.sign()*offset,point.lane()))throw new IllegalArgumentException("B 位于已分离的车道空位，请选择补入车道空位而非普通并线");targetLaneWidth=LanePoints.lane(mesh(road),selectedLane.station()+selectedLane.sign()*offset,point.lane()).width();
         b=link.options().targetExtra()?approach(road,point,offset,false,base,link.options().transition()):targetPort(road,point,offset);
       }else{
         if(link.options().targetExtra())throw new IllegalArgumentException("路口中心接入口不设置沿主路的额外汇入车道");
@@ -159,6 +159,11 @@ public final class LaneRamps {
   /** A declared joining throat follows its existing host elevation before it becomes free.
    * Only the contiguous first/last contact is eligible; later crossings are still obstacles. */
   private static Mesh fitHostContacts(Mesh mesh,Map<UUID,RoadRecord> all,LanePoints.Link link){
+    // New lane connectors already have exact host-sampled auxiliary tapers and port
+    // elevations. A whole-host XZ contact is NOT a joining throat: fitting it to the
+    // host erases an overpass, creates a sag after docking and exempts a transverse
+    // crossing of the opposite carriageway. Preserve legacy saved links only.
+    if(link.protectedMerge())return mesh;
     var sourceIds=contactRoads(all,link.from());var targetIds=contactRoads(all,link.to());
     var source=sourceIds.stream().map(all::get).filter(Objects::nonNull).map(LaneRamps::mesh).toList();
     var target=targetIds.stream().map(all::get).filter(Objects::nonNull).map(LaneRamps::mesh).toList();
@@ -198,8 +203,8 @@ public final class LaneRamps {
       if(other!=null&&link.to().equals(other.to()))sharedEnd=mesh.samples().get(contactEnd(mesh,Map.of(road.id(),road),Set.of(road.id()),false)).distance();
       if(sharedStart>mesh.length()*.9||sharedEnd<mesh.length()*.1)throw new IllegalArgumentException("同一车道点的两条匝道几乎全程重合，请使用不同汇入方向");
       var exactSlots=new LinkedHashSet<Integer>();
-      if(link.protectedMerge()&&road.id().equals(link.from().road())&&!link.options().sourceExtra())exactSlots.add(LaneTopology.point(road,link.from().point()).lane());
-      if(link.protectedMerge()&&road.id().equals(link.to().road())&&!link.options().targetExtra())exactSlots.add(LaneTopology.point(road,link.to().point()).lane());
+      if(link.protectedMerge()&&road.id().equals(link.from().road()))exactSlots.add(LaneTopology.point(road,link.from().point()).lane());
+      if(link.protectedMerge()&&road.id().equals(link.to().road()))exactSlots.add(LaneTopology.point(road,link.to().point()).lane());
       if(!exactSlots.isEmpty()){
         Mesh protectedDeck=LaneDeck.motorOnly(old);for(int slot:exactSlots)protectedDeck=LaneDeck.excludingSlot(protectedDeck,slot);
         for(var c:contacts(mesh,protectedDeck))out.add(new Obstacle(road.id(),c));
@@ -224,20 +229,37 @@ public final class LaneRamps {
   private static List<Mesh> heightCandidates(Mesh base,Map<UUID,RoadRecord> all,UUID id,LanePoints.Link link,Map<LanePoints.Path,String> errors,LanePoints.Path path){
     var mode=link.options().elevation();var out=new ArrayList<Mesh>();
     List<Obstacle> contacts=crossings(base,all,id,link);
-    boolean clear=contacts.stream().noneMatch(c->c.contact().blocked());
+    boolean clear=contacts.stream().noneMatch(c->c.contact().blocked()||existingLayerConflict(c,all));
     if(mode==LanePoints.Elevation.KEEP)return List.of(base);
     if(mode==LanePoints.Elevation.AUTO&&clear)return List.of(base);
     if(contacts.isEmpty())return List.of(base);
-    double from=link.options().separatesLane()?0:base.samples().get(contactEnd(base,all,contactRoads(all,link.from()),true)).distance();
-    double to=link.closesTarget()?base.length():base.samples().get(contactEnd(base,all,contactRoads(all,link.to()),false)).distance();
+    double from=link.protectedMerge()?fixedApproach(base,all,link,true):link.options().separatesLane()?0:base.samples().get(contactEnd(base,all,contactRoads(all,link.from()),true)).distance();
+    double to=link.protectedMerge()?base.length()-fixedApproach(base,all,link,false):link.closesTarget()?base.length():base.samples().get(contactEnd(base,all,contactRoads(all,link.to()),false)).distance();
     for(boolean over:mode==LanePoints.Elevation.UNDER?new boolean[]{false}:mode==LanePoints.Elevation.OVER?new boolean[]{true}:new boolean[]{true,false}){
+      // A new AUTO ramp may not invalidate a saved explicit OVER/UNDER crossing.
+      if(contacts.stream().anyMatch(o->{var r=all.get(o.road());var l=r==null?null:LaneTopology.metadata(r).link();return l!=null&&(over&&l.options().elevation()==LanePoints.Elevation.OVER||!over&&l.options().elevation()==LanePoints.Elevation.UNDER);}))continue;
       var constraints=new ArrayList<LaneRampHeights.Constraint>();
       for(var obstacle:contacts){var c=obstacle.contact();double amount=over?c.raise():c.lower();if(!c.blocked()&&(over?c.ours().y()>c.other().y():c.ours().y()<c.other().y()))amount=0;constraints.add(new LaneRampHeights.Constraint(c.from(),c.to(),amount));}
       try{out.add(LaneRampHeights.solve(base,from,to,constraints,over,gradeLimit(all,link)));}
       catch(IllegalArgumentException e){errors.put(path,e.getMessage());}
     }
     if(out.isEmpty()&&!errors.containsKey(path))errors.put(path,"没有满足端点、坡度及净空的自动跨越方案");
+    if(mode==LanePoints.Elevation.AUTO)out.sort(Comparator.comparingDouble(LaneRamps::verticalEffort));
     return out;
+  }
+  private static double verticalEffort(Mesh m){double total=0;for(int i=1;i<m.samples().size();i++)total+=Math.abs(m.samples().get(i).center().y()-m.samples().get(i-1).center().y());return total;}
+  private static boolean existingLayerConflict(Obstacle o,Map<UUID,RoadRecord> all){
+    var r=all.get(o.road());var link=r==null?null:LaneTopology.metadata(r).link();if(link==null)return false;
+    var mode=link.options().elevation();return mode==LanePoints.Elevation.OVER&&o.contact().ours().y()>o.contact().other().y()||mode==LanePoints.Elevation.UNDER&&o.contact().ours().y()<o.contact().other().y();
+  }
+  private static double fixedApproach(Mesh ramp,Map<UUID,RoadRecord> all,LanePoints.Link link,boolean source){
+    if(source?!link.options().sourceExtra():!link.options().targetExtra())return 0;
+    var ref=source?link.from():link.to();if(ref.road()==null)return 0;
+    var host=host(all,ref);var point=LaneTopology.point(host,ref.point());
+    var lane=LanePoints.lane(mesh(host),point);
+    var samples=LaneRampApproach.build(mesh(host),point.lane(),lane.station()+(source?0:lane.sign()*link.targetOffset()),source,ramp.settings(),link.options().transition());
+    double span=0;for(int i=1;i<samples.size();i++)span+=samples.get(i).center().distance(samples.get(i-1).center());
+    return Math.min(ramp.length(),span);
   }
   /** Validate only new/changed obstacle decks against an unchanged saved connector. */
   static void validateChanges(Mesh mesh,Map<UUID,RoadRecord> all,UUID id,LanePoints.Link link,Set<UUID> changed){
@@ -310,7 +332,8 @@ public final class LaneRamps {
     var link=new LanePoints.Link(from,to,options,mouth,previousOffset);var generated=generateChoice(data,all,id,t.hasUUID("Id")?all.get(id).owner():player.getUUID(),link,null);RoadRecord r=generated.road();
     var planned=new ArrayList<RoadIndex.Built>();planned.add(new RoadIndex.Built(r));
     var removed=new HashSet<UUID>();if(all.containsKey(id))removed.add(id);
-    LaneTopology.reconcile(data,planned,removed);
+    var request=assemblyRequest(data,r);
+    planned=new ArrayList<>(data.previewAssembly(player.serverLevel(),player,planned,removed,request.endpoints(),request.moves()));
     var staging=new LinkedHashMap<>(all);removed.forEach(staging::remove);for(var built:planned)staging.put(built.record.id(),built.record);r=staging.get(id);
     var checked=new CompoundTag();checked.put("Road",r.header());checked.putLong("WorldRevision",data.index.revision());checked.putInt("FromSignature",signature(data,from));checked.putInt("ToSignature",signature(data,to));checked.putUUID("Token",UUID.randomUUID());
     if(t.hasUUID("Id")){checked.putUUID("Id",id);checked.putInt("Signature",t.getInt("Signature"));}
@@ -343,7 +366,8 @@ public final class LaneRamps {
     var next=reconfigure(data,b.record,RoadRecord.readSettings(t.getCompound("Settings")),LaneTopology.records(data));
     build(data,level,player,next);return "匝道路面与附属设置已保存，车道点引用保留";
   }
-  public static void build(RoadData data,ServerLevel level,ServerPlayer player,RoadRecord r){
+  private record AssemblyRequest(Set<BlockPos> endpoints,List<RoadData.NodeMove> moves){}
+  private static AssemblyRequest assemblyRequest(RoadData data,RoadRecord r){
     var link=LaneTopology.metadata(r).link();if(link==null)throw new IllegalArgumentException("缺少真实车道点引用");
     var moves=new ArrayList<RoadData.NodeMove>();if(link.to().junction()!=null){var n=new Node(link.junctionMouth(),RoadPlanner.yaw(RampJunctions.spec(data,link.to().junction()).center().sub(link.junctionMouth()).horizontalUnit()),0);var snapshot=new CompoundTag();snapshot.putUUID("Owner",r.owner());snapshot.put("Node",RoadRecord.writeNode(n));snapshot.putBoolean("HeightExplicit",true);moves.add(new RoadData.NodeMove(null,RampJunctions.at(n.position()),n,snapshot));}
     // Contact may contain an existing host marker. On first construction that host is
@@ -351,7 +375,11 @@ public final class LaneRamps {
     // markers are still legitimate contacts, never unrelated obstacles or deletion targets.
     var endpoints=new HashSet<BlockPos>();endpoints.add(r.a());endpoints.add(r.b());var all=LaneTopology.records(data);
     for(var ref:List.of(link.from(),link.to()))for(UUID host:contactRoads(all,ref)){var road=all.get(host);endpoints.add(road.a());endpoints.add(road.b());}
-    data.replaceAssembly(level,player,List.of(new RoadIndex.Built(r)),data.index.roads.containsKey(r.id())?Set.of(r.id()):Set.of(),endpoints,moves);RampJunctions.sync(data);data.setDirty();
+    return new AssemblyRequest(Set.copyOf(endpoints),List.copyOf(moves));
+  }
+  public static void build(RoadData data,ServerLevel level,ServerPlayer player,RoadRecord r){
+    var request=assemblyRequest(data,r);
+    data.replaceAssembly(level,player,List.of(new RoadIndex.Built(r)),data.index.roads.containsKey(r.id())?Set.of(r.id()):Set.of(),request.endpoints(),request.moves());RampJunctions.sync(data);data.setDirty();
   }
   private LaneRamps(){}
 }
