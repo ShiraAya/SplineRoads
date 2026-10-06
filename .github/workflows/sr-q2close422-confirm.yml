@@ -1,0 +1,40 @@
+name: SR Q2 unified client-test candidate confirmation
+on:
+  push:
+    branches: [chat/sr-0402]
+    paths: ['src/main/java/com/sora/splineroads/core/LaneRampProfile.java', '.github/workflows/sr-q2close422-confirm.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: All old and new Q2 regression and complete Forge build
+        run: bash tools/check_q2final422.sh
+      - name: Save exact source and raw logs
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr-q2close422-confirm-logs-${{ github.sha }}
+          path: build/checkpoint-logs/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr-q2close422-confirm-jar-${{ github.sha }}
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 30

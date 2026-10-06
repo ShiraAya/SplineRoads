@@ -6,7 +6,7 @@ public final class LaneRampProfile {
     if(!RoadGeometry.finite(from,to,firstGrade,lastGrade,length,station)||length<=0)throw new IllegalArgumentException("无效匝道纵断面");
     double d=Math.max(0,Math.min(length,station)),g=(to-from)/length;
     // Keep existing Hermite for flat ports: its bounded peak grade is already validated.
-    if(Math.abs(firstGrade)<1e-10&&Math.abs(lastGrade)<1e-10)return from+(to-from)*RoadGeometry.Settings.smooth(d/length);
+    if(Math.abs(firstGrade)<1e-10&&Math.abs(lastGrade)<1e-10){ double t=d/length;return from+(to-from)*t*t*(3-2*t); }
     double span=Math.min(length/2,Math.max(8,Math.min(24,length/4)));
     return from+g*d+(firstGrade-g)*bump(d,span)-(lastGrade-g)*bump(length-d,span);
   }
