@@ -1,0 +1,69 @@
+name: SR P1 independent connector types and guidance
+on:
+  push:
+    branches: [chat/sr-0402]
+    paths: ['tools/patches/connector420.z64.*', '.github/workflows/sr-connector420-stage.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 3
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: save
+        run: |
+          python - <<'PY'
+          import base64,hashlib,subprocess,zlib
+          from pathlib import Path
+          encoded=b''.join(Path('tools/patches/connector420.z64.'+str(i)).read_bytes() for i in range(3))
+          patch=zlib.decompress(base64.b64decode(encoded,validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='f98ef3af806ba462894c3a35581454f43fa0a93565f51205a4fcb2f07e3c6642'
+          subprocess.run(['git','apply','--check','-'],input=patch,check=True)
+          subprocess.run(['git','apply','-'],input=patch,check=True)
+          PY
+          git -c core.whitespace=cr-at-eol diff --check
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git add src/main tools/model-validation/com/sora/splineroads/world/Connector420ModelValidation.java tools/check_connector420.sh build.gradle .github/workflows/sr-checkpoint.yml
+          git commit -m 'WIP: persist independent connector kinds, default gantry policy and fitted EXTRA merge guide'
+          git push origin HEAD:refs/heads/chat/sr-0402
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  verify:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Prior regressions, complete Forge build and connector classification guidance
+        run: bash tools/check_connector420.sh
+      - name: Preserve exact tested commit and source
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr-connector420-logs-${{ github.sha }}
+          path: build/checkpoint-logs/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr-connector420-jar-${{ github.sha }}
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 30
