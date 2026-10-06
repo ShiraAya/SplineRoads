@@ -102,6 +102,8 @@ final class StructurePlanner {
 
               public V railJoint(V p,V direction){return railJoin==null?null:railJoin.joint(p,direction);}
               public boolean railPost(V p){return railJoin==null||railJoin.ownsPost(p);}
+              public V railJoint(V p,V direction,boolean highway,boolean raised){return railJoin==null?null:railJoin.joint(p,direction,highway,raised);}
+              public boolean railPost(V p,boolean highway,boolean raised){return railJoin==null||railJoin.ownsPost(p,highway,raised);}
               public List<RoadRailJoin.Span> railSpans(V a,V b,V outside) {
                 return railJoin==null?RoadStructures.Ground.super.railSpans(a,b,outside):railJoin.exposed(a,b);
               }

@@ -34,7 +34,22 @@ public final class RoadRailJoin {
       return t[1]-t[0]>1e-7?new Range(t[0],t[1]):null;
     }
   }
-  private record Edge(V a,V b,boolean ownsBoundary) {}
+  private record Edge(V a,V b,boolean ownsBoundary,int profile) {}
+  private static final int NONE=-1,SOUND=4;
+  /** One profile per actual outer assembly. A deck without a rail cannot own a
+   * coincident rail or its terminal post merely because its paint has priority. */
+  private static int profile(Mesh mesh,Sample sample,int side){
+    var settings=mesh.settings();var outer=settings.options().outerRail();
+    if(settings.structure()==Structure.TUNNEL||outer==RoadProfile.OuterRail.OFF)return NONE;
+    boolean highway=RoadProfile.catalog(settings.style()).type()==RoadProfile.Type.HIGHWAY;
+    boolean raised=RoadStreetscape.raised(mesh,sample);
+    boolean modern=RoadProfile.modern(settings.style());
+    if(!modern)return settings.structure()==Structure.GROUND?NONE:5;
+    if(!(outer==RoadProfile.OuterRail.ON||highway||settings.style().ramp()||raised))return NONE;
+    if(raised&&!settings.style().ramp()&&outer.sound(side))return SOUND;
+    return profile(highway,raised);
+  }
+  private static int profile(boolean highway,boolean raised){return (highway?2:0)+(raised?1:0);}
   private final Map<Long,List<Face>> grid=new HashMap<>();
   private final Map<Long,List<Edge>> edges=new HashMap<>();
   public RoadRailJoin(List<Neighbor> neighbors){
@@ -49,9 +64,16 @@ public final class RoadRailJoin {
           V bl=strip.bl().sub(b.left().mul(strip.highWall()?INSET:0));
           V br=strip.br().add(b.left().mul(strip.lowWall()?INSET:0));
           if(al.sub(ar).dot(a.left())<0||bl.sub(br).dot(b.left())<0)continue;
-          add(al,ar,br,neighbor.ownsBoundary());add(al,br,bl,neighbor.ownsBoundary());
-          if(strip.highWall())edge(al,bl,neighbor.ownsBoundary());
-          if(strip.lowWall())edge(ar,br,neighbor.ownsBoundary());
+          var sample=RoadStructures.sample(mesh,(a.distance()+b.distance())/2);
+          int high=profile(mesh,sample,1),low=profile(mesh,sample,-1);
+          boolean boundaryOwner=neighbor.ownsBoundary()&&(high!=NONE||low!=NONE);
+          add(al,ar,br,boundaryOwner);add(al,br,bl,boundaryOwner);
+          // Hole edges still clip real material, but no invented rail/post may be
+          // mitered to a hole boundary which the outer-rail planner never emits.
+          if(strip.highWall()&&strip.al().distance(a.at(a.halfWidth(),0))<1e-6&&strip.bl().distance(b.at(b.halfWidth(),0))<1e-6)
+            edge(al,bl,neighbor.ownsBoundary(),high);
+          if(strip.lowWall()&&strip.ar().distance(a.at(-a.halfWidth(),0))<1e-6&&strip.br().distance(b.at(-b.halfWidth(),0))<1e-6)
+            edge(ar,br,neighbor.ownsBoundary(),low);
         }
       }
     }
@@ -64,8 +86,8 @@ public final class RoadRailJoin {
       for(int z=cell(Math.min(a.z(),Math.min(b.z(),c.z()))-1e-6);z<=cell(Math.max(a.z(),Math.max(b.z(),c.z()))+1e-6);z++)
         grid.computeIfAbsent(key(x,z),k->new ArrayList<>()).add(face);
   }
-  private void edge(V a,V b,boolean owner){
-    if(a.sub(b).horizontalLength()<1e-9)return;var edge=new Edge(a,b,owner);
+  private void edge(V a,V b,boolean owner,int profile){
+    if(profile==NONE||a.sub(b).horizontalLength()<1e-9)return;var edge=new Edge(a,b,owner,profile);
     for(int x=cell(Math.min(a.x(),b.x())-1e-5);x<=cell(Math.max(a.x(),b.x())+1e-5);x++)
       for(int z=cell(Math.min(a.z(),b.z())-1e-5);z<=cell(Math.max(a.z(),b.z())+1e-5);z++)
         edges.computeIfAbsent(key(x,z),k->new ArrayList<>()).add(edge);
@@ -74,22 +96,26 @@ public final class RoadRailJoin {
     V d=edge.b().sub(edge.a());double length=d.x()*d.x()+d.z()*d.z();
     double t=((point.x()-edge.a().x())*d.x()+(point.z()-edge.a().z())*d.z())/length;
     if(t< -1e-6||t>1+1e-6)return false;V at=edge.a().add(d.mul(Math.max(0,Math.min(1,t))));
-    return point.sub(at).horizontalLength()<5e-5&&Math.abs(point.y()-at.y())<.120001;
+    return point.sub(at).horizontalLength()<5e-5&&Math.abs(point.y()-at.y())<1e-5;
   }
   /** Reciprocal mitres share their cut face across records, not just their centre.
    * Frames are unit-width and may be sign-reversed on a reversed reference direction. */
-  public V joint(V point,V direction){
+  public V joint(V point,V direction){return joint(point,direction,-2);}
+  public V joint(V point,V direction,boolean highway,boolean raised){return joint(point,direction,profile(highway,raised));}
+  private V joint(V point,V direction,int expected){
     V a=direction.horizontalUnit(),found=null;double smallest=1;
-    for(var edge:edges.getOrDefault(key(cell(point.x()),cell(point.z())),List.of()))if(touches(edge,point)){
+    for(var edge:edges.getOrDefault(key(cell(point.x()),cell(point.z())),List.of()))if((expected==-2||edge.profile()==expected)&&touches(edge,point)){
       V b=edge.b().sub(edge.a()).horizontalUnit();double dot=a.dot(b);if(dot<0){b=b.mul(-1);dot=-dot;}
       if(dot<.25||dot>=smallest-1e-9)continue;smallest=dot;found=a.left().add(b.left()).mul(1/(1+dot));
     }
     return found;
   }
   /** One terminal post at a shared edge, with the same stable owner as the rail. */
-  public boolean ownsPost(V point){
+  public boolean ownsPost(V point){return ownsPost(point,-2);}
+  public boolean ownsPost(V point,boolean highway,boolean raised){return ownsPost(point,profile(highway,raised));}
+  private boolean ownsPost(V point,int expected){
     for(var edge:edges.getOrDefault(key(cell(point.x()),cell(point.z())),List.of()))
-      if(edge.ownsBoundary()&&touches(edge,point))return false;
+      if(edge.ownsBoundary()&&edge.profile()>=0&&edge.profile()<3&&(expected==-2||edge.profile()==expected)&&touches(edge,point))return false;
     return true;
   }
   /** Exact continuous cut positions, not rounded .5-block visibility samples. */

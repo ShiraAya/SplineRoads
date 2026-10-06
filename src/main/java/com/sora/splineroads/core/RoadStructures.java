@@ -169,6 +169,8 @@ public final class RoadStructures {
      * retain their old policy; the lane-connector planner supplies exact material clips. */
     default V railJoint(V position,V direction){return null;}
     default boolean railPost(V position){return true;}
+    default V railJoint(V position,V direction,boolean highway,boolean raised){return railJoint(position,direction);}
+    default boolean railPost(V position,boolean highway,boolean raised){return railPost(position);}
     default List<RoadRailJoin.Span> railSpans(V a,V b,V outside) {
       return joined(outside)?List.of():List.of(new RoadRailJoin.Span(a,b));
     }
@@ -214,7 +216,8 @@ public final class RoadStructures {
         for(var span:spans){
           if(!run.isEmpty()&&run.get(run.size()-1).b().distance(span.a())>1e-5){emitRailRun(out,run,mesh,ground,modern,highway,side);run.clear();}
           double fraction=aa.sub(bb).horizontalLength()<1e-9?0:aa.sub(span.a()).horizontalLength()/aa.sub(bb).horizontalLength();
-          run.add(new RailSpan(span.a(),span.b(),raised,d+fraction*(b.distance()-a.distance())));
+          double endFraction=aa.sub(bb).horizontalLength()<1e-9?1:aa.sub(span.b()).horizontalLength()/aa.sub(bb).horizontalLength();
+          run.add(new RailSpan(span.a(),span.b(),raised,d+fraction*(b.distance()-a.distance()),d+endFraction*(b.distance()-a.distance())));
         }
         if(!spans.isEmpty()&&spans.get(spans.size()-1).b().distance(bb)>1e-5){emitRailRun(out,run,mesh,ground,modern,highway,side);run.clear();}
       }
@@ -267,7 +270,7 @@ public final class RoadStructures {
     return List.copyOf(out);
   }
 
-  private record RailSpan(V a,V b,boolean raised,double distance){}
+  private record RailSpan(V a,V b,boolean raised,double distance,double endDistance){}
   private static void emitRailRun(List<Part> out,List<RailSpan> run,Mesh mesh,Ground ground,boolean modern,boolean highway,int side){
     if(run.isEmpty())return;
     double length=run.stream().mapToDouble(r->r.a.distance(r.b)).sum();
@@ -280,7 +283,7 @@ public final class RoadStructures {
         int end=i;double panelLength=first.a().distance(first.b());
         while(end+1<run.size()&&panelLength<1.999&&run.get(end).b().distance(run.get(end+1).a())<1e-6&&(run.get(end+1).raised()||mesh.settings().structure()==Structure.BRIDGE)){end++;panelLength+=run.get(end).a().distance(run.get(end).b());}
         // Original CB module is two metres long. Side sign mirrors its inward cap.
-        var part=new Part(first.a(),run.get(end).b(),.7,RoadNoiseModel.HEIGHT,false,Material.CB_NOISE).frames(sample(mesh,first.distance()).left().mul(side*.35),sample(mesh,run.get(end).distance()+.5).left().mul(side*.35));
+        var part=new Part(first.a(),run.get(end).b(),.7,RoadNoiseModel.HEIGHT,false,Material.CB_NOISE).frames(sample(mesh,first.distance()).left().mul(side*.35),sample(mesh,run.get(end).endDistance()).left().mul(side*.35));
         var assembly=RoadNoiseModel.assembly(part);
         // Validate and keep/remove the footing and panel as one unit, never half a wall.
         if(assembly.stream().noneMatch(ground::blocked))out.addAll(assembly);else for(int j=i;j<=end;j++)ordinary.add(run.get(j));i=end+1;
@@ -290,9 +293,9 @@ public final class RoadStructures {
     for(var r:run) {
       if(modern){
         var pieces=new ArrayList<Part>();barrier(pieces,r.a,r.b,highway,r.raised,r.distance);
-        V direction=r.b.sub(r.a),first=ground.railJoint(r.a,direction),last=ground.railJoint(r.b,direction);
+        V direction=r.b.sub(r.a),first=ground.railJoint(r.a,direction,highway,r.raised),last=ground.railJoint(r.b,direction,highway,r.raised);
         for(var piece:pieces){
-          if(piece.material()==Material.DARK_STEEL&&!ground.railPost(r.a))continue;
+          if(piece.material()==Material.DARK_STEEL&&!ground.railPost(r.a,highway,r.raised))continue;
           if(piece.a().sub(r.a).horizontalLength()<1e-6&&piece.b().sub(r.b).horizontalLength()<1e-6)
             piece=piece.frames(first==null?piece.frameA():first.mul(piece.width()/2),last==null?piece.frameB():last.mul(piece.width()/2));
           add(out,piece);
@@ -606,7 +609,7 @@ public final class RoadStructures {
       double railY=e.part().width()==.1?.95:e.part().width()==.12?1.05:.8;
       double bottom=e.part().width()==.12?.45:0;
       V base=e.p().add(new V(0,-railY,0));
-      if(ground!=null&&!ground.railPost(base))continue;
+      if(ground!=null&&!ground.railPost(base,e.part().width()==.3,e.part().width()==.12))continue;
       if(posts.add(postKey(base.add(new V(0,bottom>0?bottom-.02:bottom,0)))))post(parts,base,base.add(e.into()),bottom,top);
     }
   }
