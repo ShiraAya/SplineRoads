@@ -9,17 +9,19 @@ import java.util.*;
  * Slot IDs never renumber when an outer lane is absent. An absent slot remains a REPLACE target.
  */
 public final class LaneSections {
-  public record Cut(UUID connection,int lane,int sign,double begin,double end,double transition,UUID replacement,boolean temporary,boolean arrival) {
+  public record Cut(UUID connection,int lane,int sign,double begin,double end,double transition,UUID replacement,boolean temporary,boolean arrival,boolean rectangular) {
+    public Cut(UUID connection,int lane,int sign,double begin,double end,double transition,UUID replacement,boolean temporary,boolean arrival){this(connection,lane,sign,begin,end,transition,replacement,temporary,arrival,false);}
     public Cut(UUID connection,int lane,int sign,double begin,double end,double transition,UUID replacement,boolean temporary){this(connection,lane,sign,begin,end,transition,replacement,temporary,false);}
     public Cut(UUID connection,int lane,int sign,double begin,double end,double transition,UUID replacement){this(connection,lane,sign,begin,end,transition,replacement,false);}
     public Cut(UUID connection,int lane,int sign,double begin,double end,double transition){this(connection,lane,sign,begin,end,transition,null);}
     public Cut {
-      if(arrival&&!temporary||connection==null||lane<0||lane>31||(sign!=1&&sign!=-1)||!RoadGeometry.finite(begin,end,transition)
+      if((arrival||rectangular)&&!temporary||connection==null||lane<0||lane>31||(sign!=1&&sign!=-1)||!RoadGeometry.finite(begin,end,transition)
           ||transition<2||transition>256||sign*(end-begin)<-.0001)
         throw new IllegalArgumentException("车道分离区间无效");
     }
     public double removed(double station){
       double distance=sign*(end-begin);if(distance<1e-6)return 0;
+      if(rectangular)return sign*(station-begin)>1e-8&&sign*(end-station)>1e-8?1:0;
       double span=Math.min(transition,distance/2);
       if(arrival)return sign*(station-end)>=-1e-8?0:smooth(sign*(station-begin)/span);
       return Math.min(smooth(sign*(station-begin)/span),smooth(sign*(end-station)/span));
@@ -27,7 +29,8 @@ public final class LaneSections {
     private static double smooth(double t){return Settings.smooth(Math.max(0,Math.min(1,t)));}
   }
   public enum Kind { DEPART, REPLACE, TEMPORARY, ARRIVE }
-  public record Event(UUID connection,Kind kind,int lane,int sign,double station,double transition,double returnStation){
+  public record Event(UUID connection,Kind kind,int lane,int sign,double station,double transition,double returnStation,boolean rectangular){
+    public Event(UUID connection,Kind kind,int lane,int sign,double station,double transition,double returnStation){this(connection,kind,lane,sign,station,transition,returnStation,false);}
     public Event(UUID connection,Kind kind,int lane,int sign,double station,double transition){this(connection,kind,lane,sign,station,transition,Double.NaN);}
   }
   /** Derive from the complete live link set, so deleting a branch restores authored pavement. */
@@ -57,7 +60,7 @@ public final class LaneSections {
           &&event.sign()*(event.station()-old.begin())>=0&&event.sign()*(event.station()-old.end())<-.01)
         throw new IllegalArgumentException("同一车道空位内重复整车道分离；Y 分叉请使用普通分流（原车道直行）");
       if(replacement!=null&&!used.add(replacement.connection()))throw new IllegalArgumentException("补入车道同时匹配多个分离接头");
-      cuts.add(new Cut(event.connection(),event.lane(),event.sign(),event.station(),end,event.transition(),replacement==null?null:replacement.connection(),event.kind()==Kind.TEMPORARY));
+      cuts.add(new Cut(event.connection(),event.lane(),event.sign(),event.station(),end,event.transition(),replacement==null?null:replacement.connection(),event.kind()==Kind.TEMPORARY,false,event.kind()==Kind.TEMPORARY&&event.rectangular()));
     }
     for(Event event:ordered)if(event.kind()==Kind.ARRIVE){
       var lane=LanePoints.lane(raw,event.station(),event.lane());
@@ -65,7 +68,7 @@ public final class LaneSections {
       double begin=Double.isFinite(event.returnStation())?event.returnStation():(event.sign()>0?0:raw.length());
       if(event.sign()*(event.station()-begin)<.02)continue; // Free start: no upstream target traffic.
       if(begin<-event.transition()-.001||begin>raw.length()+event.transition()+.001||event.station()<0||event.station()>raw.length())throw new IllegalArgumentException("汇入封闭范围超出实际宿主路段");
-      var cut=new Cut(event.connection(),event.lane(),event.sign(),begin,event.station(),event.transition(),null,true,true);
+      var cut=new Cut(event.connection(),event.lane(),event.sign(),begin,event.station(),event.transition(),null,true,true,event.rectangular());
       for(var old:cuts)if(!provisional.contains(cut.connection())&&!provisional.contains(old.connection())&&old.lane()==cut.lane()&&Math.min(Math.max(old.begin(),old.end()),Math.max(cut.begin(),cut.end()))-Math.max(Math.min(old.begin(),old.end()),Math.min(cut.begin(),cut.end()))>.01)
         throw new IllegalArgumentException("目标车道的汇入封闭与既有分离/汇入区间冲突，不能覆盖其他连接");
       cuts.add(cut);

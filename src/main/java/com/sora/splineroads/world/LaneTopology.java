@@ -138,7 +138,7 @@ public final class LaneTopology {
       for(var p:metadata(all.get(r.id())).points())if(md.points().stream().noneMatch(x->x.id().equals(p.id())))points.add(p);
       all.put(r.id(),r.withLanePoints(md.points(points)));
     }
-    for(var r:new ArrayList<>(all.values())){var l=metadata(r).link();if(l==null)continue;var from=migrations.getOrDefault(l.from(),l.from());var to=migrations.getOrDefault(l.to(),l.to());if(!from.equals(l.from())||!to.equals(l.to()))all.put(r.id(),r.withLanePoints(metadata(r).link(new LanePoints.Link(from,to,l.options(),l.junctionMouth(),l.targetOffset(),l.protectedMerge()))));}
+    for(var r:new ArrayList<>(all.values())){var l=metadata(r).link();if(l==null)continue;var from=migrations.getOrDefault(l.from(),l.from());var to=migrations.getOrDefault(l.to(),l.to());if(!from.equals(l.from())||!to.equals(l.to()))all.put(r.id(),r.withLanePoints(metadata(r).link(new LanePoints.Link(from,to,l.options(),l.junctionMouth(),l.targetOffset(),l.protectedMerge(),l.rectangularClosure()))));}
     LaneCrossSections.reconcile(all,scope);
     var ends=endpointOwners(all.values());
     for(var r:new ArrayList<>(all.values()))if(independent(r)&&scope.contains(r.id()))all.put(r.id(),automatic(r,ends));

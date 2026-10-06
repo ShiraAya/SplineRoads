@@ -19,7 +19,7 @@ public final class LaneDeck {
   private static List<Span> holes(Mesh mesh,Sample sample,double interval){
     var raw=LaneSections.reference(mesh);var holes=new ArrayList<Span>();
     for(int slot:slots(mesh)){
-      double removed=0;for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.temporary()&&cut.lane()==slot)removed=Math.max(removed,cut.removed(cut.arrival()&&Math.abs(sample.distance()-cut.end())<1e-7?interval:sample.distance()));
+      double removed=0;for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.temporary()&&cut.lane()==slot)removed=Math.max(removed,cut.removed(cut.rectangular()||cut.arrival()&&Math.abs(sample.distance()-cut.end())<1e-7?interval:sample.distance()));
       var lane=LanePoints.lane(raw,sample.distance(),slot);
       double center=lane.position().sub(sample.center()).dot(sample.left()),half=lane.width()*removed/2;
       double lo=Math.max(-sample.halfWidth(),Math.min(sample.halfWidth(),center-half));
@@ -48,6 +48,29 @@ public final class LaneDeck {
     for(int i=0;i<aa.size();i++){var x=aa.get(i);var y=bb.get(i);
       if(Math.max(x.high()-x.low(),y.high()-y.low())>1e-8)out.add(List.of(a.at(x.high(),0),a.at(x.low(),0),b.at(y.low(),0),b.at(y.high(),0)));
     }return out;
+  }
+  public record Cap(V a,V b){}
+  /** Cut endpoints are one-sided cross sections. Close the transverse slab faces,
+   * but do not add a wall where two adjacent closed intervals continue each other. */
+  public static List<Cap> caps(Mesh mesh){
+    var stations=new TreeSet<Double>();
+    for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.rectangular()){
+      stations.add(cut.begin());stations.add(cut.end());
+    }
+    var result=new ArrayList<Cap>();
+    for(double d:stations){
+      if(d<=mesh.first().distance()+1e-7||d>=mesh.last().distance()-1e-7)continue;
+      var sample=RoadStructures.sample(mesh,d);
+      var before=holes(mesh,sample,d-1e-5);var after=holes(mesh,sample,d+1e-5);
+      for(int i=0;i<before.size();i++){
+        var a=before.get(i);var b=after.get(i);
+        if(Math.abs((a.high()-a.low())-(b.high()-b.low()))<1e-6)continue;
+        boolean opening=b.high()-b.low()>a.high()-a.low();var hole=opening?b:a;
+        V low=sample.at(hole.low(),0),high=sample.at(hole.high(),0);
+        result.add(new Cap(opening?low:high,opening?high:low));
+      }
+    }
+    return List.copyOf(result);
   }
   public static boolean present(Mesh mesh,Sample sample,double lateral,double margin){
     if(!hasOpenings(mesh))return true;

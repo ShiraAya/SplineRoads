@@ -301,6 +301,8 @@ public final class RoadSurface {
         wall(pavement,a.at(start?span.high():span.low(),0),a.at(start?span.low():span.high(),0),thickness,joined);
     }
 
+    for(var cap:LaneDeck.caps(mesh))wall(pavement,cap.a(),cap.b(),thickness,joined);
+
     List<Mesh> union = new ArrayList<>(neighbors);
     union.add(mesh);
     Grid paving = new Grid(union);

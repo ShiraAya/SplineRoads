@@ -44,7 +44,7 @@ public final class LaneCrossSections {
         var point=LaneTopology.point(source,link.from().point());var raw=source.rawMesh();var lane=LanePoints.lane(raw,point);
         if(lane.sign()>0?raw.length()-lane.station()>=.02:lane.station()>=.02){
         double end=candidate==null?Double.NaN:LaneReopening.restoreStation(raw,point.lane(),lane.station(),candidate,parts,link.options().transition());
-        events.computeIfAbsent(source.id(),key->new ArrayList<>()).add(new LaneSections.Event(connection,LaneSections.Kind.TEMPORARY,point.lane(),lane.sign(),lane.station(),link.options().transition(),end));
+        events.computeIfAbsent(source.id(),key->new ArrayList<>()).add(new LaneSections.Event(connection,LaneSections.Kind.TEMPORARY,point.lane(),lane.sign(),lane.station(),link.options().transition(),end,link.rectangularClosure()));
         }
       }
     }
@@ -58,7 +58,7 @@ public final class LaneCrossSections {
         if(all.values().stream().anyMatch(r->!r.id().equals(target.id())&&LaneTopology.metadata(r).link()==null&&(r.a().equals(upstream)||r.b().equals(upstream))))
           throw new IllegalArgumentException("目标车道上游封闭需要跨入相邻实际路段，当前不能静默封闭该路段；请后移汇入点或延长主路");
       }
-      events.computeIfAbsent(target.id(),key->new ArrayList<>()).add(new LaneSections.Event(connection,LaneSections.Kind.ARRIVE,point.lane(),lane.sign(),end,link.options().transition(),begin));
+      events.computeIfAbsent(target.id(),key->new ArrayList<>()).add(new LaneSections.Event(connection,LaneSections.Kind.ARRIVE,point.lane(),lane.sign(),end,link.options().transition(),begin,link.rectangularClosure()));
     }
     if(link.options().arrival()==LanePoints.Arrival.REPLACE&&(hosts==null||hosts.contains(link.to().road()))){
       if(link.to().road()==null)throw new IllegalArgumentException("路口中心不能作为车道空位补入目标");

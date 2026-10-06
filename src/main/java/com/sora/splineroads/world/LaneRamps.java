@@ -47,7 +47,7 @@ public final class LaneRamps {
     try(var ignored=new Planning(data)){return generatePlanned(data,all,id,owner,link,edited);}
   }
   private static Generated generatePlanned(RoadData data,Map<UUID,RoadRecord> all,UUID id,UUID owner,LanePoints.Link link,Settings edited){
-    link=link.withProtectedMerge();
+    link=link.withProtectedMerge().withRectangularClosure();
     var source=host(all,link.from());var p=LaneTopology.point(source,link.from().point());var lane=LanePoints.lane(mesh(source),p);
     var previous=all.get(id);var old=previous!=null&&LaneTopology.metadata(previous).link()!=null?previous:null;
     Style style=RoadProfile.catalog(source.settings().style()).type()==RoadProfile.Type.HIGHWAY?Style.H1_ONE:Style.O1_ONE;

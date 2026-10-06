@@ -209,6 +209,7 @@ public final class RoadStructures {
     }
     if (modern) { furniture(mesh, ground, out, phase); terminalPosts(out); }
     out.addAll(RoadInfrastructure.plan(mesh,ground));
+    out.addAll(LaneClosureLandscape.plan(mesh,ground));
 
     if (RoadInfrastructure.customBridge(mesh)){out.addAll(RoadSidewalks.parts(mesh,mesh.settings().options().sidewalk(),ground,out).stream().filter(p->!ground.blocked(p)).toList());return List.copyOf(out);}
     out.addAll(edgeSlabs(mesh,ground));

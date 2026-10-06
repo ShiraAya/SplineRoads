@@ -35,13 +35,15 @@ public final class LanePoints {
     public Options withoutApproaches(){return new Options(path,Departure.BRANCH,Arrival.MERGE,radius,transition,elevation,landing);}
   }
   /** Target offset is measured along the selected lane's driving direction, never another lane. */
-  public record Link(Ref from,Ref to,Options options,V junctionMouth,double targetOffset,boolean protectedMerge) {
+  public record Link(Ref from,Ref to,Options options,V junctionMouth,double targetOffset,boolean protectedMerge,boolean rectangularClosure) {
+    public Link(Ref from,Ref to,Options options,V mouth,double offset,boolean protectedMerge){this(from,to,options,mouth,offset,protectedMerge,false);}
     public Link(Ref from,Ref to,Options options,V mouth,double offset){this(from,to,options,mouth,offset,false);}
     public Link(Ref from,Ref to,Options options,V junctionMouth){this(from,to,options,junctionMouth,0);}
     public Link {Objects.requireNonNull(from);Objects.requireNonNull(to);Objects.requireNonNull(options);if(from.junction()!=null||from.equals(to))throw new IllegalArgumentException("匝道须从车道点汇出，且不能接回同一点");if(to.junction()!=null&&junctionMouth==null)throw new IllegalArgumentException("缺少路口实际接入口");if(!Double.isFinite(targetOffset)||Math.abs(targetOffset)>128||to.junction()!=null&&targetOffset!=0)throw new IllegalArgumentException("汇入偏移超出允许范围");}
     public boolean closesTarget(){return protectedMerge&&to.road()!=null&&options.arrival()==Arrival.MERGE;}
-    public Link withProtectedMerge(){return new Link(from,to,options,junctionMouth,targetOffset,true);}
-    public Link targetOffset(double value){return new Link(from,to,options,junctionMouth,value,protectedMerge);}
+    public Link withProtectedMerge(){return new Link(from,to,options,junctionMouth,targetOffset,true,rectangularClosure);}
+    public Link withRectangularClosure(){return new Link(from,to,options,junctionMouth,targetOffset,protectedMerge,true);}
+    public Link targetOffset(double value){return new Link(from,to,options,junctionMouth,value,protectedMerge,rectangularClosure);}
   }
   /** Actual connector centerline at a contact, used to clear crossing rail/curb geometry. */
   public record Opening(UUID connection,List<V> centerline,double halfWidth) {
