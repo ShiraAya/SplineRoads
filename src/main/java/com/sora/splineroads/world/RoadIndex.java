@@ -147,7 +147,7 @@ public final class RoadIndex {
     public Built lanePoints(LanePoints.Data value) {
       var before = record.settings().options().lanePoints();
       if (!Objects.equals(before.link(), value.link()) || !before.openings().equals(value.openings())
-          || !before.cuts().equals(value.cuts()) || !LaneMerge.sameDefinitions(before,value))
+          || !before.additions().equals(value.additions()) || !before.cuts().equals(value.cuts()) || !LaneMerge.sameDefinitions(before,value))
         throw new IllegalArgumentException("几何变更必须通过道路建造流程");
       var next = new Built(record.withLanePoints(value), lazy, true, this);
       next.local = local;

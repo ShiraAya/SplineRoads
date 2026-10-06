@@ -23,7 +23,7 @@ public final class LanePoints {
   }
   public enum Path { AUTO("自动"),RIGHT("右转"),LEFT_LOOP("左转回环"),DIRECT("直接连接"),LEFT("定向左转");public final String label;Path(String label){this.label=label;} }
   public enum Departure { BRANCH("普通分流（原车道直行）"), DETACH("整车道分离"), EXTRA("额外扩出"), TEMPORARY("保留车道分离"); public final String label; Departure(String label){this.label=label;} }
-  public enum Arrival { MERGE("并入现有车道"), REPLACE("补入车道空位"), EXTRA("额外扩入"), FLOW("普通汇流（主路不断行）"); public final String label; Arrival(String label){this.label=label;} }
+  public enum Arrival { MERGE("并入现有车道"), REPLACE("旧版空位恢复"), EXTRA("额外扩入"), FLOW("普通汇流（主路不断行）"), ADD("最外侧补入（增加一车道）"); public final String label; Arrival(String label){this.label=label;} }
   public enum Elevation { AUTO("自动避让"), OVER("上跨既有道路"), UNDER("下穿既有道路"), KEEP("保持原高程"); public final String label; Elevation(String label){this.label=label;} }
   public enum Landing { FLEXIBLE("同车道弹性落点"), EXACT("精确锁定 B"); public final String label; Landing(String label){this.label=label;} }
   public record Options(Path path,Departure departure,Arrival arrival,double radius,double transition,Elevation elevation,Landing landing,boolean gradeOverride) {
@@ -52,19 +52,22 @@ public final class LanePoints {
   public record Opening(UUID connection,List<V> centerline,double halfWidth) {
     public Opening {centerline=List.copyOf(centerline);if(centerline.size()>16000||halfWidth<=0||halfWidth>16)throw new IllegalArgumentException("匝道接头范围无效");}
   }
-  public record Data(List<Point> points,Link link,List<Opening> openings,int priorityDepth,List<LaneSections.Cut> cuts) {
+  public record Data(List<Point> points,Link link,List<Opening> openings,int priorityDepth,List<LaneSections.Cut> cuts,List<LaneAdditions.Addition> additions) {
+    public Data(List<Point> points,Link link,List<Opening> openings,int priorityDepth,List<LaneSections.Cut> cuts){this(points,link,openings,priorityDepth,cuts,List.of());}
     public static final Data EMPTY=new Data(List.of(),null,List.of(),0,List.of());
     public Data(List<Point> points,Link link,List<Opening> openings){this(points,link,openings,link==null?0:1,List.of());}
     public Data(List<Point> points,Link link,List<Opening> openings,int priorityDepth){this(points,link,openings,priorityDepth,List.of());}
-    public Data {points=List.copyOf(points);openings=List.copyOf(openings);cuts=List.copyOf(cuts);if(cuts.size()>128||points.size()>512||openings.size()>128||priorityDepth<0||priorityDepth>1024||points.stream().map(Point::id).distinct().count()!=points.size())throw new IllegalArgumentException("车道点数量超限、身份重复或依赖深度无效");}
-    public Data points(List<Point> value){return new Data(value,link,openings,priorityDepth,cuts);}
-    public Data link(Link value){return new Data(points,value,openings,value==null?0:Math.max(1,priorityDepth),cuts);}
-    public Data openings(List<Opening> value){return new Data(points,link,value,priorityDepth,cuts);}
-    public Data priorityDepth(int value){return new Data(points,link,openings,value,cuts);}
-    public Data cuts(List<LaneSections.Cut> value){return new Data(points,link,openings,priorityDepth,value);}
+    public Data {points=List.copyOf(points);openings=List.copyOf(openings);cuts=List.copyOf(cuts);additions=List.copyOf(additions);if(additions.size()>24||additions.stream().map(LaneAdditions.Addition::slot).distinct().count()!=additions.size()||cuts.size()>128||points.size()>512||openings.size()>128||priorityDepth<0||priorityDepth>1024||points.stream().map(Point::id).distinct().count()!=points.size())throw new IllegalArgumentException("车道点数量超限、身份重复或依赖深度无效");}
+    public Data points(List<Point> value){return new Data(value,link,openings,priorityDepth,cuts,additions);}
+    public Data link(Link value){return new Data(points,value,openings,value==null?0:Math.max(1,priorityDepth),cuts,additions);}
+    public Data openings(List<Opening> value){return new Data(points,link,value,priorityDepth,cuts,additions);}
+    public Data priorityDepth(int value){return new Data(points,link,openings,value,cuts,additions);}
+    public Data additions(List<LaneAdditions.Addition> value){return new Data(points,link,openings,priorityDepth,cuts,value);}
+    public Data cuts(List<LaneSections.Cut> value){return new Data(points,link,openings,priorityDepth,value,additions);}
   }
   public record Lane(int index,V position,V direction,double width,double station,int sign){}
   public static Lane lane(Mesh mesh,double station,int index){
+    if(index>=8)return LaneAdditions.lane(mesh,station,index);
     mesh=LaneSections.reference(mesh);Sample sample=RoadStructures.sample(mesh,Math.max(0,Math.min(mesh.length(),station)));var l=RoadProfile.layout(mesh,sample);var c=l.catalog();
     if(index<0||index>=c.lanes())throw new IllegalArgumentException("所选车道已不存在");
     double offset;if(c.twoWay()){int per=l.lanesOnSide(-1),side=index<per?-1:1;offset=l.medianCenter()+side*(l.median()/2+((side<0?index:index-per)+.5)*l.laneWidth());}else offset=l.motorMin()+(index+.5)*l.laneWidth();
@@ -77,7 +80,7 @@ public final class LanePoints {
     Lane old=lane(previous,point);target=LaneSections.reference(target);var q=RoadQueries.horizontal(target,point.position());
     Lane best=null;double distance=Double.POSITIVE_INFINITY;
     int count=RoadProfile.layout(target,q.sample()).catalog().lanes();
-    for(int index=0;index<count;index++){
+    for(int index:LaneAdditions.slots(target,q.sample().distance())){
       Lane candidate=lane(target,q.sample().distance(),index);
       if(candidate.direction().dot(old.direction())<.999)continue;
       double d=candidate.position().sub(point.position()).horizontalLength();
@@ -91,7 +94,7 @@ public final class LanePoints {
   public static Lane clicked(Mesh mesh,V hit){
     var raw=LaneSections.reference(mesh);var q=RoadQueries.project(raw,hit);var l=RoadProfile.layout(raw,q.sample());
     Lane best=null;double distance=Double.POSITIVE_INFINITY;
-    for(int i=0;i<l.catalog().lanes();i++){if(!LaneSections.active(mesh,q.sample().distance(),i))continue;var lane=lane(mesh,q.sample().distance(),i);double d=lane.position().sub(hit).horizontalLength();if(d<distance){distance=d;best=lane;}}
+    for(int i:LaneAdditions.slots(mesh,q.sample().distance())){if(!LaneSections.active(mesh,q.sample().distance(),i))continue;var lane=lane(mesh,q.sample().distance(),i);double d=lane.position().sub(hit).horizontalLength();if(d<distance){distance=d;best=lane;}}
     if(best==null||distance>best.width()/2+.05||Math.abs(hit.y()-best.position().y())>2)throw new IllegalArgumentException("请点击机动车道内，不能在中央隔离带、人行道或非机动车道放点");return best;
   }
   public static String label(Mesh mesh,int index){return label(mesh,mesh.length()/2,index);}

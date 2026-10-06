@@ -47,7 +47,7 @@ public final class LaneSections {
       if(!outer&&event.kind()!=Kind.TEMPORARY)throw new IllegalArgumentException(c.twoWay()?"双向整车道分离请选择该方向最外侧车道，不能挖走内部车道或中央隔离":"整车道分离须选择单向主线的一侧边缘车道");
       double remainder=event.sign()>0?raw.length()-event.station():event.station();
       if(remainder<.02)continue; // A free road end already has no downstream continuation.
-      if(layout.catalog().lanes()==1&&event.kind()!=Kind.TEMPORARY)throw new IllegalArgumentException("单车道内部一分二请选择普通分流（原车道直行）；整车道分离会清空主路");
+      if(c.lanes()+raw.settings().options().lanePoints().additions().stream().filter(a->a.fraction(event.station())>.999999).count()<=1&&event.kind()!=Kind.TEMPORARY)throw new IllegalArgumentException("单车道内部一分二请选择普通分流（原车道直行）；整车道分离会清空主路");
       Event replacement=null;
       for(Event candidate:ordered)if(event.kind()==Kind.DEPART&&candidate.kind()==Kind.REPLACE&&candidate.lane()==event.lane()&&candidate.sign()==event.sign()
           &&candidate.sign()*(candidate.station()-event.station())>1e-4){replacement=candidate;break;}
@@ -81,7 +81,7 @@ public final class LaneSections {
   public static double removed(Mesh mesh,double station,int slot){
     double removed=0;for(Cut cut:mesh.settings().options().lanePoints().cuts())if(cut.lane()==slot)removed=Math.max(removed,cut.removed(station));return removed;
   }
-  public static boolean active(Mesh mesh,double station,int slot){return removed(mesh,station,slot)<.5;}
+  public static boolean active(Mesh mesh,double station,int slot){return (slot<8||LaneAdditions.find(mesh,slot).fraction(station)>.999999)&&removed(mesh,station,slot)<.5;}
   /** Current cross-section, with persistent slot identities kept separate from live counts. */
   public record Live(List<LanePoints.Lane> lanes,int forward,int reverse) {
     public Live {lanes=List.copyOf(lanes);}
@@ -92,7 +92,7 @@ public final class LaneSections {
     var raw=reference(mesh);var sample=RoadStructures.sample(raw,station);
     int count=RoadProfile.layout(raw,sample).catalog().lanes(),forward=0,reverse=0;
     var result=new ArrayList<LanePoints.Lane>();
-    for(int i=0;i<count;i++)if(active(mesh,station,i)){
+    for(int i:LaneAdditions.slots(mesh,station))if(active(mesh,station,i)){
       var lane=LanePoints.lane(raw,station,i);result.add(lane);
       if(lane.sign()>0)forward++;else reverse++;
     }
@@ -104,10 +104,10 @@ public final class LaneSections {
   static boolean edge(Mesh raw,double station,int slot,List<Cut> cuts,UUID excluded){
     var chosen=LanePoints.lane(raw,station,slot);var layout=RoadProfile.layout(raw,RoadStructures.sample(raw,station));
     int count=layout.catalog().lanes();
-    if(removed(cuts,station,slot,excluded)>=.5)return false;
+    if((slot>=8&&LaneAdditions.find(raw,slot).fraction(station)<.999999)||removed(cuts,station,slot,excluded)>=.5)return false;
     double offset=chosen.position().sub(RoadStructures.sample(raw,station).center()).dot(RoadStructures.sample(raw,station).left());
     boolean low=true,high=true;
-    for(int i=0;i<count;i++)if(i!=slot&&removed(cuts,station,i,excluded)<.5){
+    for(int i:LaneAdditions.slots(raw,station))if(i!=slot&&(i<8||LaneAdditions.find(raw,i).fraction(station)>.999999)&&removed(cuts,station,i,excluded)<.5){
       var other=LanePoints.lane(raw,station,i);if(other.sign()!=chosen.sign())continue;
       double delta=other.position().sub(chosen.position()).dot(RoadStructures.sample(raw,station).left());
       if(delta<-.001)low=false;if(delta>.001)high=false;
@@ -121,7 +121,7 @@ public final class LaneSections {
   public static int receiver(Mesh mesh,double station,int slot,UUID excluded){
     var raw=reference(mesh);var chosen=LanePoints.lane(raw,station,slot);
     int count=RoadProfile.layout(raw,RoadStructures.sample(raw,station)).catalog().lanes(),best=-1;double distance=Double.POSITIVE_INFINITY;
-    for(int i=0;i<count;i++)if(i!=slot&&removed(mesh.settings().options().lanePoints().cuts(),station,i,excluded)<.5){
+    for(int i:LaneAdditions.slots(mesh,station))if(i!=slot&&(i<8||LaneAdditions.find(raw,i).fraction(station)>.999999)&&removed(mesh.settings().options().lanePoints().cuts(),station,i,excluded)<.5){
       var candidate=LanePoints.lane(raw,station,i);if(candidate.sign()!=chosen.sign())continue;
       double d=candidate.position().distance(chosen.position());if(d<distance){distance=d;best=i;}
     }
@@ -139,7 +139,7 @@ public final class LaneSections {
 
     double[] removal=new double[count];
     for(Cut cut:raw.settings().options().lanePoints().cuts()){
-      if(cut.temporary())continue;
+      if(cut.temporary()||cut.lane()>=8)continue;
       if(cut.lane()>=count){if(cut.removed(s.distance())>.001)throw new IllegalArgumentException("分离车道穿过了车道数变化接缝，请在同一断面路段内设置接头");continue;}
       removal[cut.lane()]=Math.max(removal[cut.lane()],cut.removed(s.distance()));
     }
@@ -165,22 +165,37 @@ public final class LaneSections {
     }
     double motorWidth=layout.motorMax()-layout.motorMin()-layout.median()-trimLow-trimHigh;
     if(motorWidth<layout.laneWidth()*.99)throw new IllegalArgumentException("整车道分离后至少保留一条主路通行车道，不能挖空整条道路");
-    double shift=(trimLow-trimHigh)/2,half=s.halfWidth()-(trimLow+trimHigh)/2;
-    double min=layout.motorMin()+trimLow-shift,max=layout.motorMax()-trimHigh-shift;
+    double extraLow=0,extraHigh=0;int extraCount=0;
+    var addedDividers=new ArrayList<Double>();
+    for(var added:LaneAdditions.ordered(raw)){
+      double width=layout.laneWidth()*added.fraction(s.distance())*(1-LaneAdditions.permanentRemoval(raw,s.distance(),added.slot()));
+      if(width<1e-8)continue;
+      int side=LaneAdditions.side(layout,added.sign());
+      addedDividers.add(side<0?layout.motorMin()+trimLow-extraLow:layout.motorMax()-trimHigh+extraHigh);
+      if(side<0)extraLow+=width;else extraHigh+=width;
+      if(width>layout.laneWidth()*.999999)extraCount++;
+    }
+    double shift=(trimLow-trimHigh-extraLow+extraHigh)/2,half=s.halfWidth()-(trimLow+trimHigh)/2+(extraLow+extraHigh)/2;
+    double min=layout.motorMin()+trimLow-extraLow-shift,max=layout.motorMax()-trimHigh+extraHigh-shift;
     int retained=count;for(double value:removal)if(value>=.5)retained--;
     // A removed lane does not drag its old divider onto the moving outer edge.
     // Keep the authored axis; paint is clipped by actual pavement. Clamping created
     // a false diagonal merge guide during whole-lane DETACH (including reverse traffic).
-    var dividers=new ArrayList<Double>();for(double d:layout.dividers())dividers.add(d-shift);
-    var catalog=c.twoWay()?c:new RoadProfile.Catalog(c.type(),Math.max(1,retained),false,c.median(),c.shoulder());
+    var dividers=new ArrayList<Double>();for(double d:layout.dividers())dividers.add(d-shift);for(double d:addedDividers)dividers.add(d-shift);dividers.sort(Double::compare);
+    var catalog=new RoadProfile.Catalog(c.type(),c.twoWay()?c.lanes()+extraCount:Math.max(1,retained+extraCount),c.twoWay(),c.median(),c.shoulder());
     return new Section(shift,half,new RoadProfile.Layout(catalog,layout.laneWidth(),layout.median(),min,max,
       layout.cycleWidth(),layout.curbWidth(),layout.shoulderWidth(),layout.outside(),List.copyOf(dividers),layout.medianCenter()-shift));
   }
   public static Mesh apply(Mesh mesh){
-    if(mesh.settings().options().lanePoints().cuts().isEmpty()||mesh.reference()!=null)return mesh;
+    if(mesh.settings().options().lanePoints().cuts().isEmpty()&&mesh.settings().options().lanePoints().additions().isEmpty()||mesh.reference()!=null)return mesh;
     var stations=new TreeSet<Double>();for(var s:mesh.samples())stations.add(s.distance());
     for(var cut:mesh.settings().options().lanePoints().cuts())for(double center:new double[]{cut.begin(),cut.end()})
       for(double d=center-cut.transition();d<=center+cut.transition()+.001;d+=.5)if(d>0&&d<mesh.length())stations.add(d);
+    for(var added:mesh.settings().options().lanePoints().additions()){
+      double begin=added.station()-added.sign()*added.transition();
+      for(double d=Math.min(begin,added.station());d<=Math.max(begin,added.station())+.001;d+=.5)if(d>0&&d<mesh.length())stations.add(d);
+      if(added.station()>0&&added.station()<mesh.length())stations.add(added.station());
+    }
     if(stations.size()>RoadLimits.MAX_SAMPLES)throw new IllegalArgumentException("车道过渡采样数量超限，请缩短路段");
     var samples=new ArrayList<Sample>();
     for(double station:stations){if(!samples.isEmpty()&&station-samples.get(samples.size()-1).distance()<1e-6)continue;var s=RoadStructures.sample(mesh,station);var section=section(mesh,s);

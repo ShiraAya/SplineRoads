@@ -80,7 +80,7 @@ public final class LaneDeck {
   /** Raster batches retain authored longitudinal stations and original slot axes.
    * RoadRibbon.split rebases stations and would reopen/close the wrong part of a long road. */
   public static List<Mesh> rasterPieces(Mesh mesh,double length){
-    if(!hasOpenings(mesh))return mesh.length()<=256?List.of(mesh):RoadRibbon.split(mesh,length);
+    if(!hasOpenings(mesh)&&mesh.reference()==null&&mesh.settings().options().lanePoints().additions().isEmpty())return mesh.length()<=256?List.of(mesh):RoadRibbon.split(mesh,length);
     var out=new ArrayList<Mesh>();var points=mesh.samples();int start=0;
     for(int i=1;i<points.size();i++)if(points.get(i).distance()-points.get(start).distance()>=length||i==points.size()-1){
       var subset=List.copyOf(points.subList(start,i+1));

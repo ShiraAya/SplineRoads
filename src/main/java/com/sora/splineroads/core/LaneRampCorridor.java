@@ -8,6 +8,13 @@ import java.util.*;
  * all other samples share the same horizontal-arc-length slope budget. */
 public final class LaneRampCorridor {
   public static Mesh solve(Mesh base,double freeFrom,double freeTo,List<LaneRampHeights.Constraint> constraints,boolean over,double grade){
+    return solveMixed(base,freeFrom,freeTo,constraints.stream().map(c->new Bound(c.from(),c.to(),c.amount(),over)).toList(),grade);
+  }
+  public record Bound(double from,double to,double amount,boolean over) {
+    public Bound {if(!RoadGeometry.finite(from,to,amount)||from>to||amount<0)throw new IllegalArgumentException("跨越高程约束无效");}
+  }
+  /** AUTO may pass over a low road and under another elevated road in one route. */
+  public static Mesh solveMixed(Mesh base,double freeFrom,double freeTo,List<Bound> constraints,double grade){
     LaneRampGrade.checked(grade);int n=base.samples().size();
     double[] x=new double[n],lo=new double[n],hi=new double[n],y=new double[n];
     for(int i=0;i<n;i++){
@@ -29,7 +36,7 @@ public final class LaneRampCorridor {
         double previous=i==0?station:base.samples().get(i-1).distance();
         double next=i==n-1?station:base.samples().get(i+1).distance();
         if(next<c.from()-1e-7||previous>c.to()+1e-7)continue;
-        if(over)lo[i]=Math.max(lo[i],y[i]+c.amount());else hi[i]=Math.min(hi[i],y[i]-c.amount());
+        if(c.over())lo[i]=Math.max(lo[i],y[i]+c.amount());else hi[i]=Math.min(hi[i],y[i]-c.amount());
       }
     }
     // Keep one real segment at each port, including its signed tangent, rather than

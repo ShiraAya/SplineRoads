@@ -18,10 +18,10 @@ public final class Ramp39WidgetValidation {
   for(var path:LanePoints.Path.values()){s.children().stream().filter(w->w instanceof Button b&&b.getMessage().getString().endsWith(path.label)).map(w->(Button)w).findFirst().orElseThrow().onPress();check(value(s,"path")==path,"path button changes actual state");}
   press(s,"汇出：");check(value(s,"departure")==LanePoints.Departure.DETACH,"departure changes to DETACH");check(value(s,"arrival")==LanePoints.Arrival.MERGE,"arrival is independent");press(s,"汇入：");press(s,"自动避让");press(s,"同车道弹性落点");
   ((EditBox)value(s,"radius")).setValue("48");((EditBox)value(s,"transition")).setValue("40");s.resize(Minecraft.getInstance(),1000,600);
-  check(value(s,"departure")==LanePoints.Departure.DETACH&&value(s,"arrival")==LanePoints.Arrival.REPLACE,"resize retains topology mode");
+  check(value(s,"departure")==LanePoints.Departure.DETACH&&value(s,"arrival")==LanePoints.Arrival.ADD,"resize retains topology mode");
   check(value(s,"elevation")==LanePoints.Elevation.OVER&&value(s,"landing")==LanePoints.Landing.EXACT,"resize retains crossing and precision mode");
   var method=s.getClass().getDeclaredMethod("command",String.class);method.setAccessible(true);var command=(CompoundTag)method.invoke(s,"laneRampPreview");var options=LanePointCodec.options(command.getCompound("Options"));
-  check(options.gradeOverride()&&options.radius()==48&&options.transition()==40&&options.departure()==LanePoints.Departure.DETACH&&options.arrival()==LanePoints.Arrival.REPLACE&&options.landing()==LanePoints.Landing.EXACT,"outgoing command contains displayed settings");
+  check(options.gradeOverride()&&options.radius()==48&&options.transition()==40&&options.departure()==LanePoints.Departure.DETACH&&options.arrival()==LanePoints.Arrival.ADD&&options.landing()==LanePoints.Landing.EXACT,"outgoing command contains displayed settings");
   check((Boolean)value(s,"gradeOverride"),"override survives resize and other options");
   check(!((Button)value(s,"details")).visible,"failure details visible before a failure");
   s.failed("固定接头冲突；X=12 Y=20 Z=34；输入坡比合法但净空不可达");

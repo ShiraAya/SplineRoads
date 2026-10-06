@@ -4,7 +4,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '6.0.54'
 }
 group = 'com.sora.splineroads'
-version = '0.40.16-alpha-rc1'
+version = '0.40.17-alpha-hotfix1'
 base { archivesName = 'splineroads' }
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
@@ -53,6 +53,7 @@ minecraft {
         }
         server { args '--nogui' }
         gameTestServer {
+            if(project.hasProperty('road429Arrival')) property 'sr.test429.arrival', project.property('road429Arrival')
             jvmArgs '-Xms256m', '-Xmx'+(project.findProperty('roadTestHeap') ?: '4G'), '-XX:ActiveProcessorCount=2'
             mods { splineroads { source sourceSets.gameTest } }
             property 'forge.enabledGameTestNamespaces', project.findProperty('roadTestNamespaces') ?: 'splineroads,splineroads_regression15,splineroads_removal15'

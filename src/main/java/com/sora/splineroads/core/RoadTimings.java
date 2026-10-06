@@ -10,7 +10,9 @@ public final class RoadTimings implements AutoCloseable {
   private final Map<String,Double> phases=new LinkedHashMap<>();
   private RoadTimings(String operation,int roads,int edited){this.operation=operation;this.roads=roads;this.edited=edited;}
   public static RoadTimings start(String operation,int roads,int edited){return new RoadTimings(operation,roads,edited);}
-  public void stage(String phase){long now=System.nanoTime();phases.merge(phase,(now-previous)/1e6,Double::sum);previous=now;}
+  public void stage(String phase){long now=System.nanoTime();double ms=(now-previous)/1e6;phases.merge(phase,ms,Double::sum);previous=now;
+    if(ms>=1000||Boolean.getBoolean("sr.profile"))LOG.log(System.Logger.Level.INFO,"SR stage {0}/{1}: {2} ms, elapsed={3} ms",operation,phase,Math.round(ms),Math.round((now-started)/1e6));
+  }
   @Override public void close(){
     double total=(System.nanoTime()-started)/1e6;
     if(total>=250||Boolean.getBoolean("sr.profile"))LOG.log(System.Logger.Level.INFO,

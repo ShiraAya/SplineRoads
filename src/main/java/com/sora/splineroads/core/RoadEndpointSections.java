@@ -9,7 +9,7 @@ import java.util.*;
 public final class RoadEndpointSections {
   public static boolean changed(Mesh mesh,boolean first){
     double station=first?0:mesh.length();
-    return mesh.settings().options().lanePoints().cuts().stream()
+    return mesh.settings().options().lanePoints().additions().stream().anyMatch(a->a.fraction(station)>1e-6)||mesh.settings().options().lanePoints().cuts().stream()
         .anyMatch(c->!c.temporary()&&c.removed(station)>1e-6);
   }
   public static Settings section(Mesh mesh,boolean first,boolean reversed){
@@ -24,6 +24,9 @@ public final class RoadEndpointSections {
     if(c.twoWay()&&(low<1||high<1))throw new IllegalArgumentException("该端点有一个方向已无开放通行车道，不能作为普通双向续接端口");
     for(var cut:base.options().lanePoints().cuts())if(!cut.temporary()){
       double r=cut.removed(at.distance());if(r>1e-6&&r<1-1e-6)throw new IllegalArgumentException("接点仍在车道合并渐变段中，请将合并过渡留在端点前完成");
+    }
+    for(var added:base.options().lanePoints().additions()){
+      double f=added.fraction(at.distance());if(f>1e-6&&f<1-1e-6)throw new IllegalArgumentException("接点仍在新增车道渐变段中，请在完整断面处续接");
     }
     double sign=reversed?-1:1;
     List<Double> dividers=l.dividers().stream().filter(d->d>l.motorMin()+.12&&d<l.motorMax()-.12)

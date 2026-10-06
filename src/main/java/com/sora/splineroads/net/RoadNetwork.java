@@ -18,7 +18,7 @@ import net.minecraftforge.network.*;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public final class RoadNetwork {
-  private static final String PROTOCOL = "62";
+  private static final String PROTOCOL = "63";
   public static final SimpleChannel CHANNEL =
       NetworkRegistry.newSimpleChannel(
           ResourceLocation.fromNamespaceAndPath(SplineRoads.ID, "roads"),
@@ -251,14 +251,16 @@ public final class RoadNetwork {
       return;
     }
     if(t.getString("Action").equals("interchangePreview")||t.getString("Action").equals("laneRampPreview")){
-      try{perform(player,t);}catch(IllegalArgumentException e){
+      try{perform(player,t);}catch(RuntimeException e){
+        if(!(e instanceof IllegalArgumentException))System.getLogger("SplineRoads/build").log(System.Logger.Level.ERROR,"Road preview failed",e);
         CompoundTag reply=new CompoundTag();reply.putString("Kind",t.getString("Action").equals("laneRampPreview")?"laneRampCheck":"corridorCheck");reply.putLong("Request",t.getLong("Request"));reply.putString("Dimension",player.level().dimension().location().toString());reply.putString("Error",e.getMessage()==null?"预览参数无效":e.getMessage());open(player,reply);
       }return;
     }
     try {
       result(player, true, perform(player, t));
-    } catch (IllegalArgumentException e) {
-      result(player, false, e.getMessage() == null ? "道路参数无效" : e.getMessage());
+    } catch (RuntimeException e) {
+      if(!(e instanceof IllegalArgumentException))System.getLogger("SplineRoads/build").log(System.Logger.Level.ERROR,"Road action failed: "+t.getString("Action"),e);
+      result(player, false, e instanceof IllegalArgumentException?(e.getMessage()==null?"道路参数无效":e.getMessage()):"建造异常已结束等待："+e.getClass().getSimpleName()+"；完整原因见 latest.log（SplineRoads/build）");
     }
   }
 

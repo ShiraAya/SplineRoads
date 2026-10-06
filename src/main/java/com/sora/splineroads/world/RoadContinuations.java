@@ -20,7 +20,7 @@ public final class RoadContinuations {
     for(UUID id:new TreeSet<>(scope)){
       var old=before.get(id);var now=all.get(id);if(!ordinary(old)||!ordinary(now))continue;
       // Merge and DETACH reservations are the only new authority for this pass.
-      if(!LaneTopology.metadata(old).cuts().equals(LaneTopology.metadata(now).cuts())){queue.add(id);queued.add(id);}
+      if(!LaneTopology.metadata(old).cuts().equals(LaneTopology.metadata(now).cuts())||!LaneTopology.metadata(old).additions().equals(LaneTopology.metadata(now).additions())){queue.add(id);queued.add(id);}
     }
     int steps=0;
     while(!queue.isEmpty()){

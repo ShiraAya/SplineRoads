@@ -19,6 +19,7 @@ public final class LaneCrossSections {
   /** A local edit must not repair or validate reservations elsewhere in the save. */
   static void reconcile(Map<UUID,RoadRecord> records,Set<UUID> hosts){derive(records,null,null,hosts,null);}
   private static void derive(Map<UUID,RoadRecord> records,UUID edited,LanePoints.Link proposal,Set<UUID> hosts,RoadGeometry.Mesh candidate){
+    deriveAdditions(records,edited,proposal,hosts);
     var events=new HashMap<UUID,List<LaneSections.Event>>();
     for(var road:records.values())if(!road.id().equals(edited)){
       var link=LaneTopology.metadata(road).link();if(link==null)continue;
@@ -36,10 +37,37 @@ public final class LaneCrossSections {
       var cuts=values.isEmpty()?List.<LaneSections.Cut>of():LaneSections.derive(road.rawMesh(),values);
       if(!cuts.equals(md.cuts()))records.put(road.id(),road.withLanePoints(md.cuts(cuts)));
     }
+    for(var road:records.values())if((hosts==null||hosts.contains(road.id()))&&!LaneTopology.metadata(road).additions().isEmpty())LaneAdditions.validate(road.mesh());
     // Materialize now: all checks happen before the first world cell is written.
     for(UUID id:events.keySet()){
       var host=records.get(id);var effective=host.mesh();
       for(var point:LaneTopology.metadata(host).points())if(point.mergeLength()>0)LaneMerge.event(effective,point);
+    }
+  }
+  private static void deriveAdditions(Map<UUID,RoadRecord> records,UUID edited,LanePoints.Link proposal,Set<UUID> hosts){
+    var requests=new LinkedHashMap<UUID,LanePoints.Link>();
+    for(var road:records.values())if(!road.id().equals(edited)){
+      var l=LaneTopology.metadata(road).link();if(l!=null&&l.options().arrival()==LanePoints.Arrival.ADD)requests.put(road.id(),l);
+    }
+    if(proposal!=null&&proposal.options().arrival()==LanePoints.Arrival.ADD)requests.put(edited,proposal);
+    var additions=new HashMap<UUID,List<LaneAdditions.Addition>>();
+    for(var entry:requests.entrySet()){
+      var link=entry.getValue();if(link.to().road()==null)throw new IllegalArgumentException("新增外侧车道需要选择道路车道点，不能使用路口中心");
+      if(hosts!=null&&!hosts.contains(link.to().road()))continue;
+      var road=records.get(link.to().road());if(road==null)throw new IllegalArgumentException("汇入道路已不存在");
+      var point=LaneTopology.point(road,link.to().point());var raw=road.rawMesh();var lane=LanePoints.lane(raw,point);
+      double station=lane.station()+lane.sign()*link.targetOffset();
+      if(station<-.001||station>raw.length()+.001)throw new IllegalArgumentException("新增车道汇入口超出所选道路");
+      var list=additions.computeIfAbsent(road.id(),k->new ArrayList<>());
+      var previous=LaneTopology.metadata(road).additions().stream().filter(a->a.connection().equals(entry.getKey())).findFirst().orElse(null);
+      int slot=previous==null?8:previous.slot();
+      if(previous==null){var reserved=new HashSet<Integer>();for(var a:LaneTopology.metadata(road).additions())reserved.add(a.slot());for(var a:list)reserved.add(a.slot());while(reserved.contains(slot))slot++;}
+      if(slot>31)throw new IllegalArgumentException("此路段新增车道身份数量达到上限，请分段建设");
+      list.add(new LaneAdditions.Addition(entry.getKey(),slot,lane.sign(),station,link.options().transition()));
+    }
+    for(var road:new ArrayList<>(records.values()))if(hosts==null||hosts.contains(road.id())){
+      var list=additions.getOrDefault(road.id(),List.of());var md=LaneTopology.metadata(road);
+      if(!list.equals(md.additions()))records.put(road.id(),road.withLanePoints(md.additions(list)));
     }
   }
   private static void add(Map<UUID,List<LaneSections.Event>> events,Map<UUID,RoadRecord> all,UUID connection,LanePoints.Link link,Set<UUID> hosts,RoadGeometry.Mesh candidate,List<RoadStructures.Part> parts){
