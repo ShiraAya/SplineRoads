@@ -1,0 +1,116 @@
+name: SR429 hotfix full and real-world verification
+on:
+  push:
+    branches: [SR-0.40.15]
+    paths: ['.github/workflows/sr429-hotfix.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: write
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - id: save
+        run: |
+          python - <<'PY'
+          import base64,hashlib,lzma,subprocess
+          from pathlib import Path
+          subprocess.run(['git','diff','--exit-code','0027371c82f55168446ff08c34ded5d90a03b21f','--','src/main','build.gradle'],check=True)
+          test='src/gametest/java/com/sora/splineroads/world/Build429GameTests.java'
+          assert subprocess.check_output(['git','rev-parse','HEAD:'+test],text=True).strip()=='0e322aa2cd9fcb0196e36f42cf5fd97632f32533'
+          subprocess.run(['git','rm',test],check=True)
+          payload=''.join(Path('tools/patches/hotfix429.part'+str(i)).read_text() for i in range(3))
+          patch=lzma.decompress(base64.b64decode(payload,validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='c1d954b24eb7afa799ddcab6011df52b8ca5d5ad73eb79eedf3b001268ee9b6d'
+          subprocess.run(['git','apply','--check','-'],input=patch,check=True)
+          subprocess.run(['git','apply','-'],input=patch,check=True)
+          Path('PROGRESS.md').write_text('''# SR429 urgent build hotfix checkpoint\n\nWork branch SR-0.40.15 only. Candidate 0.40.17-alpha-hotfix1, protocol63.\nUser reports minutes waiting to construct, mixed crossing rejected near B, and replaces vacancy prerequisite with permanent outer-lane addition 1->2/2->3/3->4 (four rejects).\nImplemented lazy fallback route groups, node-adjacency traversal, mixed over/under AUTO corridors retaining final checks, explicit runtime failure replies and stage timings, owned persistent outer-lane growth with live directional limits, legacy REPLACE retained only for saved links.\nLocal core/model chain passed and 48 outer-addition cases passed. Actual RC1 isolated normal construction baseline did NOT reproduce the minutes-long stall: 100m/200m roads completed in about0.5/0.85s in a real ServerLevel test. Do not claim this is the user world or a before/after speedup.\nThis commit awaits full regression and new actual ServerLevel normal/ramp construction. No verified release or GPU/client/user-save acceptance yet.\n''',encoding='utf-8')
+          subprocess.run(['git','add','src','tools','build.gradle','PROGRESS.md'],check=True)
+          PY
+          git config core.whitespace blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git diff --cached --check
+          git commit -m 'fix: lazily search routes, solve mixed crossings and add permanent outer lanes'
+          git push origin HEAD:refs/heads/SR-0.40.15
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  regression:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Actual Forge and full regression
+        run: |
+          mkdir -p build/checkpoint-logs
+          set -o pipefail
+          bash tools/check_sr429.sh 2>&1 | tee build/checkpoint-logs/sr429-full.log
+      - name: Preserve exact source
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+          sha256sum build/libs/*.jar > build/checkpoint-logs/JAR-SHA256.txt 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr429-full-source-logs-${{ needs.preserve.outputs.saved }}
+          path: build/checkpoint-logs/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr429-jars-${{ needs.preserve.outputs.saved }}
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 30
+  minecraft:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Actual ServerLevel road and ADD ramp construction
+        run: |
+          mkdir -p build/repro429 run429
+          echo eula=true > run429/eula.txt
+          (for i in $(seq 1 20); do sleep 25; for p in $(jcmd -l | awk '/BootstrapLauncher/ {print $1}'); do jcmd "$p" Thread.print > "build/repro429/threads-$i-$p.txt" 2>&1 || true; done; done) &
+          monitor=$!
+          trap 'kill "$monitor" 2>/dev/null || true' EXIT
+          set -o pipefail
+          timeout 480s bash gradlew --no-daemon runGameTestServer -ProadRunDir=run429 -ProadTestNamespaces=splineroads_hotfix429 -ProadTestHeap=3G -Proad429Arrival=ADD 2>&1 | tee build/repro429/server.log
+          grep -q 'BUILD429 CONTINUATION_REAL_WORLD_MS=' build/repro429/server.log
+          grep -q 'BUILD429 RAMP_REAL_WORLD_MS=' build/repro429/server.log
+          grep -q 'All 2 required tests passed' build/repro429/server.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr429-actual-minecraft-${{ needs.preserve.outputs.saved }}
+          path: |
+            build/repro429/
+            run429/logs/
+            run429/*.xml
+          retention-days: 30
