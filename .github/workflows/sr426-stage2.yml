@@ -21,6 +21,7 @@ jobs:
           fetch-depth: 0
       - id: save
         run: |
+          git config core.whitespace blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
           python - <<'PY'
           import base64, hashlib, lzma, subprocess
           from pathlib import Path
