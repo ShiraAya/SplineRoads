@@ -4,7 +4,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '6.0.54'
 }
 group = 'com.sora.splineroads'
-version = '0.40.10-alpha'
+version = '0.40.11-alpha'
 base { archivesName = 'splineroads' }
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }

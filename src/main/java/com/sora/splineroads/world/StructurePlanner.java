@@ -100,6 +100,8 @@ final class StructurePlanner {
                 return Double.NaN;
               }
 
+              public V railJoint(V p,V direction){return railJoin==null?null:railJoin.joint(p,direction);}
+              public boolean railPost(V p){return railJoin==null||railJoin.ownsPost(p);}
               public List<RoadRailJoin.Span> railSpans(V a,V b,V outside) {
                 return railJoin==null?RoadStructures.Ground.super.railSpans(a,b,outside):railJoin.exposed(a,b);
               }

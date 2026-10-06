@@ -167,6 +167,8 @@ public final class RoadStructures {
 
     /** Fine boundary clipping is separate from broad furniture openings. Legacy callers
      * retain their old policy; the lane-connector planner supplies exact material clips. */
+    default V railJoint(V position,V direction){return null;}
+    default boolean railPost(V position){return true;}
     default List<RoadRailJoin.Span> railSpans(V a,V b,V outside) {
       return joined(outside)?List.of():List.of(new RoadRailJoin.Span(a,b));
     }
@@ -218,7 +220,7 @@ public final class RoadStructures {
       }
       emitRailRun(out,run,mesh,ground,modern,highway,side);
     }
-    if (modern) { furniture(mesh, ground, out, phase); terminalPosts(out); }
+    if (modern) { furniture(mesh, ground, out, phase); terminalPosts(out,ground); }
     out.addAll(RoadInfrastructure.plan(mesh,ground));
     out.addAll(LaneClosureLandscape.plan(mesh,ground));
 
@@ -286,7 +288,16 @@ public final class RoadStructures {
       run=ordinary;
     }
     for(var r:run) {
-      if(modern)barrier(out,r.a,r.b,highway,r.raised,r.distance);
+      if(modern){
+        var pieces=new ArrayList<Part>();barrier(pieces,r.a,r.b,highway,r.raised,r.distance);
+        V direction=r.b.sub(r.a),first=ground.railJoint(r.a,direction),last=ground.railJoint(r.b,direction);
+        for(var piece:pieces){
+          if(piece.material()==Material.DARK_STEEL&&!ground.railPost(r.a))continue;
+          if(piece.a().sub(r.a).horizontalLength()<1e-6&&piece.b().sub(r.b).horizontalLength()<1e-6)
+            piece=piece.frames(first==null?piece.frameA():first.mul(piece.width()/2),last==null?piece.frameB():last.mul(piece.width()/2));
+          add(out,piece);
+        }
+      }
       else {var part=new Part(r.a,r.b,.24,1.05,false);if(!ground.blocked(part))add(out,part);}
     }
   }
@@ -575,7 +586,8 @@ public final class RoadStructures {
     RailEndKey(V p,Part part){this(Math.round(p.x()*100000),Math.round(p.y()*100000),Math.round(p.z()*100000),part.width(),part.height());}
   }
   private record RailEnd(V p,V into,Part part) {}
-  public static void terminalPosts(List<Part> parts) {
+  public static void terminalPosts(List<Part> parts) {terminalPosts(parts,null);}
+  private static void terminalPosts(List<Part> parts,Ground ground) {
     var ends=new LinkedHashMap<RailEndKey,List<RailEnd>>();
     var lower=new HashSet<RailEndKey>();
     for(Part p:parts)if(p.material()==Material.STEEL&&
@@ -594,6 +606,7 @@ public final class RoadStructures {
       double railY=e.part().width()==.1?.95:e.part().width()==.12?1.05:.8;
       double bottom=e.part().width()==.12?.45:0;
       V base=e.p().add(new V(0,-railY,0));
+      if(ground!=null&&!ground.railPost(base))continue;
       if(posts.add(postKey(base.add(new V(0,bottom>0?bottom-.02:bottom,0)))))post(parts,base,base.add(e.into()),bottom,top);
     }
   }
