@@ -44,9 +44,23 @@ public final class LaneRampCorridor {
       lo=lower;hi=upper;monotone=2;
       if(!propagate(x,lo,hi,grade,monotone))throw failure(base,freeFrom,freeTo,grade,firstConflict(lo,hi),"端口、障碍与逐段坡比约束无法同时满足");
     }
-    for(int i=0;i<n;i++)y[i]=clamp(y[i],lo[i],hi[i]);
-    // Clamping to propagated Lipschitz bounds is feasible. Relax curvature while
-    // staying inside both the physical corridor and neighbouring grade limits.
+    // A feasible envelope is not a feasible profile: independently clamping an
+    // oscillating input can still reverse the slope inside a monotone corridor.
+    // Select forward inside the backwards-propagated bounds. Each selected sample
+    // therefore has a feasible continuation to the fixed destination, including its
+    // actual tangent. Do this before smoothing, rather than hoping relaxation will
+    // eventually remove a 300-metre sag.
+    y[0]=clamp(y[0],lo[0],hi[0]);
+    for(int i=1;i<n;i++){
+      double dx=x[i]-x[i-1];
+      double down=monotone==1||monotone==0?0:grade*dx;
+      double up=monotone==-1||monotone==0?0:grade*dx;
+      double low=Math.max(lo[i],y[i-1]-down),high=Math.min(hi[i],y[i-1]+up);
+      if(low>high+1e-7)throw failure(base,freeFrom,freeTo,grade,i,"坡线连续解不可达");
+      y[i]=clamp(y[i],low,high);
+    }
+    // Relax curvature while staying inside both the physical corridor and
+    // neighbouring grade/direction limits; feasibility is already established.
     for(int pass=0;pass<36;pass++)for(int k=1;k<n-1;k++){
       int i=(pass&1)==0?k:n-1-k;double dl=x[i]-x[i-1],dr=x[i+1]-x[i];
       if(dl<1e-9||dr<1e-9)continue;
@@ -64,6 +78,8 @@ public final class LaneRampCorridor {
       var s=base.samples().get(i);
       if(i>0&&LaneRampGrade.exceeds(y[i]-y[i-1],x[i]-x[i-1],grade))throw failure(base,freeFrom,freeTo,grade,i,"平滑后的局部坡比未通过");
       if(y[i]<lo[i]-1e-6||y[i]>hi[i]+1e-6)throw failure(base,freeFrom,freeTo,grade,i,"平滑后的净空边界未通过");
+      if(i>0&&monotone!=2&&(monotone==0?Math.abs(y[i]-y[i-1])>1e-6:monotone*(y[i]-y[i-1])< -1e-6))
+        throw failure(base,freeFrom,freeTo,grade,i,"无障碍反向起伏未消除");
       result.add(new Sample(new V(s.center().x(),y[i],s.center().z()),s.left(),s.distance(),s.halfWidth()));
     }
     Mesh mesh=RoadRibbon.mesh(result,base.settings());RoadRibbon.checkSelfIntersections(mesh,4);LaneRampPaths.checkVolume(mesh);return mesh;

@@ -503,7 +503,7 @@ public final class RoadStructures {
   }
 
   /** Common raised planting bed: normal medians and temporarily closed ground lanes.
-   * Negative foundationDepth extends the soil below the removed deck; the visible
+   * Positive foundationDepth extends the soil below the removed deck; the visible
    * curb/soil/foliage heights remain the same as a normal-road median. */
   public static List<Part> planting(V a,V b,V leftA,V leftB,double widthA,double widthB,double green,double foundationDepth){
     var out=new ArrayList<Part>();double wa=Math.max(.08,(widthA-.3)*green),wb=Math.max(.08,(widthB-.3)*green);

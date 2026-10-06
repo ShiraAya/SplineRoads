@@ -45,10 +45,20 @@ public final class LaneClosureLandscape {
         // Each actual solid is checked separately. Foliage intersecting a ramp at
         // the mouth must not remove the nonintersecting subgrade foundation/curbs.
         // Once the rising deck clears the bed, the complete normal-road bed resumes.
-        for(var part:bed)if(!ground.blocked(part))result.add(part);
+        for(var part:bed)addUnblocked(result,part,ground,0);
       }
     }
     return List.copyOf(result);
+  }
+  /** Clip an obstructed component locally; never discard its unobstructed soil or
+   * kerbs because a leaf layer meets the rising ramp. A bounded subdivision avoids
+   * full 1-metre gaps at a partial crossing and retains the same framed solid/UVs. */
+  private static void addUnblocked(List<Part> out,Part part,Ground ground,int depth){
+    if(!ground.blocked(part)){out.add(part);return;}
+    if(depth>=4||part.a().sub(part.b()).horizontalLength()<.125)return;
+    V mid=part.a().add(part.b()).mul(.5),frame=part.frameA().add(part.frameB()).mul(.5);
+    addUnblocked(out,new Part(part.a(),mid,part.width(),part.height(),false,part.material()).frames(part.frameA(),frame),ground,depth+1);
+    addUnblocked(out,new Part(mid,part.b(),part.width(),part.height(),false,part.material()).frames(frame,part.frameB()),ground,depth+1);
   }
   private LaneClosureLandscape(){}
 }
