@@ -1,0 +1,72 @@
+name: SR all remaining Q2 final regression
+on:
+  push:
+    branches: [chat/sr-0402]
+    paths: ['tools/patches/q2close422s2*', '.github/workflows/sr-q2close422-final.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 3
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: save
+        run: |
+          python - <<'PY'
+          import base64,hashlib,lzma,subprocess
+          from pathlib import Path
+          subprocess.run(['git','diff','--exit-code','78ad0db07b38ab6e348bb7816c30407456fe9879','--','src','tools/check_q2final422.sh','tools/model-validation/com/sora/splineroads/world/Q2Close422ModelValidation.java'],check=True)
+          data=Path('tools/patches/q2close422s2.xz64.0').read_text()
+          patch=lzma.decompress(base64.b64decode(data,validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='9c793745dea5c876fdde88cbc264c10383c5b5ea30d3273adba267a93b71cd0b'
+          subprocess.run(['git','apply','--check','-'],input=patch,check=True)
+          subprocess.run(['git','apply','-'],input=patch,check=True)
+          subprocess.run(['git','add','--','src','tools/check_q2final422.sh','tools/model-validation/com/sora/splineroads/world/Q2Close422ModelValidation.java'],check=True)
+          PY
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git -c core.whitespace=cr-at-eol diff --cached --check
+          git commit -m 'fix: complete Q2 merge-vacancy guidance and comprehensive six-area regression'
+          git push origin HEAD:refs/heads/chat/sr-0402
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  verify:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: All old and new Q2 regression plus full Forge compilation
+        run: bash tools/check_q2final422.sh
+      - name: Save exact sources and raw logs
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr-q2close422-final-logs-${{ github.sha }}
+          path: build/checkpoint-logs/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr-q2close422-final-jar-${{ github.sha }}
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 30
