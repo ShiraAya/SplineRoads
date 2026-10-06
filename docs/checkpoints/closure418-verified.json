@@ -1,0 +1,47 @@
+{
+  "source_commit": "61f94c92ce579db0e45381b6907170ed64062fc3",
+  "repository": "ShiraAya/SplineRoads",
+  "branch": "chat/sr-0402",
+  "run_id": 37411045334,
+  "artifacts_verified": [
+    {"id":11389566809,"sha256":"d2d8ea6b520d069d9e1bde94b7e2ba570695ef8c42ea760ed5b7dcb015d2b440","bytes":9223146},
+    {"id":11389122661,"sha256":"96c0f9f52ff749db8c91e60dfb29fb018b58e8f23ce22a38216fd58724a0446f","bytes":4788788}
+  ],
+  "version": "0.40.10-alpha",
+  "save_version": 38,
+  "network_protocol": "56",
+  "production_java_changed": 13,
+  "production_java_unchanged": 159,
+  "resource_files_unchanged_excluding_version": 427,
+  "license_notice_files_checked": 6,
+  "production_and_new_test_bytes_match_local_review": true,
+  "zip_crc_checks": "PASS",
+  "java_class_major": 61,
+  "complete_forge_build": "PASS",
+  "minecraft_gpu_world_writes_real_save_reload_multiplayer": "NOT RUN",
+  "changed_java": [
+    "src/main/java/com/sora/splineroads/client/LaneRampScreen.java",
+    "src/main/java/com/sora/splineroads/core/LaneClosureLandscape.java",
+    "src/main/java/com/sora/splineroads/core/LaneDeck.java",
+    "src/main/java/com/sora/splineroads/core/LanePoints.java",
+    "src/main/java/com/sora/splineroads/core/LaneSections.java",
+    "src/main/java/com/sora/splineroads/core/RoadStructures.java",
+    "src/main/java/com/sora/splineroads/core/RoadSurface.java",
+    "src/main/java/com/sora/splineroads/net/RoadNetwork.java",
+    "src/main/java/com/sora/splineroads/world/LaneCrossSections.java",
+    "src/main/java/com/sora/splineroads/world/LanePointCodec.java",
+    "src/main/java/com/sora/splineroads/world/LaneRamps.java",
+    "src/main/java/com/sora/splineroads/world/LaneTopology.java",
+    "src/main/java/com/sora/splineroads/world/RoadData.java"
+  ],
+  "notes": [
+    "Previous queued stage3 was cancelled; this session applied actual saved patch at8101d2b and verified full rebuild.",
+    "WIP trigger partial-tree CI failure not a final-code result.",
+    "Soil part packed binary tested using real encoder/decoder with NBT map adapter; not actual disk NBT/world test.",
+    "Q2-16 new physical shape; Q2-17 only selected-closure local classification, global remainder still open.",
+    "Existing unmarked links retain old geometry until explicit reconfigure; P2 deferred."
+  ],
+  "SplineRoads-0.40.10-alpha.jar": {"sha256":"f44eb1e5643d401b88589ea3422ca6d230f0709724dd08e29b9d29f23a2ca984","bytes":5453778},
+  "SplineRoads-0.40.10-alpha-source.zip": {"sha256":"bfecb834118bbec17db9b9a89acda585b44e0b7b4d1a33b628fc799d203985ff","bytes":10399555},
+  "SR_0410_Build_and_Test_Logs.zip": {"sha256":"b883d417e9c1e3d3b68e1a35e845ee63bfac1e7fe3ae6d0c2414a54e76f780f6","bytes":13855}
+}
