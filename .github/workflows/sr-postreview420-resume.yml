@@ -1,0 +1,68 @@
+name: SR P1 resume connector editor compatibility
+on:
+  push:
+    branches: [chat/sr-0402]
+    paths: ['tools/patches/postreview420-resume.z64', '.github/workflows/sr-postreview420-resume.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 3
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: save
+        run: |
+          python - <<'PY'
+          import base64, hashlib, subprocess, zlib
+          from pathlib import Path
+          patch=zlib.decompress(base64.b64decode(Path('tools/patches/postreview420-resume.z64').read_text().strip(),validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='85e5ba999df73a1000ec94b561a212247935e3aea4134642b08ed0f5fc789e17'
+          subprocess.run(['git','apply','--check','-'],input=patch,check=True)
+          subprocess.run(['git','apply','-'],input=patch,check=True)
+          PY
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git add src/main/java/com/sora/splineroads/client/RoadScreen.java src/main/java/com/sora/splineroads/core/RoadGantry.java src/main/java/com/sora/splineroads/world/RoadTool.java tools/check_connector420_postreview.sh tools/postreview420/
+          git -c core.whitespace=cr-at-eol diff --cached --check
+          git commit -m 'fix: restore linked connector editing, exact width and explicit highway AUTO gantry'
+          git push origin HEAD:refs/heads/chat/sr-0402
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  verify:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Connector review regression and complete Forge compilation
+        run: bash tools/check_connector420_postreview.sh
+      - name: Preserve exact committed sources and logs
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr-postreview420-logs-${{ github.sha }}
+          path: build/checkpoint-logs/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr-postreview420-jar-${{ github.sha }}
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 30
