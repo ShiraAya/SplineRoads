@@ -10,7 +10,9 @@ Current changes: integrated monotone signed endpoint-grade profiles; cap-aware f
 
 Additional repair: automatic 64/96/128m early alignment before EXTRA intake, with the original B and fixed auxiliary tail preserved and all nonselected lanes still protected. Updated legal mirrored model fixtures; explicit illegal inner-slot EXTRA rejection and no-mutation cases remain. Source and acceptance matrix are in docs/checkpoints/SR-0.40.14-P1-review.md.
 
-Verification is in progress. Local core/adapters are not Minecraft world/GPU tests. All P1-01..11 remain awaiting user in-game acceptance. P2 terrain/shaders/multithreading remain deferred. Do not mass-rebuild old saves or claim old fixtures are actual screenshots/world saves.
+Verification COMPLETE for code commit 61400caa43c89d4fd2c4b6d17fe80ca9b8cf93d9: Actions run 37462501644 / job 112265356964 succeeded, including actual Java17 Forge build/reobf and the complete tools/check_p1review424.sh chain. Downloaded source was checked against all 1794 locally tracked files; JAR SHA256 ad0e742529be27018d6ef9e297584d346a0000ead8142a0a87aca994f37cb69f. Detailed evidence and delivery hashes: docs/checkpoints/FINAL_VERIFICATION_424.md.
+
+Local core/adapters are not Minecraft world/GPU tests. All P1-01..11 remain awaiting user in-game acceptance. P2 terrain/shaders/multithreading remain deferred. Do not mass-rebuild old saves or claim old fixtures are actual screenshots/world saves. This checkpoint ends with all source saved; no unrecorded background work is promised.
 
 ---
 ## Prior checkpoint (historical, not current validation)
