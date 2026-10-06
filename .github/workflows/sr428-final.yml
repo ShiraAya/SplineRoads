@@ -1,0 +1,80 @@
+name: SR15 integrated final verification
+on:
+  push:
+    branches: [SR-0.40.15]
+    paths: ['tools/patches/sr428-final-*.b64', '.github/workflows/sr428-final.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    if: github.ref == 'refs/heads/SR-0.40.15'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 3
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - id: save
+        run: |
+          git config core.whitespace blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+          python - <<'PY'
+          import base64, hashlib, lzma, subprocess
+          from pathlib import Path
+          subprocess.run(['git','diff','--exit-code','e9d4876b0876f539c6c321cefa7116e2340ecff3','--','src','build.gradle','tools/test_ramp39_model.sh'],check=True)
+          encoded=''.join(Path(f'tools/patches/sr428-final-{i:02}.b64').read_text().strip() for i in range(3))
+          patch=lzma.decompress(base64.b64decode(encoded,validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='2050895b90a1d173fb93e4043fae8d7fa58a91a7bad9bfc921866cd43b4989a1'
+          subprocess.run(['git','apply','--check','-'],input=patch,check=True)
+          subprocess.run(['git','apply','-'],input=patch,check=True)
+          Path('PROGRESS.md').write_text('# SR15 integrated candidate saved — final CI pending\n\n2026-10-06. User requested all remaining changes before unified game testing. Work only on SR-0.40.15; baseline e9d4876 / production c62e440. Current candidate 0.40.16-alpha-rc1, network protocol62.\n\nImplemented: SR15-03 narrow shallow foundation skirts, SR15-07 original-versus-visible terrain support classification, SR15-08 unchanged authored divider axes through consecutive merge/detach, transaction-local original-merge removal/restoration and continuation propagation, Y and 3–6 arm independent directional-lane configuration. Earlier stage1/stage2 changes retained. Details and acceptance sequence: docs/checkpoints/SR15-FINAL-428.md.\n\nLocal core, real generator and record/index tests ran, but final full regression and actual Forge build are pending for this saved commit. Run bash tools/check_sr428.sh. Do not substitute older CI passes for this source. No Minecraft client/GPU/original-world or real ServerLevel transaction acceptance. All original14 items await unified game acceptance, not screenshot closure.\n\nSource is committed before CI; a following documentation-only checkpoint will record actual outcome and artifact hashes. Other branches unchanged. P2 terrain/shaders/multithreading not expanded. Previous checkpoint remains at e9d4876:PROGRESS.md and FINAL_VERIFICATION_427.md.\n',encoding='utf-8')
+          subprocess.run(['git','add','--','src','build.gradle','tools/check_sr428.sh','tools/test_ramp39_model.sh','tools/model-validation','docs/checkpoints/SR15-FINAL-428.md','PROGRESS.md'],check=True)
+          PY
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git diff --cached --check
+          git commit -m 'fix: preserve planting foundations, close deck seams and propagate live continuations'
+          git push origin HEAD:refs/heads/SR-0.40.15
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  verify:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Actual Forge build and complete old and integrated regression
+        run: |
+          mkdir -p build/checkpoint-logs
+          set -o pipefail
+          bash tools/check_sr428.sh 2>&1 | tee build/checkpoint-logs/sr428-integrated-full.log
+      - name: Save exact source and evidence
+        if: always()
+        run: |
+          mkdir -p build/checkpoint-logs
+          git rev-parse HEAD > build/checkpoint-logs/COMMIT.txt
+          git archive --format=zip --output=build/checkpoint-logs/SR-source.zip HEAD
+          sha256sum build/libs/*.jar > build/checkpoint-logs/JAR-SHA256.txt 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr428-source-logs-${{ needs.preserve.outputs.saved }}
+          path: build/checkpoint-logs/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sr428-jars-${{ needs.preserve.outputs.saved }}
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 30
