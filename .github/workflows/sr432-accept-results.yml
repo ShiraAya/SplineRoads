@@ -1,0 +1,58 @@
+name: SR432 measured performance acceptance
+on:
+  push:
+    branches: [SR-0.40.15]
+    paths: ['.github/workflows/sr432-accept-results.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  accept:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Wait for already-started reverse benchmark to preserve its original logs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json, os, time, urllib.request
+          url='https://api.github.com/repos/ShiraAya/SplineRoads/actions/runs/37591043544'
+          for attempt in range(30):
+              request=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+              with urllib.request.urlopen(request,timeout=15) as response: run=json.load(response)
+              if run['status']=='completed':
+                  print('Reverse benchmark original conclusion:',run['conclusion'])
+                  break
+              time.sleep(5)
+          else: raise SystemExit('Reverse benchmark did not finish yet; no acceptance claim')
+          PY
+      - uses: actions/download-artifact@v4
+        with:
+          name: sr432-paired-minecraft-2f3f6ef48bdebe7a296804db459ed05b448969be
+          run-id: 37590187644
+          github-token: ${{ github.token }}
+          path: build/metrics432/forward
+      - uses: actions/download-artifact@v4
+        with:
+          name: sr432-reverse-performance-2f3f6ef4
+          run-id: 37591043544
+          github-token: ${{ github.token }}
+          path: build/metrics432/reverse
+      - name: Evaluate every original measurement without changing logs or thresholds
+        run: |
+          mkdir -p build/metrics432/results
+          set -o pipefail
+          python tools/compare_performance432.py build/metrics432/forward/build/paired432/baseline-server.log build/metrics432/forward/build/paired432/optimized-server.log build/metrics432/results/forward.json 2>&1 | tee build/metrics432/results/forward.txt
+          python tools/compare_performance432.py build/metrics432/reverse/build/reverse432/baseline-server.log build/metrics432/reverse/build/reverse432/optimized-server.log build/metrics432/results/reverse.json 2>&1 | tee build/metrics432/results/reverse.txt
+          echo 'Both test orders passed identical route, preview, construction and total performance gates with matching collision fingerprints.' > build/metrics432/results/ACCEPTED.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr432-final-performance-evidence
+          path: build/metrics432/
+          retention-days: 30
