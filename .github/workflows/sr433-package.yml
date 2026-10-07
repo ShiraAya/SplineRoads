@@ -1,0 +1,49 @@
+name: SR433 exact candidate package
+on:
+  push:
+    branches: [SR-0.40.15]
+    paths: ['.github/workflows/sr433-package.yml']
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fe711ceb0d19816bf743cca87ccfa6e72d4780d8
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Verify Java and all fixtures unchanged after tested commit
+        run: |
+          git diff --exit-code ea7a275ae97679b28fd99b4818f20acfaa748b45 -- src/main/java src/gametest src/validation tools/model-validation
+      - name: Actual Forge package and both version markers
+        run: |
+          mkdir -p build/final433
+          set -o pipefail
+          bash gradlew --no-daemon compileJava compileGameTestJava jar 2>&1 | tee build/final433/forge.log
+          python - <<'PY'
+          import zipfile
+          with zipfile.ZipFile('build/libs/splineroads-0.40.20-alpha-rc1.jar') as z:
+              assert 'Implementation-Version: 0.40.20-alpha-rc1' in z.read('META-INF/MANIFEST.MF').decode()
+              assert 'version="0.40.20-alpha-rc1"' in z.read('META-INF/mods.toml').decode()
+          PY
+          cp build/libs/splineroads-0.40.20-alpha-rc1.jar build/final433/
+      - name: Exact source and checksums
+        if: always()
+        run: |
+          mkdir -p build/final433
+          git rev-parse HEAD > build/final433/COMMIT.txt
+          git archive --format=zip --output=build/final433/SplineRoads-0.40.20-alpha-rc1-source.zip HEAD
+          sha256sum build/final433/*.jar build/final433/*source.zip > build/final433/SHA256.txt 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr433-final-install-source-fe711ceb
+          path: build/final433/
+          retention-days: 30
