@@ -1,3 +1,8 @@
+# SR433 final verification pending
+
+Full regression found a real disjoint-intake regression: the provisional cut covered the whole lane chain and overlapped a distant valid intake. Real physical ranges are now created only after the candidate exists; slot-specific collision guards remain during route search. This is not a clearance exemption. Arrival417 tests no longer demand fixed64m/40m or blanket predecessor refusal, but keep closure, exactB, adjacent-lane, codec and deletion checks. All78 Arrival417 scenarios/1008 checks passed locally after the repair. Initial real3case Minecraft and Forge passed; final same-fixture run and complete regression are pending on the saved source. No further feature expansion this turn.
+
+---
 # SR433 WIP: physical lanes and actual impact bounds
 
 Version0.40.20-alpha-rc1, protocol65. Latest nine screenshots reopen correctness: lane-continuous search across joined roads, contact-derived reservations, distinct below-grade mouths, no departure X, real opening edges, local tunnels and bridge piers. Exact source is saved before full regression and real Forge/ServerLevel tests. No original-world acceptance or completed-release claim until verification finishes. Prior perf2 collision hot paths and cancellation remain; no fixed interactive cutoff.

@@ -91,11 +91,13 @@ public final class LaneCrossSections {
     if(link==null)return;
     if(link.options().separatesLane()&&(hosts==null||hosts.contains(link.from().road()))) {
       if(link.options().departure()==LanePoints.Departure.DETACH)add(events,all,connection,link.from(),LaneSections.Kind.DEPART,0,link.options().transition());
-      else {
+      else if(candidate!=null) {
+        // No invented chain-wide provisional cut: real ranges require a candidate.
+        // Slot-specific collision guards remain active during route search.
         LaneRoadChain.of(all,link.from()).reserve(events,connection,candidate,parts,false,0,link.options().transition(),link.rectangularClosure());
       }
     }
-    if(link.closesTarget()&&(hosts==null||hosts.contains(link.to().road()))){
+    if(candidate!=null&&link.closesTarget()&&(hosts==null||hosts.contains(link.to().road()))){
       LaneRoadChain.of(all,link.to()).reserve(events,connection,candidate,parts,true,link.targetOffset(),link.options().transition(),link.rectangularClosure());
     }
 

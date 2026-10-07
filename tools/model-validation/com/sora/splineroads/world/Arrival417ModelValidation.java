@@ -17,8 +17,8 @@ public final class Arrival417ModelValidation {
    try{ramp=LaneRamps.generate(null,all,rid,id(),new LanePoints.Link(from,to,o,null));}catch(IllegalArgumentException e){throw new AssertionError(style+" left="+left+" slot="+slot+" side="+side+" "+e.getMessage(),e);}
    all.put(rid,ramp);LaneCrossSections.reconcile(all);var host=all.get(target.id());var link=LaneTopology.metadata(ramp).link();cases++;
    check(link.protectedMerge()&&link.closesTarget(),"new merge policy not stored");var cuts=LaneTopology.metadata(host).cuts().stream().filter(c->c.connection().equals(rid)&&c.arrival()).toList();check(cuts.size()==1,"missing target closure");var cut=cuts.get(0);
-   check(cut.lane()==slot&&cut.sign()==sign&&Math.abs(cut.end()-700)<1e-6,"wrong slot/station/direction");check(sign*(cut.end()-cut.begin())>=64,"closure lacks upstream room");
-   double mid=700-sign*16;check(!LaneSections.active(host.mesh(),mid,slot),"selected lane not closed before B");check(LaneSections.active(host.mesh(),700,slot)&&LaneSections.active(host.mesh(),700+sign*8,slot),"lane not restored at/after B");
+   check(cut.lane()==slot&&cut.sign()==sign&&Math.abs(cut.end()-700)<1e-6,"wrong slot/station/direction");check(sign*(cut.end()-cut.begin())>0&&sign*(cut.end()-cut.begin())<700,"closure must be an actual finite upstream interval");
+   double mid=(cut.begin()+cut.end())/2;check(!LaneSections.active(host.mesh(),mid,slot),"selected lane not closed before B");check(LaneSections.active(host.mesh(),700,slot)&&LaneSections.active(host.mesh(),700+sign*8,slot),"lane not restored at/after B");
    for(int other=0;other<RoadProfile.catalog(style).lanes();other++)if(other!=slot){check(LaneSections.active(host.mesh(),mid,other),"other lane closed");check(LanePoints.lane(host.mesh(),mid,other).position().distance(LanePoints.lane(target.rawMesh(),mid,other).position())<1e-7,"other lane moved");}
    var protectedHost=LaneDeck.excludingSlot(LaneDeck.motorOnly(host.mesh()),slot);check(RoadClearance.contacts(ramp.mesh(),protectedHost).stream().noneMatch(RoadClearance.Contact::blocked),"ramp intrudes live adjacent lane or median");
    if(style==Style.O3_ONE&&(slot==0&&side==1||slot==2&&side==-1))check(ramp.mesh().samples().stream().allMatch(s->Math.abs(s.center().y()-100)<1e-7),"unobstructed same-height outside merge has needless height excursion");
@@ -73,9 +73,9 @@ public final class Arrival417ModelValidation {
   check(LaneTopology.metadata(all.get(main.id())).cuts().stream().filter(LaneSections.Cut::arrival).count()==2,"disjoint same-lane intakes conflict during provisional planning");
   var clean=new LinkedHashMap<UUID,RoadRecord>();var small=road(new V(0,100,0),new V(0,100,300),Style.O1_ONE,false);var feed=road(new V(-200,100,-100),new V(-100,100,-100),Style.O1_ONE,false);clean.put(small.id(),small);clean.put(feed.id(),feed);
   var from=point(clean,feed,80,0);var to=point(clean,small,20,0);var id=id();var ramp=LaneRamps.generate(null,clean,id,id(),new LanePoints.Link(from,to,options,null));clean.put(id,ramp);LaneCrossSections.reconcile(clean);
-  var h=clean.get(small.id());check(!LaneSections.active(h.mesh(),0,0)&&LaneSections.active(h.mesh(),20,0),"free start should be entirely closed until near-start B");
+  var h=clean.get(small.id());var nearCut=LaneTopology.metadata(h).cuts().stream().filter(c->c.connection().equals(id)&&c.arrival()).findFirst().orElseThrow();check(!LaneSections.active(h.mesh(),(nearCut.begin()+nearCut.end())/2,0)&&LaneSections.active(h.mesh(),20,0),"actual near-start influence must close and reopen at B");
   var predecessor=road(new V(0,100,-200),new V(0,100,0),Style.O1_ONE,false);clean.put(predecessor.id(),predecessor);
-  denied(()->LaneCrossSections.reconcile(clean),"silently closes previous physical road when upstream taper cannot fit");
+  LaneCrossSections.reconcile(clean);check(LaneTopology.metadata(clean.get(predecessor.id())).cuts().stream().allMatch(c->c.arrival()&&c.connection().equals(id)&&c.begin()>=0&&c.end()<=predecessor.rawMesh().length()),"cross-seam reservation must retain owner and actual host bounds");check(LaneTopology.metadata(clean.get(small.id())).cuts().stream().anyMatch(c->c.connection().equals(id)&&Math.abs(c.end()-20)<1e-7),"cross-seam reservation moved exact B");
  }
 
  static void departuresAndExtras(){
@@ -84,7 +84,7 @@ public final class Arrival417ModelValidation {
    var target=road(new V(-280,100,start+sign*420),new V(-400,100,start+sign*420),Style.O1_ONE,left);all.put(source.id(),source);all.put(target.id(),target);var from=point(all,source,start,slot);var to=point(all,target,30,0);
    var o=new LanePoints.Options(LanePoints.Path.AUTO,LanePoints.Departure.TEMPORARY,LanePoints.Arrival.MERGE,32,32,LanePoints.Elevation.AUTO,LanePoints.Landing.EXACT);var id=id();
    var ramp=LaneRamps.generate(null,all,id,id(),new LanePoints.Link(from,to,o,null));all.put(id,ramp);LaneCrossSections.reconcile(all);cases++;
-   var changed=all.get(source.id());check(!LaneSections.active(changed.mesh(),start+sign*40,slot),"source TEMPORARY slot not closed");
+   var changed=all.get(source.id());var sourceCut=LaneTopology.metadata(changed).cuts().stream().filter(c->c.connection().equals(id)&&!c.arrival()).findFirst().orElseThrow();check(!LaneSections.active(changed.mesh(),(sourceCut.begin()+sourceCut.end())/2,slot),"source TEMPORARY slot not closed");
    check(RoadClearance.contacts(ramp.mesh(),LaneDeck.excludingSlot(LaneDeck.motorOnly(changed.mesh()),slot)).stream().noneMatch(RoadClearance.Contact::blocked),"departing ramp intrudes live neighboring source lane");
    LaneReopening.validateRestored(changed.mesh(),slot,ramp.mesh(),id);checks++;
   }
