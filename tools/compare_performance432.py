@@ -6,6 +6,12 @@ from pathlib import Path
 pattern = re.compile(r'BENCH432 kind=(\w+) run=(\d+) plan=([\d.]+) preview=([\d.]+) build=([\d.]+) total=([\d.]+) cells=(\d+) shape=(-?\d+)')
 def read(path):
     text = Path(path).read_text(errors='replace')
+    # Gradle merges stdout printf fragments with stderr JUL records. Remove only
+    # complete, recognized JUL metadata+message pairs, never measurement fields.
+    # Keep source logs unchanged; require all 8 records and each exact sum below.
+    jul = r'(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{1,2}, \d{4} \d{1,2}:\d{2}:\d{2} (?:AM|PM) com\.sora\.splineroads\.[^\r\n]*\r?\n(?:INFO|WARNING|SEVERE): [^\r\n]*(?:\r?\n|$)'
+    text, count = re.subn(jul, '', text)
+    print(f'{path}: recognized JUL records separated from stdout: {count}')
     assert 'All 2 required tests passed' in text, f'{path}: actual tests did not pass'
     rows = {}
     for match in pattern.finditer(text):
@@ -13,6 +19,8 @@ def read(path):
         key = (kind, int(run))
         assert key not in rows, f'duplicate benchmark {key}'
         rows[key] = dict(zip(('plan', 'preview', 'build', 'total'), map(float, values[:4]))) | {'cells': int(values[4]), 'shape': int(values[5])}
+    for key, row in rows.items():
+        assert abs(row['plan']+row['preview']+row['build']-row['total']) < .00001, f'{key}: damaged measurement'
     assert len(rows) == 8 and all((k, i) in rows for k in ('ADD', 'TEMPORARY') for i in range(4)), 'Missing repeated measurements'
     shapes = Counter(re.findall(r'SHAPE432 start=.*', text))
     assert len(shapes) > 0, 'No full assembly collision signatures'
