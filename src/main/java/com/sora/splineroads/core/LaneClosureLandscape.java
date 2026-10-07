@@ -63,7 +63,7 @@ public final class LaneClosureLandscape {
   private record Interval(int lane,double begin,double end){}
   private static List<Interval> closedIntervals(Mesh mesh){
     var raw=LaneSections.reference(mesh);var intervals=new ArrayList<Interval>();
-    for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.temporary()&&cut.rectangular()){
+    for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.temporary()&&cut.rectangular()&&!cut.underpass()){
       double a=Math.max(raw.first().distance(),Math.min(cut.begin(),cut.end()));
       double b=Math.min(raw.last().distance(),Math.max(cut.begin(),cut.end()));
       if(b>a+1e-7)intervals.add(new Interval(cut.lane(),a,b));

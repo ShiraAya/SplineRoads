@@ -28,6 +28,20 @@ public final class LaneDeck {
       double hi=Math.max(lo,Math.min(sample.halfWidth(),center+half));holes.add(new Span(lo,hi,false,false));
     }return holes;
   }
+  /** A physically reserved outer slot is not an intact outer road boundary. */
+  public static boolean outerOpening(Mesh mesh,double station,int side){
+    var sample=RoadStructures.sample(mesh,station);var raw=LaneSections.reference(mesh);
+    for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.temporary()&&cut.rectangular()&&cut.removed(station)>.999){
+      var chosen=LanePoints.lane(raw,station,cut.lane());double offset=chosen.position().sub(sample.center()).dot(sample.left());
+      boolean outer=true;
+      for(int slot:LaneAdditions.slots(raw,station))if(slot!=cut.lane()){
+        var lane=LanePoints.lane(raw,station,slot);double other=lane.position().sub(sample.center()).dot(sample.left());
+        if(side*(other-offset)>1e-6){outer=false;break;}
+      }
+      if(outer)return true;
+    }
+    return false;
+  }
   public static List<Span> spans(Mesh mesh,Sample sample){return spans(mesh,sample,sample.distance());}
   private static List<Span> spans(Mesh mesh,Sample sample,double interval){
     if(!hasOpenings(mesh))return List.of(new Span(-sample.halfWidth(),sample.halfWidth(),true,true));

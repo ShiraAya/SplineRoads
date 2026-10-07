@@ -34,9 +34,9 @@ final class RoadInteractions {
   }
   static boolean selfSupportBlocked(Part part,Mesh mesh){
     if(!part.pier()&&(part.material()!=Material.CONCRETE||part.width()<1||part.height()<.5))return false;
-    double lo=Math.min(part.a().y(),part.b().y())-part.verticalFrame(),hi=Math.max(part.a().y(),part.b().y())+part.height()+part.verticalFrame();
-    V d=part.b().sub(part.a());double length=d.x()*d.x()+d.z()*d.z();
-    for(var sample:mesh.samples()){double y=sample.center().y();if(hi<=y-mesh.settings().thickness()+.04||lo>=y+4.25)continue;double t=length<1e-9?0:Math.max(0,Math.min(1,(sample.center().x()-part.a().x())*d.x()/length+(sample.center().z()-part.a().z())*d.z()/length));V at=part.a().add(d.mul(t));if(at.sub(sample.center()).horizontalLength()<part.halfExtent()+sample.halfWidth()+.3)return true;}return false;
+    // Use the actual framed prism. A midpoint/bounding-radius test falsely hit
+    // nearby lower samples of the SAME sloping deck, removing every ramp pier.
+    return RoadClearance.structureInvades(part,mesh,4.25);
   }
   static boolean invades(Part p,Mesh m){
     return RoadClearance.structureInvades(p,m,4.25);

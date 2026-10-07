@@ -8,7 +8,7 @@ public final class LaneClosureWarnings {
   public static List<RoadJunction.Paint> paint(Mesh mesh){
     var out=new ArrayList<RoadJunction.Paint>();var raw=LaneSections.reference(mesh);
     var used=new HashSet<String>();
-    for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.rectangular()){
+    for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.rectangular()&&cut.arrival()){
       double start=Math.min(cut.begin(),cut.end()),end=Math.max(cut.begin(),cut.end());
       var lane=LanePoints.lane(raw,Math.max(0,Math.min(raw.length(),start)),cut.lane());
       double boundary=lane.sign()>0?start:end;
@@ -37,7 +37,7 @@ public final class LaneClosureWarnings {
   }
   /** Do not invite straight-ahead traffic with an arrow underneath an X warning. */
   public static boolean covers(Mesh mesh,double station,int slot){
-    for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.rectangular()&&cut.lane()==slot){
+    for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.rectangular()&&cut.arrival()&&cut.lane()==slot){
       var lane=LanePoints.lane(LaneSections.reference(mesh),station,slot);
       double boundary=lane.sign()>0?Math.min(cut.begin(),cut.end()):Math.max(cut.begin(),cut.end());
       double lead=lane.sign()*(boundary-station);

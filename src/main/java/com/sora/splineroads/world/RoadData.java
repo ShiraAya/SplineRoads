@@ -1128,14 +1128,14 @@ public final class RoadData extends SavedData {
         for(long chunk:r.chunks)if(touchedChunks.contains(chunk))finalByChunk.computeIfAbsent(chunk,k->new ArrayList<>()).add(r);
         if(r.rasterized()) {
           for (long key : r.cells.keySet())if (touched.contains(key))body.computeIfAbsent(key,k->new ArrayList<>()).add(r);
-          for (long key : r.clearanceCells)if(touched.contains(key)){air.add(key);if(r.record.settings().structure()==Structure.TUNNEL)dry.add(key);}
+          for (long key : r.clearanceCells)if(touched.contains(key)){air.add(key);if(r.tunnelAt(BlockPos.of(key)))dry.add(key);}
         } else {
           // A short edit next to a kilometres-long unchanged road must not materialize its
           // entire deck, furniture and clearance volume. Query only touched local columns.
           for(long chunk:r.chunks)for(var pos:touchedByChunk.getOrDefault(chunk,List.of())) {
             long key=pos.asLong();
             if(!r.boxes(pos).isEmpty())body.computeIfAbsent(key,k->new ArrayList<>()).add(r);
-            if(r.clearanceAt(pos)){air.add(key);if(r.record.settings().structure()==Structure.TUNNEL)dry.add(key);}
+            if(r.clearanceAt(pos)){air.add(key);if(r.tunnelAt(BlockPos.of(key)))dry.add(key);}
           }
         }
       }
@@ -1327,7 +1327,7 @@ public final class RoadData extends SavedData {
     var pos=BlockPos.of(key);
     var nearby=index.inChunk(new net.minecraft.world.level.ChunkPos(pos).toLong()).stream()
         .map(index.roads::get).filter(Objects::nonNull).toList();
-    boolean dryInterior=nearby.stream().anyMatch(r->r.record.settings().structure()==Structure.TUNNEL&&r.clearanceAt(pos));
+    boolean dryInterior=nearby.stream().anyMatch(r->r.tunnelAt(pos)&&r.clearanceAt(pos));
     return collisionState(key,previous,roads,sidewalk,dryInterior,nearby);
   }
   private BlockState collisionState(long key, BlockState previous, List<RoadIndex.Built> roads,BlockState sidewalk,boolean dryInterior,List<RoadIndex.Built> nearby) {
@@ -1380,7 +1380,7 @@ public final class RoadData extends SavedData {
     // reservations, including tunnels not owning this particular body cell.
     boolean deckHere=roads.stream().anyMatch(r->{var c=r.column(p);return c!=null
         &&p.getY()+1>c.minTop()-r.record.settings().thickness()+1e-7&&p.getY()<c.maxTop()-1e-7;});
-    boolean tunnelOwner=roads.stream().anyMatch(r->r.record.settings().structure()==Structure.TUNNEL);
+    boolean tunnelOwner=roads.stream().anyMatch(RoadIndex.Built::hasTunnel);
     boolean shell=roads.stream().anyMatch(r->r.shellAt(p));
     boolean permeable=RoadWaterPolicy.permeable(deckHere,generic||fill!=RoadBlocks.Fill.NONE,tunnelOwner,shell,dryInterior);
     boolean originalWater=terrainOriginal.getOrDefault(key,Blocks.AIR.defaultBlockState()).getFluidState().is(net.minecraft.tags.FluidTags.WATER);

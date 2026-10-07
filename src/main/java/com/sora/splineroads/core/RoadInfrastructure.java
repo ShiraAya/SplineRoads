@@ -37,8 +37,8 @@ public final class RoadInfrastructure {
     }
     public Config {
       if(bridge==null||tunnel==null||gantry==null||adjustment==null||!RoadGeometry.finite(span,headroom,spacing,tunnelDepth,bridgeRise,maxGrade)
-          ||span<12||span>2048||headroom<5||headroom>12||spacing<32||spacing>512||tunnelDepth<0||tunnelDepth>96||bridgeRise<0||bridgeRise>96||maxGrade<0||maxGrade>.2)
-        throw new IllegalArgumentException("桥跨 12–2048；净高 5–12；间距 32–512；下潜 / 抬升 0–96 格；坡度不超过 20%");
+          ||span<12||span>2048||headroom<4||headroom>12||spacing<32||spacing>512||tunnelDepth<0||tunnelDepth>96||bridgeRise<0||bridgeRise>96||maxGrade<0||maxGrade>.2)
+        throw new IllegalArgumentException("桥跨 12–2048；净高 4–12；间距 32–512；下潜 / 抬升 0–96 格；坡度不超过 20%");
       signs=List.copyOf(signs);if(signs.size()>128||signs.stream().map(RoadSigns.Attachment::id).distinct().count()!=signs.size())throw new IllegalArgumentException("路牌记录过多或重复");
       gantryEdits=List.copyOf(gantryEdits);
       if(gantryEdits.size()>256||gantryEdits.stream().map(RoadGantry.Edit::slot).distinct().count()!=gantryEdits.size())

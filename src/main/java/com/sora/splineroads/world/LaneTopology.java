@@ -113,7 +113,7 @@ public final class LaneTopology {
         &&a.settings().options().leftTraffic()==b.settings().options().leftTraffic()
         &&a.mesh().samples().equals(b.mesh().samples());
   }
-  private static boolean portsMatch(RoadRecord r,Map<UUID,RoadRecord> all){var l=metadata(r).link();try{var a=LaneRamps.host(all,l.from());V first=LaneRamps.port(a,point(a,l.from().point())).position();V last=l.junctionMouth();if(l.to().road()!=null){var b=LaneRamps.host(all,l.to());last=LaneRamps.arrivalPort(b,point(b,l.to().point()),l.targetOffset(),l,r.id()).position();}return LaneRampAlignment.axis(r.mesh(),true).distance(first)<1e-5&&LaneRampAlignment.axis(r.mesh(),false).distance(last)<1e-5;}catch(IllegalArgumentException e){return false;}}
+  private static boolean portsMatch(RoadRecord r,Map<UUID,RoadRecord> all){var l=metadata(r).link();try{var a=LaneRamps.host(all,l.from());V first=LaneRamps.port(a,point(a,l.from().point())).position();V last=l.junctionMouth();if(l.to().road()!=null){last=LaneRamps.resolvedArrival(all,l,r.id()).position();}return LaneRampAlignment.axis(r.mesh(),true).distance(first)<1e-5&&LaneRampAlignment.axis(r.mesh(),false).distance(last)<1e-5;}catch(IllegalArgumentException e){return false;}}
   static void reconcile(RoadData data,List<RoadIndex.Built> built,Set<UUID> removed){
     RoadPlanningBudget.check();
     Map<UUID,RoadRecord> all=records(data);removed.forEach(all::remove);for(var b:built)all.put(b.record.id(),b.record);

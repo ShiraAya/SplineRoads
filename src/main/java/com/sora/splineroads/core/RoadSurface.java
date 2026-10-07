@@ -185,7 +185,7 @@ public final class RoadSurface {
                 && edgeLayout.curbWidth() > 0
                 && (edgeLayout.catalog().twoWay() || edgeLayout.outside() == side);
         double edgeA=edgeOffset(mesh,a,side),edgeB=edgeOffset(mesh,b,side);
-        if (!curb && !overrideLine(markings,mesh,a,b,"edge:"+side,mesh.settings().options().lanePoints().link()==null?side*(a.halfWidth()-.2):edgeA,mesh.settings().options().lanePoints().link()==null?side*(b.halfWidth()-.2):edgeB,joined)) boundaryStripe(markings,a,b,side,joined,edgeZones,edgeA,edgeB);
+        if (!curb && !LaneDeck.outerOpening(mesh,(a.distance()+b.distance())/2,side) && !overrideLine(markings,mesh,a,b,"edge:"+side,mesh.settings().options().lanePoints().link()==null?side*(a.halfWidth()-.2):edgeA,mesh.settings().options().lanePoints().link()==null?side*(b.halfWidth()-.2):edgeB,joined)) boundaryStripe(markings,a,b,side,joined,edgeZones,edgeA,edgeB);
       }
       Style style = mesh.settings().style();
       if (RoadProfile.modern(style)) {

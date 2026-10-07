@@ -7,17 +7,24 @@ import java.util.*;
 public final class LaneReopening {
   private static final double SIDE_MARGIN=.30, END_MARGIN=1.0;
   public static double restoreStation(Mesh host,int slot,double begin,Mesh ramp,List<RoadStructures.Part> parts,double transition){
+    return restoreStation(host,slot,begin,ramp,parts,transition,false);
+  }
+  public static double restoreStation(Mesh host,int slot,double begin,Mesh ramp,List<RoadStructures.Part> parts,double transition,boolean rectangular){
     var raw=LaneSections.reference(host);int sign=LanePoints.lane(raw,begin,slot).sign();var sweep=laneSweep(raw,slot);
     var prepared=RoadClearance.prepare(sweep);double last=sign*begin;
     last=lastBlocked(prepared,ramp,begin,sign,last);
     for(var part:parts){RoadPlanningBudget.check();last=lastBlocked(prepared,envelope(part,ramp.settings()),begin,sign,last);}
-    double reopen=Math.max(sign*begin+2*transition,last+END_MARGIN),end=(reopen+transition)*sign;
+    double reopen=rectangular?Math.max(sign*begin+.25,last+END_MARGIN):Math.max(sign*begin+2*transition,last+END_MARGIN);
+    double end=(reopen+(rectangular?0:transition))*sign;
     if(end<.001||end>raw.length()-.001)throw new IllegalArgumentException("匝道/结构未在本路段让出通行空间，或不足以渐变恢复车道；请延长主路或调整汇入位置/高程");
     return end;
   }
   /** Target lane closes before the FIRST unsafe upstream crossing, and remains closed
    * right up to B, where the connector terminates on its lane axis. Other slots are unchanged. */
   public static double closeBeforeStation(Mesh host,int slot,double end,Mesh ramp,List<RoadStructures.Part> parts,double transition){
+    return closeBeforeStation(host,slot,end,ramp,parts,transition,false);
+  }
+  public static double closeBeforeStation(Mesh host,int slot,double end,Mesh ramp,List<RoadStructures.Part> parts,double transition,boolean rectangular){
     var raw=LaneSections.reference(host);int sign=LanePoints.lane(raw,end,slot).sign();
     var sweep=laneSweep(raw,slot);var prepared=RoadClearance.prepare(sweep);double first=sign*end;
     for(var contact:RoadClearance.contacts(prepared,ramp))if(contact.blocked()){
@@ -34,12 +41,12 @@ public final class LaneReopening {
       if(downstream!=null&&RoadClearance.structureInvades(part,downstream,RoadClearance.REQUIRED))
         throw new IllegalArgumentException("汇入点之后的目标车道被实际结构构件挡住（不是正常路面接缝）");
     }
-    double begin=(Math.min(sign*end-2*transition,first-transition-END_MARGIN))*sign;
+    double begin=(rectangular?Math.min(sign*end-.25,first-END_MARGIN):Math.min(sign*end-2*transition,first-transition-END_MARGIN))*sign;
     begin=Math.max(0,Math.min(raw.length(),begin));
     double available=sign*(end-begin),span=Math.min(transition,available/2);
     // At a free road start there is no upstream lane to taper: the slot starts
     // closed. LaneCrossSections rejects this fallback if a preceding road exists.
-    if(available>.02&&first-sign*begin<span-.01)begin=sign>0?-transition:raw.length()+transition;
+    if(!rectangular&&available>.02&&first-sign*begin<span-.01)begin=sign>0?-transition:raw.length()+transition;
     return begin;
   }
   private static boolean terminalSeam(Mesh host,int slot,double end,Mesh ramp,RoadClearance.Contact contact){
@@ -75,33 +82,37 @@ public final class LaneReopening {
   }
   private static Mesh makeLaneSweep(Mesh raw,int slot){var samples=new ArrayList<Sample>();int count=RoadProfile.catalog(raw.settings()).lanes();
     for(var s:raw.samples()){
-      if(RoadProfile.layout(raw,s).catalog().lanes()!=count)throw new IllegalArgumentException("自动恢复暂不跨车道数变化接缝，请在同一稳定断面内设置分离范围");
+      // A total-count change on another slot is not a reason to reject this lane.
+      // LanePoints.lane still rejects a selected slot that actually ceases to exist.
       var lane=LanePoints.lane(raw,s.distance(),slot);samples.add(new Sample(lane.position(),s.left(),s.distance(),lane.width()/2+SIDE_MARGIN));
     }
     var clean=raw.settings().options(raw.settings().options().lanePoints(LanePoints.Data.EMPTY));
     var bounds=RoadRibbon.mesh(samples,clean);return new Mesh(List.copyOf(samples),clean,bounds.min(),bounds.max(),raw.length(),raw.closed(),null);
   }
-  /** Conservative prism envelope also catches piers and tilted/offset beams after structure planning.
+  /** Exact Part.base prism catches piers and tilted/offset beams after structure planning.
    * The mesh's slab thickness describes the entire prism, not a paper-thin top. */
-  private static Mesh envelope(RoadStructures.Part part,Settings settings){
-    double frame=part.verticalFrame(),half=part.halfExtent();V a=part.a(),b=part.b();
-    double bottom=Math.min(a.y(),b.y())-frame,top=Math.max(a.y(),b.y())+part.height()+frame;
-    V direction=b.sub(a).horizontalLength()<1e-6?new V(0,0,1):b.sub(a).horizontalUnit();
-    // Include all frame orientations by padding the ends too; never underestimate a tilted part.
-    a=a.sub(direction.mul(half));b=b.add(direction.mul(half));V side=direction.left();
-    a=new V(a.x(),top,a.z());b=new V(b.x(),top,b.z());double length=b.distance(a);
-    var settingsVolume=new Settings(settings.mode(),settings.style(),settings.width(),top-bottom,settings.tension(),settings.arcDegrees());
-    var points=List.of(new Sample(a,side,0,half),new Sample(b,side,length,half));
-    double minX=Double.POSITIVE_INFINITY,minZ=minX,maxX=-minX,maxZ=-minX;
-    for(var p:points)for(int sign:new int[]{-1,1}){V v=p.at(sign*half,0);minX=Math.min(minX,v.x());maxX=Math.max(maxX,v.x());minZ=Math.min(minZ,v.z());maxZ=Math.max(maxZ,v.z());}
-    // Collision-only prism, not an authored RoadRibbon: structural height is allowed to exceed road slab limits.
-    return new Mesh(points,settingsVolume,new V(minX,bottom,minZ),new V(maxX,top,maxZ),length,false,null);
+  public static Mesh envelope(RoadStructures.Part part,Settings settings){
+    var base=part.base();V first=base.get(0).add(base.get(1)).mul(.5),last=base.get(2).add(base.get(3)).mul(.5);
+    V fa=base.get(0).sub(base.get(1)).mul(.5),fb=base.get(3).sub(base.get(2)).mul(.5);
+    double wa=Math.sqrt(fa.dot(fa)),wb=Math.sqrt(fb.dot(fb)),length=first.sub(last).horizontalLength();
+    V up=new V(0,part.height(),0);
+    var points=List.of(new Sample(first.add(up),wa>1e-12?fa.mul(1/wa):new V(1,0,0),0,wa),
+        new Sample(last.add(up),wb>1e-12?fb.mul(1/wb):new V(1,0,0),Math.max(1e-8,length),wb));
+    var volume=new Settings(settings.mode(),settings.style(),settings.width(),part.height(),settings.tension(),settings.arcDegrees());
+    double x0=base.stream().mapToDouble(V::x).min().orElseThrow(),x1=base.stream().mapToDouble(V::x).max().orElseThrow();
+    double z0=base.stream().mapToDouble(V::z).min().orElseThrow(),z1=base.stream().mapToDouble(V::z).max().orElseThrow();
+    double y0=base.stream().mapToDouble(V::y).min().orElseThrow(),y1=base.stream().mapToDouble(V::y).max().orElseThrow()+part.height();
+    return new Mesh(points,volume,new V(x0,y0,z0),new V(x1,y1,z1),Math.max(1e-8,length),false,null);
   }
 
   public static void validateRestored(Mesh host,int slot,Mesh ramp,UUID connection){
     var cut=host.settings().options().lanePoints().cuts().stream().filter(c->c.connection().equals(connection)&&c.lane()==slot).findFirst();
     if(cut.isEmpty())return; // A free road end has no downstream lane to restore.
-    var c=cut.get();double reopen=c.sign()*c.end()-c.transition();
+    var c=cut.get();
+    // This record ends while the reservation continues on the next tracked host.
+    // There is no restored material inside this record to validate at that seam.
+    if(c.sign()>0&&c.end()>=host.length()-1e-7||c.sign()<0&&c.end()<=1e-7)return;
+    double reopen=c.sign()*c.end()-(c.rectangular()?0:c.transition());
     if(lastBlocked(laneSweep(host,slot),ramp,c.begin(),c.sign(),c.sign()*c.begin())>=reopen-.01)
       throw new IllegalArgumentException("车道恢复范围仍有匝道净空冲突，已取消建造");
   }

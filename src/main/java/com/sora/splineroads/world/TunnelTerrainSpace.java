@@ -14,8 +14,8 @@ final class TunnelTerrainSpace {
     boolean shell=false;
     for(var road:nearby){
       shell|=road.shellAt(p);
-      if(road.record.settings().structure()==Structure.TUNNEL){
-        if(RoadTunnelSpace.intersects(road.mesh,p.getX(),p.getY(),p.getZ(),1))return false;
+      if(road.hasTunnel()){
+        if(road.tunnelAt(p)||road.clearanceAt(p))return false;
       }else if(road.clearanceAt(p))return false;
     }
     return shell;

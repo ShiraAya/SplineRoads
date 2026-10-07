@@ -17,6 +17,7 @@ public final class LaneRamps {
     final IdentityHashMap<Mesh,RoadClearance.Prepared> decks=new IdentityHashMap<>();
     final IdentityHashMap<Mesh,Map<List<Integer>,Mesh>> protectedDecks=new IdentityHashMap<>();
     final IdentityHashMap<Map<UUID,RoadRecord>,Map<LanePoints.Ref,Set<UUID>>> connected=new IdentityHashMap<>();
+    final IdentityHashMap<Map<UUID,RoadRecord>,Map<LanePoints.Ref,LaneRoadChain>> chains=new IdentityHashMap<>();
     V junctionDirection;double minimumHeight=Double.NEGATIVE_INFINITY,maximumHeight=Double.POSITIVE_INFINITY;
     Planning(Map<RoadRecord,Mesh> seeds,V direction,double minHeight,double maxHeight){root=CURRENT.get()==null;if(root){CURRENT.set(this);meshes.putAll(seeds);junctionDirection=direction;minimumHeight=minHeight;maximumHeight=maxHeight;}}
     final boolean root;final long started=System.nanoTime();long clearanceNanos;int routeCount,contactQueries;
@@ -90,9 +91,13 @@ public final class LaneRamps {
       var currentSource=host(context,actual.from());
       if(!LaneSections.active(mesh(currentSource),lane.station(),p.lane()))throw new IllegalArgumentException("汇出车道已在此位置分离，不能从车道空位再次汇出");
       LaneRampPaths.Port b;double targetLaneWidth=lane.width();
-      if(link.to().road()!=null){var road=host(context,link.to());var point=LaneTopology.point(road,link.to().point());var selectedLane=LanePoints.lane(mesh(road),point);
-        if((link.options().arrival()==LanePoints.Arrival.MERGE||link.options().arrival()==LanePoints.Arrival.FLOW)&&!LaneSections.active(mesh(road),selectedLane.station()+selectedLane.sign()*offset,point.lane()))throw new IllegalArgumentException("B 位于已分离的车道空位，请选择补入车道空位而非普通并线");targetLaneWidth=LanePoints.lane(mesh(road),selectedLane.station()+selectedLane.sign()*offset,point.lane()).width();
-        b=link.options().targetExtra()?approach(road,point,offset,false,base,link.options().transition()):arrivalPort(road,point,offset,actual,id);
+      LaneRoadChain.Position targetPosition=null;
+      if(link.to().road()!=null){
+        targetPosition=chain(context,link.to()).at(offset);
+        var road=targetPosition.road();var point=targetPosition.point();var selectedLane=LanePoints.lane(mesh(road),point);
+        if((link.options().arrival()==LanePoints.Arrival.MERGE||link.options().arrival()==LanePoints.Arrival.FLOW)&&!LaneSections.active(mesh(road),selectedLane.station(),point.lane()))throw new IllegalArgumentException("B 位于已分离的车道空位，不能当作开放车道汇入");
+        targetLaneWidth=selectedLane.width();
+        b=link.options().targetExtra()?approach(road,point,0,false,base,link.options().transition()):arrivalPort(road,point,0,actual,id);
       }else{
         if(link.options().targetExtra())throw new IllegalArgumentException("路口中心接入口不设置沿主路的额外汇入车道");
         V direction=data!=null?RampJunctions.spec(data,link.to().junction()).center().sub(link.junctionMouth()).horizontalUnit():CURRENT.get()!=null&&CURRENT.get().junctionDirection!=null?CURRENT.get().junctionDirection:old!=null?old.end().direction():null;
@@ -102,7 +107,7 @@ public final class LaneRamps {
       target=b;
       var md=(old==null?LanePoints.Data.EMPTY:LaneTopology.metadata(old)).link(actual).openings(List.of());
       var settings=base.options(base.options().lanePoints(md));
-      for(var candidate:routeCandidates(a,b,settings,link.options(),source,p,link.to().road()==null?null:host(context,link.to()),link.to().road()==null?null:LaneTopology.point(host(context,link.to()),link.to().point()),offset,maxGrade,errors,fallback))try{
+      for(var candidate:routeCandidates(a,b,settings,link.options(),source,p,targetPosition==null?null:targetPosition.road(),targetPosition==null?null:targetPosition.point(),0,maxGrade,errors,fallback))try{
         RoadPlanningBudget.check();
         if(CURRENT.get()!=null)CURRENT.get().routeCount++;
         var baseMesh=fitHostContacts(LaneRampAlignment.fit(candidate.mesh(),lane.width(),targetLaneWidth,link.options().transition()),context,actual);
@@ -112,7 +117,8 @@ public final class LaneRamps {
               LaneCrossSections.staged(all,id,actual,mesh):context;
           validate(mesh,finalContext,id,actual);
           if(actual.options().departure()==LanePoints.Departure.TEMPORARY)
-            LaneReopening.validateRestored(host(finalContext,actual.from()).mesh(),p.lane(),mesh,id);
+            for(var road:finalContext.values())for(var cut:LaneTopology.metadata(road).cuts())if(cut.connection().equals(id)&&!cut.arrival())
+              LaneReopening.validateRestored(road.mesh(),cut.lane(),mesh,id);
           var start=RoadRibbon.start(mesh);var end=RoadRibbon.end(mesh);
           var record=new RoadRecord(id,owner,RampJunctions.at(start.position()),RampJunctions.at(end.position()),start,end,settings,false,4).alignment(null,mesh);
           if(old!=null)record=record.furniturePhase(old.furniturePhase());
@@ -193,25 +199,16 @@ public final class LaneRamps {
     if(plan.connected.size()>64)plan.connected.clear();
     return plan.connected.computeIfAbsent(all,k->new HashMap<>()).computeIfAbsent(ref,k->findContactRoads(all,ref));
   }
+  private static LaneRoadChain chain(Map<UUID,RoadRecord> all,LanePoints.Ref ref){
+    var p=CURRENT.get();if(p==null)return LaneRoadChain.of(all,ref);
+    if(p.chains.size()>64)p.chains.clear();
+    return p.chains.computeIfAbsent(all,k->new HashMap<>()).computeIfAbsent(ref,k->LaneRoadChain.of(all,k));
+  }
   private static Set<UUID> findContactRoads(Map<UUID,RoadRecord> all,LanePoints.Ref ref){
     if(ref.road()==null)return Set.of();
-    var incident=new HashMap<BlockPos,List<RoadRecord>>();
-    for(var r:all.values())if(LaneTopology.metadata(r).link()==null){
-      incident.computeIfAbsent(r.a(),k->new ArrayList<>()).add(r);
-      if(!r.a().equals(r.b()))incident.computeIfAbsent(r.b(),k->new ArrayList<>()).add(r);
-    }
-    var result=new LinkedHashSet<UUID>();var queue=new ArrayDeque<UUID>();result.add(ref.road());queue.add(ref.road());
-    while(!queue.isEmpty()){
-      var a=all.get(queue.remove());if(a==null||!RoadContinuity.eligible(mesh(a)))continue;
-      for(BlockPos node:List.of(a.a(),a.b())){
-        var neighbours=incident.getOrDefault(node,List.of());if(neighbours.size()!=2)continue;
-        for(var b:neighbours)if(!result.contains(b.id())&&b.assembly()==null&&b.junction()==null&&RoadContinuity.compatible(mesh(a),mesh(b),a.a().equals(node)?a.start().position():a.end().position())){
-          result.add(b.id());queue.add(b.id());if(result.size()>256)throw new IllegalArgumentException("连续接头范围过大");
-        }
-      }
-    }
-    return result;
+    return chain(all,ref).ids();
   }
+
   private static int contactEnd(Mesh mesh,Map<UUID,RoadRecord> all,Set<UUID> hosts,boolean first){
     int n=mesh.samples().size(),i=first?0:n-1;
     var roads=hosts.stream().map(all::get).filter(Objects::nonNull).map(LaneRamps::mesh).toList();
@@ -270,15 +267,20 @@ public final class LaneRamps {
       if(other!=null&&link.to().equals(other.to()))sharedEnd=mesh.samples().get(contactEnd(mesh,Map.of(road.id(),road),Set.of(road.id()),false)).distance();
       if(sharedStart>mesh.length()*.9||sharedEnd<mesh.length()*.1)throw new IllegalArgumentException("同一车道点的两条匝道几乎全程重合，请使用不同汇入方向");
       var exactSlots=new LinkedHashSet<Integer>();
-      if(link.protectedMerge()&&road.id().equals(link.from().road()))exactSlots.add(LaneTopology.point(road,link.from().point()).lane());
-      if(link.protectedMerge()&&road.id().equals(link.to().road()))exactSlots.add(link.options().arrival()==LanePoints.Arrival.ADD?LaneAdditions.owned(old,id).slot():LaneTopology.point(road,link.to().point()).lane());
+      if(link.protectedMerge()){
+        for(var leg:chain(all,link.from()).legs())if(leg.road().id().equals(road.id()))exactSlots.add(leg.slot());
+        if(link.to().road()!=null)for(var leg:chain(all,link.to()).legs())if(leg.road().id().equals(road.id())){
+          if(link.options().arrival()==LanePoints.Arrival.ADD){for(var added:LaneTopology.metadata(road).additions())if(added.connection().equals(id))exactSlots.add(added.slot());}
+          else exactSlots.add(leg.slot());
+        }
+      }
       if(!exactSlots.isEmpty()){
         Mesh protectedDeck=protectedDeck(old,exactSlots);
         for(var c:contacts(mesh,protectedDeck))out.add(new Obstacle(road.id(),c));
       }
       for(var c:contacts(mesh,old)){
         boolean sourceJoin=sourceHosts.contains(road.id())&&c.to()<=sourceLimit+.01;
-        if(sourceJoin&&link.options().separatesLane())sourceJoin=separationThroat(c,road,link);
+        if(sourceJoin&&link.options().separatesLane())sourceJoin=separationThroat(c,road,link,all);
         if(sourceJoin||targetHosts.contains(road.id())&&c.from()>=targetLimit-.01)continue;
         if(c.to()<=sharedStart+.01||c.from()>=sharedEnd-.01)continue;
         out.add(new Obstacle(road.id(),c));
@@ -297,12 +299,15 @@ public final class LaneRamps {
     var result=LaneDeck.motorOnly(host);for(int slot:slots)result=LaneDeck.excludingSlot(result,slot);return result;
   }
   /** Only the selected slot joins; opposite traffic is not exempt merely because it has the same host ID. */
-  private static boolean separationThroat(RoadClearance.Contact contact,RoadRecord road,LanePoints.Link link){
-    if(!road.id().equals(link.from().road()))return false;
-    var raw=road.rawMesh();var point=LaneTopology.point(road,link.from().point());var start=LanePoints.lane(raw,point);
-    var q=RoadQueries.horizontal(raw,contact.ours());var lane=LanePoints.lane(raw,q.sample().distance(),point.lane());
-    return start.sign()*(lane.station()-start.station())>=-.25&&
-        Math.abs(contact.ours().sub(lane.position()).dot(q.sample().left()))<=lane.width()/2+.55;
+  private static boolean separationThroat(RoadClearance.Contact contact,RoadRecord road,LanePoints.Link link,Map<UUID,RoadRecord> all){
+    for(var leg:chain(all,link.from()).legs())if(leg.road().id().equals(road.id())){
+      var raw=road.rawMesh();var q=RoadQueries.horizontal(raw,contact.ours());var lane=LanePoints.lane(raw,q.sample().distance(),leg.slot());
+      return leg.coordinate(lane.station())>=-.25&&Math.abs(contact.ours().sub(lane.position()).dot(q.sample().left()))<=lane.width()/2+.55;
+    }return false;
+  }
+  static LaneRampPaths.Port resolvedArrival(Map<UUID,RoadRecord> all,LanePoints.Link link,UUID id){
+    var position=chain(all,link.to()).at(link.targetOffset());
+    return arrivalPort(position.road(),position.point(),0,link,id);
   }
   private static List<Mesh> heightCandidates(Mesh base,Map<UUID,RoadRecord> all,UUID id,LanePoints.Link link,Map<LanePoints.Path,String> errors,LanePoints.Path path){
     var mode=link.options().elevation();var out=new ArrayList<Mesh>();
@@ -359,9 +364,9 @@ public final class LaneRamps {
   private static double fixedApproach(Mesh ramp,Map<UUID,RoadRecord> all,LanePoints.Link link,boolean source){
     if(source?!link.options().sourceExtra():!link.options().targetExtra())return 0;
     var ref=source?link.from():link.to();if(ref.road()==null)return 0;
-    var host=host(all,ref);var point=LaneTopology.point(host,ref.point());
+    var location=LaneRoadChain.of(all,ref).at(source?0:link.targetOffset());var host=location.road();var point=location.point();
     var lane=LanePoints.lane(mesh(host),point);
-    var samples=LaneRampApproach.build(mesh(host),point.lane(),lane.station()+(source?0:lane.sign()*link.targetOffset()),source,ramp.settings(),link.options().transition());
+    var samples=LaneRampApproach.build(mesh(host),point.lane(),lane.station(),source,ramp.settings(),link.options().transition());
     double span=0;for(int i=1;i<samples.size();i++)span+=samples.get(i).center().distance(samples.get(i-1).center());
     return Math.min(ramp.length(),span);
   }

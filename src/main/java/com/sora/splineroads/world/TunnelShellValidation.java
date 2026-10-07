@@ -10,7 +10,7 @@ import java.util.*;
 final class TunnelShellValidation {
   static void check(List<RoadIndex.Built> planned,Set<UUID> changed,Map<UUID,RoadIndex.Built> previous){
     for(var tube:planned){
-      if(tube.record.settings().structure()!=Structure.TUNNEL)continue;
+      if(!tube.hasTunnel())continue;
       var oldTube=previous.get(tube.record.id());
       Set<RoadStructures.Part> saved=oldTube==null?Set.of():new HashSet<>(oldTube.record.structures());
       for(var other:planned){

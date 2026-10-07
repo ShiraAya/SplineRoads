@@ -86,14 +86,26 @@ public final class LaneRoadChain {
     double low=legs.get(0).low(),high=legs.get(legs.size()-1).high();
     double begin=arrival?low:0,end=arrival?endOffset:high;
     if(ramp!=null){
-      var sweep=sweep();var prepared=RoadClearance.prepare(sweep);var contacts=new ArrayList<>(RoadClearance.contacts(prepared,ramp));
+      var sweep=sweep();var prepared=RoadClearance.prepare(sweep);var deckContacts=RoadClearance.contacts(prepared,ramp);var contacts=new ArrayList<>(deckContacts);
       for(var part:parts){RoadPlanningBudget.check();contacts.addAll(RoadClearance.contacts(prepared,LaneReopening.envelope(part,ramp.settings())));}
       if(arrival){
         begin=endOffset;
         for(var c:contacts)if(c.blocked()){
           double from=c.from()+low,to=c.to()+low;
           if(from<=endOffset+.01)begin=Math.min(begin,from);
-          if(to>endOffset+.5)throw new IllegalArgumentException("汇入点下游仍有实际净空侵占，不能恢复车道");
+
+        }
+        for(var c:deckContacts)if(c.blocked()&&c.to()+low>endOffset+.5)
+          throw new IllegalArgumentException("汇入点下游仍有实际路面横穿，不能恢复车道");
+        // Side rails flush with a valid joining rim are not low overhead obstacles.
+        // Validate their actual prisms against the downstream driveable interior.
+        if(endOffset+.12<high){
+          var after=new ArrayList<Sample>();double from=endOffset+.12-low;
+          var at=RoadStructures.sample(sweep,from);after.add(new Sample(at.center(),at.left(),0,Math.max(.05,at.halfWidth()-.52)));
+          for(var a:sweep.samples())if(a.distance()>from)after.add(new Sample(a.center(),a.left(),a.distance()-from,Math.max(.05,a.halfWidth()-.52)));
+          var downstream=RoadRibbon.mesh(after,sweep.settings());
+          for(var part:parts)if(RoadClearance.structureInvades(part,downstream,RoadClearance.REQUIRED))
+            throw new IllegalArgumentException("汇入后实际通行车道被结构占用，不能恢复");
         }
         begin-=1+(rectangular?0:transition);
       }else{

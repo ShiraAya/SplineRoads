@@ -9,7 +9,8 @@ import java.util.*;
  * Slot IDs never renumber when an outer lane is absent. An absent slot remains a REPLACE target.
  */
 public final class LaneSections {
-  public record Cut(UUID connection,int lane,int sign,double begin,double end,double transition,UUID replacement,boolean temporary,boolean arrival,boolean rectangular) {
+  public record Cut(UUID connection,int lane,int sign,double begin,double end,double transition,UUID replacement,boolean temporary,boolean arrival,boolean rectangular,boolean underpass) {
+    public Cut(UUID connection,int lane,int sign,double begin,double end,double transition,UUID replacement,boolean temporary,boolean arrival,boolean rectangular){this(connection,lane,sign,begin,end,transition,replacement,temporary,arrival,rectangular,false);}
     public Cut(UUID connection,int lane,int sign,double begin,double end,double transition,UUID replacement,boolean temporary,boolean arrival){this(connection,lane,sign,begin,end,transition,replacement,temporary,arrival,false);}
     public Cut(UUID connection,int lane,int sign,double begin,double end,double transition,UUID replacement,boolean temporary){this(connection,lane,sign,begin,end,transition,replacement,temporary,false);}
     public Cut(UUID connection,int lane,int sign,double begin,double end,double transition,UUID replacement){this(connection,lane,sign,begin,end,transition,replacement,false);}
@@ -29,7 +30,8 @@ public final class LaneSections {
     private static double smooth(double t){return Settings.smooth(Math.max(0,Math.min(1,t)));}
   }
   public enum Kind { DEPART, REPLACE, TEMPORARY, ARRIVE }
-  public record Event(UUID connection,Kind kind,int lane,int sign,double station,double transition,double returnStation,boolean rectangular){
+  public record Event(UUID connection,Kind kind,int lane,int sign,double station,double transition,double returnStation,boolean rectangular,boolean underpass){
+    public Event(UUID connection,Kind kind,int lane,int sign,double station,double transition,double returnStation,boolean rectangular){this(connection,kind,lane,sign,station,transition,returnStation,rectangular,false);}
     public Event(UUID connection,Kind kind,int lane,int sign,double station,double transition,double returnStation){this(connection,kind,lane,sign,station,transition,returnStation,false);}
     public Event(UUID connection,Kind kind,int lane,int sign,double station,double transition){this(connection,kind,lane,sign,station,transition,Double.NaN);}
   }
@@ -54,13 +56,13 @@ public final class LaneSections {
       double end=event.kind()==Kind.TEMPORARY&&Double.isFinite(event.returnStation())?event.returnStation():
           replacement==null?(event.sign()>0?raw.length()+2*event.transition():-2*event.transition()):replacement.station();
       if(event.kind()==Kind.TEMPORARY&&Double.isFinite(event.returnStation())&&
-          (end<0||end>raw.length()||event.sign()*(end-event.station())<2*event.transition()))
+          (end<0||end>raw.length()||event.sign()*(end-event.station())<(event.rectangular()?.02:2*event.transition())))
         throw new IllegalArgumentException("保留车道分离没有足够空间完成封闭及安全恢复");
       for(Cut old:cuts)if(old.lane()==event.lane()&&old.sign()==event.sign()
           &&event.sign()*(event.station()-old.begin())>=0&&event.sign()*(event.station()-old.end())<-.01)
         throw new IllegalArgumentException("同一车道空位内重复整车道分离；Y 分叉请使用普通分流（原车道直行）");
       if(replacement!=null&&!used.add(replacement.connection()))throw new IllegalArgumentException("补入车道同时匹配多个分离接头");
-      cuts.add(new Cut(event.connection(),event.lane(),event.sign(),event.station(),end,event.transition(),replacement==null?null:replacement.connection(),event.kind()==Kind.TEMPORARY,false,event.kind()==Kind.TEMPORARY&&event.rectangular()));
+      cuts.add(new Cut(event.connection(),event.lane(),event.sign(),event.station(),end,event.transition(),replacement==null?null:replacement.connection(),event.kind()==Kind.TEMPORARY,false,event.kind()==Kind.TEMPORARY&&event.rectangular(),event.underpass()));
     }
     for(Event event:ordered)if(event.kind()==Kind.ARRIVE){
       var lane=LanePoints.lane(raw,event.station(),event.lane());
@@ -68,7 +70,7 @@ public final class LaneSections {
       double begin=Double.isFinite(event.returnStation())?event.returnStation():(event.sign()>0?0:raw.length());
       if(event.sign()*(event.station()-begin)<.02)continue; // Free start: no upstream target traffic.
       if(begin<-event.transition()-.001||begin>raw.length()+event.transition()+.001||event.station()<0||event.station()>raw.length())throw new IllegalArgumentException("汇入封闭范围超出实际宿主路段");
-      var cut=new Cut(event.connection(),event.lane(),event.sign(),begin,event.station(),event.transition(),null,true,true,event.rectangular());
+      var cut=new Cut(event.connection(),event.lane(),event.sign(),begin,event.station(),event.transition(),null,true,true,event.rectangular(),event.underpass());
       for(var old:cuts)if(!provisional.contains(cut.connection())&&!provisional.contains(old.connection())&&old.lane()==cut.lane()&&Math.min(Math.max(old.begin(),old.end()),Math.max(cut.begin(),cut.end()))-Math.max(Math.min(old.begin(),old.end()),Math.min(cut.begin(),cut.end()))>.01)
         throw new IllegalArgumentException("目标车道的汇入封闭与既有分离/汇入区间冲突，不能覆盖其他连接");
       cuts.add(cut);

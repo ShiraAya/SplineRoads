@@ -32,7 +32,10 @@ public final class SR15Geometry426Validation {
       }
       var joined=RoadStructures.plan(bridge,ground(true));
       check(joined.stream().noneMatch(p->p.material()==Material.STEEL),"same-height valid joining deck gained blocking rails");
-      var warnings=LaneClosureWarnings.paint(bridge);check(warnings.size()==6,"three Xs required on real approach");
+      check(LaneClosureWarnings.paint(bridge).isEmpty(),"valid departure must not receive forbidden-travel Xs");
+      var arrivals=bridge.settings().options().lanePoints().cuts().stream().map(c->new LaneSections.Cut(c.connection(),c.lane(),c.sign(),c.begin(),c.end(),c.transition(),c.replacement(),true,true,c.rectangular())).toList();
+      var warningRoad=LaneSections.apply(RoadRibbon.mesh(LaneSections.reference(bridge).samples(),bridge.settings().options(bridge.settings().options().lanePoints(bridge.settings().options().lanePoints().cuts(arrivals)))));
+      var warnings=LaneClosureWarnings.paint(warningRoad);check(warnings.size()==6,"three Xs required before genuinely closed arrival slot");
       int sign=LanePoints.lane(LaneSections.reference(bridge),150,4).sign();double boundary=sign>0?100:240;
       for(var w:warnings)for(V v:w.points()){
         var q=RoadQueries.horizontal(LaneSections.reference(bridge),v);double lead=sign*(boundary-q.sample().distance());

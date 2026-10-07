@@ -99,6 +99,17 @@ public final class RoadIndex {
     }
     private double effectiveClearance(){return Math.max(record.clearance(),RoadInfrastructure.clearance(record.settings()));}
 
+    public List<Mesh> automaticTubes(){
+      if(autoTubes==null)autoTubes=RoadAutoTunnels.regions(record.structures()).stream().filter(r->r.to()<=mesh.length()+1e-6).map(r->RoadAutoTunnels.tube(mesh,r)).toList();
+      return autoTubes;
+    }
+    private List<Mesh> autoTubes;
+    public boolean hasTunnel(){return record.settings().structure()==Structure.TUNNEL||!automaticTubes().isEmpty();}
+    public boolean tunnelAt(BlockPos p){
+      if(record.settings().structure()==Structure.TUNNEL)return RoadTunnelSpace.intersects(mesh,p.getX(),p.getY(),p.getZ(),1);
+      for(var tube:automaticTubes())if(RoadTunnelSpace.intersects(tube,p.getX(),p.getY(),p.getZ(),1))return true;
+      return false;
+    }
     private final Map<Long,Integer> tunnelEnds=bounded(2048);
     private int clearEnd(Column c,long key) {
       if(record.settings().structure()==Structure.TUNNEL) {
@@ -107,7 +118,9 @@ public final class RoadIndex {
         int result=(int)Math.ceil(RoadInfrastructure.excavationTop(mesh,p.getX(),p.getZ(),c.maxTop())-1e-7);
         tunnelEnds.put(key,result);return result;
       }
-      return (int) Math.ceil(c.maxTop() + effectiveClearance() - 1e-7);
+      var p=BlockPos.of(key);double roof=Double.NEGATIVE_INFINITY;
+      for(var tube:automaticTubes())roof=Math.max(roof,RoadTunnelSpace.ceiling(tube,p.getX(),p.getZ()));
+      return (int)Math.ceil((Double.isFinite(roof)?roof:c.maxTop()+effectiveClearance())-1e-7);
     }
 
     public final List<RoadStructures.Part> signalHeads;

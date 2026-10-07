@@ -1,3 +1,8 @@
+# SR433 WIP: physical lanes and actual impact bounds
+
+Version0.40.20-alpha-rc1, protocol65. Latest nine screenshots reopen correctness: lane-continuous search across joined roads, contact-derived reservations, distinct below-grade mouths, no departure X, real opening edges, local tunnels and bridge piers. Exact source is saved before full regression and real Forge/ServerLevel tests. No original-world acceptance or completed-release claim until verification finishes. Prior perf2 collision hot paths and cancellation remain; no fixed interactive cutoff.
+
+---
 # 当前：SR432 / 0.40.19-alpha-perf2 双顺序性能验收通过
 
 仅工作分支SR-0.40.15。受测生产代码、JAR与精确源码归档均对应2f3f6ef48bdebe7a296804db459ed05b448969be，协议64。之后只更新日志读取器、CI和本文档，不改受测生产代码。

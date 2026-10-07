@@ -19,6 +19,23 @@ public final class LaneCrossSections {
   /** A local edit must not repair or validate reservations elsewhere in the save. */
   static void reconcile(Map<UUID,RoadRecord> records,Set<UUID> hosts){derive(records,null,null,hosts,null);}
   private static void derive(Map<UUID,RoadRecord> records,UUID edited,LanePoints.Link proposal,Set<UUID> hosts,RoadGeometry.Mesh candidate){
+    if(hosts!=null){
+      // Include adjacent hosts and old reservations so edits/deletes clear the
+      // complete previous footprint, including a closure across a road seam.
+      var expanded=new HashSet<>(hosts);var removedConnections=new HashSet<UUID>();
+      for(UUID host:hosts){var r=records.get(host);if(r!=null)for(var cut:LaneTopology.metadata(r).cuts())if(!records.containsKey(cut.connection()))removedConnections.add(cut.connection());}
+      for(var r:records.values())if(LaneTopology.metadata(r).cuts().stream().anyMatch(c->removedConnections.contains(c.connection())))expanded.add(r.id());
+      for(var road:records.values()){
+        var link=LaneTopology.metadata(road).link();
+        if(link!=null&&(expanded.contains(link.from().road())||expanded.contains(link.to().road())||road.id().equals(edited))){
+          expanded.addAll(LaneRoadChain.of(records,link.from()).ids());
+          if(link.to().road()!=null)expanded.addAll(LaneRoadChain.of(records,link.to()).ids());
+        }
+        for(var cut:LaneTopology.metadata(road).cuts())if(cut.connection().equals(edited))expanded.add(road.id());
+      }
+      if(proposal!=null){expanded.addAll(LaneRoadChain.of(records,proposal.from()).ids());if(proposal.to().road()!=null)expanded.addAll(LaneRoadChain.of(records,proposal.to()).ids());}
+      hosts=expanded;
+    }
     deriveAdditions(records,edited,proposal,hosts);
     var events=new HashMap<UUID,List<LaneSections.Event>>();
     for(var road:records.values())if(!road.id().equals(edited)){
@@ -54,9 +71,9 @@ public final class LaneCrossSections {
     for(var entry:requests.entrySet()){
       var link=entry.getValue();if(link.to().road()==null)throw new IllegalArgumentException("新增外侧车道需要选择道路车道点，不能使用路口中心");
       if(hosts!=null&&!hosts.contains(link.to().road()))continue;
-      var road=records.get(link.to().road());if(road==null)throw new IllegalArgumentException("汇入道路已不存在");
-      var point=LaneTopology.point(road,link.to().point());var raw=road.rawMesh();var lane=LanePoints.lane(raw,point);
-      double station=lane.station()+lane.sign()*link.targetOffset();
+      var resolved=LaneRoadChain.of(records,link.to()).at(link.targetOffset());var road=resolved.road();
+      var point=resolved.point();var raw=road.rawMesh();var lane=LanePoints.lane(raw,point);
+      double station=resolved.station();
       if(station<-.001||station>raw.length()+.001)throw new IllegalArgumentException("新增车道汇入口超出所选道路");
       var list=additions.computeIfAbsent(road.id(),k->new ArrayList<>());
       var previous=LaneTopology.metadata(road).additions().stream().filter(a->a.connection().equals(entry.getKey())).findFirst().orElse(null);
@@ -75,26 +92,13 @@ public final class LaneCrossSections {
     if(link.options().separatesLane()&&(hosts==null||hosts.contains(link.from().road()))) {
       if(link.options().departure()==LanePoints.Departure.DETACH)add(events,all,connection,link.from(),LaneSections.Kind.DEPART,0,link.options().transition());
       else {
-        var source=all.get(link.from().road());if(source==null)throw new IllegalArgumentException("分离车道的宿主道路已不存在");
-        var point=LaneTopology.point(source,link.from().point());var raw=source.rawMesh();var lane=LanePoints.lane(raw,point);
-        if(lane.sign()>0?raw.length()-lane.station()>=.02:lane.station()>=.02){
-        double end=candidate==null?Double.NaN:LaneReopening.restoreStation(raw,point.lane(),lane.station(),candidate,parts,link.options().transition());
-        events.computeIfAbsent(source.id(),key->new ArrayList<>()).add(new LaneSections.Event(connection,LaneSections.Kind.TEMPORARY,point.lane(),lane.sign(),lane.station(),link.options().transition(),end,link.rectangularClosure()));
-        }
+        LaneRoadChain.of(all,link.from()).reserve(events,connection,candidate,parts,false,0,link.options().transition(),link.rectangularClosure());
       }
     }
     if(link.closesTarget()&&(hosts==null||hosts.contains(link.to().road()))){
-      var target=all.get(link.to().road());if(target==null)throw new IllegalArgumentException("汇入目标道路已不存在");
-      var point=LaneTopology.point(target,link.to().point());var raw=target.rawMesh();var lane=LanePoints.lane(raw,point);
-      double end=lane.station()+lane.sign()*link.targetOffset();
-      double begin=candidate==null?Double.NaN:LaneReopening.closeBeforeStation(raw,point.lane(),end,candidate,parts,link.options().transition());
-      if(begin<0||begin>raw.length()){
-        var upstream=lane.sign()>0?target.a():target.b();
-        if(all.values().stream().anyMatch(r->!r.id().equals(target.id())&&LaneTopology.metadata(r).link()==null&&(r.a().equals(upstream)||r.b().equals(upstream))))
-          throw new IllegalArgumentException("目标车道上游封闭需要跨入相邻实际路段，当前不能静默封闭该路段；请后移汇入点或延长主路");
-      }
-      events.computeIfAbsent(target.id(),key->new ArrayList<>()).add(new LaneSections.Event(connection,LaneSections.Kind.ARRIVE,point.lane(),lane.sign(),end,link.options().transition(),begin,link.rectangularClosure()));
+      LaneRoadChain.of(all,link.to()).reserve(events,connection,candidate,parts,true,link.targetOffset(),link.options().transition(),link.rectangularClosure());
     }
+
     if(link.options().arrival()==LanePoints.Arrival.REPLACE&&(hosts==null||hosts.contains(link.to().road()))){
       if(link.to().road()==null)throw new IllegalArgumentException("路口中心不能作为车道空位补入目标");
       add(events,all,connection,link.to(),LaneSections.Kind.REPLACE,link.targetOffset(),link.options().transition());
@@ -117,7 +121,7 @@ public final class LaneCrossSections {
       if(l.closesTarget()&&(changes.contains(r.id())||changes.contains(l.to().road())))hosts.add(l.to().road());
     }
     if(hosts.isEmpty())return false;var staged=new LinkedHashMap<>(all);derive(staged,null,null,hosts,null);
-    for(UUID host:hosts)if(!LaneTopology.metadata(all.get(host)).cuts().equals(LaneTopology.metadata(staged.get(host)).cuts()))return true;
+    for(UUID host:all.keySet())if(!LaneTopology.metadata(all.get(host)).cuts().equals(LaneTopology.metadata(staged.get(host)).cuts()))return true;
     return false;
   }
   private LaneCrossSections(){}

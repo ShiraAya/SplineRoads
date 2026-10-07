@@ -125,7 +125,7 @@ final class StructurePlanner {
                 if(LaneTopology.metadata(built.record).link()!=null&&RoadInteractions.selfSupportBlocked(part,built.mesh))return true;
                 // Rails use the exact deck opening test above. The pier's vehicle-clearance
                 // envelope would otherwise erase rails for several blocks around every seam.
-                if (!part.pier() && part.material() == RoadStructures.Material.DEFAULT)
+                if (!laneEdges && !part.pier() && part.material() == RoadStructures.Material.DEFAULT)
                   return false;
                 double w = part.halfExtent() + (part.pier() ? .5 : .05);
                 AABB box =
@@ -224,6 +224,7 @@ final class StructurePlanner {
       }
     }
     var grading=new ArrayList<>(parts);nearby.forEach(r->grading.addAll(r.record.structures()));
+    parts=RoadAutoTunnels.enclose(built.mesh,ground,parts);
     parts=new TactileSurface(grading).gradePaving(parts);
     var joins=new SidewalkJoins(nearby.stream().filter(r->Math.abs(r.mesh.first().center().y()-built.mesh.first().center().y())<4).map(r->r.mesh).toList(),nearby.stream().flatMap(r->r.record.structures().stream()).filter(RoadSidewalks::smoothPart).toList());
     var result = new ArrayList<>(joins.clip(RoadInteractions.openPortal(built,parts,nearby)));

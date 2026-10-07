@@ -287,6 +287,11 @@ public final class RoadStructures {
         double d = target + shift;
         if (d < 0 || d >= mesh.length() || d - previous < 10) continue;
         Sample s = sample(mesh, d);
+        if(mesh.settings().style().connectorRamp()){
+          double bottom=s.center().y()-mesh.settings().thickness();
+          for(double local:new double[]{-1.1,1.1})bottom=Math.min(bottom,sample(mesh,Math.max(0,Math.min(mesh.length(),d+local))).center().y()-mesh.settings().thickness());
+          s=new Sample(new V(s.center().x(),bottom+mesh.settings().thickness(),s.center().z()),s.left(),s.distance(),s.halfWidth());
+        }
         var support=mesh.settings().style().ramp()&&!mesh.settings().style().connectorRamp()?RoadSupports.ramp(s,mesh.settings().thickness(),ground):RoadSupports.clearStandard(s,mesh.settings().thickness(),ground);
         if(support.isEmpty()||support.stream().anyMatch(ground::blocked))continue;
         out.addAll(support);
@@ -364,7 +369,7 @@ public final class RoadStructures {
           if(piece.material()==Material.DARK_STEEL&&!ground.railPost(r.a,highway,r.raised))continue;
           if(piece.a().sub(r.a).horizontalLength()<1e-6&&piece.b().sub(r.b).horizontalLength()<1e-6)
             piece=piece.frames(first==null?piece.frameA():first.mul(piece.width()/2),last==null?piece.frameB():last.mul(piece.width()/2));
-          add(out,piece);
+          if(mesh.settings().options().lanePoints().link()==null&&mesh.settings().options().lanePoints().openings().isEmpty()||!ground.blocked(piece))add(out,piece);
         }
       }
       else {var part=new Part(r.a,r.b,.24,1.05,false);if(!ground.blocked(part))add(out,part);}
