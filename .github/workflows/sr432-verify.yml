@@ -1,0 +1,140 @@
+name: SR432 complete performance acceptance
+on:
+  push:
+    branches: [SR-0.40.15]
+    paths: ['.github/workflows/sr432-verify.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: write
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - id: save
+        name: Save exact source before running verification
+        run: |
+          python - <<'PY'
+          import base64, hashlib, lzma, subprocess
+          from pathlib import Path
+          subprocess.run(['git','diff','--exit-code','59988961fe5d2a2a21063672ff1978ad61cb07ec','--','src/main','build.gradle'],check=True)
+          for name, digest in [('code','ca41f3fcec01977931fc4f54b337b9463a469d3307d745783dc18137af432c8d'),('tests','717fa153c5eeb2d27aa25ed51027a5a75a6e83bc51c9e86c3bc37578546c00f4')]:
+              patch=lzma.decompress(base64.b64decode(Path(f'tools/patches/sr432-{name}.xz64').read_text(),validate=True))
+              assert hashlib.sha256(patch).hexdigest()==digest
+              subprocess.run(['git','apply','--check','-'],input=patch,check=True)
+              subprocess.run(['git','apply','-'],input=patch,check=True)
+          for ref,old,new in [('32cee0fae8a03726bf3fd94880111ef1a07e6925','RoadRaster','Reference432Raster'),('59988961fe5d2a2a21063672ff1978ad61cb07ec','RoadClearance','Reference432Clearance')]:
+              text=subprocess.check_output(['git','show',f'{ref}:src/main/java/com/sora/splineroads/core/{old}.java']).decode()
+              target=Path(f'src/validation/java/com/sora/splineroads/core/{new}.java')
+              target.parent.mkdir(parents=True,exist_ok=True)
+              target.write_text(text.replace(old,new))
+          p=Path('PROGRESS.md')
+          p.write_text('# SR432 performance verification in progress\n\n0.40.19-alpha-perf2, protocol64. User requires both route planning and complete preview/build improvement. Exact raster/contact hot paths and repeated real two-scene tests preserved. No performance acceptance or user-world completion claim until measured gates finish. No fixed interactive timeouts restored.\n\n---\n'+p.read_text())
+          subprocess.run(['git','add','src','build.gradle','tools/check_sr432.sh','docs/checkpoints/SR432-WIP.md','PROGRESS.md'],check=True)
+          PY
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git diff --cached --check
+          git commit -m 'perf: reduce exact collision raster and contact allocation; gate complete preview-build speed'
+          git push origin HEAD:refs/heads/SR-0.40.15
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  regression:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Complete old regression plus exact raster and clearance equivalence
+        run: |
+          mkdir -p build/release432
+          set -o pipefail
+          bash tools/check_sr432.sh 2>&1 | tee build/release432/full-regression.log
+      - name: Actual Forge package of exact saved source
+        run: |
+          set -o pipefail
+          bash gradlew --no-daemon compileJava compileGameTestJava jar 2>&1 | tee build/release432/forge.log
+          python - <<'PY'
+          import zipfile
+          with zipfile.ZipFile('build/libs/splineroads-0.40.19-alpha-perf2.jar') as z:
+              assert 'Implementation-Version: 0.40.19-alpha-perf2' in z.read('META-INF/MANIFEST.MF').decode()
+              assert 'version="0.40.19-alpha-perf2"' in z.read('META-INF/mods.toml').decode()
+          PY
+          cp build/libs/splineroads-0.40.19-alpha-perf2.jar build/release432/
+      - name: Preserve exact source and evidence even on failure
+        if: always()
+        run: |
+          mkdir -p build/release432
+          git rev-parse HEAD > build/release432/COMMIT.txt
+          git archive --format=zip --output=build/release432/SplineRoads-0.40.19-alpha-perf2-source.zip HEAD
+          sha256sum build/release432/*.jar build/release432/*source.zip > build/release432/SHA256.txt 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr432-install-source-logs-${{ needs.preserve.outputs.saved }}
+          path: build/release432/
+          retention-days: 30
+  paired_minecraft:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Four baseline measurements per actual preview-build scene
+        run: |
+          mkdir -p build/paired432
+          git worktree add --detach ../sr432-baseline 32cee0fae8a03726bf3fd94880111ef1a07e6925
+          cp src/gametest/java/com/sora/splineroads/world/Build432GameTests.java ../sr432-baseline/src/gametest/java/com/sora/splineroads/world/
+          cp -r src/gametest/resources/data/splineroads_hotfix432 ../sr432-baseline/src/gametest/resources/data/
+          cd ../sr432-baseline
+          mkdir -p run432
+          echo eula=true > run432/eula.txt
+          printf 'level-seed=431\ngenerate-structures=false\n' > run432/server.properties
+          set -o pipefail
+          timeout 720s bash gradlew --no-daemon runGameTestServer -ProadRunDir=run432 -ProadTestNamespaces=splineroads_hotfix432 -ProadTestHeap=3G 2>&1 | tee ../SplineRoads/build/paired432/baseline-server.log
+          grep -q 'All 2 required tests passed' ../SplineRoads/build/paired432/baseline-server.log
+          cp -r run432/logs ../SplineRoads/build/paired432/baseline-logs
+      - name: Same repeated actual preview-build scenes on optimized source
+        if: always()
+        run: |
+          mkdir -p run432 build/paired432
+          echo eula=true > run432/eula.txt
+          printf 'level-seed=431\ngenerate-structures=false\n' > run432/server.properties
+          set -o pipefail
+          timeout 720s bash gradlew --no-daemon runGameTestServer -ProadRunDir=run432 -ProadTestNamespaces=splineroads_hotfix432 -ProadTestHeap=3G 2>&1 | tee build/paired432/optimized-server.log
+          grep -q 'All 2 required tests passed' build/paired432/optimized-server.log
+      - name: Require route preview build and total improvement with identical collision signatures
+        if: always()
+        run: |
+          set -o pipefail
+          python tools/compare_performance432.py build/paired432/baseline-server.log build/paired432/optimized-server.log build/paired432/comparison.json 2>&1 | tee build/paired432/comparison.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr432-paired-minecraft-${{ needs.preserve.outputs.saved }}
+          path: |
+            build/paired432/
+            run432/logs/
+            run432/*.xml
+          retention-days: 30
