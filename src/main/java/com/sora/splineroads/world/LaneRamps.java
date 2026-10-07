@@ -15,17 +15,25 @@ public final class LaneRamps {
   private static final class Planning implements AutoCloseable {
     final IdentityHashMap<RoadRecord,Mesh> meshes=new IdentityHashMap<>();
     final IdentityHashMap<Mesh,RoadClearance.Prepared> decks=new IdentityHashMap<>();
+    final IdentityHashMap<Mesh,Map<List<Integer>,Mesh>> protectedDecks=new IdentityHashMap<>();
+    final IdentityHashMap<Map<UUID,RoadRecord>,Map<LanePoints.Ref,Set<UUID>>> connected=new IdentityHashMap<>();
     V junctionDirection;double minimumHeight=Double.NEGATIVE_INFINITY,maximumHeight=Double.POSITIVE_INFINITY;
     Planning(Map<RoadRecord,Mesh> seeds,V direction,double minHeight,double maxHeight){root=CURRENT.get()==null;if(root){CURRENT.set(this);meshes.putAll(seeds);junctionDirection=direction;minimumHeight=minHeight;maximumHeight=maxHeight;}}
-    final boolean root;
+    final boolean root;final long started=System.nanoTime();long clearanceNanos;int routeCount,contactQueries;
     Planning(RoadData data){root=CURRENT.get()==null;if(root){CURRENT.set(this);if(data!=null)for(var b:data.index.roads.values())meshes.put(b.record,b.mesh);}}
-    public void close(){if(root)CURRENT.remove();}
+    public void close(){if(root){
+      long elapsed=System.nanoTime()-started;
+      if(elapsed>1_000_000_000L||Boolean.getBoolean("sr.profile"))System.getLogger("SplineRoads/planner").log(System.Logger.Level.INFO,
+          String.format(Locale.ROOT,"SR route plan total_ms=%.3f clearance_ms=%.3f candidates=%d contact_queries=%d cached_meshes=%d",elapsed/1e6,clearanceNanos/1e6,routeCount,contactQueries,meshes.size()));
+      CURRENT.remove();}}
   }
   private static Mesh mesh(RoadRecord road){var plan=CURRENT.get();if(plan==null)return road.mesh();if(plan.meshes.size()>512)plan.meshes.clear();return plan.meshes.computeIfAbsent(road,RoadRecord::mesh);}
   private static List<RoadClearance.Contact> contacts(Mesh proposed,Mesh existing){
     var plan=CURRENT.get();if(plan==null)return RoadClearance.contacts(proposed,existing);
     if(plan.decks.size()>32)plan.decks.clear();
-    return RoadClearance.contacts(proposed,plan.decks.computeIfAbsent(existing,RoadClearance::prepare));
+    long start=System.nanoTime();plan.contactQueries++;
+    try{return RoadClearance.contacts(proposed,plan.decks.computeIfAbsent(existing,RoadClearance::prepare));}
+    finally{plan.clearanceNanos+=System.nanoTime()-start;}
   }
   public static RoadRecord host(Map<UUID,RoadRecord> all,LanePoints.Ref ref){var r=all.get(ref.road());if(r==null)throw new IllegalArgumentException("所选道路已不存在");if(r.assembly()!=null||r.junction()!=null||!LanePoints.supported(r.settings()))throw new IllegalArgumentException("连接器仅支持独立普通道路／高速／自由匝道的地面、自动高架、标准小河桥、梁式高架与跨线桥；不支持立交内部道路");LaneTopology.point(r,ref.point());return r;}
   public static LaneRampPaths.Port port(RoadRecord road,LanePoints.Point p){var mesh=mesh(road);var l=LanePoints.lane(mesh,p);var sample=RoadStructures.sample(mesh,l.station());var layout=RoadProfile.layout(mesh,sample);double lateral=l.position().sub(sample.center()).dot(sample.left());int side=layout.catalog().twoWay()?(lateral<layout.medianCenter()?-1:1):layout.outside();double edge=side<0?-layout.motorMin():layout.motorMax();double distance=Math.max(l.width(),edge-side*lateral+l.width()/2);double step=Math.min(.5,mesh.length()/10);var before=RoadStructures.sample(mesh,Math.max(0,l.station()-step));var after=RoadStructures.sample(mesh,Math.min(mesh.length(),l.station()+step));V delta=after.center().sub(before.center());double grade=delta.y()/Math.max(.001,delta.horizontalLength())*l.sign();return new LaneRampPaths.Port(l.position(),l.direction(),sample.left().mul(side),distance,grade);}
@@ -51,7 +59,7 @@ public final class LaneRamps {
     return generateChoice(data,all,old.id(),old.owner(),LaneTopology.metadata(old).link(),requested).road();
   }
   private static Generated generateChoice(RoadData data,Map<UUID,RoadRecord> all,UUID id,UUID owner,LanePoints.Link link,Settings edited){
-    try(var budget=RoadPlanningBudget.open("匝道路线/净空搜索",8);var ignored=new Planning(data)){return generatePlanned(data,all,id,owner,link,edited);}
+    try(var budget=RoadPlanningBudget.cancellable("匝道路线/净空搜索");var ignored=new Planning(data)){return generatePlanned(data,all,id,owner,link,edited);}
   }
   private static Generated generatePlanned(RoadData data,Map<UUID,RoadRecord> all,UUID id,UUID owner,LanePoints.Link link,Settings edited){
     link=link.withProtectedMerge().withRectangularClosure();
@@ -72,11 +80,13 @@ public final class LaneRamps {
     var a=port(source,p);if(link.options().sourceExtra())a=approach(source,p,0,true,base,link.options().transition());
     var offsets=new LinkedHashSet<Double>();if(Math.abs(link.targetOffset())<=targetReach(link.options()))offsets.add(link.targetOffset());offsets.add(0d);
     if(link.to().road()!=null&&link.options().landing()!=LanePoints.Landing.EXACT){double reach=targetReach(link.options());for(double step=8;step<reach;step+=8){offsets.add(step);offsets.add(-step);}offsets.add(reach);offsets.add(-reach);}
+    var stagedOffsets=new HashMap<Double,Map<UUID,RoadRecord>>();
     var errors=new EnumMap<LanePoints.Path,String>(LanePoints.Path.class);String error="所选范围内没有可用汇入口";LaneRampPaths.Port target=null;
     for(boolean fallback:new boolean[]{false,true})for(double offset:offsets)try{
       RoadPlanningBudget.check();
       var actual=link.targetOffset(offset);
-      var context=LaneCrossSections.staged(all,id,actual);
+      var context=stagedOffsets.get(offset);
+      if(context==null){context=LaneCrossSections.staged(all,id,actual);stagedOffsets.put(offset,context);}
       var currentSource=host(context,actual.from());
       if(!LaneSections.active(mesh(currentSource),lane.station(),p.lane()))throw new IllegalArgumentException("汇出车道已在此位置分离，不能从车道空位再次汇出");
       LaneRampPaths.Port b;double targetLaneWidth=lane.width();
@@ -94,6 +104,7 @@ public final class LaneRamps {
       var settings=base.options(base.options().lanePoints(md));
       for(var candidate:routeCandidates(a,b,settings,link.options(),source,p,link.to().road()==null?null:host(context,link.to()),link.to().road()==null?null:LaneTopology.point(host(context,link.to()),link.to().point()),offset,maxGrade,errors,fallback))try{
         RoadPlanningBudget.check();
+        if(CURRENT.get()!=null)CURRENT.get().routeCount++;
         var baseMesh=fitHostContacts(LaneRampAlignment.fit(candidate.mesh(),lane.width(),targetLaneWidth,link.options().transition()),context,actual);
         for(Mesh mesh:heightCandidates(baseMesh,context,id,actual,errors,candidate.path()))try{
           if(data!=null&&!data.withinHeight(mesh)||data==null&&CURRENT.get()!=null&&(mesh.min().y()-mesh.settings().thickness()<CURRENT.get().minimumHeight||mesh.max().y()+4>=CURRENT.get().maximumHeight))throw new IllegalArgumentException("上跨／下穿超出世界高度范围");
@@ -178,6 +189,11 @@ public final class LaneRamps {
     return new LaneRampPaths.Port(port.position(),port.direction(),port.outside(),port.extraWidth(),port.grade(),samples);
   }
   static Set<UUID> contactRoads(Map<UUID,RoadRecord> all,LanePoints.Ref ref){
+    var plan=CURRENT.get();if(plan==null)return findContactRoads(all,ref);
+    if(plan.connected.size()>64)plan.connected.clear();
+    return plan.connected.computeIfAbsent(all,k->new HashMap<>()).computeIfAbsent(ref,k->findContactRoads(all,ref));
+  }
+  private static Set<UUID> findContactRoads(Map<UUID,RoadRecord> all,LanePoints.Ref ref){
     if(ref.road()==null)return Set.of();
     var incident=new HashMap<BlockPos,List<RoadRecord>>();
     for(var r:all.values())if(LaneTopology.metadata(r).link()==null){
@@ -257,7 +273,7 @@ public final class LaneRamps {
       if(link.protectedMerge()&&road.id().equals(link.from().road()))exactSlots.add(LaneTopology.point(road,link.from().point()).lane());
       if(link.protectedMerge()&&road.id().equals(link.to().road()))exactSlots.add(link.options().arrival()==LanePoints.Arrival.ADD?LaneAdditions.owned(old,id).slot():LaneTopology.point(road,link.to().point()).lane());
       if(!exactSlots.isEmpty()){
-        Mesh protectedDeck=LaneDeck.motorOnly(old);for(int slot:exactSlots)protectedDeck=LaneDeck.excludingSlot(protectedDeck,slot);
+        Mesh protectedDeck=protectedDeck(old,exactSlots);
         for(var c:contacts(mesh,protectedDeck))out.add(new Obstacle(road.id(),c));
       }
       for(var c:contacts(mesh,old)){
@@ -268,6 +284,17 @@ public final class LaneRamps {
         out.add(new Obstacle(road.id(),c));
       }
     }return out;
+  }
+  /** A slot exclusion depends only on the immutable host mesh and the selected
+   * slot set, not on a candidate's height. Reuse exactly the same protected deck. */
+  private static Mesh protectedDeck(Mesh host,Set<Integer> slots){
+    var key=List.copyOf(slots);var plan=CURRENT.get();
+    if(plan==null)return makeProtectedDeck(host,key);
+    if(plan.protectedDecks.size()>128)plan.protectedDecks.clear();
+    return plan.protectedDecks.computeIfAbsent(host,k->new HashMap<>()).computeIfAbsent(key,k->makeProtectedDeck(host,k));
+  }
+  private static Mesh makeProtectedDeck(Mesh host,List<Integer> slots){
+    var result=LaneDeck.motorOnly(host);for(int slot:slots)result=LaneDeck.excludingSlot(result,slot);return result;
   }
   /** Only the selected slot joins; opposite traffic is not exempt merely because it has the same host ID. */
   private static boolean separationThroat(RoadClearance.Contact contact,RoadRecord road,LanePoints.Link link){

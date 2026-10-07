@@ -27,14 +27,18 @@ public class Scheduler430Validation {
   long heartbeatUntil=System.nanoTime()+50000000;until(()->System.nanoTime()>heartbeatUntil,1000);check(heartbeats>first+5,"main loop did not advance while worker busy");
   RoadPlanningJobs.cancel(p.id,1);begin(p,2,LaneRamps.PreviewRoute::new);until(()->reply(2).isPresent(),3000);check(reply(1).isEmpty(),"cancelled/stale job published");check(reply(2).get().getString("Error").isEmpty(),"replacement failed");check(RoadPlanningJobs.activeCount()==0,"completed job retained");
   var staleRelease=new AtomicBoolean();var staleStarted=new AtomicBoolean();begin(p,3,()->waitFor(staleRelease,staleStarted));until(staleStarted::get,2000);p.dim="nether";staleRelease.set(true);until(()->reply(3).isPresent(),3000);check(reply(3).get().getString("Error").contains("维度"),"changed dimension accepted");p.dim="overworld";
-  begin(p,4,()->{while(true){RoadPlanningBudget.check();java.util.concurrent.locks.LockSupport.parkNanos(1000000);}});start=System.nanoTime();until(()->reply(4).isPresent(),11500);double timeout=(System.nanoTime()-start)/1e6;
-  check(reply(4).get().getString("Error").contains("预算"),"cooperative deadline missing");check(timeout>=7500&&timeout<11000,"deadline timing unexpected");check(RoadPlanningJobs.activeCount()==0,"timed out job retained");
+  var longStarted=new AtomicBoolean();var longRelease=new AtomicBoolean();start=System.nanoTime();
+  begin(p,4,()->waitFor(longRelease,longStarted));until(longStarted::get,2000);
+  long oldDeadline=System.nanoTime()+12200000000L;until(()->System.nanoTime()>=oldDeadline,14000);
+  check(reply(4).isEmpty(),"valid work was rejected by old 8/12-second timeout");
+  longRelease.set(true);until(()->reply(4).isPresent(),3000);double timeout=(System.nanoTime()-start)/1e6;
+  check(reply(4).get().getString("Error").isEmpty(),"long valid work failed");check(RoadPlanningJobs.activeCount()==0,"completed long job retained");
   var people=new ArrayList<ServerPlayer>();var queueRelease=new AtomicBoolean();var queueStarted=new AtomicBoolean();var firstPlayer=new ServerPlayer(server);people.add(firstPlayer);begin(firstPlayer,100,()->waitFor(queueRelease,queueStarted));until(queueStarted::get,2000);
   for(int i=1;i<=8;i++){var q=new ServerPlayer(server);people.add(q);begin(q,100+i,()->waitFor(queueRelease,new AtomicBoolean()));}
   boolean rejected=false;try{begin(new ServerPlayer(server),999,LaneRamps.PreviewRoute::new);}catch(IllegalArgumentException e){rejected=e.getMessage().contains("队列");}check(rejected,"queue unbounded or CallerRuns used");
   for(var q:people)RoadPlanningJobs.cancel(q.id);queueRelease.set(true);check(RoadPlanningJobs.activeCount()==0,"cancelled queued jobs retained");
   begin(p,200,LaneRamps.PreviewRoute::new);until(()->reply(200).isPresent(),3000);check(reply(200).get().getString("Error").isEmpty(),"queue did not recover after cancellation");
-  System.out.printf(java.util.Locale.ROOT,"Scheduler430Validation: %d checks PASS; submit_ms=%.3f timeout_ms=%.3f simulated_server_heartbeats=%d. ACTUAL RoadPlanningJobs/RoadPlanningBudget, server/network ADAPTERS, not live Minecraft/FPS.%n",checks,submit,timeout,heartbeats);
+  System.out.printf(java.util.Locale.ROOT,"Scheduler430Validation: %d checks PASS; submit_ms=%.3f long_success_ms=%.3f simulated_server_heartbeats=%d. ACTUAL RoadPlanningJobs/RoadPlanningBudget, server/network ADAPTERS, not live Minecraft/FPS.%n",checks,submit,timeout,heartbeats);
  }
 }'''
 }

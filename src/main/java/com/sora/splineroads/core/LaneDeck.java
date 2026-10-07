@@ -10,10 +10,12 @@ public final class LaneDeck {
   public record Span(double low,double high,boolean lowWall,boolean highWall){}
   public record Strip(V al,V ar,V bl,V br,boolean lowWall,boolean highWall){}
   public static boolean hasOpenings(Mesh mesh){return mesh.settings().options().lanePoints().cuts().stream().anyMatch(LaneSections.Cut::temporary);}
-  private static List<Integer> slots(Mesh mesh){
+  private static final WeakIdentityCache<Mesh,List<Integer>> SLOT_ORDER=new WeakIdentityCache<>(256,8192,List::size);
+  private static List<Integer> slots(Mesh mesh){return SLOT_ORDER.get(mesh,LaneDeck::slotOrder);}
+  private static List<Integer> slotOrder(Mesh mesh){
     var raw=LaneSections.reference(mesh);double d=(raw.first().distance()+raw.last().distance())/2;
     var out=new ArrayList<Integer>();for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.temporary()&&!out.contains(cut.lane()))out.add(cut.lane());
-    var at=RoadStructures.sample(raw,d);out.sort(Comparator.comparingDouble(slot->LanePoints.lane(raw,d,slot).position().sub(at.center()).dot(at.left())));return out;
+    var at=RoadStructures.sample(raw,d);out.sort(Comparator.comparingDouble(slot->LanePoints.lane(raw,d,slot).position().sub(at.center()).dot(at.left())));return List.copyOf(out);
   }
   private static List<Span> holes(Mesh mesh,Sample sample){return holes(mesh,sample,sample.distance());}
   private static List<Span> holes(Mesh mesh,Sample sample,double interval){

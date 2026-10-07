@@ -72,11 +72,14 @@ public final class RoadRibbon {
 
   /** A loop may cross itself only with the same usable clearance as any other crossing. */
   public static void checkSelfIntersections(Mesh mesh, double clearance) {
+    if(mesh.samples().size()<1024){shortSelfIntersections(mesh,clearance);return;}
     var samples = mesh.samples();
+    var index = RoadPathIndex.segments(mesh);
     for (int i = 1; i < samples.size(); i++) {
       RoadPlanningBudget.check();
       V a = samples.get(i - 1).center(), b = samples.get(i).center();
-      for (int j = i + 3; j < samples.size(); j++) {
+      for (int segment : index.query(RoadPathIndex.segment(a,b),0)) {
+        int j=segment+1;if(j<i+3)continue;
         V c = samples.get(j - 1).center(), d = samples.get(j).center();
         if (Math.max(a.x(), b.x()) < Math.min(c.x(), d.x())
             || Math.min(a.x(), b.x()) > Math.max(c.x(), d.x())
@@ -127,5 +130,33 @@ public final class RoadRibbon {
         a.center(), RoadPlanner.yaw(a.left().left().mul(-1)), delta.y() / delta.horizontalLength());
   }
 
+  private static void shortSelfIntersections(Mesh mesh, double clearance) {
+    var samples = mesh.samples();
+    for (int i = 1; i < samples.size(); i++) {
+      RoadPlanningBudget.check();
+      V a = samples.get(i - 1).center(), b = samples.get(i).center();
+      for (int j = i + 3; j < samples.size(); j++) {
+        V c = samples.get(j - 1).center(), d = samples.get(j).center();
+        if (Math.max(a.x(), b.x()) < Math.min(c.x(), d.x())
+            || Math.min(a.x(), b.x()) > Math.max(c.x(), d.x())
+            || Math.max(a.z(), b.z()) < Math.min(c.z(), d.z())
+            || Math.min(a.z(), b.z()) > Math.max(c.z(), d.z())) continue;
+        double dx = b.x() - a.x(),
+            dz = b.z() - a.z(),
+            ex = d.x() - c.x(),
+            ez = d.z() - c.z(),
+            det = dx * ez - dz * ex;
+        if (Math.abs(det) < 1e-10) continue;
+        double ox = c.x() - a.x(),
+            oz = c.z() - a.z(),
+            t = (ox * ez - oz * ex) / det,
+            u = (ox * dz - oz * dx) / det;
+        if (t < 0 || t > 1 || u < 0 || u > 1) continue;
+        double first = a.y() + t * (b.y() - a.y()), second = c.y() + u * (d.y() - c.y());
+        if (Math.abs(first - second) < clearance + mesh.settings().thickness() - .05)
+          throw new IllegalArgumentException("匝道路线上存在净空不足的自交，请调整预设或范围");
+      }
+    }
+  }
   private RoadRibbon() {}
 }

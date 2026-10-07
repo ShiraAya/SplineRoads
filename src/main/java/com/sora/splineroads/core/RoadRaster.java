@@ -152,6 +152,38 @@ public final class RoadRaster {
     }
   }
 
+  /** Exact immutable shape cache between preview, commit and immediate delete.
+   * No world/ownership/blocks are cached: every transaction still revalidates them.
+   * Value equality covers the complete Mesh (including reference, cuts and settings),
+   * so a one-coordinate/cut/thickness change is a miss, not stale collision geometry.
+   * Strong retention is bounded by both entries and actual boxes, not just road count. */
+  private static final class ShapeKey {
+    final Mesh mesh;final int hash;
+    ShapeKey(Mesh mesh){this.mesh=mesh;hash=mesh.hashCode();}
+    public int hashCode(){return hash;}
+    public boolean equals(Object o){return this==o||o instanceof ShapeKey k&&mesh.equals(k.mesh);}
+  }
+  private record SavedRaster(Map<Cell,List<Box>> cells,int weight){}
+  private static final LinkedHashMap<ShapeKey,SavedRaster> SAVED=new LinkedHashMap<>(16,.75f,true);
+  private static long savedWeight,savedHits,savedMisses,savedEpoch;
+  public static synchronized void clearSavedRasters(){SAVED.clear();savedWeight=0;savedEpoch++;}
+  public static synchronized long[] savedRasterStats(){return new long[]{SAVED.size(),savedWeight,savedHits,savedMisses};}
+  public static Map<Cell,List<Box>> cachedRaster(Mesh mesh){
+    var key=new ShapeKey(mesh);long epoch;
+    synchronized(RoadRaster.class){var old=SAVED.get(key);if(old!=null){savedHits++;return old.cells();}savedMisses++;epoch=savedEpoch;}
+    var cells=raster(mesh);long weight=mesh.samples().size();
+    for(var list:cells.values())weight+=list.size()+1;
+    if(weight>250_000)return cells;
+    cells.replaceAll((cell,boxes)->List.copyOf(boxes));var result=Map.copyOf(cells);
+    synchronized(RoadRaster.class){
+      if(epoch!=savedEpoch)return result;
+      var old=SAVED.get(key);if(old!=null)return old.cells();
+      SAVED.put(key,new SavedRaster(result,(int)weight));savedWeight+=weight;
+      var it=SAVED.entrySet().iterator();while(it.hasNext()&&(SAVED.size()>12||savedWeight>250_000)){savedWeight-=it.next().getValue().weight();it.remove();}
+    }
+    return result;
+  }
+
   public static Map<Cell, List<Box>> raster(Mesh mesh) {
     return raster(mesh, null);
   }
@@ -269,6 +301,7 @@ public final class RoadRaster {
 
   /** Merge flat tile runs before storing them; interior slabs normally become one box. */
   public static List<Box> compact(List<Box> input) {
+    var fast=compactFlat(input);if(fast!=null)return fast;
     List<Box> out = new ArrayList<>(input);
     Comparator<Box> order =
         Comparator.comparingDouble(Box::y0)
@@ -305,6 +338,41 @@ public final class RoadRaster {
     }
     out.sort(order);
     return out;
+  }
+
+  /** Exact flat-slab fast path. Most main-road cells are 16/64 equal-height
+   * tiles. The old all-pairs/restart merge made every such cell quadratic.
+   * Sort contiguous rows, then columns. Irregular/overlapping or almost-equal
+   * heights fall back to the original tolerance-sensitive algorithm. */
+  private static List<Box> compactFlat(List<Box> input){
+    if(input.size()<2)return new ArrayList<>(input);
+    var first=input.get(0);
+    for(var b:input)if(b.y0()!=first.y0()||b.y1()!=first.y1())return null;
+    Comparator<Box> rows=Comparator.comparingDouble(Box::z0).thenComparingDouble(Box::z1)
+        .thenComparingDouble(Box::x0).thenComparingDouble(Box::x1);
+    var sorted=new ArrayList<>(input);sorted.sort(rows);
+    var horizontal=new ArrayList<Box>();Box current=sorted.get(0);
+    for(int i=1;i<sorted.size();i++){
+      var b=sorted.get(i);
+      if(current.z0()==b.z0()&&current.z1()==b.z1()){
+        if(b.x0()<current.x1())return null;
+        if(b.x0()==current.x1()){current=new Box(current.x0(),current.y0(),current.z0(),b.x1(),current.y1(),current.z1());continue;}
+      }
+      horizontal.add(current);current=b;
+    }
+    horizontal.add(current);
+    horizontal.sort(Comparator.comparingDouble(Box::x0).thenComparingDouble(Box::x1)
+        .thenComparingDouble(Box::z0).thenComparingDouble(Box::z1));
+    var out=new ArrayList<Box>();current=horizontal.get(0);
+    for(int i=1;i<horizontal.size();i++){
+      var b=horizontal.get(i);
+      if(current.x0()==b.x0()&&current.x1()==b.x1()){
+        if(b.z0()<current.z1())return null;
+        if(b.z0()==current.z1()){current=new Box(current.x0(),current.y0(),current.z0(),current.x1(),current.y1(),b.z1());continue;}
+      }
+      out.add(current);current=b;
+    }
+    out.add(current);out.sort(rows);return out;
   }
 
   public static Map<Cell, List<Box>> structures(List<RoadStructures.Part> parts, Cell only) {

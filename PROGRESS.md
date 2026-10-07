@@ -1,3 +1,14 @@
+# SR431 WIP: actual algorithm and construction optimization
+
+Version 0.40.19-alpha-perf1, protocol remains 64; only SR-0.40.15.
+User rejected timeout-only handling. Replaced interactive 8/12/4/6-second cutoffs with cancellation and stale-result checks, without changing geometry protections.
+Measured old hotspots: corridor contact-by-all-samples scan; clearance preparation; repeated pure collision rasterization between preview and construction.
+Optimizations: adaptive interval/sweep corridor, exact triangulation and protected-deck caches, short/long path hybrid spatial checking, flat-box compaction, bounded full-equality pure raster reuse.
+Local equivalence/core/model runs passed. Full Java17 Forge and same-runner old/new real preview/build verification are now running; NO claim of completion or original-user-world acceptance.
+The new GameTest adds the actual readonly previewAssembly stage before build and checks no preview NBT/revision mutation; baseline and new use identical fixtures.
+
+---
+## Historical checkpoint
 # 当前：SR430 / 0.40.18-alpha 已编译，最终两项真实建造测试通过
 
 工作分支仅SR-0.40.15。安装JAR与完整源码的精确提交32cee0fae8a03726bf3fd94880111ef1a07e6925，协议64；后续交接提交仅为文档。main等其他分支未修改。

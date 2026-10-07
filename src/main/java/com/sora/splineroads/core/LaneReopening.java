@@ -65,8 +65,15 @@ public final class LaneReopening {
     }return last;
   }
   /** Authored stations are retained even for curved roads. */
+  private static final java.util.concurrent.ConcurrentHashMap<Integer,WeakIdentityCache<Mesh,Mesh>> SWEEPS=new java.util.concurrent.ConcurrentHashMap<>();
   public static Mesh laneSweep(Mesh host,int slot){
-    var raw=LaneSections.reference(host);var samples=new ArrayList<Sample>();int count=RoadProfile.catalog(raw.settings()).lanes();
+    var raw=LaneSections.reference(host);
+    // One sweep per requested slot is memoized by a bounded weak raw-host key.
+    // Values contain their own clean settings/samples, never their host key.
+    if(slot<0||slot>31)return makeLaneSweep(raw,slot);
+    return SWEEPS.computeIfAbsent(slot,k->new WeakIdentityCache<>(8,8_000,v->v.samples().size())).get(raw,k->makeLaneSweep(k,slot));
+  }
+  private static Mesh makeLaneSweep(Mesh raw,int slot){var samples=new ArrayList<Sample>();int count=RoadProfile.catalog(raw.settings()).lanes();
     for(var s:raw.samples()){
       if(RoadProfile.layout(raw,s).catalog().lanes()!=count)throw new IllegalArgumentException("自动恢复暂不跨车道数变化接缝，请在同一稳定断面内设置分离范围");
       var lane=LanePoints.lane(raw,s.distance(),slot);samples.add(new Sample(lane.position(),s.left(),s.distance(),lane.width()/2+SIDE_MARGIN));

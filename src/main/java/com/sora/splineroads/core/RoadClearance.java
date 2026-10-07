@@ -21,19 +21,30 @@ public final class RoadClearance {
     }
     public Contact contact(){return contact;}
   }
-  private record Triangle(V a,V b,V c,double sa,double sb,double sc) {
-    double det(){return cross(b.sub(a),c.sub(a));}
+  private static final class Triangle {
+    final V a,b,c;final double sa,sb,sc;
+    final double dx,dz,ex,ez,det,minX,maxX,minZ,maxZ;
+    final List<V> polygon;final int hash;
+    Triangle(V a,V b,V c,double sa,double sb,double sc){
+      this.a=a;this.b=b;this.c=c;this.sa=sa;this.sb=sb;this.sc=sc;
+      dx=b.x()-a.x();dz=b.z()-a.z();ex=c.x()-a.x();ez=c.z()-a.z();det=dx*ez-dz*ex;
+      minX=Math.min(a.x(),Math.min(b.x(),c.x()));maxX=Math.max(a.x(),Math.max(b.x(),c.x()));
+      minZ=Math.min(a.z(),Math.min(b.z(),c.z()));maxZ=Math.max(a.z(),Math.max(b.z(),c.z()));
+      polygon=det>=0?List.of(a,b,c):List.of(a,c,b);hash=Objects.hash(a,b,c,sa,sb,sc);
+    }
+    double det(){return det;}
     double value(V p,double va,double vb,double vc){
-      V q=p.sub(a);double det=det();
-      return va+cross(q,c.sub(a))/det*(vb-va)+cross(b.sub(a),q)/det*(vc-va);
+      double qx=p.x()-a.x(),qz=p.z()-a.z();
+      return va+(qx*ez-qz*ex)/det*(vb-va)+(dx*qz-dz*qx)/det*(vc-va);
     }
     double height(V p){return value(p,a.y(),b.y(),c.y());}
     double station(V p){return value(p,sa,sb,sc);}
-    List<V> polygon(){return det()>=0?List.of(a,b,c):List.of(a,c,b);}
-    double minX(){return Math.min(a.x(),Math.min(b.x(),c.x()));}
-    double maxX(){return Math.max(a.x(),Math.max(b.x(),c.x()));}
-    double minZ(){return Math.min(a.z(),Math.min(b.z(),c.z()));}
-    double maxZ(){return Math.max(a.z(),Math.max(b.z(),c.z()));}
+    List<V> polygon(){return polygon;}
+    double minX(){return minX;} double maxX(){return maxX;}
+    double minZ(){return minZ;} double maxZ(){return maxZ;}
+    @Override public int hashCode(){return hash;}
+    @Override public boolean equals(Object o){return this==o||o instanceof Triangle t
+        &&a.equals(t.a)&&b.equals(t.b)&&c.equals(t.c)&&Double.compare(sa,t.sa)==0&&Double.compare(sb,t.sb)==0&&Double.compare(sc,t.sc)==0;}
   }
   private static final class Grid {
     final Map<Long,List<Triangle>> cells=new HashMap<>();
@@ -53,7 +64,7 @@ public final class RoadClearance {
   private static final WeakIdentityCache<Mesh,Grid> GRIDS=new WeakIdentityCache<>(256,500_000,
       grid->grid.cells.values().stream().mapToInt(List::size).sum());
   private static Grid grid(Mesh mesh){return GRIDS.get(mesh,Grid::new);}
-  public static void clearPreparedCache(){GRIDS.clear();}
+  public static void clearPreparedCache(){GRIDS.clear();TRIANGLES.clear();}
   public static WeakIdentityCache.Stats preparedCacheStats(){return GRIDS.stats();}
   /** Immutable prepared deck index; callers may retain it only for their current planning query. */
   public static final class Prepared {
@@ -135,7 +146,12 @@ public final class RoadClearance {
     return false;
   }
 
-  private static List<Triangle> triangles(Mesh mesh){
+  // The same immutable candidate is inspected by height solving, reopening and
+  // final validation. Retain its exact tessellation, not just its destination grid.
+  private static final WeakIdentityCache<Mesh,List<Triangle>> TRIANGLES=
+      new WeakIdentityCache<>(256,500_000,List::size);
+  private static List<Triangle> triangles(Mesh mesh){return TRIANGLES.get(mesh,RoadClearance::makeTriangles);}
+  private static List<Triangle> makeTriangles(Mesh mesh){
     var out=new ArrayList<Triangle>();var samples=mesh.samples();
     for(int i=1;i<samples.size();i++){
       if((i&63)==0)RoadPlanningBudget.check();
@@ -145,7 +161,7 @@ public final class RoadClearance {
         for(var t:List.of(new Triangle(al,ar,br,a.distance(),a.distance(),b.distance()),new Triangle(al,br,bl,a.distance(),b.distance(),b.distance())))
           if(Math.abs(t.det())>EPS)out.add(t);
       }
-    }return out;
+    }return List.copyOf(out);
   }
   private static List<V> intersection(List<V> subject,List<V> clip){
     List<V> polygon=subject;

@@ -6,7 +6,7 @@ import java.util.*;
 /** Joint longitudinal feasibility, not a separate up-and-down bump per obstacle.
  * Bounds describe real crossing decks. The fixed host approaches remain fixed;
  * all other samples share the same horizontal-arc-length slope budget. */
-public final class LaneRampCorridor {
+public final class Reference431Corridor {
   public static Mesh solve(Mesh base,double freeFrom,double freeTo,List<LaneRampHeights.Constraint> constraints,boolean over,double grade){
     return solveMixed(base,freeFrom,freeTo,constraints.stream().map(c->new Bound(c.from(),c.to(),c.amount(),over)).toList(),grade);
   }
@@ -27,32 +27,17 @@ public final class LaneRampCorridor {
     }
     // Zero-lift contacts still constrain already-clear decks: relaxing a prior
     // crest must not erase a real over/under relationship elsewhere on the route.
-    // Use the exact padded interval, not all samples. Short triangle overlaps
-    // take the allocation-free range path; long overlapping constraints use a
-    // maximum-amount sweep so their cost cannot multiply by the road's length.
-    int[] begin=new int[constraints.size()],end=new int[constraints.size()];long visits=0;
-    for(int c=0;c<constraints.size();c++){
-      RoadPlanningBudget.check();var b=constraints.get(c);
-      if(b.amount()>48)throw new IllegalArgumentException("自动跨越需要升降超过 48 格，请扩大道路间距或修改端点高度");
-      begin[c]=firstBoundSample(base,b.from()-1e-7);end[c]=lastBoundSample(base,b.to()+1e-7);
-      visits+=Math.max(0,end[c]-begin[c]+1);
-    }
-    if(visits<=8L*n+32L*constraints.size()){
-      for(int c=0;c<constraints.size();c++){var b=constraints.get(c);for(int i=begin[c];i<=end[c];i++){
-        if(b.over())lo[i]=Math.max(lo[i],y[i]+b.amount());else hi[i]=Math.min(hi[i],y[i]-b.amount());
-      }}
-    }else{
-      record Active(int last,double amount,boolean over){}
-      var starts=new HashMap<Integer,List<Active>>();
-      for(int c=0;c<constraints.size();c++)if(begin[c]<=end[c]){var b=constraints.get(c);starts.computeIfAbsent(begin[c],k->new ArrayList<>()).add(new Active(end[c],b.amount(),b.over()));}
-      var order=Comparator.comparingDouble(Active::amount).reversed();
-      var above=new PriorityQueue<Active>(order);var below=new PriorityQueue<Active>(order);
+    for(var c:constraints){
+      RoadPlanningBudget.check();
+      if(c.amount()>48)throw new IllegalArgumentException("自动跨越需要升降超过 48 格，请扩大道路间距或修改端点高度");
       for(int i=0;i<n;i++){
-        for(var c:starts.getOrDefault(i,List.of()))(c.over()?above:below).add(c);
-        while(!above.isEmpty()&&above.peek().last()<i)above.remove();
-        while(!below.isEmpty()&&below.peek().last()<i)below.remove();
-        if(!above.isEmpty())lo[i]=y[i]+above.peek().amount();
-        if(!below.isEmpty())hi[i]=y[i]-below.peek().amount();
+        double station=base.samples().get(i).distance();
+        // Include the ends of every intersected surface triangle; otherwise a bound
+        // can be met at sampled centres but missed at a clipped polygon corner.
+        double previous=i==0?station:base.samples().get(i-1).distance();
+        double next=i==n-1?station:base.samples().get(i+1).distance();
+        if(next<c.from()-1e-7||previous>c.to()+1e-7)continue;
+        if(c.over())lo[i]=Math.max(lo[i],y[i]+c.amount());else hi[i]=Math.min(hi[i],y[i]-c.amount());
       }
     }
     // Keep one real segment at each port, including its signed tangent, rather than
@@ -116,16 +101,6 @@ public final class LaneRampCorridor {
     }
     Mesh mesh=RoadRibbon.mesh(result,base.settings());RoadRibbon.checkSelfIntersections(mesh,4);LaneRampPaths.checkVolume(mesh);return mesh;
   }
-  static int firstBoundSample(Mesh mesh,double from){
-    var samples=mesh.samples();int lo=0,hi=samples.size();
-    while(lo<hi){int mid=(lo+hi)>>>1;if(samples.get(mid).distance()<from)lo=mid+1;else hi=mid;}
-    return lo==samples.size()?lo:Math.max(0,lo-1);
-  }
-  static int lastBoundSample(Mesh mesh,double to){
-    var samples=mesh.samples();int lo=0,hi=samples.size();
-    while(lo<hi){int mid=(lo+hi)>>>1;if(samples.get(mid).distance()<=to)lo=mid+1;else hi=mid;}
-    return lo==0?-1:Math.min(samples.size()-1,lo);
-  }
   /** Piecewise linear whole-span target, split only at a binding corridor wall.
    * Stack-based to bound recursion depth. The following reachability pass still
    * enforces every grade and direction constraint; this is not a safety bypass. */
@@ -173,5 +148,5 @@ public final class LaneRampCorridor {
         metrics.maximum()*100,LaneRampGrade.label(grade),metrics.horizontal(),metrics.available(),rise/grade,
         locked?"此处必须保持原车道高度；请改变跨越位置或接头位置，单纯提高坡比不能解除固定接头碰撞。":"请检查该位置的上下跨越关系及距固定接头的升降空间；总长度足够不代表局部净空可达。"));
   }
-  private LaneRampCorridor(){}
+  private Reference431Corridor(){}
 }

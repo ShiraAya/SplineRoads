@@ -140,7 +140,22 @@ public final class LaneRampPaths {
     }
     Mesh mesh=RoadRibbon.mesh(samples,settings);if(RoadRibbon.minRadius(mesh)<Math.max(settings.width()/2+.5,3))throw new IllegalArgumentException("接头内侧半径不足，请增大过渡长度");RoadRibbon.checkSelfIntersections(mesh,4);checkVolume(mesh);return mesh;
   }
-  public static void checkVolume(Mesh mesh){var p=mesh.samples();double width=mesh.samples().stream().mapToDouble(s->s.halfWidth()*2).max().orElse(mesh.settings().width()),clearance=4+mesh.settings().thickness();for(int i=0;i<p.size();i+=3){RoadPlanningBudget.check();for(int j=i+3;j<p.size();j+=3){var a=p.get(i);var b=p.get(j);if(b.distance()-a.distance()<width*3)continue;double horizontal=a.center().sub(b.center()).horizontalLength();if(horizontal<a.halfWidth()+b.halfWidth()+.35&&Math.abs(a.center().y()-b.center().y())<clearance-.05)throw new IllegalArgumentException("回环路面体积净空不足，请增大半径、间距或过渡长度");}}}
+  public static void checkVolume(Mesh mesh){
+    if(mesh.samples().size()<1024){shortVolume(mesh);return;}
+    var p=mesh.samples();double half=p.stream().mapToDouble(Sample::halfWidth).max().orElse(mesh.settings().width()/2);
+    double width=half*2,clearance=4+mesh.settings().thickness();var index=RoadPathIndex.points(mesh);
+    for(int i=0;i<p.size();i+=3){
+      RoadPlanningBudget.check();var a=p.get(i);
+      for(int point:index.query(RoadPathIndex.segment(a.center(),a.center()),a.halfWidth()+half+.35)){
+        int j=point*3;if(j<i+3)continue;var b=p.get(j);
+        if(b.distance()-a.distance()<width*3)continue;
+        double horizontal=a.center().sub(b.center()).horizontalLength();
+        if(horizontal<a.halfWidth()+b.halfWidth()+.35&&Math.abs(a.center().y()-b.center().y())<clearance-.05)
+          throw new IllegalArgumentException("回环路面体积净空不足，请增大半径、间距或过渡长度");
+      }
+    }
+  }
+
   private static V reflect(V p){return new V(p.x(),p.y(),-p.z());}
   private static Port reflect(Port p){return new Port(reflect(p.position()),reflect(p.direction()),reflect(p.outside()),p.extraWidth(),p.grade());}
   private static double angle(V d){return Math.atan2(d.z(),d.x());}
@@ -150,5 +165,6 @@ public final class LaneRampPaths {
   private static void arcLeft(List<Frame> f,V c,double r,double start,double turn){int n=Math.max(1,(int)Math.ceil(r*turn/.65));for(int i=0;i<=n;i++){double t=start-turn*i/n;V d=new V(Math.cos(t),0,Math.sin(t));add(f,c.add(d.left().mul(r)),d);}}
   private static void line(List<Frame> f,V a,V b,V dir){int n=Math.max(1,(int)Math.ceil(a.sub(b).horizontalLength()/.65));for(int i=0;i<=n;i++)add(f,a.add(b.sub(a).mul((double)i/n)),dir);}
   private static void bezier(List<Frame> f,V a,V da,V b,V db,double k){V p=a.add(da.mul(k)),q=b.sub(db.mul(k));int n=Math.max(8,(int)Math.ceil((a.sub(p).horizontalLength()+p.sub(q).horizontalLength()+q.sub(b).horizontalLength())/.55));for(int i=0;i<=n;i++){double t=(double)i/n,u=1-t;V v=a.mul(u*u*u).add(p.mul(3*u*u*t)).add(q.mul(3*u*t*t)).add(b.mul(t*t*t));V d=p.sub(a).mul(u*u).add(q.sub(p).mul(2*u*t)).add(b.sub(q).mul(t*t));if(d.horizontalLength()<1e-7)throw new IllegalArgumentException("匝道过渡折返");add(f,v,d.horizontalUnit());}}
+  private static void shortVolume(Mesh mesh){var p=mesh.samples();double width=mesh.samples().stream().mapToDouble(s->s.halfWidth()*2).max().orElse(mesh.settings().width()),clearance=4+mesh.settings().thickness();for(int i=0;i<p.size();i+=3){RoadPlanningBudget.check();for(int j=i+3;j<p.size();j+=3){var a=p.get(i);var b=p.get(j);if(b.distance()-a.distance()<width*3)continue;double horizontal=a.center().sub(b.center()).horizontalLength();if(horizontal<a.halfWidth()+b.halfWidth()+.35&&Math.abs(a.center().y()-b.center().y())<clearance-.05)throw new IllegalArgumentException("回环路面体积净空不足，请增大半径、间距或过渡长度");}}}
   private LaneRampPaths(){}
 }

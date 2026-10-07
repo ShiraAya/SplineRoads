@@ -567,7 +567,7 @@ public record RoadRecord(
       new com.sora.splineroads.core.WeakIdentityCache<>(2048,750_000,m->m.samples().size());
   private static final com.sora.splineroads.core.WeakIdentityCache<RoadRecord,Mesh> SHAPED_MESHES =
       new com.sora.splineroads.core.WeakIdentityCache<>(2048,750_000,m->m.samples().size());
-  public static void clearMeshCaches(){com.sora.splineroads.core.RoadTunnelSpace.clearPreparedCache();RAW_MESHES.clear();SHAPED_MESHES.clear();}
+  public static void clearMeshCaches(){com.sora.splineroads.core.RoadRaster.clearSavedRasters();com.sora.splineroads.core.RoadTunnelSpace.clearPreparedCache();RAW_MESHES.clear();SHAPED_MESHES.clear();}
   public static String meshCacheStats(){return "raw="+RAW_MESHES.stats()+", shaped="+SHAPED_MESHES.stats();}
   public RoadGeometry.Mesh mesh() {return SHAPED_MESHES.get(this,r->com.sora.splineroads.core.LaneSections.apply(r.rawMesh()));}
   public RoadGeometry.Mesh rawMesh() {return RAW_MESHES.get(this,RoadRecord::buildRawMesh);}

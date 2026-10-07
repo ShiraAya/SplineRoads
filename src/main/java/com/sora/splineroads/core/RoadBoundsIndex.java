@@ -5,7 +5,8 @@ import java.util.*;
 /** Mutable transaction-local broad phase. Results are exact AABB matches in input order.
  * Large rectangles fall back to a scan; they never create unbounded bucket fan-out. */
 public final class RoadBoundsIndex {
-  private static final int TILE=64, MAX_BUCKETS=1024;
+  private static final int MAX_BUCKETS=1024;
+  private final int tile;
   public record Bounds(double minX,double minZ,double maxX,double maxZ) {
     public Bounds {
       if(!Double.isFinite(minX)||!Double.isFinite(minZ)||!Double.isFinite(maxX)||!Double.isFinite(maxZ)||minX>maxX||minZ>maxZ)
@@ -23,8 +24,12 @@ public final class RoadBoundsIndex {
   private final Set<Integer> large=new HashSet<>();
   private long examined,queries;
   private final boolean spatial;
-  public RoadBoundsIndex(List<Bounds> bounds){spatial=bounds.size()>64;entries.addAll(bounds);if(spatial)for(int i=0;i<entries.size();i++)add(i,entries.get(i));}
-  private static Grid grid(Bounds b,double margin){return new Grid((int)Math.floor(Math.nextDown(b.minX-margin)/TILE),(int)Math.floor(Math.nextDown(b.minZ-margin)/TILE),(int)Math.floor(Math.nextUp(b.maxX+margin)/TILE),(int)Math.floor(Math.nextUp(b.maxZ+margin)/TILE));}
+  public RoadBoundsIndex(List<Bounds> bounds){this(bounds,64);}
+  public RoadBoundsIndex(List<Bounds> bounds,int tile){
+    if(tile<1)throw new IllegalArgumentException("Invalid spatial tile size");
+    this.tile=tile;spatial=bounds.size()>64;entries.addAll(bounds);if(spatial)for(int i=0;i<entries.size();i++)add(i,entries.get(i));
+  }
+  private Grid grid(Bounds b,double margin){return new Grid((int)Math.floor(Math.nextDown(b.minX-margin)/tile),(int)Math.floor(Math.nextDown(b.minZ-margin)/tile),(int)Math.floor(Math.nextUp(b.maxX+margin)/tile),(int)Math.floor(Math.nextUp(b.maxZ+margin)/tile));}
   private static long key(int x,int z){return (x&0xffffffffL)|((long)z<<32);}
   private void add(int slot,Bounds b){var g=grid(b,0);if(!g.small()){large.add(slot);return;}for(long x=g.x0;x<=g.x1;x++)for(long z=g.z0;z<=g.z1;z++)buckets.computeIfAbsent(key((int)x,(int)z),k->new HashSet<>()).add(slot);}
   public void replace(int slot,Bounds next){

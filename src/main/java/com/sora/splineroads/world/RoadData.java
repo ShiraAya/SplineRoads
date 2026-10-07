@@ -960,7 +960,7 @@ public final class RoadData extends SavedData {
     return List.copyOf(result);
   }
   private void replaceBatch(ServerLevel level,ServerPlayer player,List<RoadIndex.Built> built,Set<UUID> removed,boolean assembly,Set<BlockPos> selectedNodes,List<NodeMove> moves,int editCellLimit,Set<UUID> deletedPoints,List<RoadIndex.Built> previewResult) {
-    try (var budget=com.sora.splineroads.core.RoadPlanningBudget.open("道路事务预检查",6);
+    try (var budget=com.sora.splineroads.core.RoadPlanningBudget.cancellable("道路事务预检查");
          var timing=RoadTimings.start("edit",index.roads.size(),built.size());
          var workChunks = RoadWorkChunks.open(level)) {
       boolean deleting=built.isEmpty();
