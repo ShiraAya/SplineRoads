@@ -1,0 +1,133 @@
+name: SR433 final regression and real builds
+on:
+  push:
+    branches: [SR-0.40.15]
+    paths: ['.github/workflows/sr433-final.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: write
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - id: save
+        run: |
+          python - <<'PY'
+          import base64,hashlib,lzma,subprocess
+          from pathlib import Path
+          subprocess.run(['git','diff','--exit-code','fe711ceb0d19816bf743cca87ccfa6e72d4780d8','--','src','tools/model-validation'],check=True)
+          patch=lzma.decompress(base64.b64decode(Path('tools/patches/sr433-final.xz64').read_text(),validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='5c5a7815ca3ddadda73382abfe82a2ea2ae5d74edaa2ef11cb4c724f55e0c15c'
+          subprocess.run(['git','apply','--check','-'],input=patch,check=True)
+          subprocess.run(['git','apply','-'],input=patch,check=True)
+          p=Path('PROGRESS.md')
+          p.write_text('# SR433 final verification pending\n\nFull regression found a real disjoint-intake regression: the provisional cut covered the whole lane chain and overlapped a distant valid intake. Real physical ranges are now created only after the candidate exists; slot-specific collision guards remain during route search. This is not a clearance exemption. Arrival417 tests no longer demand fixed64m/40m or blanket predecessor refusal, but keep closure, exactB, adjacent-lane, codec and deletion checks. All78 Arrival417 scenarios/1008 checks passed locally after the repair. Initial real3case Minecraft and Forge passed; final same-fixture run and complete regression are pending on the saved source. No further feature expansion this turn.\n\n---\n'+p.read_text())
+          subprocess.run(['git','add','src','tools/model-validation','PROGRESS.md'],check=True)
+          PY
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git -c core.whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol diff --cached --check
+          git commit -m 'fix: defer physical reservation until candidate exists and keep disjoint intakes valid'
+          git push origin HEAD:refs/heads/SR-0.40.15
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  regression:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Complete original regression chain and new physical lane tests
+        run: |
+          mkdir -p build/final433-regression
+          set -o pipefail
+          bash tools/check_sr433.sh 2>&1 | tee build/final433-regression/full.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr433-final-regression-${{ needs.preserve.outputs.saved }}
+          path: build/final433-regression/
+          retention-days: 30
+  package:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Actual Java17 Forge and both version checks
+        run: |
+          mkdir -p build/final433
+          set -o pipefail
+          bash gradlew --no-daemon compileJava compileGameTestJava jar 2>&1 | tee build/final433/forge.log
+          python - <<'PY'
+          import zipfile
+          with zipfile.ZipFile('build/libs/splineroads-0.40.20-alpha-rc1.jar') as z:
+              assert 'Implementation-Version: 0.40.20-alpha-rc1' in z.read('META-INF/MANIFEST.MF').decode()
+              assert 'version="0.40.20-alpha-rc1"' in z.read('META-INF/mods.toml').decode()
+          PY
+          cp build/libs/splineroads-0.40.20-alpha-rc1.jar build/final433/
+      - name: Preserve exact source and evidence
+        if: always()
+        run: |
+          mkdir -p build/final433
+          git rev-parse HEAD > build/final433/COMMIT.txt
+          git archive --format=zip --output=build/final433/SplineRoads-0.40.20-alpha-rc1-source.zip HEAD
+          sha256sum build/final433/*.jar build/final433/*source.zip > build/final433/SHA256.txt 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr433-final-install-${{ needs.preserve.outputs.saved }}
+          path: build/final433/
+          retention-days: 30
+  minecraft:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Same real ADD, TEMPORARY and local tunnel-pier tests
+        run: |
+          mkdir -p run433 build/final433-minecraft
+          echo eula=true > run433/eula.txt
+          printf 'level-seed=431\ngenerate-structures=false\n' > run433/server.properties
+          set -o pipefail
+          timeout 720s bash gradlew --no-daemon runGameTestServer -ProadRunDir=run433 -ProadTestNamespaces=splineroads_hotfix433 -ProadTestHeap=3G 2>&1 | tee build/final433-minecraft/server.log
+          grep -q 'All 3 required tests passed' build/final433-minecraft/server.log
+          grep -q 'LOCAL_TUNNEL_PIERS_SAVE_DELETE_PASS' build/final433-minecraft/server.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr433-final-minecraft-${{ needs.preserve.outputs.saved }}
+          path: |
+            build/final433-minecraft/
+            run433/logs/
+            run433/*.xml
+          retention-days: 30
