@@ -30,13 +30,15 @@ jobs:
           subprocess.run(['git','rm','src/main/java/com/sora/splineroads/world/LaneRoadChain.java'],check=True)
           subprocess.run(['git','apply','--check','-'],input=patch,check=True)
           subprocess.run(['git','apply','-'],input=patch,check=True)
+          p=Path('src/main/java/com/sora/splineroads/world/LaneRoadChain.java')
+          p.write_text('\n'.join(line.rstrip() for line in p.read_text().splitlines())+'\n')
           p=Path('PROGRESS.md')
           p.write_text('# SR433 WIP: physical lanes and actual impact bounds\n\nVersion0.40.20-alpha-rc1, protocol65. Latest nine screenshots reopen correctness: lane-continuous search across joined roads, contact-derived reservations, distinct below-grade mouths, no departure X, real opening edges, local tunnels and bridge piers. Exact source is saved before full regression and real Forge/ServerLevel tests. No original-world acceptance or completed-release claim until verification finishes. Prior perf2 collision hot paths and cancellation remain; no fixed interactive cutoff.\n\n---\n'+p.read_text())
           subprocess.run(['git','add','src','build.gradle','tools/test_ramp39_model.sh','tools/check_sr433.sh','tools/model-validation','docs/checkpoints/SR433-WIP.md','PROGRESS.md'],check=True)
           PY
           git config user.name 'SR checkpoint'
           git config user.email 'sr-checkpoint@users.noreply.github.com'
-          git diff --cached --check
+          git -c core.whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol diff --cached --check
           git commit -m 'fix: follow physical lanes across seams and derive local openings, tunnels and pier protection'
           git push origin HEAD:refs/heads/SR-0.40.15
           echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
