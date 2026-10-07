@@ -1,0 +1,58 @@
+name: SR432 reversed-order performance check
+on:
+  push:
+    branches: [SR-0.40.15]
+    paths: ['.github/workflows/sr432-reverse-pair.yml']
+permissions:
+  contents: read
+jobs:
+  reversed_pair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 2f3f6ef48bdebe7a296804db459ed05b448969be
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Optimized version first with four actual preview-build repetitions
+        run: |
+          mkdir -p run432 build/reverse432
+          echo eula=true > run432/eula.txt
+          printf 'level-seed=431\ngenerate-structures=false\n' > run432/server.properties
+          set -o pipefail
+          timeout 720s bash gradlew --no-daemon runGameTestServer -ProadRunDir=run432 -ProadTestNamespaces=splineroads_hotfix432 -ProadTestHeap=3G 2>&1 | tee build/reverse432/optimized-server.log
+          grep -q 'All 2 required tests passed' build/reverse432/optimized-server.log
+      - name: Unchanged baseline second using identical test source and independent world
+        if: always()
+        run: |
+          mkdir -p build/reverse432
+          git worktree add --detach ../sr432-reverse-baseline 32cee0fae8a03726bf3fd94880111ef1a07e6925
+          cp src/gametest/java/com/sora/splineroads/world/Build432GameTests.java ../sr432-reverse-baseline/src/gametest/java/com/sora/splineroads/world/
+          cp -r src/gametest/resources/data/splineroads_hotfix432 ../sr432-reverse-baseline/src/gametest/resources/data/
+          cd ../sr432-reverse-baseline
+          mkdir -p run432
+          echo eula=true > run432/eula.txt
+          printf 'level-seed=431\ngenerate-structures=false\n' > run432/server.properties
+          set -o pipefail
+          timeout 720s bash gradlew --no-daemon runGameTestServer -ProadRunDir=run432 -ProadTestNamespaces=splineroads_hotfix432 -ProadTestHeap=3G 2>&1 | tee ../SplineRoads/build/reverse432/baseline-server.log
+          grep -q 'All 2 required tests passed' ../SplineRoads/build/reverse432/baseline-server.log
+          cp -r run432/logs ../SplineRoads/build/reverse432/baseline-logs
+      - name: Same per-stage and total thresholds plus all geometry fingerprints
+        if: always()
+        run: |
+          set -o pipefail
+          python tools/compare_performance432.py build/reverse432/baseline-server.log build/reverse432/optimized-server.log build/reverse432/comparison.json 2>&1 | tee build/reverse432/comparison.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr432-reverse-performance-2f3f6ef4
+          path: |
+            build/reverse432/
+            run432/logs/
+            run432/*.xml
+          retention-days: 30
