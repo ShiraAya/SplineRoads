@@ -222,7 +222,7 @@ public final class RoadIndex {
       rasterized = false; dryColumns=null;walkTops.clear();nearbyClearance.clear();
     }
     private void buildRaster(boolean reused){
-      if(!reused)RoadRaster.cachedRaster(mesh).forEach((cell,boxes)->{
+      if(!reused)(Boolean.getBoolean("sr.raster.valueCache")?RoadRaster.cachedRaster(mesh):RoadRaster.raster(mesh)).forEach((cell,boxes)->{
         BlockPos p=new BlockPos(cell.x(),cell.y(),cell.z());cellData.put(p.asLong(),boxes);
         long column=new BlockPos(cell.x(),0,cell.z()).asLong();
         for(var box:boxes){double low=cell.y()+box.y0()+record.settings().thickness(),high=cell.y()+box.y1();

@@ -1,3 +1,8 @@
+# SR432 performance verification in progress
+
+0.40.19-alpha-perf2, protocol64. User requires both route planning and complete preview/build improvement. Exact raster/contact hot paths and repeated real two-scene tests preserved. No performance acceptance or user-world completion claim until measured gates finish. No fixed interactive timeouts restored.
+
+---
 # 当前：SR431 功能检查通过，整体性能验收不通过；不要发布perf1
 
 仅工作分支SR-0.40.15。用户要求解决匝道预览/建造慢，而不是固定时间中止。候选0.40.19-alpha-perf1，协议仍64。生产修改e3ac9269ad13e89b11a8db207b4f23d2950d0d35，最终受测源码/JAR59988961fe5d2a2a21063672ff1978ad61cb07ec。之后仅文档提交。main、SR-0.40.14、chat/sr-0402没有修改。

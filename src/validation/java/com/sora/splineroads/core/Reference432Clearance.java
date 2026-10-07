@@ -4,7 +4,7 @@ import com.sora.splineroads.core.RoadGeometry.*;
 import java.util.*;
 
 /** Exact piecewise-planar deck overlaps. A centerline projection is not a collision location. */
-public final class RoadClearance {
+public final class Reference432Clearance {
   public static final double REQUIRED = 4.0;
   private static final double EPS = 1e-8, AREA_EPS = 1e-4;
   public record Contact(double from,double to,V ours,V other,double usableClearance,
@@ -33,15 +33,12 @@ public final class RoadClearance {
       polygon=det>=0?List.of(a,b,c):List.of(a,c,b);hash=Objects.hash(a,b,c,sa,sb,sc);
     }
     double det(){return det;}
-    double value(V p,double va,double vb,double vc){return value(p.x(),p.z(),va,vb,vc);}
-    double value(double x,double z,double va,double vb,double vc){
-      double qx=x-a.x(),qz=z-a.z();
+    double value(V p,double va,double vb,double vc){
+      double qx=p.x()-a.x(),qz=p.z()-a.z();
       return va+(qx*ez-qz*ex)/det*(vb-va)+(dx*qz-dz*qx)/det*(vc-va);
     }
     double height(V p){return value(p,a.y(),b.y(),c.y());}
     double station(V p){return value(p,sa,sb,sc);}
-    double height(double x,double z){return value(x,z,a.y(),b.y(),c.y());}
-    double station(double x,double z){return value(x,z,sa,sb,sc);}
     List<V> polygon(){return polygon;}
     double minX(){return minX;} double maxX(){return maxX;}
     double minZ(){return minZ;} double maxZ(){return maxZ;}
@@ -49,38 +46,17 @@ public final class RoadClearance {
     @Override public boolean equals(Object o){return this==o||o instanceof Triangle t
         &&a.equals(t.a)&&b.equals(t.b)&&c.equals(t.c)&&Double.compare(sa,t.sa)==0&&Double.compare(sb,t.sb)==0&&Double.compare(sc,t.sc)==0;}
   }
-  /** Query-local marks replace an allocated hash set for every tested triangle.
-   * Canonical IDs preserve the old value-equality de-duplication and visit order.
-   * Scratch belongs to the calling thread; no mutable state is shared by workers. */
-  private static final class NearScratch {
-    int[] seen=new int[0]; int stamp; final ArrayList<Triangle> result=new ArrayList<>();
-    void begin(int size){if(seen.length<size)seen=new int[size];if(++stamp==0){Arrays.fill(seen,0);stamp=1;}result.clear();}
-  }
-  private static final ThreadLocal<NearScratch> NEAR=ThreadLocal.withInitial(NearScratch::new);
   private static final class Grid {
-    private record Indexed(Triangle triangle,int id){}
-    final Map<Long,List<Indexed>> cells=new HashMap<>(); final int size;
-    Grid(Mesh mesh){
-      Map<Triangle,Indexed> unique=new HashMap<>();
-      for(Triangle t:triangles(mesh)){
-        Indexed indexed=unique.get(t);
-        if(indexed==null){indexed=new Indexed(t,unique.size());unique.put(t,indexed);}
-        for(int x=cell(t.minX());x<=cell(t.maxX());x++)for(int z=cell(t.minZ());z<=cell(t.maxZ());z++)
-          cells.computeIfAbsent(key(x,z),k->new ArrayList<>()).add(indexed);
-      }
-      size=unique.size();
-    }
-    // Borrowed until the next near() call on this thread; all consumers finish
-    // iterating synchronously and do not recursively query another grid.
-    List<Triangle> near(Triangle t){var scratch=NEAR.get();scratch.begin(size);
+    final Map<Long,List<Triangle>> cells=new HashMap<>();
+    Grid(Mesh mesh){for(Triangle t:triangles(mesh))
       for(int x=cell(t.minX());x<=cell(t.maxX());x++)for(int z=cell(t.minZ());z<=cell(t.maxZ());z++)
-        for(Indexed indexed:cells.getOrDefault(key(x,z),List.of())){
-          Triangle q=indexed.triangle();
-          if(q.maxX()>t.minX()+EPS&&q.minX()<t.maxX()-EPS&&q.maxZ()>t.minZ()+EPS&&q.minZ()<t.maxZ()-EPS&&scratch.seen[indexed.id()]!=scratch.stamp){
-            scratch.seen[indexed.id()]=scratch.stamp;scratch.result.add(q);
-          }
-        }
-      return scratch.result;
+        cells.computeIfAbsent(key(x,z),k->new ArrayList<>()).add(t);
+    }
+    Set<Triangle> near(Triangle t){var out=new LinkedHashSet<Triangle>();
+      for(int x=cell(t.minX());x<=cell(t.maxX());x++)for(int z=cell(t.minZ());z<=cell(t.maxZ());z++)
+        for(Triangle q:cells.getOrDefault(key(x,z),List.of()))
+          if(q.maxX()>t.minX()+EPS&&q.minX()<t.maxX()-EPS&&q.maxZ()>t.minZ()+EPS&&q.minZ()<t.maxZ()-EPS)out.add(q);
+      return out;
     }
   }
   // Grid values contain triangle vectors, never the Mesh key. Identity keys are weak and bounded;
@@ -127,53 +103,27 @@ public final class RoadClearance {
     return List.copyOf(out);
   }
   private static void appendContact(List<Contact> out,Mesh a,Mesh b,Triangle t,Triangle q){
-    var clipped=CLIP.get();int n=clipped.intersection(t.polygon(),q.polygon());
-    if(clipped.area(n)<AREA_EPS)return;
-    double[] polygon=clipped.first;
-    double from=Double.POSITIVE_INFINITY,to=Double.NEGATIVE_INFINITY,min=Double.POSITIVE_INFINITY;
-    double raise=0,lower=0,minDiff=Double.POSITIVE_INFINITY,maxDiff=Double.NEGATIVE_INFINITY;
-    V ours=null,other=null;int negative=0,positive=0;
-    for(int i=0;i<n;i+=3){
-      double x=polygon[i],z=polygon[i+2];double ya=t.height(x,z),yb=q.height(x,z),difference=ya-yb;
-      double gap=Math.abs(difference)-(difference>=0?a.settings().thickness():b.settings().thickness());
-      if(gap<min){min=gap;ours=new V(x,ya,z);other=new V(x,yb,z);}
-      double station=t.station(x,z);from=Math.min(from,station);to=Math.max(to,station);
-      if(difference<minDiff){minDiff=difference;negative=i;}if(difference>maxDiff){maxDiff=difference;positive=i;}
-      raise=Math.max(raise,yb+REQUIRED+a.settings().thickness()+.10-ya);
-      lower=Math.max(lower,ya+REQUIRED+b.settings().thickness()+.10-yb);
-    }
-    if(minDiff<0&&maxDiff>0){
-      double alpha=-minDiff/(maxDiff-minDiff);
-      double x=polygon[negative]+(polygon[positive]-polygon[negative])*alpha;
-      double z=polygon[negative+2]+(polygon[positive+2]-polygon[negative+2])*alpha;
-      ours=new V(x,t.height(x,z),z);other=new V(x,q.height(x,z),z);
-      min=-Math.min(a.settings().thickness(),b.settings().thickness());
-    }
-    out.add(new Contact(from,to,ours,other,min,raise,lower));
-  }
-  /** At most six vertices for triangle/triangle intersection, with extra room
-   * for duplicate boundary vertices. Same clipping arithmetic as the list path. */
-  private static final class ClipScratch {
-    double[] first=new double[48],second=new double[48];
-    int intersection(List<V> subject,List<V> clip){
-      int n=0;for(var v:subject){first[n++]=v.x();first[n++]=v.y();first[n++]=v.z();}
-      for(int i=0;i<clip.size()&&n>0;i++){
-        V a=clip.get(i),b=clip.get((i+1)%clip.size());double dx=b.x()-a.x(),dz=b.z()-a.z();
-        int prev=n-3,count=0;double dp=dx*(first[prev+2]-a.z())-dz*(first[prev]-a.x());
-        for(int cur=0;cur<n;cur+=3){
-          double dc=dx*(first[cur+2]-a.z())-dz*(first[cur]-a.x());boolean pin=dp>=-EPS,cin=dc>=-EPS;
-          if(pin!=cin){double den=dp-dc;if(Math.abs(den)>EPS){double alpha=dp/den;for(int k=0;k<3;k++)second[count++]=first[prev+k]+(first[cur+k]-first[prev+k])*alpha;}}
-          if(cin){second[count++]=first[cur];second[count++]=first[cur+1];second[count++]=first[cur+2];}
-          prev=cur;dp=dc;
+        List<V> polygon=intersection(t.polygon(),q.polygon());if(area(polygon)<AREA_EPS)return;
+        double from=Double.POSITIVE_INFINITY,to=Double.NEGATIVE_INFINITY,min=Double.POSITIVE_INFINITY;
+        double raise=0,lower=0,minDiff=Double.POSITIVE_INFINITY,maxDiff=Double.NEGATIVE_INFINITY;
+        V ours=null,other=null,negative=null,positive=null;
+        for(V p:polygon){
+          double ya=t.height(p),yb=q.height(p),difference=ya-yb;
+          double gap=Math.abs(difference)-(difference>=0?a.settings().thickness():b.settings().thickness());
+          if(gap<min){min=gap;ours=new V(p.x(),ya,p.z());other=new V(p.x(),yb,p.z());}
+          double station=t.station(p);from=Math.min(from,station);to=Math.max(to,station);
+          if(difference<minDiff){minDiff=difference;negative=p;}if(difference>maxDiff){maxDiff=difference;positive=p;}
+          raise=Math.max(raise,yb+REQUIRED+a.settings().thickness()+.10-ya);
+          lower=Math.max(lower,ya+REQUIRED+b.settings().thickness()+.10-yb);
         }
-        double[] swap=first;first=second;second=swap;n=count;
-      }
-      return n;
-    }
-    double area(int n){if(n<9)return 0;double sum=0;for(int i=3;i<n-3;i+=3)
-      sum+=(first[i]-first[0])*(first[i+5]-first[2])-(first[i+2]-first[2])*(first[i+3]-first[0]);return Math.abs(sum)/2;}
+        // Difference changes sign inside a polygon: the two deck planes intersect there.
+        if(minDiff<0&&maxDiff>0){
+          V crossing=negative.add(positive.sub(negative).mul(-minDiff/(maxDiff-minDiff)));
+          ours=new V(crossing.x(),t.height(crossing),crossing.z());other=new V(crossing.x(),q.height(crossing),crossing.z());
+          min=-Math.min(a.settings().thickness(),b.settings().thickness());
+        }
+        out.add(new Contact(from,to,ours,other,min,raise,lower));
   }
-  private static final ThreadLocal<ClipScratch> CLIP=ThreadLocal.withInitial(ClipScratch::new);
   /** Exact swept road travel-volume vs an actual framed structural prism.
    * The old shell check combined the entire part's vertical bounds with one midpoint
    * road elevation: a long sloped beam could be rejected where it never touches road.
@@ -200,7 +150,7 @@ public final class RoadClearance {
   // final validation. Retain its exact tessellation, not just its destination grid.
   private static final WeakIdentityCache<Mesh,List<Triangle>> TRIANGLES=
       new WeakIdentityCache<>(256,500_000,List::size);
-  private static List<Triangle> triangles(Mesh mesh){return TRIANGLES.get(mesh,RoadClearance::makeTriangles);}
+  private static List<Triangle> triangles(Mesh mesh){return TRIANGLES.get(mesh,Reference432Clearance::makeTriangles);}
   private static List<Triangle> makeTriangles(Mesh mesh){
     var out=new ArrayList<Triangle>();var samples=mesh.samples();
     for(int i=1;i<samples.size();i++){
@@ -228,5 +178,5 @@ public final class RoadClearance {
   private static double cross(V a,V b){return a.x()*b.z()-a.z()*b.x();}
   private static int cell(double x){return (int)Math.floor(x/16);}
   private static long key(int x,int z){return ((long)x<<32)^(z&0xffffffffL);}
-  private RoadClearance(){}
+  private Reference432Clearance(){}
 }

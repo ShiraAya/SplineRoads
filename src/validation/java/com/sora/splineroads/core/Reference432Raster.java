@@ -7,7 +7,7 @@ import java.util.*;
  * Conservative quarter-block XZ footprint (eighth-block on slopes), retaining top/bottom heights.
  * Every triangle is clipped before rasterizing; negative coordinates use floor throughout.
  */
-public final class RoadRaster {
+public final class Reference432Raster {
   public record Cell(int x, int y, int z) {}
 
   public record Box(double x0, double y0, double z0, double x1, double y1, double z1) {}
@@ -152,38 +152,6 @@ public final class RoadRaster {
     }
   }
 
-  /** Exact immutable shape cache between preview, commit and immediate delete.
-   * No world/ownership/blocks are cached: every transaction still revalidates them.
-   * Value equality covers the complete Mesh (including reference, cuts and settings),
-   * so a one-coordinate/cut/thickness change is a miss, not stale collision geometry.
-   * Strong retention is bounded by both entries and actual boxes, not just road count. */
-  private static final class ShapeKey {
-    final Mesh mesh;final int hash;
-    ShapeKey(Mesh mesh){this.mesh=mesh;hash=mesh.hashCode();}
-    public int hashCode(){return hash;}
-    public boolean equals(Object o){return this==o||o instanceof ShapeKey k&&mesh.equals(k.mesh);}
-  }
-  private record SavedRaster(Map<Cell,List<Box>> cells,int weight){}
-  private static final LinkedHashMap<ShapeKey,SavedRaster> SAVED=new LinkedHashMap<>(16,.75f,true);
-  private static long savedWeight,savedHits,savedMisses,savedEpoch;
-  public static synchronized void clearSavedRasters(){SAVED.clear();savedWeight=0;savedEpoch++;}
-  public static synchronized long[] savedRasterStats(){return new long[]{SAVED.size(),savedWeight,savedHits,savedMisses};}
-  public static Map<Cell,List<Box>> cachedRaster(Mesh mesh){
-    var key=new ShapeKey(mesh);long epoch;
-    synchronized(RoadRaster.class){var old=SAVED.get(key);if(old!=null){savedHits++;return old.cells();}savedMisses++;epoch=savedEpoch;}
-    var cells=raster(mesh);long weight=mesh.samples().size();
-    for(var list:cells.values())weight+=list.size()+1;
-    if(weight>250_000)return cells;
-    cells.replaceAll((cell,boxes)->List.copyOf(boxes));var result=Map.copyOf(cells);
-    synchronized(RoadRaster.class){
-      if(epoch!=savedEpoch)return result;
-      var old=SAVED.get(key);if(old!=null)return old.cells();
-      SAVED.put(key,new SavedRaster(result,(int)weight));savedWeight+=weight;
-      var it=SAVED.entrySet().iterator();while(it.hasNext()&&(SAVED.size()>12||savedWeight>250_000)){savedWeight-=it.next().getValue().weight();it.remove();}
-    }
-    return result;
-  }
-
   public static Map<Cell, List<Box>> raster(Mesh mesh) {
     return raster(mesh, null);
   }
@@ -211,10 +179,6 @@ public final class RoadRaster {
   }
 
   private static Map<Cell, List<Box>> rasterPart(Mesh mesh, Cell only, int resolution) {
-    if(!Boolean.getBoolean("sr.raster.legacyRectangles")){
-      var rectangular=flatRectangles(mesh,only,resolution);
-      if(rectangular!=null)return rectangular;
-    }
     Map<Tile, List<Interval>> tiles = new HashMap<>();
     var points = mesh.samples();
     double step = 1.0 / resolution;
@@ -227,72 +191,6 @@ public final class RoadRaster {
       if (tiles.size() > 1500000) throw new IllegalArgumentException("碰撞面积过大，请将道路分为多段");
     }
     return collect(tiles, resolution, only);
-  }
-
-  /** Exact flat axis-aligned strips use a per-cell occupancy mask instead of
-   * allocating/clipping sixteen or sixty-four Tile/Interval objects per block.
-   * Nonrectangles, crossfall and numerically tiny boundary slivers use the original
-   * triangle path. All samples/cuts are retained; this is NOT coarser collision. */
-  private static Map<Cell,List<Box>> flatRectangles(Mesh mesh,Cell only,int resolution){
-    var points=mesh.samples(); if(points.isEmpty())return null;
-    double y=points.get(0).center().y();
-    for(var at:points)if(at.center().y()!=y||at.left().y()!=0)return null;
-    var quads=new ArrayList<double[]>();
-    for(int i=1;i<points.size();i++)for(var q:LaneDeck.strips(mesh,points.get(i-1),points.get(i))){
-      double[] rect=rectangle(q.al(),q.ar(),q.br(),q.bl(),resolution);
-      if(rect==null)return null;
-      quads.add(rect);
-    }
-    // A quarter-grid mask fits in one long even for eighth-grid input.
-    Map<Tile,Long> masks=new HashMap<>();
-    for(var r:quads){
-      int tx0=(int)Math.floor(r[0]*resolution),tx1=(int)Math.ceil(r[2]*resolution)-1;
-      int tz0=(int)Math.floor(r[1]*resolution),tz1=(int)Math.ceil(r[3]*resolution)-1;
-      int x0=Math.floorDiv(tx0,resolution),x1=Math.floorDiv(tx1,resolution);
-      int z0=Math.floorDiv(tz0,resolution),z1=Math.floorDiv(tz1,resolution);
-      if(only!=null){x0=Math.max(x0,only.x);x1=Math.min(x1,only.x);z0=Math.max(z0,only.z);z1=Math.min(z1,only.z);}
-      for(int x=x0;x<=x1;x++)for(int z=z0;z<=z1;z++){
-        int loX=Math.max(0,tx0-x*resolution),hiX=Math.min(resolution,tx1-x*resolution+1);
-        int loZ=Math.max(0,tz0-z*resolution),hiZ=Math.min(resolution,tz1-z*resolution+1);
-        long row=((1L<<(hiX-loX))-1)<<loX,bits=0;
-        for(int iz=loZ;iz<hiZ;iz++)bits|=row<<(iz*resolution);
-        var key=new Tile(x,z);masks.merge(key,bits,(a,b)->a|b);
-      }
-    }
-    Map<Cell,List<Box>> result=new HashMap<>();
-    double low=y-mesh.settings().thickness();int y0=(int)Math.floor(low),y1=(int)Math.ceil(y-1e-8)-1;
-    for(var e:masks.entrySet())for(int iy=y0;iy<=y1;iy++){
-      if(only!=null&&only.y!=iy)continue;
-      double b0=Math.max(0,low-iy),b1=Math.min(1,y-iy);if(b1-b0<=1e-8)continue;
-      result.put(new Cell(e.getKey().x,iy,e.getKey().z),maskBoxes(e.getValue(),resolution,b0,b1));
-    }
-    if(result.size()>RoadLimits.MAX_BODY_CELLS)throw new IllegalArgumentException("道路实体占位过大，请增加中间端点");
-    return result;
-  }
-  private static double[] rectangle(V a,V b,V c,V d,int resolution){
-    if(a.y()!=b.y()||a.y()!=c.y()||a.y()!=d.y())return null;
-    if(!((a.x()==b.x()&&b.z()==c.z()&&c.x()==d.x()&&d.z()==a.z())
-        ||(a.z()==b.z()&&b.x()==c.x()&&c.z()==d.z()&&d.x()==a.x())))return null;
-    double x0=Math.min(a.x(),c.x()),x1=Math.max(a.x(),c.x());
-    double z0=Math.min(a.z(),c.z()),z1=Math.max(a.z(),c.z());
-    if(x1-x0<1e-4||z1-z0<1e-4)return null;
-    for(double v:new double[]{x0,x1,z0,z1}){
-      double f=v*resolution-Math.floor(v*resolution);
-      // Retain old area clipping for slivers near an exact grid boundary.
-      if(f!=0&&Math.min(f,1-f)<1e-4)return null;
-    }
-    return new double[]{x0,z0,x1,z1};
-  }
-  private static List<Box> maskBoxes(long mask,int resolution,double low,double high){
-    long full=resolution==8?-1L:(1L<<(resolution*resolution))-1;
-    if(mask==full)return List.of(new Box(0,low,0,1,high,1));
-    var rows=new ArrayList<Box>();double step=1.0/resolution;
-    for(int z=0;z<resolution;z++)for(int x=0;x<resolution;){
-      if((mask&(1L<<(z*resolution+x)))==0){x++;continue;}
-      int begin=x++;while(x<resolution&&(mask&(1L<<(z*resolution+x)))!=0)x++;
-      rows.add(new Box(begin*step,low,z*step,x*step,high,(z+1)*step));
-    }
-    return compact(rows);
   }
 
   private static Map<Cell, List<Box>> collect(
@@ -369,33 +267,21 @@ public final class RoadRaster {
       }
   }
 
-  private static final Comparator<Box> ROW_ORDER = (a,b) -> {
-    int c=Double.compare(a.z0,b.z0); if(c!=0)return c;
-    c=Double.compare(a.z1,b.z1); if(c!=0)return c;
-    c=Double.compare(a.x0,b.x0); return c!=0?c:Double.compare(a.x1,b.x1);
-  };
-  private static final Comparator<Box> COLUMN_ORDER = (a,b) -> {
-    int c=Double.compare(a.x0,b.x0); if(c!=0)return c;
-    c=Double.compare(a.x1,b.x1); if(c!=0)return c;
-    c=Double.compare(a.z0,b.z0); return c!=0?c:Double.compare(a.z1,b.z1);
-  };
-  private static final Comparator<Box> BOX_ORDER = (a,b) -> {
-    int c=Double.compare(a.y0,b.y0); if(c!=0)return c;
-    c=Double.compare(a.y1,b.y1); return c!=0?c:ROW_ORDER.compare(a,b);
-  };
-
   /** Merge flat tile runs before storing them; interior slabs normally become one box. */
   public static List<Box> compact(List<Box> input) {
-    if(input.size()<2)return new ArrayList<>(input);
-    var fast=Boolean.getBoolean("sr.raster.legacyCompact")?null:compactFlat(input);if(fast!=null)return fast;
     List<Box> out = new ArrayList<>(input);
-    Comparator<Box> order = BOX_ORDER;
+    Comparator<Box> order =
+        Comparator.comparingDouble(Box::y0)
+            .thenComparingDouble(Box::y1)
+            .thenComparingDouble(Box::z0)
+            .thenComparingDouble(Box::z1)
+            .thenComparingDouble(Box::x0)
+            .thenComparingDouble(Box::x1);
     out.sort(order);
     for (int axis = 0; axis < 2; axis++) {
       for (int i = 0; i < out.size(); i++)
         for (int j = i + 1; j < out.size(); ) {
           Box a = out.get(i), b = out.get(j);
-          if (b.y0 - a.y0 >= 1e-9) break; // Sorted height ranges cannot merge.
           boolean height = Math.abs(a.y0 - b.y0) < 1e-9 && Math.abs(a.y1 - b.y1) < 1e-9;
           boolean merge =
               height
@@ -419,39 +305,6 @@ public final class RoadRaster {
     }
     out.sort(order);
     return out;
-  }
-
-  /** Exact flat-slab fast path. Most main-road cells are 16/64 equal-height
-   * tiles. The old all-pairs/restart merge made every such cell quadratic.
-   * Sort contiguous rows, then columns. Irregular/overlapping or almost-equal
-   * heights fall back to the original tolerance-sensitive algorithm. */
-  private static List<Box> compactFlat(List<Box> input){
-    if(input.size()<2)return new ArrayList<>(input);
-    var first=input.get(0);
-    for(var b:input)if(b.y0()!=first.y0()||b.y1()!=first.y1())return null;
-    Comparator<Box> rows = ROW_ORDER;
-    var sorted=new ArrayList<>(input);sorted.sort(rows);
-    var horizontal=new ArrayList<Box>();Box current=sorted.get(0);
-    for(int i=1;i<sorted.size();i++){
-      var b=sorted.get(i);
-      if(current.z0()==b.z0()&&current.z1()==b.z1()){
-        if(b.x0()<current.x1())return null;
-        if(b.x0()==current.x1()){current=new Box(current.x0(),current.y0(),current.z0(),b.x1(),current.y1(),current.z1());continue;}
-      }
-      horizontal.add(current);current=b;
-    }
-    horizontal.add(current);
-    horizontal.sort(COLUMN_ORDER);
-    var out=new ArrayList<Box>();current=horizontal.get(0);
-    for(int i=1;i<horizontal.size();i++){
-      var b=horizontal.get(i);
-      if(current.x0()==b.x0()&&current.x1()==b.x1()){
-        if(b.z0()<current.z1())return null;
-        if(b.z0()==current.z1()){current=new Box(current.x0(),current.y0(),current.z0(),current.x1(),current.y1(),b.z1());continue;}
-      }
-      out.add(current);current=b;
-    }
-    out.add(current);out.sort(rows);return out;
   }
 
   public static Map<Cell, List<Box>> structures(List<RoadStructures.Part> parts, Cell only) {
@@ -479,14 +332,7 @@ public final class RoadRaster {
             part.b().z() + w,
             only);
       } else if (!RoadSignals.signal(part) && !RoadPoleModel.support(part)) {
-        var base=part.base();
-        double[] rect=Boolean.getBoolean("sr.raster.legacyRectangles")?null:rectangle(base.get(0),base.get(1),base.get(2),base.get(3),4);
-        if(rect!=null){
-          double topY=base.get(0).y()+part.height();
-          flatStructure(out,rect,topY-part.height(),topY,only);
-          continue;
-        }
-        var top = base.stream().map(v -> v.add(new V(0, part.height(), 0))).toList();
+        var top = part.base().stream().map(v -> v.add(new V(0, part.height(), 0))).toList();
         Map<Tile, List<Interval>> tiles = new HashMap<>();
         triangle(tiles, top.get(0), top.get(1), top.get(2), part.height(), 4, only);
         triangle(tiles, top.get(0), top.get(2), top.get(3), part.height(), 4, only);
@@ -504,17 +350,6 @@ public final class RoadRaster {
       }
     }
     return out;
-  }
-
-  private static void flatStructure(Map<Cell,List<Box>> out,double[] r,double low,double high,Cell only){
-    double x0=Math.floor(r[0]*4)/4,x1=Math.ceil(r[2]*4)/4,z0=Math.floor(r[1]*4)/4,z1=Math.ceil(r[3]*4)/4;
-    int ax=(int)Math.floor(x0),bx=(int)Math.ceil(x1)-1,az=(int)Math.floor(z0),bz=(int)Math.ceil(z1)-1;
-    int ay=(int)Math.floor(low),by=(int)Math.ceil(high-1e-8)-1;
-    if(only!=null){ax=Math.max(ax,only.x);bx=Math.min(bx,only.x);az=Math.max(az,only.z);bz=Math.min(bz,only.z);ay=Math.max(ay,only.y);by=Math.min(by,only.y);}
-    for(int x=ax;x<=bx;x++)for(int y=ay;y<=by;y++)for(int z=az;z<=bz;z++){
-      double bottom=Math.max(0,low-y),top=Math.min(1,high-y);if(top-bottom<=1e-8)continue;
-      out.computeIfAbsent(new Cell(x,y,z),c->new ArrayList<>()).add(new Box(Math.max(0,x0-x),bottom,Math.max(0,z0-z),Math.min(1,x1-x),top,Math.min(1,z1-z)));
-    }
   }
 
   private static void addBox(
@@ -575,5 +410,5 @@ public final class RoadRaster {
     return Math.abs(sum)*.5;
   }
 
-  private RoadRaster() {}
+  private Reference432Raster() {}
 }
