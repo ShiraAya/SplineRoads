@@ -1,28 +1,29 @@
-# SR431 WIP: actual algorithm and construction optimization
+# 当前：SR431 功能检查通过，整体性能验收不通过；不要发布perf1
 
-Version 0.40.19-alpha-perf1, protocol remains 64; only SR-0.40.15.
-User rejected timeout-only handling. Replaced interactive 8/12/4/6-second cutoffs with cancellation and stale-result checks, without changing geometry protections.
-Measured old hotspots: corridor contact-by-all-samples scan; clearance preparation; repeated pure collision rasterization between preview and construction.
-Optimizations: adaptive interval/sweep corridor, exact triangulation and protected-deck caches, short/long path hybrid spatial checking, flat-box compaction, bounded full-equality pure raster reuse.
-Local equivalence/core/model runs passed. Full Java17 Forge and same-runner old/new real preview/build verification are now running; NO claim of completion or original-user-world acceptance.
-The new GameTest adds the actual readonly previewAssembly stage before build and checks no preview NBT/revision mutation; baseline and new use identical fixtures.
+仅工作分支SR-0.40.15。用户要求解决匝道预览/建造慢，而不是固定时间中止。候选0.40.19-alpha-perf1，协议仍64。生产修改e3ac9269ad13e89b11a8db207b4f23d2950d0d35，最终受测源码/JAR59988961fe5d2a2a21063672ff1978ad61cb07ec。之后仅文档提交。main、SR-0.40.14、chat/sr-0402没有修改。
 
----
-## Historical checkpoint
-# 当前：SR430 / 0.40.18-alpha 已编译，最终两项真实建造测试通过
+## 当前结论
 
-工作分支仅SR-0.40.15。安装JAR与完整源码的精确提交32cee0fae8a03726bf3fd94880111ef1a07e6925，协议64；后续交接提交仅为文档。main等其他分支未修改。
+**没有完成用户要求的整体性能修复，不建议用户安装perf1重新测试。** 完整Java17 Forge、核心/模型回归及真实Minecraft两项预览预检->建造->删除都通过，但同一runner的单次旧/新配对中，路线约快20%，预检和建造反而变慢。
 
-用户《0.40.17问题.docx》四项已有生产修改：双向道路以中央分隔带为端点参考；车道滑块实际吸附1/2/3/4四档；汇流复用立交箭头；最严重的卡住问题以后台纯几何规划、主线程安全快照/复核、8秒计算预算和12秒排队总截止、显式取消与过期结果丢弃、车道恢复空间索引复用处理。最终世界写入仍在主线程，未关闭几何/世界保护，截止不是任意第三方或单次区块访问阻塞的强制中断。
+- ADD3->4：路线226.835739->179.089984ms；预检1960.555890->2300.711330ms；建造1494.340096->1684.775897ms。三阶段3681.731725->4164.577211ms。
+- TEMPORARY/MERGE双向六车道高速：路线2330.008651->1851.187522ms；预检4478.029979->6331.447844ms；建造3600.090006->5635.180542ms。三阶段10408.128636->13817.815908ms。
+- 退步主要集中在edit_raster。高速预检2489.646194->4052.176423ms，建造2384.270214->4366.328108ms。不能声称已证明新缓存是全部退步的唯一原因，需拆分剖析哈希/值比较、栅格化、合并、复制/分配与GC。
 
-真实TEMPORARY/MERGE建造另发现封闭区端部路缘frameA为空导致NullPointerException，已在a2024f68修复并增加24项生产几何回归；相同失败夹具现在通过，没有更换道路形状或跳过保护。
+## 已保存改动
 
-最终Actions37511903071：build作业112434904958 SUCCESS；minecraft作业112434904263 SUCCESS。真实Minecraft两项均实际执行并通过：TEMPORARY/MERGE规划3432.999455毫秒、建造4520.943741毫秒，碰撞/预约/删除恢复通过；ADD规划49.762899毫秒、建造1253.919726毫秒，实际3->4、Mojang NBT保存加载、删除恢复3通过。不是用户原存档/FPS测量，不据此宣传91.3秒的加速倍数。
+精确区间/扫描线替代相交区间对全路线扫描；几何、保护车道面与恢复扫掠复用；长路径空间候选筛选、短路径保留旧精确循环；平面碰撞盒快路径及有界全值相等碰撞栅格缓存。取消交互固定8/12/4/6秒截止，保留取消、有限队列、过期结果拒绝；没有关闭几何/世界保护。后台仅纯规划，最终世界写入仍主线程。
 
-完整旧回归链在53bd527a通过；最后端部修复后的32cee0fa重跑基础core/model、427/428/429/430、Closure24、Scheduler12并实际Java17 Forge编译及上述真实GameTests。模型适配器测试不冒称真实网络/客户端渲染。
+完整旧回归在37584513955的regression112671525201成功；2541647新等价检查、48长路径检查、12调度器检查通过。最终37585420394的package112674340232、paired_minecraft112674340317均SUCCESS；两版真实2项GameTest均执行和通过。CI绿灯不包含性能验收。首次配对0测试的命名空间错误被严格脚本拦住，修复后没有改换道路夹具或删除保护断言。
 
-最终安装源码产物11435518388、真实Minecraft产物11435688917均已下载核验。JAR SHA256 d7a31a08f45f187bbc982e3846ddf94a0e7a8064074ddd23fba839eebc0c284f；source ZIP SHA256 6d19360ac3842817c65b01ec70bb0ca3d6037dbda073874adfc80b9f0e133c41。ZIP提交注释、Manifest/mods.toml版本、协议64和621个src/main文件一致性已核对。
+## 下一轮准确入口
 
-仍未取得用户原存档/latest.log，不能证明原卡住的唯一原因或所有原场景已修复。未做真实客户端GUI/GPU、车辆、多人回执验收，未展开P2渲染/光影多线程；既有显式曲线和被旧版本移动的实体端点不自动全存档迁移。
+先拆开RoadIndex.buildRaster缓存入口和RoadRaster.compactFlat快路径做消融，细分edit_raster耗时及内存分配，必要时撤回造成退步的改动；保留有正面证据的走廊优化。固定几何和选道参数，多次重复、交替顺序对照；预检、实际建造和删除的碰撞/拓扑结果必须一致。不要先加大缓存、提高时间上限或把收集用户日志当作修复已知退步的前置条件。
 
-全部源码已在交接前保存，随后仅收取已经启动的验证结果和归档，无继续扩展功能或后台开发承诺。详细修改与历史见docs/checkpoints/FINAL_VERIFICATION_430.md；最终成功结果补记见docs/checkpoints/FINAL_GAME_TEST_430.md。历史0.40.17-hotfix1详见FINAL_VERIFICATION_429.md。
+在完整流程没有改善前，不交付“性能已修复”的安装包。原用户存档、客户端GUI/GPU/车辆并未实测。详细数据、原始日志/产物校验、历史失败和边界见docs/checkpoints/FINAL_VERIFICATION_431.md。SR431-SAVED.md保存的是结果尚未结束时的检查点，以本文件和最终记录为准。
+
+完整源码ZIP SHA256 1e43f6454b7d26342f9d70ab7bb1e2480bc8e42a2781cdeaf287efe17d21ab8c；不建议安装的实验JAR SHA256 077fb6fd3707b75655b6f9cd338e689bef13c1bc1915514362d497c5503ea07a。622个生产文件与完整回归提交逐字节一致。代码在活动工作结束前已保存，之后只收取已启动测试结果与归档；不承诺后台修改。
+
+## 历史基线
+
+上一交付0.40.18-alpha对应32cee0fae8a03726bf3fd94880111ef1a07e6925，协议64。中央分隔带节点基准、四档滑块、立交汇流箭头及封闭区无显式框架空指针修复保留。用户新截图已证明时间预算不是解决预览问题的办法，不把该旧版真实建造测试通过当作当前性能问题结案。历史修改与测试见FINAL_VERIFICATION_430.md、FINAL_GAME_TEST_430.md及FINAL_VERIFICATION_429.md。
