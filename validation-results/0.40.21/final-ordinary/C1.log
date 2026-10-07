@@ -1,0 +1,2 @@
+START C1 left=false type=ORDINARY source_slot=4 target_slot=2 A=V[x=-6.5, y=64.0, z=-250.0] B=V[x=-250.0, y=72.0, z=-10.5]
+RESULT C1 PASS length=384.143 max_grade=0.165733 ymin=63.000 ymax=72.000 vertical_travel=8.000 ms=1154.873

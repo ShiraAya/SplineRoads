@@ -1,0 +1,1 @@
+START B8 left=false type=ORDINARY source_slot=5 target_slot=5 A=V[x=-10.5, y=64.0, z=-250.0] B=V[x=250.0, y=72.0, z=10.5]

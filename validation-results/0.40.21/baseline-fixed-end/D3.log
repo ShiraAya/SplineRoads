@@ -1,0 +1,7 @@
+START D3 left=false type=ORDINARY source_slot=3 target_slot=1 A=V[x=-2.5, y=64.0, z=-250.0] B=V[x=250.0, y=72.0, z=-6.5]
+RESULT D3 FAIL ms=159.062 自动未找到可用路径：直接连接：直接连接需要两端大致同向且前方有过渡空间；请尝试自动或回环；已检查 B 点前后 0 格的同车道范围
+Exception in thread "main" java.lang.IllegalArgumentException: 自动未找到可用路径：直接连接：直接连接需要两端大致同向且前方有过渡空间；请尝试自动或回环；已检查 B 点前后 0 格的同车道范围
+	at com.sora.splineroads.world.LaneRamps.generatePlanned(LaneRamps.java:130)
+	at com.sora.splineroads.world.LaneRamps.generateChoice(LaneRamps.java:63)
+	at com.sora.splineroads.world.LaneRamps.generate(LaneRamps.java:54)
+	at com.sora.splineroads.world.RampMatrix434Validation.main(RampMatrix434Validation.java:33)

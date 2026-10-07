@@ -1,0 +1,3 @@
+START C1 left=true type=HIGHWAY source_slot=1 target_slot=2 A=V[x=8.0, y=64.0, z=-250.0] B=V[x=-250.0, y=72.0, z=-13.0]
+Oct 07, 2026 9:27:20 PM com.sora.splineroads.world.LaneRamps$Planning close
+INFO: SR route plan total_ms=1076.874 clearance_ms=409.081 candidates=2 contact_queries=12 cached_meshes=3

@@ -16,3 +16,6 @@ run039*/
 
 # Isolated performance/render verification worlds
 run040*/
+
+# Isolated 32-case ramp matrix world
+run434*/

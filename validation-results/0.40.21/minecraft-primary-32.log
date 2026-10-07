@@ -1,0 +1,565 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.8/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :compileGameTestJava
+> Task :processGameTestResources UP-TO-DATE
+> Task :gameTestClasses
+> Task :downloadMcpConfig
+> Task :extractSrg UP-TO-DATE
+> Task :createSrgToMcp UP-TO-DATE
+> Task :downloadMCMeta UP-TO-DATE
+> Task :extractNatives UP-TO-DATE
+> Task :makeSrcDirs
+> Task :prepareRuns
+> Task :prepareRunGameTestServer
+> Task :prepareRunGameTestServerCompile
+
+> Task :runGameTestServer
+2026-10-07 21:35:56,619 main WARN Advanced terminal features are not available in this environment
+[21:35:56] [main/INFO] [cp.mo.mo.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgegametestserveruserdev, --gameDir, ., --fml.forgeVersion, 47.4.20, --fml.mcVersion, 1.20.1, --fml.forgeGroup, net.minecraftforge, --fml.mcpVersion, 20230612.114412]
+[21:35:56] [main/INFO] [cp.mo.mo.Launcher/MODLAUNCHER]: ModLauncher 10.0.9+10.0.9+main.dcd20f30 starting: java version 17.0.20 by Ubuntu; OS Linux arch amd64 version 6.18.44
+[21:35:56] [main/WARN] [ne.mi.fm.lo.FMLConfig/CORE]: Configuration file /workspace/scratch/7a3da0a71d86/sr-work/run434b/config/fml.toml is not correct. Correcting
+[21:35:56] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowSkipGLVersions] was corrected from null to []
+[21:35:56] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowLogHelpMessage] was corrected from null to true
+[21:35:56] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowSquir] was corrected from null to false
+[21:35:56] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowShowCPU] was corrected from null to false
+[21:35:56] [main/INFO] [ne.mi.fm.lo.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgegametestserveruserdev
+[21:35:57] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.5 Source=union:/workspace/scratch/7a3da0a71d86/gradle-home/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.5/9d1c0c3a304ae6697ecd477218fa61b850bf57fc/mixin-0.8.5.jar%23116!/ Service=ModLauncher Env=SERVER
+[21:35:57] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /workspace/scratch/7a3da0a71d86/gradle-home/caches/modules-2/files-2.1/net.minecraftforge/javafmllanguage/1.20.1-47.4.20/c354b21002937b393c4f86163a98dccdf1d51e72/javafmllanguage-1.20.1-47.4.20.jar is missing mods.toml file
+[21:35:57] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /workspace/scratch/7a3da0a71d86/gradle-home/caches/modules-2/files-2.1/net.minecraftforge/lowcodelanguage/1.20.1-47.4.20/865d75f8c18329ddb31db5856701ab86609108b5/lowcodelanguage-1.20.1-47.4.20.jar is missing mods.toml file
+[21:35:57] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /workspace/scratch/7a3da0a71d86/gradle-home/caches/modules-2/files-2.1/net.minecraftforge/mclanguage/1.20.1-47.4.20/af599930362212ae937e392709f49047e6abbbf/mclanguage-1.20.1-47.4.20.jar is missing mods.toml file
+[21:35:57] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /workspace/scratch/7a3da0a71d86/gradle-home/caches/modules-2/files-2.1/net.minecraftforge/fmlcore/1.20.1-47.4.20/e8cc697c69f3911e76caa2f005d9486597cd7448/fmlcore-1.20.1-47.4.20.jar is missing mods.toml file
+[21:35:57] [main/INFO] [ne.mi.fm.lo.mo.JarInJarDependencyLocator/]: No dependencies to load found. Skipping!
+[21:35:59] [main/INFO] [cp.mo.mo.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgegametestserveruserdev' with arguments [--gameDir, .]
+[21:36:09] [modloading-worker-0/INFO] [ne.mi.co.ForgeMod/FORGEMOD]: Forge mod loading, version 47.4.20, for MC 1.20.1 with MCP 20230612.114412
+[21:36:09] [modloading-worker-0/INFO] [ne.mi.co.MinecraftForge/FORGE]: MinecraftForge v47.4.20 Initialized
+[21:36:10] [Forge Version Check/INFO] [ne.mi.fm.VersionChecker/]: [forge] Starting version check at https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json
+[21:36:10] [Forge Version Check/WARN] [ne.mi.fm.VersionChecker/]: Failed to process update information
+java.net.ConnectException: null
+	at jdk.internal.net.http.HttpClientImpl.send(HttpClientImpl.java:900) ~[java.net.http:?] {}
+	at jdk.internal.net.http.HttpClientFacade.send(HttpClientFacade.java:133) ~[java.net.http:?] {}
+	at net.minecraftforge.fml.VersionChecker$1.openUrlString(VersionChecker.java:142) ~[fmlcore-1.20.1-47.4.20.jar%23185!/:?] {}
+	at net.minecraftforge.fml.VersionChecker$1.process(VersionChecker.java:180) ~[fmlcore-1.20.1-47.4.20.jar%23185!/:?] {}
+	at java.lang.Iterable.forEach(Iterable.java:75) ~[?:?] {}
+	at net.minecraftforge.fml.VersionChecker$1.run(VersionChecker.java:117) ~[fmlcore-1.20.1-47.4.20.jar%23185!/:?] {}
+Caused by: java.net.ConnectException
+	at jdk.internal.net.http.common.Utils.toConnectException(Utils.java:1107) ~[java.net.http:?] {}
+	at jdk.internal.net.http.PlainHttpConnection.connectAsync(PlainHttpConnection.java:203) ~[java.net.http:?] {}
+	at jdk.internal.net.http.AsyncSSLConnection.connectAsync(AsyncSSLConnection.java:56) ~[java.net.http:?] {}
+	at jdk.internal.net.http.Http2Connection.createAsync(Http2Connection.java:450) ~[java.net.http:?] {}
+	at jdk.internal.net.http.Http2ClientImpl.getConnectionFor(Http2ClientImpl.java:133) ~[java.net.http:?] {}
+	at jdk.internal.net.http.ExchangeImpl.get(ExchangeImpl.java:98) ~[java.net.http:?] {}
+	at jdk.internal.net.http.Exchange.establishExchange(Exchange.java:374) ~[java.net.http:?] {}
+	at jdk.internal.net.http.Exchange.responseAsyncImpl0(Exchange.java:567) ~[java.net.http:?] {}
+	at jdk.internal.net.http.Exchange.responseAsyncImpl(Exchange.java:411) ~[java.net.http:?] {}
+	at jdk.internal.net.http.Exchange.responseAsync(Exchange.java:403) ~[java.net.http:?] {}
+	at jdk.internal.net.http.MultiExchange.responseAsyncImpl(MultiExchange.java:430) ~[java.net.http:?] {}
+	at jdk.internal.net.http.MultiExchange.lambda$responseAsyncImpl$7(MultiExchange.java:471) ~[java.net.http:?] {}
+	at java.util.concurrent.CompletableFuture.uniHandle(CompletableFuture.java:934) ~[?:?] {}
+	at java.util.concurrent.CompletableFuture.uniHandleStage(CompletableFuture.java:950) ~[?:?] {}
+	at java.util.concurrent.CompletableFuture.handle(CompletableFuture.java:2340) ~[?:?] {}
+	at jdk.internal.net.http.MultiExchange.responseAsyncImpl(MultiExchange.java:461) ~[java.net.http:?] {}
+	at jdk.internal.net.http.MultiExchange.lambda$responseAsync0$2(MultiExchange.java:350) ~[java.net.http:?] {}
+	at java.util.concurrent.CompletableFuture$UniCompose.tryFire(CompletableFuture.java:1150) ~[?:?] {}
+	at java.util.concurrent.CompletableFuture.postComplete(CompletableFuture.java:510) ~[?:?] {}
+	at java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1773) ~[?:?] {}
+	at jdk.internal.net.http.HttpClientImpl$DelegatingExecutor.execute(HttpClientImpl.java:174) ~[java.net.http:?] {}
+	at java.util.concurrent.CompletableFuture.completeAsync(CompletableFuture.java:2673) ~[?:?] {}
+	at jdk.internal.net.http.MultiExchange.responseAsync(MultiExchange.java:303) ~[java.net.http:?] {}
+	at jdk.internal.net.http.HttpClientImpl.sendAsync(HttpClientImpl.java:991) ~[java.net.http:?] {}
+	at jdk.internal.net.http.HttpClientImpl.send(HttpClientImpl.java:878) ~[java.net.http:?] {}
+	... 5 more
+Caused by: java.nio.channels.UnresolvedAddressException
+	at sun.nio.ch.Net.checkAddress(Net.java:159) ~[?:?] {}
+	at sun.nio.ch.Net.checkAddress(Net.java:167) ~[?:?] {}
+	at sun.nio.ch.SocketChannelImpl.checkRemote(SocketChannelImpl.java:816) ~[?:?] {}
+	at sun.nio.ch.SocketChannelImpl.connect(SocketChannelImpl.java:839) ~[?:?] {}
+	at jdk.internal.net.http.PlainHttpConnection.lambda$connectAsync$0(PlainHttpConnection.java:187) ~[java.net.http:?] {}
+	at java.security.AccessController.doPrivileged(AccessController.java:569) ~[?:?] {}
+	at jdk.internal.net.http.PlainHttpConnection.connectAsync(PlainHttpConnection.java:189) ~[java.net.http:?] {}
+	at jdk.internal.net.http.AsyncSSLConnection.connectAsync(AsyncSSLConnection.java:56) ~[java.net.http:?] {}
+	at jdk.internal.net.http.Http2Connection.createAsync(Http2Connection.java:450) ~[java.net.http:?] {}
+	at jdk.internal.net.http.Http2ClientImpl.getConnectionFor(Http2ClientImpl.java:133) ~[java.net.http:?] {}
+	at jdk.internal.net.http.ExchangeImpl.get(ExchangeImpl.java:98) ~[java.net.http:?] {}
+	at jdk.internal.net.http.Exchange.establishExchange(Exchange.java:374) ~[java.net.http:?] {}
+	at jdk.internal.net.http.Exchange.responseAsyncImpl0(Exchange.java:567) ~[java.net.http:?] {}
+	at jdk.internal.net.http.Exchange.responseAsyncImpl(Exchange.java:411) ~[java.net.http:?] {}
+	at jdk.internal.net.http.Exchange.responseAsync(Exchange.java:403) ~[java.net.http:?] {}
+	at jdk.internal.net.http.MultiExchange.responseAsyncImpl(MultiExchange.java:430) ~[java.net.http:?] {}
+	at jdk.internal.net.http.MultiExchange.lambda$responseAsyncImpl$7(MultiExchange.java:471) ~[java.net.http:?] {}
+	at java.util.concurrent.CompletableFuture.uniHandle(CompletableFuture.java:934) ~[?:?] {}
+	at java.util.concurrent.CompletableFuture.uniHandleStage(CompletableFuture.java:950) ~[?:?] {}
+	at java.util.concurrent.CompletableFuture.handle(CompletableFuture.java:2340) ~[?:?] {}
+	at jdk.internal.net.http.MultiExchange.responseAsyncImpl(MultiExchange.java:461) ~[java.net.http:?] {}
+	at jdk.internal.net.http.MultiExchange.lambda$responseAsync0$2(MultiExchange.java:350) ~[java.net.http:?] {}
+	at java.util.concurrent.CompletableFuture$UniCompose.tryFire(CompletableFuture.java:1150) ~[?:?] {}
+	at java.util.concurrent.CompletableFuture.postComplete(CompletableFuture.java:510) ~[?:?] {}
+	at java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1773) ~[?:?] {}
+	at jdk.internal.net.http.HttpClientImpl$DelegatingExecutor.execute(HttpClientImpl.java:174) ~[java.net.http:?] {}
+	at java.util.concurrent.CompletableFuture.completeAsync(CompletableFuture.java:2673) ~[?:?] {}
+	at jdk.internal.net.http.MultiExchange.responseAsync(MultiExchange.java:303) ~[java.net.http:?] {}
+	at jdk.internal.net.http.HttpClientImpl.sendAsync(HttpClientImpl.java:991) ~[java.net.http:?] {}
+	at jdk.internal.net.http.HttpClientImpl.send(HttpClientImpl.java:878) ~[java.net.http:?] {}
+	... 5 more
+[21:36:11] [main/INFO] [mojang/YggdrasilAuthenticationService]: Environment: authHost='https://authserver.mojang.com', accountsHost='https://api.mojang.com', sessionHost='https://sessionserver.mojang.com', servicesHost='https://api.minecraftservices.com', name='PROD'
+[21:36:11] [Yggdrasil Key Fetcher/ERROR] [mojang/YggdrasilServicesKeyInfo]: Failed to request yggdrasil public key
+com.mojang.authlib.exceptions.AuthenticationUnavailableException: Cannot contact authentication server
+	at com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService.makeRequest(YggdrasilAuthenticationService.java:119) ~[authlib-4.0.43.jar%23121!/:?] {}
+	at com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService.makeRequest(YggdrasilAuthenticationService.java:91) ~[authlib-4.0.43.jar%23121!/:?] {}
+	at com.mojang.authlib.yggdrasil.YggdrasilServicesKeyInfo.fetch(YggdrasilServicesKeyInfo.java:94) ~[authlib-4.0.43.jar%23121!/:?] {}
+	at com.mojang.authlib.yggdrasil.YggdrasilServicesKeyInfo.lambda$get$1(YggdrasilServicesKeyInfo.java:81) ~[authlib-4.0.43.jar%23121!/:?] {}
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539) ~[?:?] {}
+	at java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305) ~[?:?] {}
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305) ~[?:?] {}
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136) ~[?:?] {}
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635) ~[?:?] {}
+	at java.lang.Thread.run(Thread.java:840) ~[?:?] {}
+Caused by: java.net.UnknownHostException: api.minecraftservices.com
+	at sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:572) ~[?:?] {}
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[?:?] {}
+	at java.net.Socket.connect(Socket.java:633) ~[?:?] {}
+	at sun.security.ssl.SSLSocketImpl.connect(SSLSocketImpl.java:304) ~[?:?] {}
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:178) ~[?:?] {}
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:533) ~[?:?] {}
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:638) ~[?:?] {}
+	at sun.net.www.protocol.https.HttpsClient.<init>(HttpsClient.java:267) ~[?:?] {}
+	at sun.net.www.protocol.https.HttpsClient.New(HttpsClient.java:381) ~[?:?] {}
+	at sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.getNewHttpClient(AbstractDelegateHttpsURLConnection.java:196) ~[?:?] {}
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect0(HttpURLConnection.java:1307) ~[?:?] {}
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:1148) ~[?:?] {}
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:1077) ~[?:?] {}
+	at sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.connect(AbstractDelegateHttpsURLConnection.java:181) ~[?:?] {}
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1717) ~[?:?] {}
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1641) ~[?:?] {}
+	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(HttpsURLConnectionImpl.java:224) ~[?:?] {}
+	at com.mojang.authlib.HttpAuthenticationService.performGetRequest(HttpAuthenticationService.java:140) ~[authlib-4.0.43.jar%23121!/:?] {}
+	at com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService.makeRequest(YggdrasilAuthenticationService.java:96) ~[authlib-4.0.43.jar%23121!/:?] {}
+	... 9 more
+[21:36:12] [main/WARN] [minecraft/VanillaPackResourcesBuilder]: Assets URL 'union:/workspace/scratch/7a3da0a71d86/gradle-home/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar%23181!/assets/.mcassetsroot' uses unexpected schema
+[21:36:12] [main/WARN] [minecraft/VanillaPackResourcesBuilder]: Assets URL 'union:/workspace/scratch/7a3da0a71d86/gradle-home/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar%23181!/data/.mcassetsroot' uses unexpected schema
+[21:36:13] [main/ERROR] [minecraft/DedicatedServerProperties]: No key layers in MapLike[{}]
+[21:36:15] [main/INFO] [minecraft/RecipeManager]: Loaded 7 recipes
+[21:36:15] [main/INFO] [minecraft/AdvancementList]: Loaded 1271 advancements
+[21:36:16] [main/INFO] [ne.mi.ga.ForgeGameTestHooks/]: Enabled Gametest Namespaces: [splineroads_matrix434]
+[21:36:16] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Configuration file ./world/serverconfig/forge-server.toml is not correct. Correcting
+[21:36:16] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server was corrected from null to its default, SimpleCommentedConfig:{}. 
+[21:36:16] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.removeErroringBlockEntities was corrected from null to its default, false. 
+[21:36:16] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.removeErroringEntities was corrected from null to its default, false. 
+[21:36:16] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.fullBoundingBoxLadders was corrected from null to its default, false. 
+[21:36:16] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.zombieBaseSummonChance was corrected from null to its default, 0.1. 
+[21:36:16] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.zombieBabyChance was corrected from null to its default, 0.05. 
+[21:36:16] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.permissionHandler was corrected from null to its default, forge:default_handler. 
+[21:36:16] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.advertiseDedicatedServerToLan was corrected from null to its default, true. 
+[21:36:16] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.useItemWithDurationZero was corrected from null to its default, false. 
+[21:36:18] [Server thread/INFO] [minecraft/MinecraftServer]: Preparing start region for dimension minecraft:overworld
+[21:36:19] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+[21:36:19] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+[21:36:19] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+[21:36:19] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+[21:36:20] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 1%
+[21:36:20] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 1%
+[21:36:21] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 1%
+[21:36:21] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 1%
+[21:36:22] [Server thread/INFO] [minecraft/LoggerChunkProgressListener]: Time elapsed: 3984 ms
+[21:36:22] [Server thread/INFO] [minecraft/GameTestServer]: Started game test server
+[21:36:22] [Server thread/INFO] [ne.mi.se.pe.PermissionAPI/]: Successfully initialized permission handler forge:default_handler
+[21:36:22] [Server thread/INFO] [minecraft/GameTestBatchRunner]: Running test batch 'splineroads_matrix434:1' (1 tests)...
+[21:36:22] [Server thread/INFO] [minecraft/GameTestServer]: 1 tests are now running!
+Oct 07, 2026 9:36:59 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,752 ms, roads=0, requested=1, phases(ms)={normalize_transitions=16.069215, affected_structures=0.450275, attached_points=2.307528, topology=26.361243, caps_and_dependencies=11.733164, terrain_chunk_access=2.201834, furniture_phase=9.345532, structure_candidate_index=0.790687, structure_plan=369.670362, dependent_replanning=1.286346, caps_shell_and_joint_validation=7.784232, edit_raster=228.836401, sidewalks=6.305891, local_collision=261.863099, validation_commit_sync=807.084829}
+Oct 07, 2026 9:36:59 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR connect: 1,846 ms, roads=0, requested=1, phases(ms)={}
+Oct 07, 2026 9:37:01 PM com.sora.splineroads.core.RoadTimings stage
+INFO: SR stage edit/validation_commit_sync: 1,195 ms, elapsed=2,526 ms
+Oct 07, 2026 9:37:01 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,527 ms, roads=1, requested=1, phases(ms)={normalize_transitions=0.213375, affected_structures=8.680691, attached_points=4.320366, topology=22.051634, caps_and_dependencies=4.998269, terrain_chunk_access=6.885316, furniture_phase=2.012383, structure_candidate_index=0.012027, structure_plan=453.887507, dependent_replanning=9.073777, caps_shell_and_joint_validation=3.413934, edit_raster=528.57388, sidewalks=0.705646, local_collision=286.473803, validation_commit_sync=1194.731224}
+Oct 07, 2026 9:37:01 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR connect: 2,555 ms, roads=1, requested=1, phases(ms)={}
+MATRIX434 FIXTURE node_span=500 mesh_lengths=501.0,501.0
+MATRIX434 A1 PLAN_PASS
+Oct 07, 2026 9:37:04 PM com.sora.splineroads.core.RoadTimings stage
+INFO: SR stage edit/edit_raster: 1,138 ms, elapsed=2,203 ms
+Oct 07, 2026 9:37:05 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 3,536 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.116978, affected_structures=7.414275, attached_points=0.190813, topology=231.925206, caps_and_dependencies=0.060815, terrain_chunk_access=2.926376, furniture_phase=0.520062, structure_candidate_index=0.054333, structure_plan=788.131288, dependent_replanning=9.785819, caps_shell_and_joint_validation=24.226743, edit_raster=1137.703464, sidewalks=1.290435, local_collision=241.377978}
+MATRIX434 A1 PREVIEW_PASS
+Oct 07, 2026 9:37:06 PM com.sora.splineroads.core.RoadTimings stage
+INFO: SR stage edit/structure_plan: 1,252 ms, elapsed=1,325 ms
+Oct 07, 2026 9:37:08 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 3,098 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.230786, affected_structures=5.625068, attached_points=0.188267, topology=62.315265, caps_and_dependencies=0.052339, terrain_chunk_access=4.262175, furniture_phase=0.035962, structure_candidate_index=0.003219, structure_plan=1251.917062, dependent_replanning=7.320585, caps_shell_and_joint_validation=15.051035, edit_raster=645.631829, sidewalks=1.003756, local_collision=132.250978, validation_commit_sync=971.397493}
+Oct 07, 2026 9:37:10 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,488 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.337117, affected_structures=3.985856, attached_points=0.061747, topology=16.180135, caps_and_dependencies=0.046342, terrain_chunk_access=5.868778, furniture_phase=0.034496, structure_candidate_index=0.003789, structure_plan=189.324532, dependent_replanning=3.801016, caps_shell_and_joint_validation=2.114015, edit_raster=315.109491, sidewalks=0.182637, local_collision=107.993632, validation_commit_sync=841.773723}
+MATRIX434 A1 PASS ms=9125.707
+MATRIX434 A2 PLAN_PASS
+Oct 07, 2026 9:37:13 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,500 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.161591, affected_structures=4.348236, attached_points=0.11114, topology=137.847312, caps_and_dependencies=0.050911, terrain_chunk_access=2.925022, furniture_phase=0.334907, structure_candidate_index=0.004864, structure_plan=562.062294, dependent_replanning=53.141584, caps_shell_and_joint_validation=19.882848, edit_raster=668.00852, sidewalks=0.179614, local_collision=214.776943}
+MATRIX434 A2 PREVIEW_PASS
+Oct 07, 2026 9:37:15 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,746 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.512094, affected_structures=3.248416, attached_points=0.153727, topology=121.415969, caps_and_dependencies=0.384, terrain_chunk_access=1.398063, furniture_phase=0.104274, structure_candidate_index=0.024013, structure_plan=425.542356, dependent_replanning=39.798309, caps_shell_and_joint_validation=14.147903, edit_raster=366.792418, sidewalks=0.356428, local_collision=74.479257, validation_commit_sync=696.794156}
+Oct 07, 2026 9:37:16 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,122 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.143347, affected_structures=5.050336, attached_points=0.052486, topology=19.921718, caps_and_dependencies=0.039142, terrain_chunk_access=1.60411, furniture_phase=0.025378, structure_candidate_index=0.003315, structure_plan=122.074842, dependent_replanning=1.871827, caps_shell_and_joint_validation=1.048716, edit_raster=196.990556, sidewalks=0.139911, local_collision=117.746397, validation_commit_sync=654.55849}
+MATRIX434 A2 PASS ms=5849.061
+MATRIX434 A3 PLAN_PASS
+Oct 07, 2026 9:37:18 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,914 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.089076, affected_structures=0.717563, attached_points=0.496977, topology=64.8088, caps_and_dependencies=0.041127, terrain_chunk_access=1.811944, furniture_phase=0.208043, structure_candidate_index=0.004055, structure_plan=365.457166, dependent_replanning=449.681038, caps_shell_and_joint_validation=4.164288, edit_raster=374.554801, sidewalks=0.186459, local_collision=79.614831}
+MATRIX434 A3 PREVIEW_PASS
+Oct 07, 2026 9:37:20 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,481 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.105248, affected_structures=0.482995, attached_points=0.084853, topology=67.67519, caps_and_dependencies=0.039517, terrain_chunk_access=0.928701, furniture_phase=0.020564, structure_candidate_index=0.008176, structure_plan=299.766901, dependent_replanning=16.642655, caps_shell_and_joint_validation=4.478004, edit_raster=458.068111, sidewalks=0.243931, local_collision=123.745126, validation_commit_sync=508.458152}
+Oct 07, 2026 9:37:21 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 970 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.203338, affected_structures=0.838453, attached_points=0.06486, topology=8.585042, caps_and_dependencies=0.219449, terrain_chunk_access=1.871591, furniture_phase=0.480755, structure_candidate_index=0.025167, structure_plan=88.423343, dependent_replanning=2.805122, caps_shell_and_joint_validation=1.128213, edit_raster=322.100925, sidewalks=0.294885, local_collision=99.014153, validation_commit_sync=443.181748}
+MATRIX434 A3 PASS ms=4747.315
+MATRIX434 A4 PLAN_PASS
+Oct 07, 2026 9:37:23 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,954 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.131655, affected_structures=0.443241, attached_points=0.110128, topology=42.548538, caps_and_dependencies=0.028421, terrain_chunk_access=1.020892, furniture_phase=0.14286, structure_candidate_index=0.003002, structure_plan=419.734341, dependent_replanning=370.538871, caps_shell_and_joint_validation=4.782667, edit_raster=358.695044, sidewalks=0.159862, local_collision=98.66918}
+MATRIX434 A4 PREVIEW_PASS
+Oct 07, 2026 9:37:25 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,661 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.167671, affected_structures=0.414829, attached_points=0.358695, topology=57.531612, caps_and_dependencies=0.044245, terrain_chunk_access=1.000352, furniture_phase=0.024519, structure_candidate_index=0.00288, structure_plan=417.459258, dependent_replanning=12.814382, caps_shell_and_joint_validation=2.350377, edit_raster=538.863836, sidewalks=0.23538, local_collision=113.117395, validation_commit_sync=516.77917}
+MATRIX434 A4 PASS ms=4950.286
+Oct 07, 2026 9:37:26 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 967 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.174917, affected_structures=0.648245, attached_points=0.04233, topology=10.039875, caps_and_dependencies=0.061355, terrain_chunk_access=0.928063, furniture_phase=0.020303, structure_candidate_index=0.003109, structure_plan=103.335158, dependent_replanning=1.392454, caps_shell_and_joint_validation=1.563625, edit_raster=310.146528, sidewalks=0.222874, local_collision=83.86695, validation_commit_sync=453.71039}
+MATRIX434 A5 PLAN_PASS
+Oct 07, 2026 9:37:28 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,085 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.08486, affected_structures=2.022165, attached_points=0.077546, topology=49.901237, caps_and_dependencies=0.039846, terrain_chunk_access=1.284523, furniture_phase=0.285267, structure_candidate_index=0.00473, structure_plan=559.579238, dependent_replanning=385.770147, caps_shell_and_joint_validation=2.374916, edit_raster=366.295312, sidewalks=0.185634, local_collision=91.382673}
+MATRIX434 A5 PREVIEW_PASS
+Oct 07, 2026 9:37:30 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,746 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.162373, affected_structures=2.878173, attached_points=0.108868, topology=116.514533, caps_and_dependencies=0.278463, terrain_chunk_access=1.114678, furniture_phase=0.102475, structure_candidate_index=0.023907, structure_plan=507.424286, dependent_replanning=12.05661, caps_shell_and_joint_validation=2.891951, edit_raster=442.88752, sidewalks=0.238209, local_collision=185.924952, validation_commit_sync=472.821083}
+Oct 07, 2026 9:37:30 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 111 ms, roads=3
+MATRIX434 A5 PASS ms=5287.599
+Oct 07, 2026 9:37:31 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 962 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.133301, affected_structures=2.37236, attached_points=0.048753, topology=16.026402, caps_and_dependencies=0.029578, terrain_chunk_access=2.30744, furniture_phase=0.065125, structure_candidate_index=0.004894, structure_plan=160.689628, dependent_replanning=2.633757, caps_shell_and_joint_validation=1.061826, edit_raster=243.762819, sidewalks=0.139163, local_collision=73.195117, validation_commit_sync=459.436727}
+MATRIX434 A6 PLAN_PASS
+Oct 07, 2026 9:37:34 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,520 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.075745, affected_structures=3.115351, attached_points=0.226478, topology=63.162362, caps_and_dependencies=0.035242, terrain_chunk_access=1.714027, furniture_phase=0.218747, structure_candidate_index=0.004502, structure_plan=617.37208, dependent_replanning=601.650096, caps_shell_and_joint_validation=4.87684, edit_raster=670.521251, sidewalks=0.204848, local_collision=77.966349}
+MATRIX434 A6 PREVIEW_PASS
+Oct 07, 2026 9:37:37 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,733 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.100549, affected_structures=2.932362, attached_points=0.10458, topology=100.201669, caps_and_dependencies=0.071956, terrain_chunk_access=1.368435, furniture_phase=0.02612, structure_candidate_index=0.003864, structure_plan=821.873089, dependent_replanning=34.090061, caps_shell_and_joint_validation=16.215278, edit_raster=973.74466, sidewalks=0.19959, local_collision=112.082288, validation_commit_sync=668.330585}
+Oct 07, 2026 9:37:37 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 119 ms, roads=3
+MATRIX434 A6 PASS ms=7993.327
+Oct 07, 2026 9:37:39 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,154 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.128672, affected_structures=2.150398, attached_points=0.058497, topology=12.263052, caps_and_dependencies=0.037926, terrain_chunk_access=1.422244, furniture_phase=0.030443, structure_candidate_index=0.006886, structure_plan=545.151032, dependent_replanning=3.785167, caps_shell_and_joint_validation=6.755978, edit_raster=481.238605, sidewalks=0.204213, local_collision=366.275997, validation_commit_sync=734.061173}
+MATRIX434 A7 PLAN_PASS
+Oct 07, 2026 9:37:42 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 3,048 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.136871, affected_structures=3.059185, attached_points=0.105841, topology=69.059872, caps_and_dependencies=0.055811, terrain_chunk_access=1.708238, furniture_phase=0.217352, structure_candidate_index=0.002973, structure_plan=618.917864, dependent_replanning=855.750811, caps_shell_and_joint_validation=2.996027, edit_raster=663.997176, sidewalks=0.165218, local_collision=81.901056}
+MATRIX434 A7 PREVIEW_PASS
+Oct 07, 2026 9:37:44 PM com.sora.splineroads.core.RoadTimings stage
+INFO: SR stage edit/edit_raster: 1,202 ms, elapsed=2,085 ms
+Oct 07, 2026 9:37:45 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 3,032 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.110921, affected_structures=2.240174, attached_points=0.185173, topology=106.394865, caps_and_dependencies=0.049446, terrain_chunk_access=1.827539, furniture_phase=0.025112, structure_candidate_index=0.002767, structure_plan=721.540907, dependent_replanning=21.175807, caps_shell_and_joint_validation=29.300561, edit_raster=1202.240121, sidewalks=4.292978, local_collision=205.907201, validation_commit_sync=735.974857}
+Oct 07, 2026 9:37:46 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 139 ms, roads=3
+MATRIX434 A7 PASS ms=7978.549
+Oct 07, 2026 9:37:47 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,306 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.104053, affected_structures=2.144335, attached_points=0.049999, topology=9.878033, caps_and_dependencies=0.021916, terrain_chunk_access=1.111656, furniture_phase=0.017307, structure_candidate_index=0.002499, structure_plan=217.317273, dependent_replanning=2.812319, caps_shell_and_joint_validation=0.780864, edit_raster=311.623807, sidewalks=0.195729, local_collision=116.025972, validation_commit_sync=643.755575}
+MATRIX434 A8 PLAN_PASS
+Oct 07, 2026 9:37:49 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,536 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.116614, affected_structures=4.414607, attached_points=0.110515, topology=38.247829, caps_and_dependencies=0.540932, terrain_chunk_access=1.63867, furniture_phase=0.22714, structure_candidate_index=0.003213, structure_plan=496.632301, dependent_replanning=1.881147, caps_shell_and_joint_validation=2.713792, edit_raster=406.131854, sidewalks=0.181937, local_collision=99.556024}
+MATRIX434 A8 PREVIEW_PASS
+Oct 07, 2026 9:37:51 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,953 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.117637, affected_structures=2.007792, attached_points=0.08685, topology=80.997724, caps_and_dependencies=0.098846, terrain_chunk_access=1.667697, furniture_phase=0.023638, structure_candidate_index=0.003132, structure_plan=396.137441, dependent_replanning=1.758638, caps_shell_and_joint_validation=2.945953, edit_raster=744.846119, sidewalks=0.238571, local_collision=82.978885, validation_commit_sync=639.114616}
+Oct 07, 2026 9:37:51 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 107 ms, roads=3
+MATRIX434 A8 PASS ms=Oct 07, 2026 9:37:52 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 910 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.103495, affected_structures=1.575277, attached_points=0.04653, topology=4.283729, caps_and_dependencies=0.045239, terrain_chunk_access=1.176552, furniture_phase=0.017619, structure_candidate_index=0.002515, structure_plan=91.23786, dependent_replanning=1.619052, caps_shell_and_joint_validation=0.531274, edit_raster=188.108846, sidewalks=0.146818, local_collision=189.656282, validation_commit_sync=431.363949}
+4818.689
+MATRIX434 B1 PLAN_PASS
+Oct 07, 2026 9:37:53 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,432 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.103983, affected_structures=3.022688, attached_points=0.087797, topology=66.27182, caps_and_dependencies=0.035729, terrain_chunk_access=1.61341, furniture_phase=0.240823, structure_candidate_index=0.003116, structure_plan=370.288191, dependent_replanning=26.054896, caps_shell_and_joint_validation=5.531237, edit_raster=438.749397, sidewalks=0.159271, local_collision=77.2631}
+MATRIX434 B1 PREVIEW_PASS
+Oct 07, 2026 9:37:55 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,528 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.158999, affected_structures=2.384847, attached_points=0.095055, topology=102.29575, caps_and_dependencies=0.034671, terrain_chunk_access=5.707543, furniture_phase=0.027722, structure_candidate_index=0.003379, structure_plan=409.911445, dependent_replanning=19.378564, caps_shell_and_joint_validation=3.359036, edit_raster=417.95867, sidewalks=0.18028, local_collision=78.586026, validation_commit_sync=487.269414}
+MATRIX434 B1 PASS ms=4411.784
+Oct 07, 2026 9:37:56 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,044 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.125208, affected_structures=2.606651, attached_points=0.045323, topology=11.049648, caps_and_dependencies=0.026498, terrain_chunk_access=1.789544, furniture_phase=0.02401, structure_candidate_index=0.003135, structure_plan=91.128837, dependent_replanning=1.92846, caps_shell_and_joint_validation=0.661429, edit_raster=419.888516, sidewalks=0.235942, local_collision=81.254185, validation_commit_sync=432.963198}
+MATRIX434 B2 PLAN_PASS
+Oct 07, 2026 9:37:58 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,407 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.085439, affected_structures=7.952438, attached_points=0.08621, topology=55.690388, caps_and_dependencies=0.027709, terrain_chunk_access=1.528408, furniture_phase=0.179857, structure_candidate_index=0.003348, structure_plan=371.566165, dependent_replanning=31.614858, caps_shell_and_joint_validation=3.452532, edit_raster=422.994667, sidewalks=0.208731, local_collision=81.821842}
+MATRIX434 B2 PREVIEW_PASS
+Oct 07, 2026 9:37:59 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,616 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.087235, affected_structures=2.824418, attached_points=0.098492, topology=116.845591, caps_and_dependencies=0.025377, terrain_chunk_access=1.472266, furniture_phase=0.02023, structure_candidate_index=0.002909, structure_plan=519.666442, dependent_replanning=51.27572, caps_shell_and_joint_validation=2.569234, edit_raster=377.348889, sidewalks=0.210077, local_collision=80.093029, validation_commit_sync=463.296306}
+Oct 07, 2026 9:38:00 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 102 ms, roads=3
+MATRIX434 B2 PASS ms=4394.048
+Oct 07, 2026 9:38:01 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 958 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.159886, affected_structures=4.103653, attached_points=0.060351, topology=12.505608, caps_and_dependencies=0.022594, terrain_chunk_access=1.443953, furniture_phase=0.019653, structure_candidate_index=0.002942, structure_plan=197.572472, dependent_replanning=1.357432, caps_shell_and_joint_validation=0.393443, edit_raster=188.69341, sidewalks=0.157283, local_collision=87.861423, validation_commit_sync=463.190762}
+MATRIX434 B3 PLAN_PASS
+Oct 07, 2026 9:38:03 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,742 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.109589, affected_structures=0.745083, attached_points=0.103608, topology=96.181976, caps_and_dependencies=0.030199, terrain_chunk_access=1.904843, furniture_phase=5.304389, structure_candidate_index=0.005473, structure_plan=312.873479, dependent_replanning=435.263233, caps_shell_and_joint_validation=1.485526, edit_raster=376.242963, sidewalks=0.206388, local_collision=81.550647}
+MATRIX434 B3 PREVIEW_PASS
+Oct 07, 2026 9:38:04 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,509 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.112446, affected_structures=0.317262, attached_points=0.083777, topology=94.815879, caps_and_dependencies=0.0243, terrain_chunk_access=0.832516, furniture_phase=0.013472, structure_candidate_index=0.002362, structure_plan=401.694902, dependent_replanning=17.090376, caps_shell_and_joint_validation=1.539532, edit_raster=379.655571, sidewalks=0.159472, local_collision=86.817075, validation_commit_sync=525.784023}
+Oct 07, 2026 9:38:07 PM com.sora.splineroads.core.RoadTimings stage
+INFO: SR stage edit/validation_commit_sync: 1,501 ms, elapsed=2,001 ms
+Oct 07, 2026 9:38:07 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,012 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.12233, affected_structures=0.592833, attached_points=0.091833, topology=17.331796, caps_and_dependencies=0.02507, terrain_chunk_access=1.645846, furniture_phase=0.021195, structure_candidate_index=0.003447, structure_plan=83.050341, dependent_replanning=1.148412, caps_shell_and_joint_validation=0.44362, edit_raster=246.40091, sidewalks=0.139422, local_collision=149.459098, validation_commit_sync=1500.889637}
+MATRIX434 B3 PASS ms=5752.109
+MATRIX434 B4 PLAN_PASS
+Oct 07, 2026 9:38:09 PM com.sora.splineroads.core.RoadTimings stage
+INFO: SR stage edit/dependent_replanning: 1,220 ms, elapsed=1,908 ms
+Oct 07, 2026 9:38:10 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 3,358 ms, roads=2, requested=1, phases(ms)={normalize_transitions=1.469746, affected_structures=5.685452, attached_points=0.126999, topology=111.200456, caps_and_dependencies=0.031936, terrain_chunk_access=4.271808, furniture_phase=0.288554, structure_candidate_index=0.003116, structure_plan=564.804527, dependent_replanning=1220.358394, caps_shell_and_joint_validation=5.201012, edit_raster=825.117665, sidewalks=0.537845, local_collision=84.489074}
+MATRIX434 B4 PREVIEW_PASS
+Oct 07, 2026 9:38:12 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,010 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.108311, affected_structures=0.936336, attached_points=0.166527, topology=86.091837, caps_and_dependencies=0.027469, terrain_chunk_access=1.214156, furniture_phase=0.018029, structure_candidate_index=0.003095, structure_plan=428.832806, dependent_replanning=25.191717, caps_shell_and_joint_validation=3.096532, edit_raster=667.768432, sidewalks=0.203157, local_collision=93.402492, validation_commit_sync=702.486895}
+Oct 07, 2026 9:38:13 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 138 ms, roads=3
+Oct 07, 2026 9:38:15 PM com.sora.splineroads.core.RoadTimings stage
+INFO: SR stage edit/validation_commit_sync: 1,328 ms, elapsed=1,818 ms
+Oct 07, 2026 9:38:15 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,819 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.117531, affected_structures=0.618854, attached_points=0.067456, topology=17.466567, caps_and_dependencies=0.025905, terrain_chunk_access=1.481465, furniture_phase=0.01958, structure_candidate_index=0.002913, structure_plan=123.640866, dependent_replanning=2.726758, caps_shell_and_joint_validation=2.144051, edit_raster=239.544109, sidewalks=0.140402, local_collision=102.209979, validation_commit_sync=1327.95224}
+MATRIX434 B4 PASS ms=8068.239
+MATRIX434 B5 PLAN_PASS
+Oct 07, 2026 9:38:17 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,173 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.129237, affected_structures=4.666761, attached_points=0.148823, topology=106.363231, caps_and_dependencies=0.459258, terrain_chunk_access=1.373705, furniture_phase=0.246172, structure_candidate_index=0.003434, structure_plan=461.470227, dependent_replanning=396.890823, caps_shell_and_joint_validation=2.661189, edit_raster=665.26345, sidewalks=0.165984, local_collision=79.717884}
+MATRIX434 B5 PREVIEW_PASS
+Oct 07, 2026 9:38:18 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,514 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.161673, affected_structures=2.376095, attached_points=0.083613, topology=96.860541, caps_and_dependencies=0.025845, terrain_chunk_access=0.850701, furniture_phase=0.02847, structure_candidate_index=0.002698, structure_plan=467.972294, dependent_replanning=19.608009, caps_shell_and_joint_validation=1.276863, edit_raster=372.677049, sidewalks=0.153563, local_collision=75.725939, validation_commit_sync=476.202783}
+Oct 07, 2026 9:38:19 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 127 ms, roads=3
+MATRIX434 B5 PASS ms=5248.628
+Oct 07, 2026 9:38:20 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,067 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.104363, affected_structures=3.220082, attached_points=0.05346, topology=14.956879, caps_and_dependencies=0.02069, terrain_chunk_access=0.897155, furniture_phase=0.010268, structure_candidate_index=0.002128, structure_plan=82.807059, dependent_replanning=1.69375, caps_shell_and_joint_validation=0.521225, edit_raster=196.593893, sidewalks=0.145583, local_collision=73.70291, validation_commit_sync=691.661489}
+MATRIX434 B6 PLAN_PASS
+Oct 07, 2026 9:38:22 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,885 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.113307, affected_structures=3.698128, attached_points=0.089758, topology=73.34232, caps_and_dependencies=0.02781, terrain_chunk_access=1.138582, furniture_phase=0.271482, structure_candidate_index=0.003739, structure_plan=414.229241, dependent_replanning=422.708253, caps_shell_and_joint_validation=1.967563, edit_raster=408.541791, sidewalks=0.310696, local_collision=96.825437}
+MATRIX434 B6 PREVIEW_PASS
+Oct 07, 2026 9:38:24 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,692 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.107016, affected_structures=2.610159, attached_points=0.083074, topology=219.855261, caps_and_dependencies=0.028688, terrain_chunk_access=1.155621, furniture_phase=0.016888, structure_candidate_index=0.002968, structure_plan=314.137457, dependent_replanning=18.812166, caps_shell_and_joint_validation=1.420548, edit_raster=385.698567, sidewalks=0.162756, local_collision=237.441543, validation_commit_sync=509.834901}
+Oct 07, 2026 9:38:24 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 121 ms, roads=3
+MATRIX434 B6 PASS ms=5056.442
+Oct 07, 2026 9:38:25 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 968 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.075257, affected_structures=14.435706, attached_points=0.066702, topology=13.039446, caps_and_dependencies=0.023296, terrain_chunk_access=1.447265, furniture_phase=0.124999, structure_candidate_index=0.004171, structure_plan=91.256429, dependent_replanning=1.426738, caps_shell_and_joint_validation=0.555749, edit_raster=316.822705, sidewalks=0.151196, local_collision=67.434925, validation_commit_sync=460.864979}
+MATRIX434 B7 PLAN_PASS
+Oct 07, 2026 9:38:27 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,526 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.110831, affected_structures=2.458888, attached_points=0.093244, topology=78.951372, caps_and_dependencies=0.050463, terrain_chunk_access=1.631774, furniture_phase=0.179058, structure_candidate_index=0.002981, structure_plan=432.569002, dependent_replanning=876.117879, caps_shell_and_joint_validation=8.46344, edit_raster=600.915488, sidewalks=0.178894, local_collision=91.320301}
+MATRIX434 B7 PREVIEW_PASS
+Oct 07, 2026 9:38:29 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,678 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.134854, affected_structures=3.388844, attached_points=0.089219, topology=180.944985, caps_and_dependencies=0.026691, terrain_chunk_access=0.814781, furniture_phase=0.012424, structure_candidate_index=0.00262, structure_plan=517.589883, dependent_replanning=19.242184, caps_shell_and_joint_validation=1.388289, edit_raster=385.943315, sidewalks=0.350678, local_collision=79.8934, validation_commit_sync=487.768319}
+Oct 07, 2026 9:38:30 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 113 ms, roads=3
+MATRIX434 B7 PASS ms=5607.224
+Oct 07, 2026 9:38:31 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 824 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.122758, affected_structures=2.47982, attached_points=0.048474, topology=15.041482, caps_and_dependencies=0.02179, terrain_chunk_access=1.167034, furniture_phase=0.013592, structure_candidate_index=0.002895, structure_plan=88.246799, dependent_replanning=1.535549, caps_shell_and_joint_validation=0.507018, edit_raster=187.491199, sidewalks=0.175678, local_collision=84.458382, validation_commit_sync=442.58043}
+MATRIX434 B8 PLAN_PASS
+Oct 07, 2026 9:38:32 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,337 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.090142, affected_structures=2.057524, attached_points=0.091144, topology=40.597359, caps_and_dependencies=0.058, terrain_chunk_access=1.136879, furniture_phase=0.401902, structure_candidate_index=0.002912, structure_plan=404.231634, dependent_replanning=10.657412, caps_shell_and_joint_validation=1.172433, edit_raster=361.892073, sidewalks=0.145303, local_collision=73.098578}
+MATRIX434 B8 PREVIEW_PASS
+Oct 07, 2026 9:38:33 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,440 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.109883, affected_structures=2.472787, attached_points=0.086531, topology=54.073086, caps_and_dependencies=0.032211, terrain_chunk_access=0.940591, furniture_phase=0.017529, structure_candidate_index=0.002401, structure_plan=328.750276, dependent_replanning=12.069015, caps_shell_and_joint_validation=1.694281, edit_raster=499.071415, sidewalks=0.141305, local_collision=73.073752, validation_commit_sync=467.135865}
+Oct 07, 2026 9:38:34 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 127 ms, roads=3
+MATRIX434 B8 PASS ms=4245.250
+Oct 07, 2026 9:38:35 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,061 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.102605, affected_structures=2.108662, attached_points=0.045645, topology=8.21828, caps_and_dependencies=0.044292, terrain_chunk_access=0.823121, furniture_phase=0.008795, structure_candidate_index=0.002292, structure_plan=85.159726, dependent_replanning=1.292655, caps_shell_and_joint_validation=0.472613, edit_raster=175.333659, sidewalks=0.269336, local_collision=77.608505, validation_commit_sync=709.163381}
+MATRIX434 C1 PLAN_PASS
+Oct 07, 2026 9:38:37 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,873 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.091025, affected_structures=3.489535, attached_points=0.079046, topology=56.166802, caps_and_dependencies=0.029428, terrain_chunk_access=1.830803, furniture_phase=0.152568, structure_candidate_index=0.002583, structure_plan=323.954225, dependent_replanning=9.968536, caps_shell_and_joint_validation=2.048905, edit_raster=350.903146, sidewalks=0.294906, local_collision=83.864754}
+MATRIX434 C1 PREVIEW_PASS
+Oct 07, 2026 9:38:39 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,892 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.117969, affected_structures=2.498142, attached_points=0.126315, topology=50.48223, caps_and_dependencies=0.026448, terrain_chunk_access=0.991047, furniture_phase=0.014173, structure_candidate_index=0.003067, structure_plan=401.501688, dependent_replanning=8.587506, caps_shell_and_joint_validation=1.550878, edit_raster=345.71971, sidewalks=0.207113, local_collision=89.127962, validation_commit_sync=990.977201}
+Oct 07, 2026 9:38:39 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 187 ms, roads=3
+MATRIX434 C1 PASS ms=5315.482
+Oct 07, 2026 9:38:40 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 963 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.102497, affected_structures=2.775927, attached_points=0.108684, topology=7.730041, caps_and_dependencies=0.046345, terrain_chunk_access=4.10493, furniture_phase=0.020044, structure_candidate_index=0.002766, structure_plan=72.732667, dependent_replanning=1.284492, caps_shell_and_joint_validation=0.379461, edit_raster=274.950471, sidewalks=0.166687, local_collision=82.738267, validation_commit_sync=515.493649}
+MATRIX434 C2 PLAN_PASS
+Oct 07, 2026 9:38:42 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,897 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.088726, affected_structures=2.688431, attached_points=0.109881, topology=50.727279, caps_and_dependencies=0.042655, terrain_chunk_access=1.020152, furniture_phase=0.166762, structure_candidate_index=0.002908, structure_plan=639.190637, dependent_replanning=37.242542, caps_shell_and_joint_validation=2.153785, edit_raster=596.498884, sidewalks=0.165907, local_collision=86.890536}
+MATRIX434 C2 PREVIEW_PASS
+Oct 07, 2026 9:38:44 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,708 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.128552, affected_structures=3.710544, attached_points=0.098326, topology=101.484742, caps_and_dependencies=0.025482, terrain_chunk_access=0.958161, furniture_phase=0.012477, structure_candidate_index=0.002787, structure_plan=335.383907, dependent_replanning=17.896871, caps_shell_and_joint_validation=1.338991, edit_raster=685.654494, sidewalks=0.297731, local_collision=72.056966, validation_commit_sync=488.6958}
+Oct 07, 2026 9:38:44 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 138 ms, roads=3
+Oct 07, 2026 9:38:45 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,121 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.219883, affected_structures=2.924594, attached_points=0.053838, topology=11.088477, caps_and_dependencies=0.020285, terrain_chunk_access=1.152016, furniture_phase=0.016172, structure_candidate_index=0.002942, structure_plan=77.397941, dependent_replanning=1.67728, caps_shell_and_joint_validation=0.385519, edit_raster=190.279657, sidewalks=0.162412, local_collision=80.107674, validation_commit_sync=755.700845}
+MATRIX434 C2 PASS ms=5164.183
+MATRIX434 C3 PLAN_PASS
+Oct 07, 2026 9:38:47 PM com.sora.splineroads.core.RoadTimings stage
+INFO: SR stage edit/dependent_replanning: 1,147 ms, elapsed=1,566 ms
+MATRIX434 C3 PREVIEW_PASS
+Oct 07, 2026 9:38:48 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,817 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.131936, affected_structures=0.731315, attached_points=0.103309, topology=58.641138, caps_and_dependencies=0.027565, terrain_chunk_access=0.93106, furniture_phase=0.132538, structure_candidate_index=0.002268, structure_plan=358.042896, dependent_replanning=1147.234263, caps_shell_and_joint_validation=5.318942, edit_raster=579.358245, sidewalks=0.232014, local_collision=90.584435}
+Oct 07, 2026 9:38:51 PM com.sora.splineroads.core.RoadTimings stage
+INFO: SR stage edit/validation_commit_sync: 1,015 ms, elapsed=2,646 ms
+Oct 07, 2026 9:38:51 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,647 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.234679, affected_structures=0.283439, attached_points=0.118602, topology=221.287012, caps_and_dependencies=0.023896, terrain_chunk_access=1.177932, furniture_phase=0.01403, structure_candidate_index=0.003353, structure_plan=523.823318, dependent_replanning=27.998093, caps_shell_and_joint_validation=1.137868, edit_raster=723.161116, sidewalks=0.312074, local_collision=131.113147, validation_commit_sync=1014.8301}
+Oct 07, 2026 9:38:51 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 175 ms, roads=3
+Oct 07, 2026 9:38:53 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,333 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.138191, affected_structures=0.383326, attached_points=0.035924, topology=15.979312, caps_and_dependencies=0.02162, terrain_chunk_access=1.23479, furniture_phase=0.014074, structure_candidate_index=0.003445, structure_plan=202.855883, dependent_replanning=2.142181, caps_shell_and_joint_validation=0.529657, edit_raster=229.712813, sidewalks=0.188748, local_collision=283.49401, validation_commit_sync=595.902084}
+MATRIX434 C3 PASS ms=7371.860
+MATRIX434 C4 PLAN_PASS
+MATRIX434 C4 PREVIEW_PASS
+Oct 07, 2026 9:38:55 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,263 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.099105, affected_structures=0.53323, attached_points=0.160655, topology=165.561767, caps_and_dependencies=0.025932, terrain_chunk_access=1.395382, furniture_phase=0.202756, structure_candidate_index=0.003088, structure_plan=421.406074, dependent_replanning=682.472336, caps_shell_and_joint_validation=1.048991, edit_raster=376.724375, sidewalks=0.247386, local_collision=78.542557}
+Oct 07, 2026 9:38:58 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,626 ms, roads=2, requested=1, phases(ms)={normalize_transitions=1.993934, affected_structures=0.510157, attached_points=0.119591, topology=236.353671, caps_and_dependencies=0.023947, terrain_chunk_access=1.933367, furniture_phase=0.013065, structure_candidate_index=0.002978, structure_plan=881.640492, dependent_replanning=18.953676, caps_shell_and_joint_validation=1.090733, edit_raster=682.133504, sidewalks=0.168083, local_collision=103.812298, validation_commit_sync=696.922101}
+Oct 07, 2026 9:38:58 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 292 ms, roads=3
+Oct 07, 2026 9:39:00 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,384 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.107137, affected_structures=0.494945, attached_points=0.051793, topology=17.180776, caps_and_dependencies=0.017731, terrain_chunk_access=0.846981, furniture_phase=0.009848, structure_candidate_index=0.00302, structure_plan=217.407943, dependent_replanning=2.060124, caps_shell_and_joint_validation=0.360014, edit_raster=317.671156, sidewalks=0.185632, local_collision=107.328226, validation_commit_sync=720.414775}
+MATRIX434 C4 PASS ms=6975.059
+MATRIX434 C5 PLAN_PASS
+Oct 07, 2026 9:39:02 PM com.sora.splineroads.core.RoadTimings stage
+INFO: SR stage edit/edit_raster: 1,062 ms, elapsed=2,733 ms
+MATRIX434 C5 PREVIEW_PASS
+Oct 07, 2026 9:39:04 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 3,831 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.077407, affected_structures=3.988694, attached_points=0.093108, topology=126.201553, caps_and_dependencies=0.026184, terrain_chunk_access=1.954868, furniture_phase=0.177194, structure_candidate_index=0.00316, structure_plan=712.473112, dependent_replanning=823.553241, caps_shell_and_joint_validation=2.51283, edit_raster=1062.015365, sidewalks=2.938637, local_collision=160.608873}
+Oct 07, 2026 9:39:06 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,478 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.260675, affected_structures=2.694255, attached_points=0.110081, topology=131.18861, caps_and_dependencies=0.024053, terrain_chunk_access=1.279456, furniture_phase=0.015269, structure_candidate_index=0.003633, structure_plan=612.217744, dependent_replanning=28.530379, caps_shell_and_joint_validation=1.475236, edit_raster=846.940545, sidewalks=0.211063, local_collision=118.392181, validation_commit_sync=734.626043}
+Oct 07, 2026 9:39:07 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 286 ms, roads=3
+MATRIX434 C5 PASS ms=8459.031
+Oct 07, 2026 9:39:08 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,410 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.122158, affected_structures=2.967919, attached_points=0.047808, topology=24.017502, caps_and_dependencies=0.021722, terrain_chunk_access=1.788776, furniture_phase=0.013137, structure_candidate_index=0.002886, structure_plan=133.907754, dependent_replanning=2.605542, caps_shell_and_joint_validation=0.547099, edit_raster=252.52134, sidewalks=0.157053, local_collision=120.857258, validation_commit_sync=870.44822}
+MATRIX434 C6 PLAN_PASS
+MATRIX434 C6 PREVIEW_PASS
+Oct 07, 2026 9:39:11 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,724 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.093764, affected_structures=3.692138, attached_points=0.08625, topology=100.072253, caps_and_dependencies=0.025203, terrain_chunk_access=1.677309, furniture_phase=0.19924, structure_candidate_index=0.003581, structure_plan=710.726369, dependent_replanning=713.625031, caps_shell_and_joint_validation=1.45429, edit_raster=597.154957, sidewalks=0.189691, local_collision=90.72008}
+Oct 07, 2026 9:39:13 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,872 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.097252, affected_structures=2.289104, attached_points=0.088115, topology=93.900752, caps_and_dependencies=0.022108, terrain_chunk_access=0.940623, furniture_phase=0.010864, structure_candidate_index=0.003609, structure_plan=463.419337, dependent_replanning=17.516538, caps_shell_and_joint_validation=0.931537, edit_raster=438.058439, sidewalks=0.172777, local_collision=85.274236, validation_commit_sync=769.29384}
+Oct 07, 2026 9:39:13 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 131 ms, roads=3
+MATRIX434 C6 PASS ms=6213.166
+Oct 07, 2026 9:39:14 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,004 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.100553, affected_structures=2.234932, attached_points=0.042852, topology=13.747212, caps_and_dependencies=0.018538, terrain_chunk_access=0.938778, furniture_phase=0.009511, structure_candidate_index=0.003146, structure_plan=83.246892, dependent_replanning=1.452524, caps_shell_and_joint_validation=0.394248, edit_raster=181.823902, sidewalks=0.154959, local_collision=83.34018, validation_commit_sync=636.102151}
+MATRIX434 C7 PLAN_PASS
+Oct 07, 2026 9:39:17 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,226 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.122791, affected_structures=3.072934, attached_points=0.180807, topology=64.489064, caps_and_dependencies=0.02125, terrain_chunk_access=1.206622, furniture_phase=0.142371, structure_candidate_index=0.002889, structure_plan=415.93411, dependent_replanning=523.531797, caps_shell_and_joint_validation=0.972879, edit_raster=371.858458, sidewalks=0.158077, local_collision=76.401246}
+MATRIX434 C7 PREVIEW_PASS
+Oct 07, 2026 9:39:19 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,433 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.110296, affected_structures=3.68152, attached_points=0.622466, topology=131.69979, caps_and_dependencies=0.024663, terrain_chunk_access=1.287184, furniture_phase=0.011988, structure_candidate_index=0.003064, structure_plan=670.033833, dependent_replanning=33.955354, caps_shell_and_joint_validation=1.857623, edit_raster=586.04878, sidewalks=0.154899, local_collision=200.406778, validation_commit_sync=802.485249}
+Oct 07, 2026 9:39:20 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 215 ms, roads=3
+MATRIX434 C7 PASS ms=6939.699
+Oct 07, 2026 9:39:21 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,555 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.120631, affected_structures=6.249539, attached_points=0.053814, topology=20.206388, caps_and_dependencies=0.019728, terrain_chunk_access=1.260295, furniture_phase=0.011594, structure_candidate_index=0.002722, structure_plan=144.434281, dependent_replanning=3.494849, caps_shell_and_joint_validation=0.540872, edit_raster=401.280691, sidewalks=0.255032, local_collision=242.19158, validation_commit_sync=734.600746}
+MATRIX434 C8 PLAN_PASS
+Oct 07, 2026 9:39:24 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,450 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.54831, affected_structures=2.427887, attached_points=0.07886, topology=76.595307, caps_and_dependencies=0.050893, terrain_chunk_access=1.636586, furniture_phase=0.184344, structure_candidate_index=0.003068, structure_plan=496.229479, dependent_replanning=15.559362, caps_shell_and_joint_validation=2.178052, edit_raster=753.973467, sidewalks=0.182763, local_collision=109.954489}
+MATRIX434 C8 PREVIEW_PASS
+Oct 07, 2026 9:39:26 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,621 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.114247, affected_structures=3.194669, attached_points=0.092568, topology=124.40465, caps_and_dependencies=0.026589, terrain_chunk_access=1.632963, furniture_phase=0.014695, structure_candidate_index=0.003241, structure_plan=631.852986, dependent_replanning=19.270792, caps_shell_and_joint_validation=2.457661, edit_raster=770.404958, sidewalks=0.184243, local_collision=129.811263, validation_commit_sync=937.137058}
+Oct 07, 2026 9:39:27 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 218 ms, roads=3
+MATRIX434 C8 PASS ms=7342.706
+Oct 07, 2026 9:39:29 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,531 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.080702, affected_structures=3.638726, attached_points=0.05006, topology=14.576712, caps_and_dependencies=0.021792, terrain_chunk_access=1.974139, furniture_phase=0.012218, structure_candidate_index=0.003041, structure_plan=143.290174, dependent_replanning=2.183434, caps_shell_and_joint_validation=0.679777, edit_raster=301.378279, sidewalks=0.167267, local_collision=139.340105, validation_commit_sync=922.935038}
+MATRIX434 D1 PLAN_PASS
+Oct 07, 2026 9:39:31 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,133 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.08985, affected_structures=3.543426, attached_points=0.078762, topology=70.042779, caps_and_dependencies=0.021006, terrain_chunk_access=1.638204, furniture_phase=0.191182, structure_candidate_index=0.002958, structure_plan=593.865938, dependent_replanning=60.120966, caps_shell_and_joint_validation=4.458181, edit_raster=514.491827, sidewalks=0.205855, local_collision=105.249713}
+MATRIX434 D1 PREVIEW_PASS
+Oct 07, 2026 9:39:33 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,924 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.082011, affected_structures=2.479271, attached_points=0.080499, topology=78.864484, caps_and_dependencies=0.024404, terrain_chunk_access=1.839119, furniture_phase=0.012849, structure_candidate_index=0.003547, structure_plan=513.544819, dependent_replanning=13.889667, caps_shell_and_joint_validation=1.451291, edit_raster=524.560985, sidewalks=0.198486, local_collision=103.084722, validation_commit_sync=683.564686}
+Oct 07, 2026 9:39:33 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 203 ms, roads=3
+MATRIX434 D1 PASS ms=6317.963
+Oct 07, 2026 9:39:35 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,643 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.106595, affected_structures=3.022024, attached_points=0.045503, topology=14.208459, caps_and_dependencies=0.019449, terrain_chunk_access=1.565697, furniture_phase=0.011539, structure_candidate_index=0.003264, structure_plan=118.552482, dependent_replanning=2.662234, caps_shell_and_joint_validation=0.544172, edit_raster=472.968026, sidewalks=0.263642, local_collision=121.967366, validation_commit_sync=906.090298}
+MATRIX434 D2 PLAN_PASS
+Oct 07, 2026 9:39:37 PM com.sora.splineroads.core.RoadTimings close
+MATRIX434 D2 PREVIEW_PASS
+INFO: SR edit: 2,119 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.071836, affected_structures=2.800927, attached_points=0.087638, topology=109.147185, caps_and_dependencies=0.027472, terrain_chunk_access=1.515859, furniture_phase=0.173863, structure_candidate_index=0.002943, structure_plan=433.265159, dependent_replanning=25.855112, caps_shell_and_joint_validation=1.670247, edit_raster=698.01961, sidewalks=0.229567, local_collision=110.313419}
+Oct 07, 2026 9:39:39 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,305 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.10802, affected_structures=3.426509, attached_points=0.199619, topology=132.244778, caps_and_dependencies=0.023092, terrain_chunk_access=1.392161, furniture_phase=0.012363, structure_candidate_index=0.003294, structure_plan=522.886006, dependent_replanning=26.553149, caps_shell_and_joint_validation=1.551799, edit_raster=659.210594, sidewalks=0.185685, local_collision=95.698731, validation_commit_sync=861.290745}
+Oct 07, 2026 9:39:40 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 201 ms, roads=3
+Oct 07, 2026 9:39:41 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,430 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.241527, affected_structures=2.924817, attached_points=0.043432, topology=15.634215, caps_and_dependencies=0.020551, terrain_chunk_access=1.116646, furniture_phase=0.009722, structure_candidate_index=0.003712, structure_plan=105.363637, dependent_replanning=2.217812, caps_shell_and_joint_validation=0.481875, edit_raster=281.908351, sidewalks=0.198802, local_collision=293.066838, validation_commit_sync=726.337957}
+MATRIX434 D2 PASS ms=6529.583
+MATRIX434 D3 PLAN_PASS
+Oct 07, 2026 9:39:44 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,564 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.204807, affected_structures=0.503552, attached_points=0.068172, topology=83.747857, caps_and_dependencies=0.023637, terrain_chunk_access=1.119174, furniture_phase=0.156234, structure_candidate_index=0.002624, structure_plan=413.352401, dependent_replanning=640.133527, caps_shell_and_joint_validation=1.148976, edit_raster=546.498568, sidewalks=0.221728, local_collision=109.024117}
+MATRIX434 D3 PREVIEW_PASS
+Oct 07, 2026 9:39:46 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,053 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.123128, affected_structures=0.443518, attached_points=0.236801, topology=129.888961, caps_and_dependencies=0.023189, terrain_chunk_access=1.063105, furniture_phase=0.010615, structure_candidate_index=0.003056, structure_plan=486.825543, dependent_replanning=27.575691, caps_shell_and_joint_validation=1.469614, edit_raster=584.418217, sidewalks=0.243853, local_collision=120.345762, validation_commit_sync=699.772834}
+Oct 07, 2026 9:39:47 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 190 ms, roads=3
+Oct 07, 2026 9:39:48 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,112 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.10466, affected_structures=0.39261, attached_points=0.05102, topology=17.172153, caps_and_dependencies=0.020666, terrain_chunk_access=1.381955, furniture_phase=0.01159, structure_candidate_index=0.003423, structure_plan=107.051477, dependent_replanning=3.484869, caps_shell_and_joint_validation=0.621959, edit_raster=257.619236, sidewalks=0.192521, local_collision=97.39196, validation_commit_sync=625.884984}
+MATRIX434 D3 PASS ms=6474.792
+MATRIX434 D4 PLAN_PASS
+Oct 07, 2026 9:39:51 PM com.sora.splineroads.core.RoadTimings close
+MATRIX434 D4 PREVIEW_PASS
+INFO: SR edit: 2,842 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.110006, affected_structures=0.425197, attached_points=0.066373, topology=90.047844, caps_and_dependencies=0.024225, terrain_chunk_access=1.113815, furniture_phase=0.182447, structure_candidate_index=0.002549, structure_plan=444.176375, dependent_replanning=691.824847, caps_shell_and_joint_validation=1.266641, edit_raster=699.324143, sidewalks=0.245818, local_collision=120.675304}
+Oct 07, 2026 9:39:53 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,383 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.145279, affected_structures=1.027448, attached_points=0.10843, topology=134.257282, caps_and_dependencies=0.024253, terrain_chunk_access=1.337844, furniture_phase=0.014089, structure_candidate_index=0.003517, structure_plan=440.447294, dependent_replanning=34.178912, caps_shell_and_joint_validation=1.697009, edit_raster=859.243075, sidewalks=0.206953, local_collision=111.485905, validation_commit_sync=798.448663}
+Oct 07, 2026 9:39:54 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 161 ms, roads=3
+MATRIX434 D4 PASS ms=6849.292
+Oct 07, 2026 9:39:55 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,046 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.089945, affected_structures=0.348624, attached_points=0.029176, topology=17.029219, caps_and_dependencies=0.017305, terrain_chunk_access=0.886426, furniture_phase=0.008749, structure_candidate_index=0.002359, structure_plan=72.923217, dependent_replanning=1.402086, caps_shell_and_joint_validation=0.358175, edit_raster=467.102952, sidewalks=0.153696, local_collision=68.457986, validation_commit_sync=416.554485}
+MATRIX434 D5 PLAN_PASS
+Oct 07, 2026 9:39:57 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,982 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.252965, affected_structures=2.031816, attached_points=0.058327, topology=63.022469, caps_and_dependencies=0.018688, terrain_chunk_access=0.956908, furniture_phase=0.192545, structure_candidate_index=0.002893, structure_plan=309.690957, dependent_replanning=404.80896, caps_shell_and_joint_validation=1.499108, edit_raster=563.14882, sidewalks=0.147203, local_collision=227.465403}
+MATRIX434 D5 PREVIEW_PASS
+Oct 07, 2026 9:39:58 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,602 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.133289, affected_structures=2.034908, attached_points=0.070945, topology=91.916361, caps_and_dependencies=0.020786, terrain_chunk_access=0.8343, furniture_phase=0.016736, structure_candidate_index=0.003286, structure_plan=350.377548, dependent_replanning=20.595233, caps_shell_and_joint_validation=1.018725, edit_raster=377.180739, sidewalks=0.168198, local_collision=243.309484, validation_commit_sync=513.913108}
+Oct 07, 2026 9:39:59 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 150 ms, roads=3
+Oct 07, 2026 9:40:00 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 789 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.145229, affected_structures=2.258894, attached_points=0.037083, topology=10.216089, caps_and_dependencies=0.016214, terrain_chunk_access=0.815596, furniture_phase=0.008023, structure_candidate_index=0.002805, structure_plan=84.731878, dependent_replanning=1.35186, caps_shell_and_joint_validation=0.378737, edit_raster=179.813299, sidewalks=0.132774, local_collision=68.510836, validation_commit_sync=440.050934}
+MATRIX434 D5 PASS ms=4821.568
+MATRIX434 D6 PLAN_PASS
+MATRIX434 D6 PREVIEW_PASS
+Oct 07, 2026 9:40:02 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,122 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.137706, affected_structures=3.652218, attached_points=0.072858, topology=56.552658, caps_and_dependencies=0.018463, terrain_chunk_access=1.010829, furniture_phase=0.124423, structure_candidate_index=0.002684, structure_plan=526.312184, dependent_replanning=402.319716, caps_shell_and_joint_validation=1.623485, edit_raster=491.744345, sidewalks=0.164636, local_collision=76.554673}
+Oct 07, 2026 9:40:04 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,902 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.071869, affected_structures=2.559377, attached_points=0.120089, topology=97.277388, caps_and_dependencies=0.021136, terrain_chunk_access=0.84272, furniture_phase=0.01066, structure_candidate_index=0.003488, structure_plan=292.454506, dependent_replanning=19.749686, caps_shell_and_joint_validation=1.291901, edit_raster=462.662454, sidewalks=0.140541, local_collision=76.803052, validation_commit_sync=947.776044}
+Oct 07, 2026 9:40:04 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 211 ms, roads=3
+MATRIX434 D6 PASS ms=6171.495
+Oct 07, 2026 9:40:06 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,447 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.088895, affected_structures=6.419824, attached_points=1.059318, topology=19.406215, caps_and_dependencies=0.016833, terrain_chunk_access=1.381678, furniture_phase=0.012691, structure_candidate_index=0.002898, structure_plan=108.329966, dependent_replanning=1.390055, caps_shell_and_joint_validation=0.363162, edit_raster=328.312912, sidewalks=0.229552, local_collision=172.158568, validation_commit_sync=806.829652}
+MATRIX434 D7 PLAN_PASS
+Oct 07, 2026 9:40:08 PM com.sora.splineroads.core.RoadTimings close
+MATRIX434 D7 PREVIEW_PASS
+INFO: SR edit: 1,936 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.053216, affected_structures=2.624295, attached_points=0.082125, topology=54.760677, caps_and_dependencies=0.018025, terrain_chunk_access=1.377377, furniture_phase=0.136331, structure_candidate_index=0.002118, structure_plan=451.361576, dependent_replanning=479.911813, caps_shell_and_joint_validation=0.90757, edit_raster=360.702655, sidewalks=0.152481, local_collision=78.328711}
+Oct 07, 2026 9:40:10 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,703 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.242153, affected_structures=3.994234, attached_points=0.109345, topology=226.293122, caps_and_dependencies=0.049319, terrain_chunk_access=2.33945, furniture_phase=0.017899, structure_candidate_index=0.004572, structure_plan=698.462709, dependent_replanning=107.00896, caps_shell_and_joint_validation=1.802192, edit_raster=755.958136, sidewalks=0.166306, local_collision=131.523505, validation_commit_sync=775.073608}
+Oct 07, 2026 9:40:11 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 153 ms, roads=3
+MATRIX434 Oct 07, 2026 9:40:12 PM com.sora.splineroads.core.RoadTimings close
+D7 PASS ms=6054.046
+INFO: SR edit: 931 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.354353, affected_structures=4.50024, attached_points=0.048061, topology=10.885594, caps_and_dependencies=0.014984, terrain_chunk_access=0.829694, furniture_phase=0.020954, structure_candidate_index=0.002432, structure_plan=73.476492, dependent_replanning=1.429647, caps_shell_and_joint_validation=0.439233, edit_raster=275.626118, sidewalks=0.137409, local_collision=79.861235, validation_commit_sync=483.51995}
+MATRIX434 D8 PLAN_PASS
+MATRIX434 D8 PREVIEW_PASS
+Oct 07, 2026 9:40:13 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 1,629 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.077339, affected_structures=3.343892, attached_points=0.06614, topology=45.45401, caps_and_dependencies=0.020236, terrain_chunk_access=1.634808, furniture_phase=0.141759, structure_candidate_index=0.00258, structure_plan=504.719863, dependent_replanning=9.904105, caps_shell_and_joint_validation=1.456221, edit_raster=422.633973, sidewalks=0.166372, local_collision=83.785036}
+Oct 07, 2026 9:40:15 PM com.sora.splineroads.core.RoadTimings stage
+INFO: SR stage edit/edit_raster: 1,026 ms, elapsed=1,888 ms
+Oct 07, 2026 9:40:16 PM com.sora.splineroads.core.RoadTimings close
+INFO: SR edit: 2,921 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.087507, affected_structures=1.931928, attached_points=0.074968, topology=73.557553, caps_and_dependencies=1.549324, terrain_chunk_access=1.439548, furniture_phase=0.105601, structure_candidate_index=0.003652, structure_plan=766.195951, dependent_replanning=15.443238, caps_shell_and_joint_validation=1.955249, edit_raster=1026.138278, sidewalks=1.468776, local_collision=123.509456, validation_commit_sync=907.175272}
+Oct 07, 2026 9:40:17 PM com.sora.splineroads.core.RoadTimings reportLoad
+INFO: SR load: 210 ms, roads=3
+Oct 07, 2026 9:40:19 PM com.sora.splineroads.core.RoadTimings close
+MATRIX434 D8 PASS ms=6821.055
+INFO: SR edit: 1,624 ms, roads=3, requested=0, phases(ms)={normalize_transitions=0.153941, affected_structures=2.544406, attached_points=0.152911, topology=10.980808, caps_and_dependencies=0.022557, terrain_chunk_access=1.209061, furniture_phase=0.023274, structure_candidate_index=0.003497, structure_plan=211.941401, dependent_replanning=3.318329, caps_shell_and_joint_validation=0.666027, edit_raster=412.098034, sidewalks=0.1803, local_collision=121.943368, validation_commit_sync=858.524692}
+MATRIX434 SUMMARY 32/32 []
+[21:40:19] [Server thread/INFO] [minecraft/GameTestServer]: [+]
+[21:40:19] [Server thread/INFO] [minecraft/GameTestServer]: ========= 1 GAME TESTS COMPLETE ======================
+[21:40:19] [Server thread/INFO] [minecraft/GameTestServer]: All 1 required tests passed :)
+[21:40:19] [Server thread/INFO] [minecraft/GameTestServer]: ====================================================
+[21:40:19] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server
+[21:40:19] [Server thread/INFO] [minecraft/MinecraftServer]: Saving players
+[21:40:19] [Server thread/INFO] [minecraft/MinecraftServer]: Saving worlds
+[21:40:22] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:overworld
+[21:40:29] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_end
+[21:40:29] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_nether
+[21:40:29] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (world): All chunks are saved
+[21:40:29] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+[21:40:29] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+[21:40:29] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved
+[21:40:30] [Server thread/INFO] [minecraft/GameTestServer]: Game test server shutting down
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.8/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 5m 20s
+11 actionable tasks: 4 executed, 7 up-to-date

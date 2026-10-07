@@ -1,0 +1,4 @@
+START B5 left=false type=HIGHWAY source_slot=5 target_slot=3 A=V[x=-13.0, y=64.0, z=-250.0] B=V[x=250.0, y=72.0, z=3.0]
+Oct 07, 2026 9:11:05 PM com.sora.splineroads.world.LaneRamps$Planning close
+INFO: SR route plan total_ms=2744.688 clearance_ms=791.335 candidates=48 contact_queries=196 cached_meshes=4
+RESULT B5 PASS length=540.361 max_grade=0.139093 ymin=63.000 ymax=77.130 vertical_travel=18.260 ms=3028.265

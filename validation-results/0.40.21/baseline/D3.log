@@ -1,0 +1,4 @@
+START D3 left=false type=ORDINARY source_slot=3 target_slot=1 A=V[x=-2.5, y=64.0, z=-250.0] B=V[x=-250.0, y=72.0, z=-6.5]
+Oct 07, 2026 9:08:04 PM com.sora.splineroads.world.LaneRamps$Planning close
+INFO: SR route plan total_ms=1784.089 clearance_ms=383.215 candidates=1 contact_queries=8 cached_meshes=4
+RESULT D3 PASS length=370.555 max_grade=0.165801 ymin=63.000 ymax=72.000 vertical_travel=12.481 ms=2234.188

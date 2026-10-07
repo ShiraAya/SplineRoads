@@ -1,0 +1,1 @@
+START A4 left=false type=ORDINARY source_slot=5 target_slot=0 A=V[x=-10.5, y=64.0, z=-250.0] B=V[x=-250.0, y=72.0, z=-2.5]

@@ -1,0 +1,2 @@
+START D1 left=true type=HIGHWAY source_slot=0 target_slot=2 A=V[x=3.0, y=64.0, z=-250.0] B=V[x=-250.0, y=72.0, z=-13.0]
+RESULT D1 PASS length=551.458 max_grade=0.081063 ymin=63.000 ymax=72.000 vertical_travel=8.000 ms=1260.189

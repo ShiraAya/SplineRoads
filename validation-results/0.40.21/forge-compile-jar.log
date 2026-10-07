@@ -1,0 +1,64 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.8/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Task :compileJava
+Setting up MCP environment
+Initializing steps
+Executing steps
+ > Running 'downloadManifest'
+ > Running 'downloadJson'
+ > Running 'downloadClient'
+ > Running 'downloadServer'
+ > Running 'extractServer'
+ > Running 'downloadClientMappings'
+ > Running 'mergeMappings'
+ > Running 'stripClient'
+ > Running 'stripServer'
+ > Running 'merge'
+ > Running 'listLibraries'
+ > Running 'rename'
+Stopping at requested step: /workspace/scratch/7a3da0a71d86/gradle-home/caches/forge_gradle/mcp_repo/de/oceanlabs/mcp/mcp_config/1.20.1-20230612.114412/joined/rename/output.jar
+[21:27:33] [main/INFO]: Writing debug log file accesstransform.log
+[21:27:33] [main/INFO]: Access Transformer processor running version 8.2.14
+[21:27:33] [main/INFO]: Command line arguments [--inJar, /workspace/scratch/7a3da0a71d86/gradle-home/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20/forge-1.20.1-47.4.20-injected.jar, --outJar, /workspace/scratch/7a3da0a71d86/gradle-home/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar, --logFile, accesstransform.log, --atFile, /workspace/scratch/7a3da0a71d86/sr-work/build/_atJar_4/parent_at.cfg]
+[21:27:33] [main/INFO]: Reading from /workspace/scratch/7a3da0a71d86/gradle-home/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20/forge-1.20.1-47.4.20-injected.jar
+[21:27:33] [main/INFO]: Writing to /workspace/scratch/7a3da0a71d86/gradle-home/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar
+[21:27:33] [main/INFO]: Transformer file /workspace/scratch/7a3da0a71d86/sr-work/build/_atJar_4/parent_at.cfg
+[21:27:33] [main/WARN]: Found existing output jar /workspace/scratch/7a3da0a71d86/gradle-home/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar, overwriting
+[21:27:43] [main/INFO]: JAR transformation complete /workspace/scratch/7a3da0a71d86/gradle-home/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar
+Creating SRG -> MCP TSRG
+/workspace/scratch/7a3da0a71d86/sr-work/src/main/java/com/sora/splineroads/SplineRoads.java:93: warning: [removal] get() in FMLJavaModLoadingContext has been deprecated and marked for removal
+    IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+                                            ^
+/workspace/scratch/7a3da0a71d86/sr-work/src/main/java/com/sora/splineroads/SplineRoads.java:98: warning: [removal] get() in ModLoadingContext has been deprecated and marked for removal
+    net.minecraftforge.fml.ModLoadingContext.get().registerConfig(
+                                            ^
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+2 warnings
+
+> Task :processResources
+> Task :classes
+
+> Task :compileGameTestJava
+/workspace/scratch/7a3da0a71d86/sr-work/src/gametest/java/com/sora/splineroads/world/Command35GameTests.java:31: warning: [removal] ResourceLocation(String,String) in ResourceLocation has been deprecated and marked for removal
+   Block log=net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(new net.minecraft.resources.ResourceLocation("minecraft",species+"_log"));
+                                                                       ^
+/workspace/scratch/7a3da0a71d86/sr-work/src/gametest/java/com/sora/splineroads/world/Command35GameTests.java:32: warning: [removal] ResourceLocation(String,String) in ResourceLocation has been deprecated and marked for removal
+   Block leaf=net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(new net.minecraft.resources.ResourceLocation("minecraft",species+"_leaves"));
+                                                                        ^
+/workspace/scratch/7a3da0a71d86/sr-work/src/gametest/java/com/sora/splineroads/world/Command35GameTests.java:33: warning: [removal] ResourceLocation(String,String) in ResourceLocation has been deprecated and marked for removal
+   Block stripped=net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(new net.minecraft.resources.ResourceLocation("minecraft","stripped_"+species+"_wood"));
+                                                                            ^
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+3 warnings
+
+> Task :jar
+> Task :downloadMcpConfig
+> Task :extractSrg
+> Task :createMcpToSrg
+> Task :reobfJar
+
+BUILD SUCCESSFUL in 2m 18s
+8 actionable tasks: 8 executed

@@ -1,0 +1,23 @@
+{
+  "input_filename": "SplineRoads-0.40.20-alpha-rc1-source(1).zip",
+  "input_sha256": "13319af5c97d007e8994c866e0bfd08df5d5f53304295c0e05484cdd40ee457a",
+  "version": "0.40.21-alpha",
+  "minecraft": "1.20.1",
+  "forge": "47.4.20",
+  "protocol": 65,
+  "save_format_changed": false,
+  "model_matrix_cases": 128,
+  "model_matrix_passed": 128,
+  "full_forge_compile_and_reobf_jar": true,
+  "actual_server_matrix": {
+    "outgoing_exact": {
+      "passed": 32,
+      "total": 32
+    },
+    "fixed_east_flexible": {
+      "passed": 32,
+      "total": 32
+    }
+  },
+  "minecraft_client_gpu_tested": false
+}
