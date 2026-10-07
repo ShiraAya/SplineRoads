@@ -1,0 +1,129 @@
+name: SR433 physical lane chain and local structures
+on:
+  push:
+    branches: [SR-0.40.15]
+    paths: ['.github/workflows/sr433-verify.yml']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: write
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - id: save
+        run: |
+          python - <<'PY'
+          import base64, hashlib, lzma, subprocess
+          from pathlib import Path
+          subprocess.run(['git','diff','--exit-code','46994e0910cdf88725bbf904c607f21c805eab71','--','src','build.gradle','tools/test_ramp39_model.sh'],check=True)
+          data=''.join(Path(f'tools/patches/sr433-code.{i}.xz64').read_text() for i in range(3))
+          patch=lzma.decompress(base64.b64decode(data,validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='112d1a3ee8d424cb0cb26112654291a3785a1b0189cea6b24b19afdbacfc202b'
+          subprocess.run(['git','rm','src/main/java/com/sora/splineroads/world/LaneRoadChain.java'],check=True)
+          subprocess.run(['git','apply','--check','-'],input=patch,check=True)
+          subprocess.run(['git','apply','-'],input=patch,check=True)
+          p=Path('PROGRESS.md')
+          p.write_text('# SR433 WIP: physical lanes and actual impact bounds\n\nVersion0.40.20-alpha-rc1, protocol65. Latest nine screenshots reopen correctness: lane-continuous search across joined roads, contact-derived reservations, distinct below-grade mouths, no departure X, real opening edges, local tunnels and bridge piers. Exact source is saved before full regression and real Forge/ServerLevel tests. No original-world acceptance or completed-release claim until verification finishes. Prior perf2 collision hot paths and cancellation remain; no fixed interactive cutoff.\n\n---\n'+p.read_text())
+          subprocess.run(['git','add','src','build.gradle','tools/test_ramp39_model.sh','tools/check_sr433.sh','tools/model-validation','docs/checkpoints/SR433-WIP.md','PROGRESS.md'],check=True)
+          PY
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git diff --cached --check
+          git commit -m 'fix: follow physical lanes across seams and derive local openings, tunnels and pier protection'
+          git push origin HEAD:refs/heads/SR-0.40.15
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  regression:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Complete regression including real lane chain model
+        run: |
+          mkdir -p build/regression433
+          set -o pipefail
+          bash tools/check_sr433.sh 2>&1 | tee build/regression433/full.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr433-regression-${{ needs.preserve.outputs.saved }}
+          path: build/regression433/
+          retention-days: 30
+  package:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Actual Java17 Forge and GameTest compilation
+        run: |
+          mkdir -p build/release433
+          set -o pipefail
+          bash gradlew --no-daemon compileJava compileGameTestJava jar 2>&1 | tee build/release433/forge.log
+          cp build/libs/splineroads-0.40.20-alpha-rc1.jar build/release433/
+      - name: Preserve exact source and evidence
+        if: always()
+        run: |
+          mkdir -p build/release433
+          git rev-parse HEAD > build/release433/COMMIT.txt
+          git archive --format=zip --output=build/release433/SplineRoads-0.40.20-alpha-rc1-source.zip HEAD
+          sha256sum build/release433/*.jar build/release433/*source.zip > build/release433/SHA256.txt 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr433-install-source-${{ needs.preserve.outputs.saved }}
+          path: build/release433/
+          retention-days: 30
+  minecraft:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Real ADD, TEMPORARY and local tunnel-pier builds
+        run: |
+          mkdir -p run433 build/repro433
+          echo eula=true > run433/eula.txt
+          printf 'level-seed=431\ngenerate-structures=false\n' > run433/server.properties
+          set -o pipefail
+          timeout 720s bash gradlew --no-daemon runGameTestServer -ProadRunDir=run433 -ProadTestNamespaces=splineroads_hotfix433 -ProadTestHeap=3G 2>&1 | tee build/repro433/server.log
+          grep -q 'All 3 required tests passed' build/repro433/server.log
+          grep -q 'LOCAL_TUNNEL_PIERS_SAVE_DELETE_PASS' build/repro433/server.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr433-minecraft-${{ needs.preserve.outputs.saved }}
+          path: |
+            build/repro433/
+            run433/logs/
+            run433/*.xml
+          retention-days: 30
