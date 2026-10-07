@@ -1,0 +1,135 @@
+name: SR431 algorithm performance verification
+on:
+  push:
+    branches: [SR-0.40.15]
+    paths: ['.github/workflows/sr431-verify.yml', 'tools/patches/sr431-*.xz64']
+permissions:
+  contents: read
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: write
+    outputs:
+      saved: ${{ steps.save.outputs.saved }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - id: save
+        run: |
+          python - <<'PY'
+          import base64,hashlib,lzma,subprocess
+          from pathlib import Path
+          subprocess.run(['git','diff','--exit-code','32cee0fae8a03726bf3fd94880111ef1a07e6925','--','src/main','src/gametest','build.gradle','tools/test_scheduler430.py'],check=True)
+          encoded=''.join(Path('tools/patches/sr431-%02d.xz64'%i).read_text().strip() for i in range(1,4))
+          patch=lzma.decompress(base64.b64decode(encoded,validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='3562d62e5a67c001c519944733bdc159dc8511a0a5d25951b9afa7a75d20f7c2'
+          subprocess.run(['git','apply','--check','-'],input=patch,check=True)
+          subprocess.run(['git','apply','-'],input=patch,check=True)
+          progress=Path('PROGRESS.md')
+          progress.write_text('# SR431 WIP: actual algorithm and construction optimization\n\nVersion 0.40.19-alpha-perf1, protocol remains 64; only SR-0.40.15.\nUser rejected timeout-only handling. Replaced interactive 8/12/4/6-second cutoffs with cancellation and stale-result checks, without changing geometry protections.\nMeasured old hotspots: corridor contact-by-all-samples scan; clearance preparation; repeated pure collision rasterization between preview and construction.\nOptimizations: adaptive interval/sweep corridor, exact triangulation and protected-deck caches, short/long path hybrid spatial checking, flat-box compaction, bounded full-equality pure raster reuse.\nLocal equivalence/core/model runs passed. Full Java17 Forge and same-runner old/new real preview/build verification are now running; NO claim of completion or original-user-world acceptance.\nThe new GameTest adds the actual readonly previewAssembly stage before build and checks no preview NBT/revision mutation; baseline and new use identical fixtures.\n\n---\n## Historical checkpoint\n'+progress.read_text())
+          subprocess.run(['git','add','src','build.gradle','tools/check_sr431.sh','tools/test_scheduler430.py','PROGRESS.md'],check=True)
+          PY
+          git config user.name 'SR checkpoint'
+          git config user.email 'sr-checkpoint@users.noreply.github.com'
+          git diff --cached --check
+          git commit -m 'perf: optimize exact corridor and collision work; preserve cancellable previews without fixed aborts'
+          git push origin HEAD:refs/heads/SR-0.40.15
+          echo "saved=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  regression:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Complete regression plus exact predicates and real Forge
+        run: |
+          mkdir -p build/release431
+          set -o pipefail
+          bash tools/check_sr431.sh 2>&1 | tee build/release431/full-regression.log
+          CP=build/tunnel406/core/classes:build/tunnel406/model/classes:src/main/resources
+          java -Xmx1500m -XX:ActiveProcessorCount=2 -cp "$CP" com.sora.splineroads.core.Performance431LargeValidation | tee build/release431/long-path-equivalence.log
+          bash gradlew --no-daemon compileJava compileGameTestJava jar 2>&1 | tee build/release431/forge.log
+          python - <<'PY'
+          import zipfile
+          with zipfile.ZipFile('build/libs/splineroads-0.40.19-alpha-perf1.jar') as z:
+              assert 'Implementation-Version: 0.40.19-alpha-perf1' in z.read('META-INF/MANIFEST.MF').decode()
+              assert 'version="0.40.19-alpha-perf1"' in z.read('META-INF/mods.toml').decode()
+          PY
+          cp build/libs/splineroads-0.40.19-alpha-perf1.jar build/release431/
+      - name: Exact source and all diagnostics
+        if: always()
+        run: |
+          mkdir -p build/release431
+          git rev-parse HEAD > build/release431/COMMIT.txt
+          git archive --format=zip --output=build/release431/SplineRoads-0.40.19-alpha-perf1-source.zip HEAD
+          sha256sum build/release431/*.jar build/release431/*source.zip > build/release431/SHA256.txt 2>/dev/null || true
+          find build -name compile.log -exec sh -c 'for p; do echo "=== $p ==="; cat "$p"; done' sh {} + > build/release431/compilation-details.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr431-install-source-logs-${{ needs.preserve.outputs.saved }}
+          path: build/release431/
+          retention-days: 30
+  paired_minecraft:
+    needs: preserve
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preserve.outputs.saved }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Baseline actual readonly preview then build on same runner
+        run: |
+          mkdir -p build/paired431
+          git worktree add --detach ../sr431-baseline 32cee0fae8a03726bf3fd94880111ef1a07e6925
+          cp src/gametest/java/com/sora/splineroads/world/Build431GameTests.java ../sr431-baseline/src/gametest/java/com/sora/splineroads/world/
+          cd ../sr431-baseline
+          mkdir -p run431
+          echo eula=true > run431/eula.txt
+          printf 'level-seed=431\ngenerate-structures=false\n' > run431/server.properties
+          set +e
+          set -o pipefail
+          timeout 600s bash gradlew --no-daemon runGameTestServer -ProadRunDir=run431 -ProadTestNamespaces=splineroads_hotfix431 -ProadTestHeap=3G 2>&1 | tee ../SplineRoads/build/paired431/baseline-server.log
+          status=$?
+          echo "$status" > ../SplineRoads/build/paired431/baseline-exit.txt
+          cp -r run431/logs ../SplineRoads/build/paired431/baseline-logs 2>/dev/null || true
+          exit 0
+      - name: Optimized actual readonly preview build save and delete
+        run: |
+          mkdir -p run431 build/paired431
+          echo eula=true > run431/eula.txt
+          printf 'level-seed=431\ngenerate-structures=false\n' > run431/server.properties
+          (for i in $(seq 1 29); do sleep 20; for p in $(jcmd -l | awk '/BootstrapLauncher/ {print $1}'); do jcmd "$p" Thread.print > "build/paired431/new-threads-$i-$p.txt" 2>&1 || true; done; done) &
+          monitor=$!
+          trap 'kill "$monitor" 2>/dev/null || true' EXIT
+          set -o pipefail
+          timeout 600s bash gradlew --no-daemon runGameTestServer -ProadRunDir=run431 -ProadTestNamespaces=splineroads_hotfix431 -ProadTestHeap=3G 2>&1 | tee build/paired431/optimized-server.log
+          grep -q 'BUILD431 ADD_SAVE_DELETE_PASS' build/paired431/optimized-server.log
+          grep -q 'BUILD431 TEMPORARY_DELETE_PASS' build/paired431/optimized-server.log
+          grep -q 'All 2 required tests passed' build/paired431/optimized-server.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr431-paired-minecraft-${{ needs.preserve.outputs.saved }}
+          path: |
+            build/paired431/
+            run431/logs/
+            run431/*.xml
+          retention-days: 30
