@@ -6,6 +6,15 @@ import java.util.*;
 /** Narrow-phase dependencies. Distant curves with overlapping bounds are independent. */
 final class RoadInteractions {
   static boolean connected(RoadRecord a,RoadRecord b){return a.a().equals(b.a())||a.a().equals(b.b())||a.b().equals(b.a())||a.b().equals(b.b());}
+  /** A host edit must derive its lane openings before checking its own connector.
+   * The transaction rebuilds/validates these dependents against the final host. */
+  static boolean deferredLaneContact(RoadRecord host,RoadRecord ramp){
+    var link=LaneTopology.metadata(ramp).link();if(link==null)return false;
+    return host.id().equals(link.from().road())||host.id().equals(link.to().road())
+        ||host.assembly()!=null&&host.assembly().equals(link.to().junction())
+        ||LaneTopology.metadata(host).cuts().stream().anyMatch(c->c.connection().equals(ramp.id()))
+        ||LaneTopology.metadata(host).additions().stream().anyMatch(a->a.connection().equals(ramp.id()));
+  }
   static boolean influences(RoadIndex.Built a,RoadIndex.Built b){
     if(connected(a.record,b.record))return true;
     double walkway=Math.max(walkExtent(a.mesh),walkExtent(b.mesh));

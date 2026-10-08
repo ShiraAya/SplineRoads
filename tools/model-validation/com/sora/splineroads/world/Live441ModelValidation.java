@@ -108,6 +108,8 @@ public final class Live441ModelValidation {
   var endpoints=LaneRamps.contactEndpoints(all,child);
   for(var host:List.of(a,b,c,parent,child))check(endpoints.contains(host.a())&&endpoints.contains(host.b()),"missing ancestor host markers: "+host.id());
   check(!endpoints.contains(unrelated.a())&&!endpoints.contains(unrelated.b()),"unrelated marker protection was disabled");
+  check(RoadInteractions.deferredLaneContact(a,parent)&&RoadInteractions.deferredLaneContact(b,parent),"host preflight did not defer its own connector to final topology");
+  check(!RoadInteractions.deferredLaneContact(unrelated,parent)&&!RoadInteractions.deferredLaneContact(a,unrelated),"unrelated road clearance was deferred");
  }
  static void bridgeEdgeReservation(){
  var config=RoadInfrastructure.Config.DEFAULT.gantry(RoadInfrastructure.Gantry.OFF).bridge(RoadInfrastructure.Bridge.OVERPASS);

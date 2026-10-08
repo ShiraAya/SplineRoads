@@ -70,7 +70,10 @@ public final class Live441GameTests {
    ramp=data.index.roads.get(ramp.id()).record;var bridge=ramp.settings().structure(Structure.BRIDGE);bridge=bridge.options(bridge.options().infrastructure(bridge.options().infrastructure().bridge(RoadInfrastructure.Bridge.OVERPASS)));
    var edit=LaneRamps.reconfigure(ramp,bridge,LaneTopology.records(data));LaneRamps.build(data,level,null,edit);System.out.println("LIVE441 RAMP_OVERPASS_PASS");
    ramp=data.index.roads.get(ramp.id()).record;edit=LaneRamps.reconfigure(ramp,ramp.settings().structure(Structure.AUTO),LaneTopology.records(data));LaneRamps.build(data,level,null,edit);System.out.println("LIVE441 RAMP_AUTO_PASS");
-   source=data.index.roads.get(source.id()).record;data.connect(level,null,source.a(),source.b(),source.settings().structure(Structure.AUTO),source.id());System.out.println("LIVE441 SWITCH_PASS");}
+   source=data.index.roads.get(source.id()).record;
+   System.out.println("LIVE441 HOST_SWITCH logical="+data.streets.containsKey(source.id())+" handles="+AutoJunctions.handles(data,source.a(),source.b(),source.id(),false));
+   try{data.connect(level,null,source.a(),source.b(),source.settings().structure(Structure.AUTO),source.id());}catch(RuntimeException e){e.printStackTrace();throw e;}
+   System.out.println("LIVE441 SWITCH_PASS");}
   else {
    var host=data.index.roads.get(target.id()).record;
    h.assertTrue(host.structures().stream().anyMatch(LaneClosureLandscape::paved),"ground arrival left former planter unpaved");

@@ -215,7 +215,7 @@ public final class AutoJunctions {
     Set<BlockPos> selected=new HashSet<>();for(var r:draft.streets()){selected.add(r.a());selected.add(r.b());if(player!=null)RoadData.requireOwner(player,r.owner());}
     for(var t:draft.centers()){selected.add(BlockPos.of(t.getLong("CenterPos")));for(long port:t.getLongArray("Ports"))selected.add(BlockPos.of(port));}
     var built=new ArrayList<RoadIndex.Built>();for(var r:draft.roads())built.add(new RoadIndex.Built(r));
-    for(var r:built)for(var old:data.index.roads.values())if(!removed.contains(old.record.id())&&RoadIndex.overlapXZ(r.mesh,old.mesh,1))Interchanges.checkExternal(r.mesh,old.mesh,data.index.roads.containsKey(r.record.id())?data.index.roads.get(r.record.id()).mesh:null);
+    for(var r:built)for(var old:data.index.roads.values())if(!removed.contains(old.record.id())&&!RoadInteractions.deferredLaneContact(r.record,old.record)&&RoadIndex.overlapXZ(r.mesh,old.mesh,1))Interchanges.checkExternal(r.mesh,old.mesh,data.index.roads.containsKey(r.record.id())?data.index.roads.get(r.record.id()).mesh:null);
     data.replaceAssembly(level,player,built,removed,selected,moves);
     for(var r:streets(before))data.streets.remove(r.id());for(var r:draft.streets())if(r.assembly()==null||draft.centers().stream().anyMatch(c->touches(r,BlockPos.of(c.getLong("CenterPos")))))data.streets.put(r.id(),r);
     oldGroups.forEach(data.junctions::remove);draft.centers().forEach(t->data.junctions.put(t.getUUID("Id"),t.copy()));RampJunctions.sync(data);for(var r:draft.streets()){var actual=data.index.roads.get(r.id());if(actual!=null&&data.streets.containsKey(r.id()))data.streets.put(r.id(),r.withLanePoints(LaneTopology.metadata(actual.record)));}data.setDirty();
