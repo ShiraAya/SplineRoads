@@ -86,6 +86,11 @@ public final class LaneRamps {
     // A locally shifted short turn must be tried before committing to a long
     // loop. Previously a valid loop in pass one hid a much shorter lead/tail
     // solution in pass two (e.g. a 540m route instead of a 403m route).
+    double targetY=link.to().road()==null?link.junctionMouth().y():port(host(all,link.to()),LaneTopology.point(host(all,link.to()),link.to().point())).position().y();
+    boolean preferOver=link.options().elevation()==LanePoints.Elevation.AUTO&&targetY>=a.position().y()-1e-7;
+    // Exhaust all horizontal routes and same-lane landing positions above first.
+    // A cheap underpass on the first route must not preempt a feasible overpass.
+    for(int elevationPass=0;elevationPass<(preferOver?2:1);elevationPass++)
     for(int stage=0;stage<3;stage++)for(double offset:offsets)try{
       RoadPlanningBudget.check();
       var actual=link.targetOffset(offset);
@@ -114,7 +119,7 @@ public final class LaneRamps {
         RoadPlanningBudget.check();
         if(CURRENT.get()!=null)CURRENT.get().routeCount++;
         var baseMesh=fitHostContacts(LaneRampAlignment.fit(candidate.mesh(),lane.width(),targetLaneWidth,link.options().transition()),context,actual);
-        for(Mesh mesh:heightCandidates(baseMesh,context,id,actual,errors,candidate.path()))try{
+        for(Mesh mesh:heightCandidates(baseMesh,context,id,actual,errors,candidate.path(),preferOver&&elevationPass==0))try{
           if(data!=null&&!data.withinHeight(mesh)||data==null&&CURRENT.get()!=null&&(mesh.min().y()-mesh.settings().thickness()<CURRENT.get().minimumHeight||mesh.max().y()+4>=CURRENT.get().maximumHeight))throw new IllegalArgumentException("上跨／下穿超出世界高度范围");
           var finalContext=actual.options().departure()==LanePoints.Departure.TEMPORARY||actual.closesTarget()?
               LaneCrossSections.staged(all,id,actual,mesh):context;
@@ -153,7 +158,7 @@ public final class LaneRamps {
           double lead=leads[li],endLength=tails[ti];var kind=kinds.get(ki++);if(ki==kinds.size()){ki=0;if(++li==leads.length){li=0;ti++;}}
           if(stage==0&&(lead!=0||endLength!=0)||stage==1&&lead==0&&endLength==0)continue;
           var specific=new LanePoints.Options(kind,options.departure(),options.arrival(),options.radius(),options.transition(),options.elevation(),options.landing(),options.gradeOverride());
-          try{ready=routeGroup(a,b,settings,specific,source,point,target,targetPoint,targetOffset,maxGrade,lead,endLength,options.path()==LanePoints.Path.AUTO&&kind==LanePoints.Path.LEFT_LOOP).iterator();}
+          try{ready=routeGroup(a,b,settings,specific,source,point,target,targetPoint,targetOffset,maxGrade,lead,endLength,options.path()==LanePoints.Path.AUTO&&kind==LanePoints.Path.LEFT_LOOP,options.path()==LanePoints.Path.AUTO&&kind==LanePoints.Path.RIGHT).iterator();}
           catch(IllegalArgumentException failure){errors.putIfAbsent(kind,failure.getMessage());ready=Collections.emptyIterator();}
         }
         return ready.hasNext();
@@ -161,7 +166,7 @@ public final class LaneRamps {
       public LaneRampPaths.Candidate next(){if(!hasNext())throw new NoSuchElementException();return ready.next();}
     };
   }
-  private static List<LaneRampPaths.Candidate> routeGroup(LaneRampPaths.Port a,LaneRampPaths.Port b,Settings settings,LanePoints.Options options,RoadRecord source,LanePoints.Point point,RoadRecord target,LanePoints.Point targetPoint,double targetOffset,double maxGrade,double leadLength,double tailLength,boolean automaticTurns){
+  private static List<LaneRampPaths.Candidate> routeGroup(LaneRampPaths.Port a,LaneRampPaths.Port b,Settings settings,LanePoints.Options options,RoadRecord source,LanePoints.Point point,RoadRecord target,LanePoints.Point targetPoint,double targetOffset,double maxGrade,double leadLength,double tailLength,boolean automaticTurns,boolean smooth){
     var before=new ArrayList<Sample>();var after=new ArrayList<Sample>();
     if(leadLength>0){
       var raw=source.rawMesh();var lane=LanePoints.lane(raw,point);double end=lane.station()+lane.sign()*leadLength;
@@ -190,6 +195,7 @@ public final class LaneRamps {
     try{candidates.addAll(LaneRampPaths.candidates(a,b,settings,options,maxGrade));}
     catch(IllegalArgumentException failure){if(candidates.isEmpty())throw failure;}
     candidates.sort(Comparator.comparingDouble(c->c.mesh().length()));
+    if(smooth&&options.elevation()==LanePoints.Elevation.AUTO)candidates.addAll(0,LaneRampPaths.smoothTurns(a,b,settings,options,maxGrade));
     if(before.isEmpty()&&after.isEmpty())return candidates;
     var out=new ArrayList<LaneRampPaths.Candidate>();
     for(var c:candidates)try{
@@ -318,8 +324,8 @@ public final class LaneRamps {
     var position=chain(all,link.to()).at(link.targetOffset());
     return arrivalPort(position.road(),position.point(),0,link,id);
   }
-  private static List<Mesh> heightCandidates(Mesh base,Map<UUID,RoadRecord> all,UUID id,LanePoints.Link link,Map<LanePoints.Path,String> errors,LanePoints.Path path){
-    var mode=link.options().elevation();var out=new ArrayList<Mesh>();
+  private static List<Mesh> heightCandidates(Mesh base,Map<UUID,RoadRecord> all,UUID id,LanePoints.Link link,Map<LanePoints.Path,String> errors,LanePoints.Path path,boolean overFirstPass){
+    var mode=overFirstPass?LanePoints.Elevation.OVER:link.options().elevation();var out=new ArrayList<Mesh>();
     List<Obstacle> contacts=crossings(base,all,id,link);
     boolean clear=contacts.stream().noneMatch(c->c.contact().blocked()||existingLayerConflict(c,all));
     if(mode==LanePoints.Elevation.KEEP)return List.of(base);
@@ -363,7 +369,7 @@ public final class LaneRamps {
     // Name real obstacle identities and both vertical alternatives, not just a
     // propagated solver sample that can be several blocks away from the obstacle.
     var c=contacts.stream().filter(v->v.contact().blocked()).min(Comparator.comparingDouble(v->Math.min(v.contact().from(),base.length()-v.contact().to()))).orElse(contacts.get(0));
-    var v=c.contact();return String.format(Locale.ROOT,"；实际冲突道路 %s，交叠区距 A %.1f–%.1f 格，当前净空 %.2f／要求 %.2f 格，上跨需抬升 %.2f 格，下穿需降低 %.2f 格",c.road(),v.from(),v.to(),v.usableClearance(),RoadClearance.REQUIRED,v.raise(),v.lower());
+    var v=c.contact();return String.format(Locale.ROOT,"；实际冲突道路 %s，交叠区距 A %.1f–%.1f 格，%s；要求净空 %.2f 格，上跨需抬升 %.2f 格，下穿需降低 %.2f 格",c.road(),v.from(),v.to(),RoadClearance.clearanceLabel(v.usableClearance()),RoadClearance.REQUIRED,v.raise(),v.lower());
   }
   private static double verticalEffort(Mesh m){double total=0;for(int i=1;i<m.samples().size();i++)total+=Math.abs(m.samples().get(i).center().y()-m.samples().get(i-1).center().y());return total;}
   private static boolean existingLayerConflict(Obstacle o,Map<UUID,RoadRecord> all){

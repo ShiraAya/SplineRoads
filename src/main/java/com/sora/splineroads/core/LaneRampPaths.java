@@ -11,6 +11,31 @@ public final class LaneRampPaths {
   }
   public record Candidate(LanePoints.Path path,Mesh mesh){}
   private record Frame(V p,V d){}
+  /** One smooth free-span curve with exact endpoint tangents. Fixed extra-lane
+   * approaches are kept outside the curve, and the requested radius is a minimum. */
+  public static List<Candidate> smoothTurns(Port a,Port b,Settings settings,LanePoints.Options options,double maxGrade){
+    if(options.sourceExtra()||options.targetExtra()){
+      var prefix=options.sourceExtra()?approach(a,true,settings.width(),options.transition()):List.<Sample>of();
+      var suffix=options.targetExtra()?approach(b,false,settings.width(),options.transition()):List.<Sample>of();
+      var start=prefix.isEmpty()?a:approachPort(prefix,false,a);var end=suffix.isEmpty()?b:approachPort(suffix,true,b);
+      var out=new ArrayList<Candidate>();
+      for(var c:smoothTurns(start,end,settings,options.withoutApproaches(),maxGrade))try{
+        var samples=new ArrayList<Sample>();append(samples,prefix);append(samples,c.mesh().samples());append(samples,suffix);
+        var mesh=RoadRibbon.mesh(samples,settings);LaneRampGrade.validate(mesh,maxGrade);RoadRibbon.checkSelfIntersections(mesh,4);checkVolume(mesh);
+        out.add(new Candidate(c.path(),mesh));
+      }catch(IllegalArgumentException ignored){}return out;
+    }
+    V delta=b.position().sub(a.position());double distance=delta.horizontalLength();
+    if(distance<4||distance>2048||delta.dot(a.direction())<0||delta.dot(b.direction())<0)return List.of();
+    var out=new ArrayList<Candidate>();
+    for(double fraction:new double[]{.55,.4,.7})try{
+      RoadPlanningBudget.check();var frames=new ArrayList<Frame>();
+      bezier(frames,a.position(),a.direction(),b.position(),b.direction(),Math.max(options.radius(),distance*fraction));
+      var mesh=finish(a,b,settings,frames,0,maxGrade);
+      if(RoadRibbon.minRadius(mesh)+1e-3<options.radius())continue;
+      out.add(new Candidate(LanePoints.Path.AUTO,mesh));
+    }catch(IllegalArgumentException ignored){}return out;
+  }
   /** Complete circle-straight-circle direction families for AUTO fallback.
    * Short right/left turns cannot reach a target behind its incoming tangent.
    * Keep the real lane directions and requested radius instead of reversing B.

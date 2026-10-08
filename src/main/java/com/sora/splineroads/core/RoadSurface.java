@@ -553,6 +553,11 @@ public final class RoadSurface {
    * host road solid and do not override an explicit line-editor selection. */
   public static boolean closedSlotBoundary(Mesh mesh,double station,double lateral){
     if(!LaneDeck.hasOpenings(mesh))return false;var sample=RoadStructures.sample(mesh,station);
+    var raw=LaneSections.reference(mesh);
+    for(int slot:LaneAdditions.slots(raw,station))if(LaneClosureWarnings.covers(mesh,station,slot)){
+      var lane=LanePoints.lane(raw,station,slot);double center=lane.position().sub(sample.center()).dot(sample.left());
+      if(Math.abs(Math.abs(lateral-center)-lane.width()/2)<.2)return true;
+    }
     return LaneDeck.present(mesh,sample,lateral-.14,0)!=LaneDeck.present(mesh,sample,lateral+.14,0);
   }
   /** At lane-point mouths the edge paint meets the selected lane boundary, not the independent road shoulder rim. */

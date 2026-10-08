@@ -1,0 +1,39 @@
+name: SR435 live feedback build and matrix
+on:
+  push:
+    branches: [chat/sr-04021-ramp-matrix]
+    paths: ['src/**', 'tools/**', 'build.gradle', '.github/workflows/sr435-live-feedback.yml']
+permissions:
+  contents: read
+concurrency:
+  group: sr435-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Core and model regression
+        run: bash tools/test_ramp39_model.sh
+      - name: Full Forge build
+        run: bash gradlew --no-daemon --max-workers=2 compileJava compileGameTestJava jar
+      - name: Real 32-case Minecraft build matrix
+        run: bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run435 -ProadTestNamespaces=splineroads_matrix434 -ProadTestHeap=3G
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr435-verified-${{ github.sha }}
+          path: |
+            build/libs/*.jar
+            build/ramp39-core/logs/
+            build/ramp39-model/logs/
+            run435/logs/latest.log
+          retention-days: 30

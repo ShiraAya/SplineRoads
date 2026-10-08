@@ -114,6 +114,10 @@ public final class LaneRoadChain {
       }
     }
     begin=Math.max(low,begin);end=Math.min(high,end);
+    // Authored markers sit half a block inside the real capped ribbon. A closure
+    // reaching such a free endpoint must include that cap instead of restoring a
+    // half-block road stub with a transverse railing across the connector.
+    if(rectangular){if(begin-low<=.50001)begin=low;if(high-end<=.50001)end=high;}
     for(var leg:legs){double a=Math.max(begin,leg.low()),b=Math.min(end,leg.high());if(b-a<.02)continue;
       double start=leg.station(a),finish=leg.station(b);boolean under=false;
       if(ramp!=null){

@@ -207,6 +207,7 @@ public final class RoadStructures {
         V sum=a.left().add(b.left());V normal=sum.horizontalLength()<1e-7?a.left():sum.horizontalUnit();
         V outside=mid.add(normal.mul(side*(modern?.40:.14)));
         boolean visible=bb.sub(aa).horizontalLength()>1e-7
+            && !LaneDeck.outerOpening(mesh,(a.distance()+b.distance())/2,side)
             && mesh.settings().options().outerRail()!=RoadProfile.OuterRail.OFF
             && (mesh.settings().options().outerRail()==RoadProfile.OuterRail.ON || highway
                 ||modern&&mesh.settings().style().ramp() ||mesh.settings().structure()==Structure.BRIDGE
@@ -243,6 +244,7 @@ public final class RoadStructures {
       var a=mesh.samples().get(i-1);var b=mesh.samples().get(i);var mid=sample(mesh,(a.distance()+b.distance())/2);
       if(!RoadStreetscape.raised(mesh,mid))continue;
       for(int side:new int[]{-1,1}){
+        if(LaneDeck.outerOpening(mesh,mid.distance(),side))continue;
         double ra=.35*RoadInfrastructure.endTaper(mesh,a),rb=.35*RoadInfrastructure.endTaper(mesh,b);
         V first=a.at(side*(a.halfWidth()+(ra-.05)/2),depth),last=b.at(side*(b.halfWidth()+(rb-.05)/2),depth);
         var part=new Part(first,last,Math.max(ra,rb)+.05,depth,false,Material.CONCRETE).frames(a.left().mul((ra+.05)/2),b.left().mul((rb+.05)/2));
@@ -292,7 +294,7 @@ public final class RoadStructures {
           for(double local:new double[]{-1.1,1.1})bottom=Math.min(bottom,sample(mesh,Math.max(0,Math.min(mesh.length(),d+local))).center().y()-mesh.settings().thickness());
           s=new Sample(new V(s.center().x(),bottom+mesh.settings().thickness(),s.center().z()),s.left(),s.distance(),s.halfWidth());
         }
-        var support=mesh.settings().style().ramp()&&!mesh.settings().style().connectorRamp()?RoadSupports.ramp(s,mesh.settings().thickness(),ground):RoadSupports.clearStandard(s,mesh.settings().thickness(),ground);
+        var support=mesh.settings().style().ramp()?RoadSupports.ramp(s,mesh.settings().thickness(),ground):RoadSupports.clearStandard(s,mesh.settings().thickness(),ground);
         if(support.isEmpty()||support.stream().anyMatch(ground::blocked))continue;
         out.addAll(support);
         previous = d;
@@ -365,12 +367,17 @@ public final class RoadStructures {
       if(modern){
         var pieces=new ArrayList<Part>();barrier(pieces,r.a,r.b,highway,r.raised,r.distance);
         V direction=r.b.sub(r.a),first=ground.railJoint(r.a,direction,highway,r.raised),last=ground.railJoint(r.b,direction,highway,r.raised);
+        var assembly=new ArrayList<Part>();
         for(var piece:pieces){
           if(piece.material()==Material.DARK_STEEL&&!ground.railPost(r.a,highway,r.raised))continue;
           if(piece.a().sub(r.a).horizontalLength()<1e-6&&piece.b().sub(r.b).horizontalLength()<1e-6)
             piece=piece.frames(first==null?piece.frameA():first.mul(piece.width()/2),last==null?piece.frameB():last.mul(piece.width()/2));
-          if(mesh.settings().options().lanePoints().link()==null&&mesh.settings().options().lanePoints().openings().isEmpty()||!ground.blocked(piece))add(out,piece);
+          assembly.add(piece);
         }
+        // A raised rail and its footing form one assembly. Removing only the
+        // blocked footing leaves steel/posts suspended above a joining deck.
+        if(mesh.settings().options().lanePoints().link()==null&&mesh.settings().options().lanePoints().openings().isEmpty()
+            ||assembly.stream().noneMatch(ground::blocked))for(var piece:assembly)add(out,piece);
       }
       else {var part=new Part(r.a,r.b,.24,1.05,false);if(!ground.blocked(part))add(out,part);}
     }

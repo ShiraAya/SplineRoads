@@ -25,7 +25,18 @@ public final class LaneDeck {
       var lane=LanePoints.lane(raw,sample.distance(),slot);
       double center=lane.position().sub(sample.center()).dot(sample.left()),half=lane.width()*removed/2;
       double lo=Math.max(-sample.halfWidth(),Math.min(sample.halfWidth(),center-half));
-      double hi=Math.max(lo,Math.min(sample.halfWidth(),center+half));holes.add(new Span(lo,hi,false,false));
+      double hi=Math.max(lo,Math.min(sample.halfWidth(),center+half));
+      boolean rectangular=mesh.settings().options().lanePoints().cuts().stream().anyMatch(c->c.lane()==slot&&c.rectangular()&&c.removed(interval)>.999);
+      if(rectangular){
+        boolean lowOuter=true,highOuter=true;
+        for(int other:LaneAdditions.slots(raw,sample.distance()))if(other!=slot){
+          double x=LanePoints.lane(raw,sample.distance(),other).position().sub(sample.center()).dot(sample.left());
+          if(x<center-1e-6)lowOuter=false;if(x>center+1e-6)highOuter=false;
+        }
+        // Do not leave a shoulder-width sliver carrying a meaningless outer rail.
+        if(lowOuter)lo=-sample.halfWidth();if(highOuter)hi=sample.halfWidth();
+      }
+      holes.add(new Span(lo,hi,false,false));
     }return holes;
   }
   /** A physically reserved outer slot is not an intact outer road boundary. */

@@ -6,6 +6,9 @@ import java.util.*;
 /** Exact piecewise-planar deck overlaps. A centerline projection is not a collision location. */
 public final class RoadClearance {
   public static final double REQUIRED = 4.0;
+  public static String clearanceLabel(double clearance){
+    return clearance<0?String.format(Locale.ROOT,"路面实体重叠 %.2f 格（可用净空 0.00）",-clearance):String.format(Locale.ROOT,"板底净空 %.2f 格",clearance);
+  }
   private static final double EPS = 1e-8, AREA_EPS = 1e-4;
   public record Contact(double from,double to,V ours,V other,double usableClearance,
                         double raise,double lower) {
@@ -15,8 +18,8 @@ public final class RoadClearance {
     private final Contact contact;
     public Conflict(Contact c){
       super(String.format(Locale.ROOT,
-        "路面实际相交于 X=%.2f Z=%.2f；新路 Y=%.2f、既有路 Y=%.2f，板底净空 %.2f / 要求 %.2f 格",
-        c.ours().x(),c.ours().z(),c.ours().y(),c.other().y(),c.usableClearance(),REQUIRED));
+        "道路投影交叠于 X=%.2f Z=%.2f；新路 Y=%.2f、既有路 Y=%.2f，%s / 要求净空 %.2f 格",
+        c.ours().x(),c.ours().z(),c.ours().y(),c.other().y(),clearanceLabel(c.usableClearance()),REQUIRED));
       contact=c;
     }
     public Contact contact(){return contact;}

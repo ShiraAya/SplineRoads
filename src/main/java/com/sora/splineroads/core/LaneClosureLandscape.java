@@ -28,37 +28,53 @@ public final class LaneClosureLandscape {
     // whole lane by itself. Unknown/water columns fail closed to a non-floating gap.
     return unsupported>=5;
   }
+  public static final double MIN_GREEN_LENGTH=12;
   public static List<Part> plan(Mesh mesh,Ground ground){
     if(mesh.settings().structure()==Structure.TUNNEL)return List.of();
     var raw=LaneSections.reference(mesh);var result=new ArrayList<Part>();
-    // Multiple live links may reserve overlapping pieces of the same slot.
-    // Materialize their union once, rather than stacking duplicate soil/kerbs/leaves.
     for(var cut:closedIntervals(mesh)){
-      double start=cut.begin(),end=cut.end();
-      for(double d=start;d<end-1e-7;d+=1){
-        double next=Math.min(end,d+1),mid=(d+next)/2;
-        if(raised(mesh,cut.lane(),mid,ground))continue;
-        var a=RoadStructures.sample(raw,d);var b=RoadStructures.sample(raw,next);
-        var la=LanePoints.lane(raw,d,cut.lane());var lb=LanePoints.lane(raw,next,cut.lane());
-        var bed=RoadStructures.planting(la.position(),lb.position(),a.left(),b.left(),la.width()-.12,lb.width()-.12,1,
-            Math.max(.5,raw.settings().thickness()+.125));
-        // Each actual solid is checked separately. Foliage intersecting a ramp at
-        // the mouth must not remove the nonintersecting subgrade foundation/curbs.
-        // Once the rising deck clears the bed, the complete normal-road bed resumes.
-        for(var part:bed)addUnblocked(result,part,ground,0);
+      int count=(int)Math.ceil(cut.end()-cut.begin());boolean[] clear=new boolean[count],planted=new boolean[count];
+      // Find whole usable planting runs. Independently clipping soil and leaves
+      // created exposed soil wedges and chopped fronts under rising decks.
+      for(int i=0;i<count;i++){
+        double a=cut.begin()+i,b=Math.min(cut.end(),a+1);
+        clear[i]=!raised(mesh,cut.lane(),(a+b)/2,ground)&&bed(raw,cut.lane(),a,b,1,1).stream().noneMatch(ground::blocked);
       }
-      // Close both exposed ends, after unioning reservations. Longitudinal kerbs
-      // alone leave bare soil at a rectangular closure's front/back face.
-      for(double d:new double[]{start+.1,end-.1})if(d>=start&&d<=end&&!raised(mesh,cut.lane(),d,ground)){
-        var at=RoadStructures.sample(raw,d);var lane=LanePoints.lane(raw,d,cut.lane());
-        double half=(Math.max(.08,lane.width()-.12-.3))/2+.2;
-        double depth=Math.max(.5,raw.settings().thickness()+.125);
-        V center=lane.position().add(new V(0,-depth,0));
-        var cap=new Part(center.sub(at.left().mul(half)),center.add(at.left().mul(half)),.2,depth+.35,false,Material.CONCRETE);
-        addUnblocked(result,cap,ground,0);
+      for(int i=0;i<count;){if(!clear[i]){i++;continue;}int end=i+1;while(end<count&&clear[end])end++;
+        double from=cut.begin()+i,to=Math.min(cut.end(),cut.begin()+end);
+        if(to-from>=MIN_GREEN_LENGTH){
+          var run=new ArrayList<Part>();
+          for(int j=i;j<end;j++){
+            double a=cut.begin()+j,b=Math.min(to,a+1);
+            run.addAll(bed(raw,cut.lane(),a,b,taper(a,from,to),taper(b,from,to)));
+          }
+          for(double d:new double[]{from+.1,to-.1}){
+            var at=RoadStructures.sample(raw,d);var lane=LanePoints.lane(raw,d,cut.lane());
+            double width=(lane.width()-.12)*taper(d,from,to),depth=Math.max(.5,raw.settings().thickness()+.125);
+            V center=lane.position().add(new V(0,-depth,0));double half=Math.max(.08,width/2);
+            run.add(new Part(center.sub(at.left().mul(half)),center.add(at.left().mul(half)),.2,depth+.35,false,Material.CONCRETE));
+          }
+          if(run.stream().noneMatch(ground::blocked)){result.addAll(run);Arrays.fill(planted,i,end,true);}
+        }i=end;
       }
-    }
-    return List.copyOf(result);
+      // Short/obstructed runs retain a low sealed foundation, without tiny shrubs,
+      // bare raised soil or a triangular daylight gap below the departing ramp.
+      for(int i=0;i<count;i++)if(!planted[i]){
+        double a=cut.begin()+i,b=Math.min(cut.end(),a+1);
+        if(raised(mesh,cut.lane(),(a+b)/2,ground))continue;
+        var la=LanePoints.lane(raw,a,cut.lane());var lb=LanePoints.lane(raw,b,cut.lane());
+        var sa=RoadStructures.sample(raw,a);var sb=RoadStructures.sample(raw,b);double depth=Math.max(.5,raw.settings().thickness()+.125);
+        var pad=new Part(la.position().add(new V(0,-depth,0)),lb.position().add(new V(0,-depth,0)),Math.max(la.width(),lb.width())-.12,depth+.02,false,Material.CONCRETE)
+            .frames(sa.left().mul((la.width()-.12)/2),sb.left().mul((lb.width()-.12)/2));
+        addUnblocked(result,pad,ground,0);
+      }
+    }return List.copyOf(result);
+  }
+  private static double taper(double d,double from,double to){return .2+.8*Settings.smooth(Math.min(1,Math.min(d-from,to-d)/2));}
+  private static List<Part> bed(Mesh raw,int slot,double a,double b,double wa,double wb){
+    var la=LanePoints.lane(raw,a,slot);var lb=LanePoints.lane(raw,b,slot);
+    return RoadStructures.planting(la.position(),lb.position(),RoadStructures.sample(raw,a).left(),RoadStructures.sample(raw,b).left(),
+        (la.width()-.12)*wa,(lb.width()-.12)*wb,1,Math.max(.5,raw.settings().thickness()+.125));
   }
   private record Interval(int lane,double begin,double end){}
   private static List<Interval> closedIntervals(Mesh mesh){
