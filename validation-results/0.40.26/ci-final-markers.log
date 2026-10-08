@@ -1,0 +1,14 @@
+2026-10-08T15:25:46.8663276Z BUILD SUCCESSFUL in 2m 8s
+2026-10-08T15:26:00.6802015Z [36;1mgrep -q 'LIVE439 REAL_WORLD PASS' run439terrain-console.log[0m
+2026-10-08T15:27:00.8539060Z [15:27:00] [Server thread/INFO] [minecraft/GameTestServer]: 1 tests are now running!
+2026-10-08T15:27:09.0516932Z LIVE439 REAL_WORLD PASS: natural ridge, monotone route, open mouths, unblocked greenery, build, NBT and delete
+2026-10-08T15:27:09.0523192Z [15:27:08] [Server thread/INFO] [minecraft/GameTestServer]: All 1 required tests passed :)
+2026-10-08T15:27:13.5178456Z BUILD SUCCESSFUL in 1m 12s
+2026-10-08T15:27:52.9040671Z [15:27:52] [Server thread/INFO] [minecraft/GameTestServer]: 5 tests are now running!
+2026-10-08T15:28:30.1041894Z LIVE438 REAL_WORLD PASS: ADD preview/build rechecked 3 times, stable alignment/ports, Mojang NBT, deletion with invalid saved neighbor, no orphan colliders
+2026-10-08T15:39:46.7049842Z MATRIX434 SUMMARY 32/32 []
+2026-10-08T15:40:35.3040830Z CLOSE437 REAL_WORLD PASS: add two shared-host ramps, first alignment/structures/cells/blocks unchanged, remove second, no orphan colliders, NBT reload
+2026-10-08T15:41:46.5041869Z SEQUENTIAL436 REAL_WORLD PASS: add two shared-host ramps, first alignment/structures/cells/blocks unchanged, remove second, no orphan colliders, NBT reload
+2026-10-08T15:41:52.9048373Z EXPANSION437 REAL_WORLD PASS: blue point expands 3 to 4, Mojang NBT reload, cancel restores 3
+2026-10-08T15:41:52.9083697Z [15:41:52] [Server thread/INFO] [minecraft/GameTestServer]: All 5 required tests passed :)
+2026-10-08T15:42:11.1576997Z BUILD SUCCESSFUL in 14m 57s
