@@ -29,6 +29,8 @@ jobs:
         run: bash gradlew --no-daemon --max-workers=2 compileJava compileGameTestJava jar
       - name: Real 32-case Minecraft build matrix
         run: bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run435 -ProadTestNamespaces=splineroads_matrix434 -ProadTestHeap=3G
+      - name: Real fixed-east-end 32-case Minecraft matrix
+        run: bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run435east -ProadTestNamespaces=splineroads_matrix434 -ProadMatrixEnd=east -ProadTestHeap=3G
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -38,4 +40,5 @@ jobs:
             build/ramp39-core/logs/
             build/ramp39-model/logs/
             run435/logs/latest.log
+            run435east/logs/latest.log
           retention-days: 30

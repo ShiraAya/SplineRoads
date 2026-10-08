@@ -33,25 +33,19 @@ public final class LaneDeck {
           double x=LanePoints.lane(raw,sample.distance(),other).position().sub(sample.center()).dot(sample.left());
           if(x<center-1e-6)lowOuter=false;if(x>center+1e-6)highOuter=false;
         }
-        // Do not leave a shoulder-width sliver carrying a meaningless outer rail.
-        if(lowOuter)lo=-sample.halfWidth();if(highOuter)hi=sample.halfWidth();
+        // Remove only the redundant shoulder. A separate cycle lane still needs
+        // its deck and outer protection when the adjacent motor lane closes.
+        var layout=RoadProfile.layout(raw,sample);
+        if(lowOuter&&(layout.cycleWidth()<.01||!layout.catalog().twoWay()&&layout.outside()>0))lo=-sample.halfWidth();
+        if(highOuter&&(layout.cycleWidth()<.01||!layout.catalog().twoWay()&&layout.outside()<0))hi=sample.halfWidth();
       }
       holes.add(new Span(lo,hi,false,false));
     }return holes;
   }
   /** A physically reserved outer slot is not an intact outer road boundary. */
   public static boolean outerOpening(Mesh mesh,double station,int side){
-    var sample=RoadStructures.sample(mesh,station);var raw=LaneSections.reference(mesh);
-    for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.temporary()&&cut.rectangular()&&cut.removed(station)>.999){
-      var chosen=LanePoints.lane(raw,station,cut.lane());double offset=chosen.position().sub(sample.center()).dot(sample.left());
-      boolean outer=true;
-      for(int slot:LaneAdditions.slots(raw,station))if(slot!=cut.lane()){
-        var lane=LanePoints.lane(raw,station,slot);double other=lane.position().sub(sample.center()).dot(sample.left());
-        if(side*(other-offset)>1e-6){outer=false;break;}
-      }
-      if(outer)return true;
-    }
-    return false;
+    var sample=RoadStructures.sample(mesh,station);
+    return !present(mesh,sample,side*(sample.halfWidth()-.025),0);
   }
   public static List<Span> spans(Mesh mesh,Sample sample){return spans(mesh,sample,sample.distance());}
   private static List<Span> spans(Mesh mesh,Sample sample,double interval){

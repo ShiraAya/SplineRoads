@@ -55,6 +55,12 @@ public final class Live435Validation {
     check(!geometry.markings().stream().anyMatch(f->JunctionPaint.inside(f.points(),lane.position().add(new V(2,0,0)))),"solid line leaked upstream");
   }
   static void structures(){
+    var cycling=RoadProfile.Options.DEFAULT.cycleFinish(RoadProfile.Options.CycleFinish.ASPHALT);
+    var bikeSettings=new Settings(Mode.STRAIGHT,Style.O3_ONE,RoadProfile.width(Style.O3_ONE,cycling,4),1,.35,90).options(cycling).structure(Structure.BRIDGE);
+    var bikeRaw=RoadGeometry.build(new Node(new V(0,20,0),0,0),new Node(new V(0,20,200),0,0),bikeSettings);
+    var bike=cut(bikeRaw,0,50,150,false);var at=RoadStructures.sample(bike,100);var layout=RoadProfile.layout(bikeRaw,at);int outside=layout.outside();
+    check(RoadQueries.contains(bike,at.at(layout.outer(outside)+outside*layout.cycleWidth()/2,0),0,.01),"motor closure deleted separate cycle lane");
+    check(!LaneDeck.outerOpening(bike,100,outside),"live cycle lane loses outer protection");
     var raw=road(Style.O3_ONE,Structure.BRIDGE);var mesh=cut(raw,0,50,150,false);
     for(double d:new double[]{60,100,140}){
       var sample=RoadStructures.sample(mesh,d);
