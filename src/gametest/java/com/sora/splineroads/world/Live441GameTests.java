@@ -45,7 +45,7 @@ public final class Live441GameTests {
  private static void scenario(GameTestHelper h,boolean ground,int cx){
   var level=h.getLevel();var data=RoadData.get(level);int cz=cx;
   for(int x=cx-18;x<=cx+108;x++)for(int z=cz;z<=cz+402;z++){
-   var p=new BlockPos(x,ground?198:188,z);level.getChunkAt(p);level.setBlock(p,Blocks.GRASS_BLOCK.defaultBlockState(),2);
+   var p=new BlockPos(x,ground?199:188,z);level.getChunkAt(p);level.setBlock(p,Blocks.GRASS_BLOCK.defaultBlockState(),2);
   }
   var settings=RoadLanes.configure(Revision32GameTests.road(Style.O4_RAIL,ground?Structure.AUTO:Structure.BRIDGE),RoadProfile.Type.ORDINARY,new RoadLanes.Counts(ground?1:2,ground?0:3),4);
   settings=settings.options(settings.options().route(settings.options().routing().fit(false)).infrastructure(settings.options().infrastructure().bridge(RoadInfrastructure.Bridge.OVERPASS)));
@@ -55,7 +55,8 @@ public final class Live441GameTests {
   var from=Build429GameTests.point(data,source,60,slot);var to=Build429GameTests.point(data,target,140,slot);
   var options=new LanePoints.Options(LanePoints.Path.AUTO,LanePoints.Departure.TEMPORARY,LanePoints.Arrival.MERGE,24,32,LanePoints.Elevation.AUTO,LanePoints.Landing.FLEXIBLE);
   var ramp=LaneRamps.generate(data,LaneTopology.records(data),UUID.randomUUID(),source.owner(),new LanePoints.Link(from,to,options,null));
-  if(ground)h.assertTrue(ramp.mesh().min().y()>199.99&&ramp.mesh().max().y()<200.01,"ground fixture must remain flat and unburied");
+  double surfaceY=source.start().position().y();
+  if(ground)h.assertTrue(ramp.mesh().samples().stream().allMatch(s->Math.abs(s.center().y()-surfaceY)<.01),"ground fixture must remain flat and unburied");
   System.out.println("LIVE441 PLAN_PASS ground="+ground);LaneRamps.build(data,level,null,ramp);
   System.out.println("LIVE441 BUILD_PASS ground="+ground);
   if(!ground){
@@ -66,7 +67,7 @@ public final class Live441GameTests {
   else {
    var host=data.index.roads.get(target.id()).record;
    h.assertTrue(host.structures().stream().anyMatch(LaneClosureLandscape::paved),"ground arrival left former planter unpaved");
-   h.assertTrue(host.structures().stream().filter(LaneClosureLandscape::paved).allMatch(p->p.a().y()+p.height()<200.1),"pavement fill rises above road");
+   h.assertTrue(host.structures().stream().filter(LaneClosureLandscape::paved).allMatch(p->p.a().y()+p.height()<=surfaceY+.025&&p.b().y()+p.height()<=surfaceY+.025),"pavement fill rises above road");
   }
   var planning=new ArrayList<RoadIndex.Built>(data.index.roads.values());var ids=List.of(source.id(),target.id(),ramp.id());
   h.assertTrue(!LaneTopology.needsRefresh(data,planning,ids)&&!LaneCrossSections.needsRestoreRefresh(planning,ids),"saved topology is unstable");

@@ -66,8 +66,10 @@ public final class LaneRoadChain {
     return new Position(selected.road(),point,at);
   }
   public Mesh sweep(){
-    var out=new ArrayList<Sample>();double shift=legs.get(0).low();double thickness=0;
+    var out=new ArrayList<Sample>();double shift=legs.get(0).low();double thickness=0,girder=0;
+    RoadInfrastructure.Config bridge=null;
     for(var leg:legs){var raw=leg.road().rawMesh();thickness=Math.max(thickness,raw.settings().thickness());
+      double depth=RoadInfrastructure.girderDepth(raw);if(depth>girder){girder=depth;bridge=raw.settings().options().infrastructure();}
       var samples=new ArrayList<>(raw.samples());if(leg.sign()<0)Collections.reverse(samples);
       for(var sample:samples){double station=leg.coordinate(sample.distance())-shift;
         var lane=LanePoints.lane(raw,sample.distance(),leg.slot());
@@ -77,6 +79,9 @@ public final class LaneRoadChain {
       }
     }
     var settings=new Settings(Mode.CURVE,Style.C1_RAMP,4,thickness,.35,90);
+    // Reservation must open the host's beam as well as its slab. Keep the
+    // physical slab setting legal; clearance derives beam depth separately.
+    if(bridge!=null)settings=settings.structure(Structure.BRIDGE).options(settings.options().infrastructure(bridge));
     var bounds=RoadRibbon.mesh(out,settings);
     return new Mesh(List.copyOf(out),settings,bounds.min(),bounds.max(),out.get(out.size()-1).distance(),false,null);
   }

@@ -76,5 +76,38 @@ public final class Live441ModelValidation {
   var edge=RoadStructures.sample(host,station).at(side*RoadStructures.sample(host,station).halfWidth(),0);var end=ramp.mesh().last();double sign=Math.signum(edge.sub(end.center()).dot(end.left()));
   check(end.at(sign*end.halfWidth(),0).distance(edge)<1e-5,"ADD outside shoulder/rail rim mismatch");
  }
- public static void main(String[]args){detach();joinedFurniture();stableTerrain();addedMouth();System.out.println("Live441ModelValidation: "+checks+" checks PASS; whole-lane departure, exact shoulder mouths, parent furniture, stable terrain classification");}
+ static void beamReservation(){
+  var settings=Hotfix429ModelValidation.settings(RoadProfile.Type.ORDINARY,1,0,false).structure(Structure.BRIDGE);
+  settings=settings.options(settings.options().infrastructure(settings.options().infrastructure().bridge(RoadInfrastructure.Bridge.OVERPASS)));
+  var host=Hotfix429ModelValidation.road(new V(0,20,0),new V(0,20,160),settings);
+  var all=new LinkedHashMap<UUID,RoadRecord>();all.put(host.id(),host);var ref=Hotfix429ModelValidation.point(all,host,100,0);
+  var chain=LaneRoadChain.of(all,ref);chain.sweep().settings().validate();
+  var samples=new ArrayList<Sample>();
+  for(int d=40;d<=100;d++){
+   var lane=LanePoints.lane(host.rawMesh(),d,0);double y=d<=60?14.8:14.8+(d-60)*5.2/40;
+   samples.add(new Sample(new V(lane.position().x(),y,lane.position().z()),lane.direction().left(),d-40,2));
+  }
+  var ramp=RoadRibbon.mesh(samples,new Settings(Mode.CURVE,Style.C1_RAMP,4,1,.35,90));
+  var events=new LinkedHashMap<UUID,List<LaneSections.Event>>();chain.reserve(events,UUID.randomUUID(),ramp,List.of(),true,0,32,true);
+  var cut=LaneSections.derive(host.rawMesh(),events.get(host.id())).get(0);
+  check(cut.begin()<40,"arrival reservation left host girder over ramp: begins at "+cut.begin());
+ }
+ static void ancestorMarkers(){
+  var settings=Hotfix429ModelValidation.settings(RoadProfile.Type.ORDINARY,1,0,false);
+  var all=new LinkedHashMap<UUID,RoadRecord>();
+  var a=Hotfix429ModelValidation.road(new V(0,20,0),new V(0,20,100),settings);
+  var b=Hotfix429ModelValidation.road(new V(0,20,300),new V(0,20,500),settings);
+  var c=Hotfix429ModelValidation.road(new V(90,20,200),new V(90,20,500),settings);
+  var unrelated=Hotfix429ModelValidation.road(new V(180,20,200),new V(180,20,500),settings);
+  for(var host:List.of(a,b,c,unrelated))all.put(host.id(),host);
+  var from=Hotfix429ModelValidation.point(all,a,50,0);var to=Hotfix429ModelValidation.point(all,b,100,0);
+  var rampSettings=new Settings(Mode.CURVE,Style.C1_RAMP,4,1,.35,90);
+  var parent=Hotfix429ModelValidation.road(new V(0,20,50),new V(0,20,400),rampSettings).withLanePoints(LanePoints.Data.EMPTY.link(new LanePoints.Link(from,to,LanePoints.Options.DEFAULT,null)));
+  all.put(parent.id(),parent);from=Hotfix429ModelValidation.point(all,parent,100,0);to=Hotfix429ModelValidation.point(all,c,100,0);
+  var child=Hotfix429ModelValidation.road(new V(0,20,150),new V(90,20,300),rampSettings).withLanePoints(LanePoints.Data.EMPTY.link(new LanePoints.Link(from,to,LanePoints.Options.DEFAULT,null)));
+  var endpoints=LaneRamps.contactEndpoints(all,child);
+  for(var host:List.of(a,b,c,parent,child))check(endpoints.contains(host.a())&&endpoints.contains(host.b()),"missing ancestor host markers: "+host.id());
+  check(!endpoints.contains(unrelated.a())&&!endpoints.contains(unrelated.b()),"unrelated marker protection was disabled");
+ }
+ public static void main(String[]args){detach();joinedFurniture();stableTerrain();addedMouth();beamReservation();ancestorMarkers();System.out.println("Live441ModelValidation: "+checks+" checks PASS; whole-lane departure, exact shoulder mouths, parent furniture, stable terrain classification, beam reservation and ancestor markers");}
 }

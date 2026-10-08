@@ -618,9 +618,19 @@ public final class LaneRamps {
     // Contact may contain an existing host marker. On first construction that host is
     // rebuilt for its new opening; subsequent edits may leave it unchanged. Its own
     // markers are still legitimate contacts, never unrelated obstacles or deletion targets.
-    var endpoints=new HashSet<BlockPos>();endpoints.add(r.a());endpoints.add(r.b());var all=LaneTopology.records(data);
-    for(var ref:List.of(link.from(),link.to()))for(UUID host:contactRoads(all,ref)){var road=all.get(host);endpoints.add(road.a());endpoints.add(road.b());}
-    return new AssemblyRequest(Set.copyOf(endpoints),List.copyOf(moves));
+    return new AssemblyRequest(contactEndpoints(LaneTopology.records(data),r),List.copyOf(moves));
+  }
+  static Set<BlockPos> contactEndpoints(Map<UUID,RoadRecord> all,RoadRecord r){
+    var endpoints=new HashSet<BlockPos>();endpoints.add(r.a());endpoints.add(r.b());
+    var pending=new ArrayDeque<LanePoints.Ref>();var seen=new HashSet<UUID>();seen.add(r.id());
+    var link=LaneTopology.metadata(r).link();if(link!=null){pending.add(link.from());pending.add(link.to());}
+    while(!pending.isEmpty())for(UUID id:contactRoads(all,pending.removeFirst()))if(seen.add(id)){
+      var host=all.get(id);endpoints.add(host.a());endpoints.add(host.b());
+      // Opening a child branch also replans its saved parent's furniture.
+      // That parent's original host markers remain legitimate contacts.
+      var parent=LaneTopology.metadata(host).link();if(parent!=null){pending.add(parent.from());pending.add(parent.to());}
+    }
+    return Set.copyOf(endpoints);
   }
   public static void build(RoadData data,ServerLevel level,ServerPlayer player,RoadRecord r){
     var request=assemblyRequest(data,r);
