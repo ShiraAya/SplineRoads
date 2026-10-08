@@ -30,7 +30,12 @@ public final class Live441GameTests {
   h.assertTrue(data.index.roads.get(parent.id()).record.alignment().equals(oldAlignment),"branch rerouted saved parent");
   var built=data.index.roads.get(child.id()).record;
   for(var part:data.index.roads.get(parent.id()).record.structures())h.assertTrue(!blocksDrive(part,built.mesh(),parentSlab),"saved parent furniture still blocks new branch: "+part);
-  System.out.println("LIVE441 REAL_WORLD PASS branch: LEFT/BRANCH/EXTRA/OVER/FLEXIBLE build and parent furniture");h.succeed();
+  data.remove(level,null,child.id());
+  h.assertTrue(!data.index.roads.containsKey(child.id()),"branch deletion failed");
+  var restored=data.index.roads.get(parent.id()).record;
+  h.assertTrue(restored.alignment().equals(oldAlignment),"branch deletion rerouted saved parent");
+  h.assertTrue(restored.structures().stream().anyMatch(p->blocksDrive(p,child.mesh(),parentSlab)),"branch deletion did not restore parent mouth furniture");
+  System.out.println("LIVE441 REAL_WORLD PASS branch: LEFT/BRANCH/EXTRA/OVER/FLEXIBLE build, parent furniture opening and deletion restoration");h.succeed();
  }
  @GameTest(batch="splineroads_live441",template="empty",templateNamespace="splineroads_live441",timeoutTicks=18000)
  public static void asymmetricBankSwitch(GameTestHelper h){

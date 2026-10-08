@@ -34,6 +34,8 @@
 
 ## 完整构建与实际Minecraft
 
+**19:44 UTC更新：下面6b11候选尚未发布，已被删除回归修复取代。** 同组A1–A8通过但旧438实际用例发现删除误改写共端点的损坏旧匝道；修复恢复删除专用依赖筛选，并新增分支删除后父护栏恢复的实际检查。最终门禁与安装包需重新生成。下文6b11测试和JAR摘要仅为历史证据，不能作为新源码的完成声明。
+
 最终候选源码远端提交 `6b11ce7d165ee9ae172a169309c0cc97d5ef702c`（本地 `eb1d6153a619e4df735bdadacaa9aea88270440f`，tree `d35c5e1a0aee5e3a59c4f0d7e10eb4ea2801129a`）的完整Forge构建、全部离线回归及6项真实Minecraft测试已通过。验证任务：[37832221887 / 113500629069](https://github.com/ShiraAya/SplineRoads/actions/runs/37832221887/job/113500629069)，完成于2026-10-08 19:40 UTC。实际新增4项包括桥梁首次建造、匝道AUTO→OVERPASS→AUTO和宿主BRIDGE→AUTO，贴地补铺，既有匝道分支及原护栏重建，岸边GREEN结构稳定切换；另外2项检查真实请求发布与地下/隧道。32例矩阵仍在运行，未计通过。原始日志摘录见 `validation-results/0.40.27/final-forge-minecraft.log`。
 
 对应JAR为 `splineroads-0.40.27-alpha.jar`，5,651,326字节，SHA-256 `233bd54a1b7e8a8c353f132f4b487e724b560cd8015074f2d131099cb6034f5a`；来自同一提交的Actions构建产物11574371706，版本号、ZIP CRC和下载归档摘要均已验证。后续仅补充验证记录，不改变该生产源码。

@@ -976,8 +976,11 @@ public final class RoadData extends SavedData {
       for (UUID id : removed) if (index.roads.containsKey(id)) requested.add(index.roads.get(id));
       // Re-plan affected structures, including a saved ramp joined by a new
       // child mouth. influences keeps independent saved ramp furniture unchanged.
+      // Deletion only releases recorded reservations/openings below. It must not
+      // enlist a surviving broken connector merely because it shares endpoints.
       for (var old : index.roads.values())
         if (!removed.contains(old.record.id())
+            && (!deleting || LaneTopology.metadata(old.record).link()==null)
             && requested.stream().anyMatch(r -> RoadInteractions.influences(r, old))) {
           built.add(old.structures(List.of()));
           removed.add(old.record.id());
