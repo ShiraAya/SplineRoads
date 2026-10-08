@@ -1,4 +1,4 @@
 Live441Validation: 230 checks PASS; live-lane rail clearance, ground closure pavement in VBO/terrain and buried-lid protection
-Oct 08, 2026 11:43:20 PM com.sora.splineroads.world.LaneRamps$Planning close
-INFO: SR route plan total_ms=7087.032 clearance_ms=322.866 candidates=69 contact_queries=280 cached_meshes=5
-Live441ModelValidation: 38 checks PASS; whole-lane departure, exact shoulder mouths, parent furniture, stable terrain classification
+Oct 08, 2026 11:46:27 PM com.sora.splineroads.world.LaneRamps$Planning close
+INFO: SR route plan total_ms=7024.047 clearance_ms=305.776 candidates=69 contact_queries=280 cached_meshes=5
+Live441ModelValidation: 40 checks PASS; whole-lane departure, exact shoulder mouths, parent furniture, stable terrain classification

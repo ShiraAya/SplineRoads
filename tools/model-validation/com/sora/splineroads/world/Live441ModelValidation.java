@@ -60,5 +60,21 @@ public final class Live441ModelValidation {
    check(next.terrainClassificationMesh().samples().equals(ref.samples()),"terrain reference moved after derived classification");
   }
  }
- public static void main(String[]args){detach();joinedFurniture();stableTerrain();System.out.println("Live441ModelValidation: "+checks+" checks PASS; whole-lane departure, exact shoulder mouths, parent furniture, stable terrain classification");}
+ static void addedMouth(){
+  var s=Hotfix429ModelValidation.settings(RoadProfile.Type.ORDINARY,2,3,false);
+  var target=Hotfix429ModelValidation.road(new V(0,100,0),new V(0,100,700),s);double station=450;
+  var lane=LaneSections.live(target.mesh(),station).lanes().stream().filter(l->l.sign()==1).findFirst().orElseThrow();
+  var sample=RoadStructures.sample(target.mesh(),station);var layout=RoadProfile.layout(target.mesh(),sample);int side=LaneAdditions.side(layout,1);
+  var location=sample.center().add(sample.left().mul(side*(sample.halfWidth()+70))).sub(lane.direction().mul(320));
+  var source=Hotfix429ModelValidation.road(location,location.add(lane.direction().mul(180)),Hotfix429ModelValidation.settings(RoadProfile.Type.ORDINARY,1,0,false));
+  var all=new LinkedHashMap<UUID,RoadRecord>();all.put(source.id(),source);all.put(target.id(),target);
+  var a=Hotfix429ModelValidation.point(all,source,60,0);var b=Hotfix429ModelValidation.point(all,target,station,lane.index());var id=UUID.randomUUID();
+  var options=new LanePoints.Options(LanePoints.Path.AUTO,LanePoints.Departure.BRANCH,LanePoints.Arrival.ADD,24,32,LanePoints.Elevation.AUTO,LanePoints.Landing.EXACT);
+  var ramp=LaneRamps.generate(null,all,id,source.owner(),new LanePoints.Link(a,b,options,null));all.put(id,ramp);LaneCrossSections.reconcile(all);
+  var host=all.get(target.id()).mesh();var added=LaneAdditions.owned(host,id);var actual=LanePoints.lane(host,station,added.slot());
+  check(LaneRampAlignment.axis(ramp.mesh(),false).distance(actual.position())<1e-5,"ADD mouth does not reach the new lane axis");
+  var edge=RoadStructures.sample(host,station).at(side*RoadStructures.sample(host,station).halfWidth(),0);var end=ramp.mesh().last();double sign=Math.signum(edge.sub(end.center()).dot(end.left()));
+  check(end.at(sign*end.halfWidth(),0).distance(edge)<1e-5,"ADD outside shoulder/rail rim mismatch");
+ }
+ public static void main(String[]args){detach();joinedFurniture();stableTerrain();addedMouth();System.out.println("Live441ModelValidation: "+checks+" checks PASS; whole-lane departure, exact shoulder mouths, parent furniture, stable terrain classification");}
 }

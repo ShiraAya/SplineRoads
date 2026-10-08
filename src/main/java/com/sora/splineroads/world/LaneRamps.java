@@ -138,10 +138,10 @@ public final class LaneRamps {
       for(var candidate:routeCandidates(a,b,settings,link.options(),source,p,targetPosition==null?null:targetPosition.road(),targetPosition==null?null:targetPosition.point(),0,maxGrade,errors,stage))try{
         RoadPlanningBudget.check();
         if(CURRENT.get()!=null)CURRENT.get().routeCount++;
-        var sourceMouth=actual.options().sourceExtra()?new LaneRampAlignment.Mouth(lane.width(),0,0):LaneRampAlignment.mouth(currentSource.rawMesh(),LanePoints.lane(currentSource.rawMesh(),p));
-        var targetMouth=targetPosition==null||actual.options().targetExtra()?new LaneRampAlignment.Mouth(targetLaneWidth,0,0):LaneRampAlignment.mouth(targetPosition.road().rawMesh(),LanePoints.lane(targetPosition.road().rawMesh(),targetPosition.point()));
+        var sourceMouth=actual.options().sourceExtra()?new LaneRampAlignment.Mouth(lane.width(),0,0):LaneRampAlignment.mouth(currentSource.mesh(),LanePoints.lane(currentSource.mesh(),p));
+        var targetMouth=targetPosition==null||actual.options().targetExtra()?new LaneRampAlignment.Mouth(targetLaneWidth,0,0):LaneRampAlignment.mouth(targetPosition.road().mesh(),LanePoints.lane(targetPosition.road().mesh(),targetPosition.point()));
         // ADD has a new outer slot, not the old selected slot.
-        if(actual.options().arrival()==LanePoints.Arrival.ADD)targetMouth=new LaneRampAlignment.Mouth(targetLaneWidth,0,0);
+        if(actual.options().arrival()==LanePoints.Arrival.ADD){var host=targetPosition.road().mesh();var added=LaneAdditions.owned(host,id);targetMouth=LaneRampAlignment.mouth(host,LanePoints.lane(host,added.station(),added.slot()));}
         var baseMesh=fitHostContacts(LaneRampAlignment.fit(candidate.mesh(),sourceMouth,targetMouth),context,actual);
         for(Mesh mesh:heightCandidates(baseMesh,context,id,actual,errors,candidate.path(),preferOver&&elevationPass==0&&(!auto||profilePass>0),auto&&profilePass==0))try{
           if(data!=null&&!data.withinHeight(mesh)||data==null&&CURRENT.get()!=null&&(mesh.min().y()-mesh.settings().thickness()<CURRENT.get().minimumHeight||mesh.max().y()+4>=CURRENT.get().maximumHeight))throw new IllegalArgumentException("上跨／下穿超出世界高度范围");
