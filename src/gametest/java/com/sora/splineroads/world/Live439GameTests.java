@@ -23,17 +23,17 @@ public final class Live439GameTests {
   var from=Build429GameTests.point(data,source,30,0);var to=Build429GameTests.point(data,target,30,0);
   var options=new LanePoints.Options(LanePoints.Path.DIRECT,LanePoints.Departure.TEMPORARY,LanePoints.Arrival.MERGE,24,32,LanePoints.Elevation.AUTO,LanePoints.Landing.EXACT);
   var ramp=LaneRamps.generate(data,LaneTopology.records(data),UUID.randomUUID(),source.owner(),new LanePoints.Link(from,to,options,null));
-  h.assertTrue(data.connectorTerrain(ramp.mesh()).stream().noneMatch(b->b.amount()>1e-5),"auto profile remains underground");
+  // SR440: earth is excavatable; never raise/reject a route solely for terrain.
   h.assertTrue(LaneRamps.monotone(ramp.mesh()),"terrain introduced an avoidable reversal");
   h.assertTrue(level.getBlockState(new BlockPos(cx,203,cz+140)).is(Blocks.STONE),"route solve mutated terrain");
   LaneRamps.build(data,level,null,ramp);
   var built=data.index.roads.get(ramp.id()).record;
-  h.assertTrue(data.connectorTerrain(built.mesh()).stream().noneMatch(b->b.amount()>1e-5),"build buried final profile");
+  h.assertTrue(built.alignment().equals(ramp.alignment()),"terrain changed chosen alignment");
   for(var host:List.of(source,target))for(var part:data.index.roads.get(host.id()).record.structures())
    h.assertTrue(!RoadClearance.structureInvades(part,built.mesh(),4.25),"host cap/greenery blocks ramp mouth");
   var loaded=RoadData.load(data.save(new CompoundTag()));h.assertTrue(loaded.index.roads.get(ramp.id()).record.alignment().equals(built.alignment()),"NBT lost terrain-fitted geometry");
   var cells=new HashSet<>(data.index.roads.get(ramp.id()).cells.keySet());data.remove(level,null,ramp.id());
   for(long p:cells)if(!data.index.occupied(p))h.assertTrue(!RoadBlocks.isCollider(level.getBlockState(BlockPos.of(p))),"orphan collision after delete");
-  System.out.println("LIVE439 REAL_WORLD PASS: natural ridge, monotone route, open mouths, unblocked greenery, build, NBT and delete");h.succeed();
+  System.out.println("LIVE439 REAL_WORLD PASS: excavatable ridge, monotone route, open mouths, unblocked greenery, build, NBT and delete");h.succeed();
  }
 }

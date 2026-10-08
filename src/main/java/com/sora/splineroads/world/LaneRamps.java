@@ -55,7 +55,7 @@ public final class LaneRamps {
   }
   public static RoadRecord reconfigure(RoadRecord old,Settings requested,Map<UUID,RoadRecord> all){return reconfigure(null,old,requested,all);}
   private static RoadRecord reconfigure(RoadData data,RoadRecord old,Settings requested,Map<UUID,RoadRecord> all){
-    if(RoadProfile.catalog(requested.style()).lanes()!=1||!LanePoints.supported(requested))
+    if(RoadProfile.catalog(requested.style()).lanes()!=1||(!LanePoints.supported(requested)&&requested.structure()!=Structure.TUNNEL))
       throw new IllegalArgumentException("连接器匝道须保持独立匝道类型、单车道及支持的道路结构");
     return generateChoice(data,all,old.id(),old.owner(),LaneTopology.metadata(old).link(),requested).road();
   }
@@ -89,7 +89,6 @@ public final class LaneRamps {
       var to=link.to().road()==null?null:resolvedArrival(context,link,id);
       if(LaneRampAlignment.axis(candidate,true).distance(from.position())<1e-5
           &&LaneRampAlignment.axis(candidate,false).distance(to==null?link.junctionMouth():to.position())<1e-5){
-        if(data!=null){var grounded=fitTerrain(data,candidate,context,id,link);if(grounded!=candidate){candidate=grounded;kept=kept.alignment(null,grounded);context=LaneCrossSections.staged(all,id,link,candidate);}}
         validate(candidate,context,id,link);
         for(var road:context.values())for(var cut:LaneTopology.metadata(road).cuts())if(cut.connection().equals(id)&&!cut.arrival()&&cut.temporary())LaneReopening.validateRestored(road.mesh(),cut.lane(),candidate,id);
         return new Generated(kept,link.options().path());
@@ -142,8 +141,6 @@ public final class LaneRamps {
         var baseMesh=fitHostContacts(LaneRampAlignment.fit(candidate.mesh(),lane.width(),targetLaneWidth,link.options().transition()),context,actual);
         for(Mesh mesh:heightCandidates(baseMesh,context,id,actual,errors,candidate.path(),preferOver&&elevationPass==0&&(!auto||profilePass>0),auto&&profilePass==0))try{
           if(data!=null&&!data.withinHeight(mesh)||data==null&&CURRENT.get()!=null&&(mesh.min().y()-mesh.settings().thickness()<CURRENT.get().minimumHeight||mesh.max().y()+4>=CURRENT.get().maximumHeight))throw new IllegalArgumentException("上跨／下穿超出世界高度范围");
-          if(data!=null){mesh=fitTerrain(data,mesh,context,id,actual);if(!data.withinHeight(mesh))throw new IllegalArgumentException("地形避让超出世界高度范围");}
-          if(auto&&profilePass==0&&!monotone(mesh))throw new IllegalArgumentException("地形要求当前候选反向起伏，继续检查单调路线");
           var finalContext=actual.options().departure()==LanePoints.Departure.TEMPORARY||actual.closesTarget()?
               LaneCrossSections.staged(all,id,actual,mesh):context;
           validate(mesh,finalContext,id,actual);
@@ -477,17 +474,6 @@ public final class LaneRamps {
       if(c.blocked()||wrongLayer)throw new IllegalArgumentException("与道路 "+obstacle.road()+" 冲突："+(wrongLayer?"不符合指定的上下关系；":"")+new RoadClearance.Conflict(c).getMessage());
     }
   }
-  private static Mesh fitTerrain(RoadData data,Mesh mesh,Map<UUID,RoadRecord> all,UUID id,LanePoints.Link link){
-    if(link.options().elevation()==LanePoints.Elevation.UNDER||mesh.settings().structure()==Structure.TUNNEL)return mesh;
-    var bounds=new ArrayList<>(data.connectorTerrain(mesh));
-    if(bounds.stream().noneMatch(b->b.amount()>1e-5))return mesh;
-    var obstacles=crossings(mesh,all,id,link);
-    for(var o:obstacles){var c=o.contact();boolean over=c.ours().y()>=c.other().y();bounds.add(new LaneRampCorridor.Bound(c.from(),c.to(),over?c.raise():c.lower(),over));}
-    try{
-      var fixed=LaneRampCorridor.solveMixed(mesh,fixedApproach(mesh,all,link,true),mesh.length()-fixedApproach(mesh,all,link,false),bounds,gradeLimit(all,link));
-      validate(fixed,LaneCrossSections.staged(all,id,link,fixed),id,link);return fixed;
-    }catch(IllegalArgumentException e){throw new IllegalArgumentException("自动匝道不能埋入地面；"+e.getMessage()+obstacleSummary(mesh,obstacles));}
-  }
   /** Classify from real source/target hosts, never from the edited ramp skin. An
    * ordinary-looking connector chained from a highway cannot raise its limit to 25%.
    * Junction arms come from their actual saved spec, not an invented client flag. */
@@ -572,7 +558,9 @@ public final class LaneRamps {
     selection(player,tool,t);var data=RoadData.get(player.serverLevel());
     if(data.index.revision()!=work.revision)throw new IllegalArgumentException("计算期间道路已改变，旧预览已丢弃，请重新预览");
     var all=work.all;var id=work.id;var from=work.link.from();var to=work.link.to();var options=work.link.options();
-    RoadRecord r=generated.road();var grounded=fitTerrain(data,r.mesh(),LaneCrossSections.staged(all,id,work.link,r.mesh()),id,work.link);if(grounded!=r.mesh())r=r.alignment(null,grounded);if(!data.withinHeight(r.mesh()))throw new IllegalArgumentException("上跨／下穿超出世界高度范围");
+    // Publish the actual normalized link selected by the worker, including the
+    // rectangular closure and flexible B offset. The raw request has neither.
+    RoadRecord r=generated.road();if(!data.withinHeight(r.mesh()))throw new IllegalArgumentException("上跨／下穿超出世界高度范围");
     var planned=new ArrayList<RoadIndex.Built>();planned.add(new RoadIndex.Built(r));
     var removed=new HashSet<UUID>();if(all.containsKey(id))removed.add(id);
     var request=assemblyRequest(data,r);

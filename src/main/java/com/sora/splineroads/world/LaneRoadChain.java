@@ -121,13 +121,12 @@ public final class LaneRoadChain {
     for(var leg:legs){double a=Math.max(begin,leg.low()),b=Math.min(end,leg.high());if(b-a<.02)continue;
       double start=leg.station(a),finish=leg.station(b);boolean under=false;
       if(ramp!=null){
-        // Choose the strongest locally overlapping vertical displacement, not the
-        // request's AUTO label. Below-grade mouths never get above-grade planters.
-        double delta=0;
+        // Any below-host stretch must stay open. A later, larger rise must not
+        // turn an earlier underground mouth into a planted closed lane.
         for(double d=a;d<=b+.001;d+=.5){var lane=LanePoints.lane(leg.road().rawMesh(),leg.station(d),leg.slot());var q=RoadQueries.horizontal(ramp,lane.position());
           if(q.horizontalDistance()>q.sample().halfWidth()+lane.width()/2+.3)continue;
-          double dy=q.sample().center().y()-lane.position().y();if(Math.abs(dy)>Math.abs(delta))delta=dy;
-        }under=delta<-.1;
+          if(q.sample().center().y()<lane.position().y()-.1){under=true;break;}
+        }
       }
       var event=new LaneSections.Event(connection,arrival?LaneSections.Kind.ARRIVE:LaneSections.Kind.TEMPORARY,
           leg.slot(),leg.sign(),arrival?finish:start,transition,arrival?start:finish,rectangular,under);

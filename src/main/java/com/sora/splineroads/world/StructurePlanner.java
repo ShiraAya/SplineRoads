@@ -28,6 +28,7 @@ final class StructurePlanner {
       Map<Long,BlockState> retained,Map<Long,BlockState> originals,
       Map<BlockPos,List<AABB>> terrainCache,RoadPlanningIndex lookup) {
     var nearby=lookup.near(built.mesh,3,built.record.id());
+    var planting=new HashMap<UUID,Boolean>();
     // Only actual lane connectors opt into the new union-edge policy. Automatic
     // interchange/Y-fork semantics remain unchanged. UUID/depth gives one owner when
     // the rail centrelines coincide; no capsule or distance-only opening can erase them.
@@ -49,6 +50,9 @@ final class StructurePlanner {
     // are not reliable geometric identity. Check their actual local shaft positions.
     var pierSpacing=new RoadPierSpacing(obstacles.stream().flatMap(r->r.record.structures().stream()).toList());
     var ground = new RoadStructures.Ground() {
+              public boolean closedLanePlanting(UUID connection){
+                return planting.computeIfAbsent(connection,id->nearby.stream().filter(r->r.record.id().equals(id)).noneMatch(r->buried(r.mesh,this)));
+              }
               public boolean furnitureClear(V point) {
                 return LanePoints.opening(built.mesh,point)||RoadSignals.furnitureClear(point, approaches);
               }
@@ -241,5 +245,18 @@ final class StructurePlanner {
     return built.record.derivedStreetscape(built.record.settings().options().streetscape().raisedSpans(RoadStreetscape.classify(built.mesh,ground))).structures(result);
   }
 
+  /** Read the same original terrain as tunnel planning. A road may be buried;
+   * this only suppresses its reserved lane's planter and concrete lid. */
+  static boolean buried(Mesh mesh,RoadStructures.Ground ground){
+    if(mesh.settings().structure()==Structure.TUNNEL)return true;
+    for(double d=0;d<mesh.length();d+=1){
+      var sample=RoadStructures.sample(mesh,Math.min(mesh.length(),d+.5));int covered=0;
+      for(double side:new double[]{-.7,0,.7}){
+        V p=sample.at(side*sample.halfWidth(),0);double top=ground.top(p.x(),p.z(),p.y()+6);
+        if(Double.isFinite(top)&&top>p.y()+.12)covered++;
+      }
+      if(covered>=2)return true;
+    }return false;
+  }
   private StructurePlanner() {}
 }

@@ -32,7 +32,7 @@ public final class LaneClosureLandscape {
   public static List<Part> plan(Mesh mesh,Ground ground){
     if(mesh.settings().structure()==Structure.TUNNEL)return List.of();
     var raw=LaneSections.reference(mesh);var result=new ArrayList<Part>();
-    for(var cut:closedIntervals(mesh)){
+    for(var cut:closedIntervals(mesh,ground)){
       int count=(int)Math.ceil(cut.end()-cut.begin());boolean[] clear=new boolean[count];
       // Find whole usable planting runs. Independently clipping soil and leaves
       // created exposed soil wedges and chopped fronts under rising decks.
@@ -81,9 +81,9 @@ public final class LaneClosureLandscape {
     return cut.lane()>=8&&mesh.settings().options().lanePoints().additions().stream().anyMatch(a->a.slot()==cut.lane()&&a.connection().equals(cut.connection()));
   }
   private record Interval(int lane,double begin,double end){}
-  private static List<Interval> closedIntervals(Mesh mesh){
+  private static List<Interval> closedIntervals(Mesh mesh,Ground ground){
     var raw=LaneSections.reference(mesh);var intervals=new ArrayList<Interval>();
-    for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.temporary()&&cut.rectangular()&&!cut.underpass()&&!connectorAddition(mesh,cut)){
+    for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.temporary()&&cut.rectangular()&&!cut.underpass()&&!connectorAddition(mesh,cut)&&ground.closedLanePlanting(cut.connection())){
       double a=Math.max(raw.first().distance(),Math.min(cut.begin(),cut.end()));
       double b=Math.min(raw.last().distance(),Math.max(cut.begin(),cut.end()));
       if(b>a+1e-7)intervals.add(new Interval(cut.lane(),a,b));

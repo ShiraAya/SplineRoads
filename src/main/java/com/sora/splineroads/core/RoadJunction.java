@@ -490,11 +490,14 @@ public final class RoadJunction {
           // A lane carried away in its entirety is not an auxiliary lane joining
           // the mainline. Keep its normal exposed edge, not an invented merge guide.
           var link=ramp.settings().options().lanePoints().link();
-          if(link!=null&&link.options().separatesLane()){
+          if(link!=null){
             var points=main.settings().options().lanePoints().points();
             boolean source=points.stream().anyMatch(p->p.id().equals(link.from().point()));
             boolean target=points.stream().anyMatch(p->p.id().equals(link.to().point()));
-            if(source&&(!target||q.sample().distance()<ramp.length()/2))continue;
+            // Whole-lane MERGE/ADD/REPLACE mouths do not weave across an open
+            // mainline edge. Only an authored auxiliary taper needs this guide.
+            boolean from=source&&(!target||q.sample().distance()<ramp.length()/2);
+            if(from?!link.options().sourceExtra():!target||!link.options().targetExtra())continue;
           }
           if (Math.abs(q.sample().center().y() - mid.center().y()) > .12
               || q.horizontalDistance() > q.sample().halfWidth() + .12
