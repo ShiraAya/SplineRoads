@@ -1,0 +1,8 @@
+Live435Validation: 1340 checks PASS; production geometry/paint/solids, NO GPU.
+Closure418Validation: 128 rectangular lane/sign/style/curve cases, 501476 checks; real deck/paint/solid/classification, NOT Minecraft writes or GPU.
+Rail419MarkingValidation: 76 actual painted-face cases, 813 checks, 104 closed boundaries / 160 live dash gaps; explicit overrides retained. NO GPU/world.
+AUTO435 rise=0.0 ceiling=false PASS
+AUTO435 rise=0.0 ceiling=true PASS
+AUTO435 rise=8.0 ceiling=false PASS
+AUTO435 rise=8.0 ceiling=true PASS
+Live435ModelValidation: 2364 checks PASS; production planner and endpoint reservations, NO world writes.

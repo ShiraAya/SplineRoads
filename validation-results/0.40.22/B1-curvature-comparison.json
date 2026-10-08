@@ -1,0 +1,12 @@
+{
+  "case": "B1",
+  "old": {
+    "turning_segments_percent": 20.06472491909385,
+    "max_adjacent_heading_change_deg": 1.5321729055873192
+  },
+  "new": {
+    "turning_segments_percent": 92.47943595769682,
+    "max_adjacent_heading_change_deg": 0.6933746851084657
+  },
+  "note": "Finite sample headings, not a game screenshot; all 32 curves included in route review."
+}
