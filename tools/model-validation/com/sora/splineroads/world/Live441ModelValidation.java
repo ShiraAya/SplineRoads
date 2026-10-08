@@ -109,5 +109,25 @@ public final class Live441ModelValidation {
   for(var host:List.of(a,b,c,parent,child))check(endpoints.contains(host.a())&&endpoints.contains(host.b()),"missing ancestor host markers: "+host.id());
   check(!endpoints.contains(unrelated.a())&&!endpoints.contains(unrelated.b()),"unrelated marker protection was disabled");
  }
- public static void main(String[]args){detach();joinedFurniture();stableTerrain();addedMouth();beamReservation();ancestorMarkers();System.out.println("Live441ModelValidation: "+checks+" checks PASS; whole-lane departure, exact shoulder mouths, parent furniture, stable terrain classification, beam reservation and ancestor markers");}
+ static void bridgeEdgeReservation(){
+ var config=RoadInfrastructure.Config.DEFAULT.gantry(RoadInfrastructure.Gantry.OFF).bridge(RoadInfrastructure.Bridge.OVERPASS);
+ var settings=RoadLanes.configure(new Settings(Mode.STRAIGHT,Style.O4_RAIL,Style.O4_RAIL.defaultWidth(),1,.4,90).structure(Structure.BRIDGE).options(RoadProfile.Options.DEFAULT.infrastructure(config)),RoadProfile.Type.ORDINARY,new RoadLanes.Counts(2,3),4);
+ settings=settings.options(settings.options().route(settings.options().routing().fit(false)));
+ var source=Hotfix429ModelValidation.road(new V(.5,20.25,.5),new V(.5,20.25,200.5),settings);
+ var target=Hotfix429ModelValidation.road(new V(90.5,28.25,180.5),new V(90.5,28.25,400.5),settings);
+ var all=new LinkedHashMap<UUID,RoadRecord>();all.put(source.id(),source);all.put(target.id(),target);
+ var sm=source.mesh();int slot=LaneSections.live(sm,60).lanes().stream().filter(l->l.sign()==1&&LaneSections.edge(sm,60,l.index())).findFirst().orElseThrow().index();
+ var from=Hotfix429ModelValidation.point(all,source,60,slot);var to=Hotfix429ModelValidation.point(all,target,140,slot);
+ var options=new LanePoints.Options(LanePoints.Path.AUTO,LanePoints.Departure.TEMPORARY,LanePoints.Arrival.MERGE,24,32,LanePoints.Elevation.AUTO,LanePoints.Landing.FLEXIBLE);
+ var ramp=LaneRamps.generate(null,all,UUID.randomUUID(),source.owner(),new LanePoints.Link(from,to,options,null));all.put(ramp.id(),ramp);LaneCrossSections.reconcile(all);
+ var ground=new RoadStructures.Ground(){public double top(double x,double z,double y){return 9;}public boolean joined(V p){return false;}public boolean blocked(RoadStructures.Part p){return false;}};
+ for(var original:List.of(source,target)){
+  var host=all.get(original.id());
+  var parts=RoadInfrastructure.plan(host.mesh(),ground);int conflict=0;
+  for(var p:parts)if(!p.pier()&&RoadClearance.structureInvades(p,ramp.mesh(),4.25)&&!(p.height()<=host.settings().thickness()+1e-7&&RoadClearance.belowSurface(p,ramp.mesh(),.025)))conflict++;
+  check(conflict==0,"actual bridge edge or beam remains over connector: "+conflict);
+  check(parts.stream().anyMatch(p->!p.pier()&&p.material()==RoadStructures.Material.CONCRETE),"all bridge floor structures disappeared");
+ }
+ }
+ public static void main(String[]args){detach();joinedFurniture();stableTerrain();addedMouth();beamReservation();ancestorMarkers();bridgeEdgeReservation();System.out.println("Live441ModelValidation: "+checks+" checks PASS; whole-lane departure, exact shoulder mouths, parent furniture, stable terrain classification, beam reservation and ancestor markers");}
 }

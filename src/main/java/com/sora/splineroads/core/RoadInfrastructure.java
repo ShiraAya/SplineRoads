@@ -175,6 +175,11 @@ public final class RoadInfrastructure {
     if(!customBridge(mesh))return 0;
     var bridge=mesh.settings().options().infrastructure().bridge();return bridge==Bridge.BEAM?.7:bridge==Bridge.OVERPASS?.9:1.2;
   }
+  public static double edgeReach(Mesh mesh,Sample sample){
+    if(!customBridge(mesh))return 0;
+    var bridge=mesh.settings().options().infrastructure().bridge();
+    return (bridge==Bridge.CABLE||bridge==Bridge.SUSPENSION?2.1:bridge==Bridge.ARCH?1.25:.35)*endTaper(mesh,sample);
+  }
   private static void bridge(Mesh mesh,Config c,Ground ground,List<Part> out){
     double depth=girderDepth(mesh);
     // Two longitudinal box girders remain below the driving slab, following curve and grade.
@@ -192,8 +197,7 @@ public final class RoadInfrastructure {
             -mesh.settings().thickness()-depth,Math.min(2.4,mesh.settings().width()/5),depth);
         if(LaneDeck.outerOpening(mesh,middle,side))continue;
         // A continuous edge slab attaches outboard ribs, hangers and cable anchors to the deck.
-        double reach=c.bridge()==Bridge.CABLE||c.bridge()==Bridge.SUSPENSION?2.1:c.bridge()==Bridge.ARCH?1.25:.35;
-        double ra=reach*endTaper(mesh,a),rb=reach*endTaper(mesh,b);
+        double ra=edgeReach(mesh,a),rb=edgeReach(mesh,b);
         out.add(new Part(at(a,side*(a.halfWidth()+(ra-.05)/2),-mesh.settings().thickness()),
             at(b,side*(b.halfWidth()+(rb-.05)/2),-mesh.settings().thickness()),Math.max(ra,rb)+.05,
             mesh.settings().thickness(),false,Material.CONCRETE)

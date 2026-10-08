@@ -65,7 +65,8 @@ public final class LaneRoadChain {
     double at=selected.station(offset);var point=LanePoints.point(origin.id(),LanePoints.Origin.MANUAL,selected.road().rawMesh(),at,selected.slot());
     return new Position(selected.road(),point,at);
   }
-  public Mesh sweep(){
+  public Mesh sweep(){return sweep(true);}
+  private Mesh sweep(boolean edges){
     var out=new ArrayList<Sample>();double shift=legs.get(0).low();double thickness=0,girder=0;
     RoadInfrastructure.Config bridge=null;
     for(var leg:legs){var raw=leg.road().rawMesh();thickness=Math.max(thickness,raw.settings().thickness());
@@ -75,7 +76,17 @@ public final class LaneRoadChain {
         var lane=LanePoints.lane(raw,sample.distance(),leg.slot());
         if(lane.sign()!=leg.sign())throw new IllegalArgumentException("所选车道在断面变化处已终止，不能跨到反向车道");
         if(!out.isEmpty()&&station-out.get(out.size()-1).distance()<1e-7)continue;
-        out.add(new Sample(lane.position(),lane.direction().left(),station,lane.width()/2+.30));
+        double low=lane.width()/2+.30,high=low;
+        if(edges){
+          var layout=RoadProfile.layout(raw,sample);double center=lane.position().sub(sample.center()).dot(sample.left());
+          double reach=RoadInfrastructure.edgeReach(raw,sample),lo=0,hi=0;
+          if(layout.cycleWidth()<.01){
+            if(Math.abs(center-lane.width()/2-layout.motorMin())<.01)lo=Math.max(0,sample.halfWidth()+layout.motorMin())+reach;
+            if(Math.abs(center+lane.width()/2-layout.motorMax())<.01)hi=Math.max(0,sample.halfWidth()-layout.motorMax())+reach;
+          }
+          low+=leg.sign()>0?lo:hi;high+=leg.sign()>0?hi:lo;
+        }
+        out.add(new Sample(lane.position().add(lane.direction().left().mul((high-low)/2)),lane.direction().left(),station,(high+low)/2));
       }
     }
     var settings=new Settings(Mode.CURVE,Style.C1_RAMP,4,thickness,.35,90);
@@ -105,9 +116,10 @@ public final class LaneRoadChain {
         // Side rails flush with a valid joining rim are not low overhead obstacles.
         // Validate their actual prisms against the downstream driveable interior.
         if(endOffset+.12<high){
+          var driveSweep=sweep(false);
           var after=new ArrayList<Sample>();double from=endOffset+.12-low;
-          var at=RoadStructures.sample(sweep,from);after.add(new Sample(at.center(),at.left(),0,Math.max(.05,at.halfWidth()-.52)));
-          for(var a:sweep.samples())if(a.distance()>from)after.add(new Sample(a.center(),a.left(),a.distance()-from,Math.max(.05,a.halfWidth()-.52)));
+          var at=RoadStructures.sample(driveSweep,from);after.add(new Sample(at.center(),at.left(),0,Math.max(.05,at.halfWidth()-.52)));
+          for(var a:driveSweep.samples())if(a.distance()>from)after.add(new Sample(a.center(),a.left(),a.distance()-from,Math.max(.05,a.halfWidth()-.52)));
           var downstream=RoadRibbon.mesh(after,sweep.settings());
           for(var part:parts)if(RoadClearance.structureInvades(part,downstream,RoadClearance.REQUIRED))
             throw new IllegalArgumentException("汇入后实际通行车道被结构占用，不能恢复");
