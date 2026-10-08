@@ -20,6 +20,9 @@ final class RoadInteractions {
     double walkway=Math.max(walkExtent(a.mesh),walkExtent(b.mesh));
     if(!RoadIndex.overlapXZ(a.mesh,b.mesh,3+walkway))return false;
     if(LaneTopology.metadata(b.record).link()!=null){
+      // A host (or parent-ramp) edit regenerates this dependent in the same
+      // transaction. Its old throat cannot veto the new host before that step.
+      if(deferredLaneContact(a.record,b.record))return true;
       // A nearby independent ramp is saved authored work. Safe additions keep its
       // furniture; an actual collision must be resolved by the proposed road.
       var link=LaneTopology.metadata(a.record).link();

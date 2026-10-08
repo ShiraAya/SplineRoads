@@ -65,7 +65,6 @@ jobs:
 
   matrix:
     name: Minecraft matrix row ${{ matrix.row }}
-    needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:

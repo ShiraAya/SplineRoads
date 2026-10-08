@@ -110,6 +110,8 @@ public final class Live441ModelValidation {
   check(!endpoints.contains(unrelated.a())&&!endpoints.contains(unrelated.b()),"unrelated marker protection was disabled");
   check(RoadInteractions.deferredLaneContact(a,parent)&&RoadInteractions.deferredLaneContact(b,parent),"host preflight did not defer its own connector to final topology");
   check(!RoadInteractions.deferredLaneContact(unrelated,parent)&&!RoadInteractions.deferredLaneContact(a,unrelated),"unrelated road clearance was deferred");
+  var oldRail=new RoadStructures.Part(new V(0,20,60),new V(0,20,64),.3,1,false,RoadStructures.Material.STEEL);
+  check(RoadInteractions.influences(new RoadIndex.Built(a),new RoadIndex.Built(parent.structures(List.of(oldRail)))),"host edit did not enlist dependent ramp furniture");
  }
  static void bridgeEdgeReservation(){
  var config=RoadInfrastructure.Config.DEFAULT.gantry(RoadInfrastructure.Gantry.OFF).bridge(RoadInfrastructure.Bridge.OVERPASS);
