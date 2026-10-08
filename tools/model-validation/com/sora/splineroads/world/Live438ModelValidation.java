@@ -43,5 +43,30 @@ public final class Live438ModelValidation {
    check(saved.alignment().equals(old.alignment()),"recheck/codec shifted saved route");
   }
  }
- public static void main(String[]args){deleteBroken();recheck();System.out.println("Live438ModelValidation: "+checks+" checks PASS; deletion recovery and stable ADD recheck, world adapters");}
+ static void derivedPointRefresh(){
+  var options=RoadProfile.Options.DEFAULT;var settings=new Settings(Mode.STRAIGHT,Style.O4_GREEN,RoadProfile.width(Style.O4_GREEN,options,4),1,.35,90).options(options).structure(Structure.AUTO);
+  var host=Hotfix429ModelValidation.road(new V(0,100,0),new V(0,100,200),settings);var all=new LinkedHashMap<UUID,RoadRecord>();all.put(host.id(),host);
+  var ref=Hotfix429ModelValidation.point(all,host,80,0);host=all.get(host.id());var data=new RoadData();data.index.put(new RoadIndex.Built(host));
+  var next=host.derivedStreetscape(options.streetscape().raisedSpans(List.of(new RoadStreetscape.Span(0,200))));
+  var batch=new ArrayList<RoadIndex.Built>();batch.add(new RoadIndex.Built(next));
+  check(LaneTopology.needsRefresh(data,batch,Set.of(host.id())),"fixture did not reproduce stale raised-profile point");
+  LaneTopology.reconcile(data,batch,new HashSet<>(Set.of(host.id())));
+  check(!LaneTopology.needsRefresh(data,batch,Set.of(host.id())),"derived-only host was never snapped, causing endless stabilization");
+  var saved=batch.get(0).record;check(LaneTopology.point(saved,ref.point()).position().distance(LanePoints.lane(saved.mesh(),LaneTopology.point(saved,ref.point())).position())<1e-6,"point not on final raised lane axis");
+ }
+ static void explicitTurns(){
+  var s=Hotfix429ModelValidation.settings(RoadProfile.Type.ORDINARY,1,0,false);
+  for(int mirror:new int[]{-1,1}){
+   var source=Hotfix429ModelValidation.road(new V(0,100,0),new V(0,100,200),s);
+   var target=Hotfix429ModelValidation.road(new V(mirror*200,108,150),new V(mirror*400,108,150),s);
+   var all=new LinkedHashMap<UUID,RoadRecord>();all.put(source.id(),source);all.put(target.id(),target);
+   var a=Hotfix429ModelValidation.point(all,source,50,0);var b=Hotfix429ModelValidation.point(all,target,100,0);
+   var path=mirror<0?LanePoints.Path.RIGHT:LanePoints.Path.LEFT;
+   var options=new LanePoints.Options(path,LanePoints.Departure.TEMPORARY,LanePoints.Arrival.MERGE,24,32,LanePoints.Elevation.AUTO,LanePoints.Landing.EXACT);
+   var ramp=LaneRamps.generate(null,all,UUID.randomUUID(),new UUID(0,1),new LanePoints.Link(a,b,options,null));
+   check(LaneRamps.matchesTurn(ramp.mesh(),path),"explicit turn used opposite direction or a full loop");
+   check(!LaneRamps.matchesTurn(ramp.mesh(),mirror<0?LanePoints.Path.LEFT:LanePoints.Path.RIGHT),"explicit turn filter cannot distinguish left/right");
+  }
+ }
+ public static void main(String[]args){deleteBroken();derivedPointRefresh();recheck();explicitTurns();System.out.println("Live438ModelValidation: "+checks+" checks PASS; deletion recovery, derived points, stable ADD recheck and explicit turns, world adapters");}
 }

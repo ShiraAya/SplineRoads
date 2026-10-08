@@ -10,6 +10,10 @@ concurrency:
   cancel-in-progress: true
 jobs:
   verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        direction: [standard, east]
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -34,19 +38,22 @@ jobs:
       - name: Save compiled installation package
         uses: actions/upload-artifact@v4
         with:
-          name: sr438-build-${{ github.sha }}
+          name: sr438-build-${{ matrix.direction }}-${{ github.sha }}
           path: build/libs/*.jar
           retention-days: 30
       - name: Real saved ramp recheck and broken-world deletion
+        if: matrix.direction == 'standard'
         run: bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run438 -ProadTestNamespaces=splineroads_live438 -ProadTestHeap=3G
       - name: Real 32-case Minecraft build matrix
+        if: matrix.direction == 'standard'
         run: bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run435 -ProadTestNamespaces=splineroads_matrix434 -ProadTestHeap=3G
       - name: Real fixed-east-end 32-case Minecraft matrix
+        if: matrix.direction == 'east'
         run: bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run435east -ProadTestNamespaces=splineroads_matrix434 -ProadMatrixEnd=east -ProadTestHeap=3G
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: sr438-verified-${{ github.sha }}
+          name: sr438-verified-${{ matrix.direction }}-${{ github.sha }}
           path: |
             build/libs/*.jar
             build/ramp39-core/logs/

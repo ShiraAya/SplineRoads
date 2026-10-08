@@ -34,5 +34,24 @@ public final class Live438Validation {
    }
   }
  }
- public static void main(String[] args){corners();System.out.println("Live438Validation: "+checks+" checks PASS; continuous exposed edges and connected cap corners, production geometry");}
+ static void tightSeam(){for(boolean highway:new boolean[]{false,true})for(int side:new int[]{-1,1}){
+  var raw=Live435Validation.road(highway?Style.C1_HIGHWAY_RAMP:Style.C1_RAMP,Structure.BRIDGE);
+  var md=LanePoints.Data.EMPTY.openings(List.of(new LanePoints.Opening(new UUID(438,4),List.of(new V(0,20,0),new V(0,20,200)),2)));
+  var own=RoadRibbon.mesh(raw.samples().stream().map(s->new Sample(s.center(),s.left(),s.distance(),2)).toList(),raw.settings().options(raw.settings().options().lanePoints(md)));
+  double offset=highway?3.9:3.82;
+  var neighbor=RoadRibbon.mesh(own.samples().stream().map(s->new Sample(s.center().add(new V(side*offset,.5,0)),s.left(),s.distance(),2)).toList(),raw.settings());
+  var join=new RoadRailJoin(List.of(new RoadRailJoin.Neighbor(neighbor,true)));
+  Ground ground=new Ground(){public double top(double x,double z,double y){return 0;}public boolean joined(V p){return false;}
+   public List<RoadRailJoin.Span> railSpans(V a,V b,V outside){return join.exposed(a,b,outside);}
+   public boolean blocked(Part p){return RoadClearance.structureInvades(p,neighbor,4.25);}};
+  var legacy=new ArrayList<Part>();RoadStructures.barrier(legacy,new V(side*1.66,20,50),new V(side*1.66,20,50.5),highway,true,50);
+  check(legacy.stream().anyMatch(ground::blocked),"fixture did not reproduce whole-assembly removal");
+  var parts=RoadStructures.plan(own,ground);
+  for(double z=2.25;z<198;z+=.5){V at=new V(side*1.66,highway?20.8:21.05,z);
+   check(parts.stream().anyMatch(p->(highway?p.material()==Material.CONCRETE&&Math.abs(p.height()-.35)<1e-7:p.material()==Material.STEEL)&&distance(p,at)<1e-5),"gap in protected seam at "+at);
+  }
+  for(var p:parts)check(!ground.blocked(p),"fitted rail violates live neighbor clearance");
+  check(parts.stream().anyMatch(p->p.material()==Material.CONCRETE&&p.width()<(highway?.62:.42)-1e-6),"no fitted concrete bearing");
+ }}
+ public static void main(String[] args){corners();tightSeam();System.out.println("Live438Validation: "+checks+" checks PASS; connected cap corners and tight graded-seam rails, production geometry");}
 }

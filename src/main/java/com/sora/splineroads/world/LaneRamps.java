@@ -173,7 +173,7 @@ public final class LaneRamps {
           double lead=leads[li],endLength=tails[ti];var kind=kinds.get(ki++);if(ki==kinds.size()){ki=0;if(++li==leads.length){li=0;ti++;}}
           if(stage==0&&(lead!=0||endLength!=0)||stage==1&&lead==0&&endLength==0)continue;
           var specific=new LanePoints.Options(kind,options.departure(),options.arrival(),options.radius(),options.transition(),options.elevation(),options.landing(),options.gradeOverride());
-          try{ready=routeGroup(a,b,settings,specific,source,point,target,targetPoint,targetOffset,maxGrade,lead,endLength,options.path()==LanePoints.Path.AUTO&&kind==LanePoints.Path.LEFT_LOOP,options.path()==LanePoints.Path.AUTO&&kind==LanePoints.Path.RIGHT).iterator();}
+          try{ready=routeGroup(a,b,settings,specific,source,point,target,targetPoint,targetOffset,maxGrade,lead,endLength,options.path()==LanePoints.Path.AUTO&&kind==LanePoints.Path.LEFT_LOOP,kind==LanePoints.Path.RIGHT||options.path()==LanePoints.Path.LEFT,options.path()!=LanePoints.Path.AUTO).iterator();}
           catch(IllegalArgumentException failure){errors.putIfAbsent(kind,failure.getMessage());ready=Collections.emptyIterator();}
         }
         return ready.hasNext();
@@ -181,7 +181,7 @@ public final class LaneRamps {
       public LaneRampPaths.Candidate next(){if(!hasNext())throw new NoSuchElementException();return ready.next();}
     };
   }
-  private static List<LaneRampPaths.Candidate> routeGroup(LaneRampPaths.Port a,LaneRampPaths.Port b,Settings settings,LanePoints.Options options,RoadRecord source,LanePoints.Point point,RoadRecord target,LanePoints.Point targetPoint,double targetOffset,double maxGrade,double leadLength,double tailLength,boolean automaticTurns,boolean smooth){
+  private static List<LaneRampPaths.Candidate> routeGroup(LaneRampPaths.Port a,LaneRampPaths.Port b,Settings settings,LanePoints.Options options,RoadRecord source,LanePoints.Point point,RoadRecord target,LanePoints.Point targetPoint,double targetOffset,double maxGrade,double leadLength,double tailLength,boolean automaticTurns,boolean smooth,boolean constrainSmooth){
     var before=new ArrayList<Sample>();var after=new ArrayList<Sample>();
     if(leadLength>0){
       var raw=source.rawMesh();var lane=LanePoints.lane(raw,point);double end=lane.station()+lane.sign()*leadLength;
@@ -205,7 +205,9 @@ public final class LaneRamps {
       b=new LaneRampPaths.Port(q.position(),q.direction(),b.outside(),b.extraWidth(),delta.y()/Math.max(.001,delta.horizontalLength()));
       for(double d=.5;d<=tailLength+.001;d+=.5){var at=LanePoints.lane(raw,start+lane.sign()*d,slot);after.add(new Sample(at.position(),at.direction().left(),d,settings.width()/2));}
     }
-    var smoothCandidates=smooth?LaneRampPaths.smoothTurns(a,b,settings,options,maxGrade):List.<LaneRampPaths.Candidate>of();
+    var smoothCandidates=smooth?LaneRampPaths.smoothTurns(a,b,settings,options,maxGrade).stream()
+        .filter(c->!constrainSmooth||matchesTurn(c.mesh(),options.path()))
+        .map(c->constrainSmooth?new LaneRampPaths.Candidate(options.path(),c.mesh()):c).toList():List.<LaneRampPaths.Candidate>of();
     var candidates=new ArrayList<LaneRampPaths.Candidate>();
     if(automaticTurns)candidates.addAll(LaneRampPaths.automaticTurns(a,b,settings,options,maxGrade));
     try{candidates.addAll(LaneRampPaths.candidates(a,b,settings,options,maxGrade));}
@@ -221,6 +223,12 @@ public final class LaneRamps {
       var mesh=RoadRibbon.mesh(samples,settings);RoadRibbon.checkSelfIntersections(mesh,4);out.add(new LaneRampPaths.Candidate(c.path(),mesh));
     }catch(IllegalArgumentException ignored){}
     return out;
+  }
+  static boolean matchesTurn(Mesh mesh,LanePoints.Path path){
+    double turn=0;var samples=mesh.samples();
+    for(int i=1;i<samples.size();i++){V a=samples.get(i-1).left(),b=samples.get(i).left();turn+=Math.atan2(a.x()*b.z()-a.z()*b.x(),a.dot(b));}
+    return path==LanePoints.Path.RIGHT?turn>=-.001&&turn<=Math.PI+.001:
+        path==LanePoints.Path.LEFT?turn<=.001&&turn>=-Math.PI-.001:true;
   }
   private static LaneRampPaths.Port approach(RoadRecord road,LanePoints.Point point,double offset,boolean source,Settings settings,double transition){
     var selected=LanePoints.lane(mesh(road),point);double station=selected.station()+selected.sign()*offset;
