@@ -164,6 +164,8 @@ public final class RoadStructures {
     /** True when a proposed volume would occupy another road's driving corridor. */
     boolean blocked(Part part);
 
+    default String blockedReason(Part part){return String.format(Locale.ROOT,"%s构件位于 X=%.1f Y=%.1f Z=%.1f",part.pier()?"桥墩":"桥梁",part.a().x(),part.a().y(),part.a().z());}
+
     /** An overlapping deck at the same height: omit its internal guardrail. */
     boolean joined(V point);
 

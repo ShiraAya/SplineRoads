@@ -129,6 +129,11 @@ final class StructurePlanner {
                 return false;
               }
 
+              public String blockedReason(RoadStructures.Part part){
+                for(var other:obstacles)if(RoadClearance.structureInvades(part,other.mesh,Math.max(4.25,RoadInfrastructure.clearance(other.record.settings()))))
+                  return RoadStructures.Ground.super.blockedReason(part)+"，冲突道路 "+other.record.id();
+                return RoadStructures.Ground.super.blockedReason(part);
+              }
               public boolean blocked(RoadStructures.Part part) {
                 if(pierSpacing.tooClose(part))return true;
                 if(!RoadSidewalks.smoothPart(part)&&sidewalkSolids.intersects(part))return true;

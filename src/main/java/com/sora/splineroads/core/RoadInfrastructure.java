@@ -74,7 +74,7 @@ public final class RoadInfrastructure {
     var out=new ArrayList<Part>(); var c=mesh.settings().options().infrastructure();
     if(mesh.settings().structure()==Structure.TUNNEL){tunnel(mesh,c,out);RoadStructures.medianFurniture(mesh,ground,out);return checked(out);}
     if(customBridge(mesh)){bridge(mesh,c,ground,out);validateOwnClearance(mesh,out);
-      if(out.stream().anyMatch(ground::blocked))throw new IllegalArgumentException("桥梁结构侵入其他道路净空；请抬高桥面或调整桥位");
+      for(var part:out)if(ground.blocked(part))throw new IllegalArgumentException("桥梁构件占用了其他道路的通行空间："+ground.blockedReason(part)+"；请调整桥面高度或桥位");
     }
     out.addAll(RoadGantry.plan(mesh,ground));
     // Standalone signs and poles were retired in 0.32.0.

@@ -141,6 +141,9 @@ public final class LaneDeck {
   }
   public static Mesh excludingSlot(Mesh host,int slot){
     var cuts=new ArrayList<>(host.settings().options().lanePoints().cuts());
+    // A clearance mask removes this selected motor slot entirely. Its physical
+    // closure ledge must not be reintroduced into the protected neighboring lanes.
+    cuts.removeIf(c->c.temporary()&&c.lane()==slot);
     cuts.add(new LaneSections.Cut(new UUID(0,slot+1),slot,1,-1024,host.length()+1024,2,null,true));
     var settings=host.settings().options(host.settings().options().lanePoints(host.settings().options().lanePoints().cuts(cuts)));
     return new Mesh(host.samples(),settings,host.min(),host.max(),host.length(),host.closed(),host.controlPoint(),host.controls(),LaneSections.reference(host));

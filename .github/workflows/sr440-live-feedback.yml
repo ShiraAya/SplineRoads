@@ -11,7 +11,7 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:
@@ -33,11 +33,17 @@ jobs:
         run: |
           bash tools/check_sr439.sh
           bash tools/check_sr440.sh
+          bash tools/check_sr441.sh
       - name: Real request publication, underground and tunnel regression
         run: |
           set -o pipefail
           bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run440terrain -ProadTestNamespaces=splineroads_live440 -ProadTestHeap=3G | tee run440terrain-console.log
           grep -q 'LIVE440 REAL_WORLD PASS' run440terrain-console.log
+      - name: Seven-image bridge edit and ground arrival regression
+        run: |
+          set -o pipefail
+          bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run441 -ProadTestNamespaces=splineroads_live441 -ProadTestHeap=3G | tee run441-console.log
+          grep -q 'LIVE441 REAL_WORLD PASS' run441-console.log
       - name: Real Minecraft build matrix
         run: bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run440 -ProadTestNamespaces=splineroads_matrix434 -ProadTestHeap=3G
       - uses: actions/upload-artifact@v4
@@ -51,3 +57,5 @@ jobs:
             run440/logs/latest.log
             run440terrain/logs/latest.log
             run440terrain-console.log
+            run441/logs/latest.log
+            run441-console.log
