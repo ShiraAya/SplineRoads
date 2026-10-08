@@ -199,6 +199,19 @@ public final class RoadClearance {
     return false;
   }
 
+  /** A joining pavement fill may share the volume below an existing road surface.
+   * Check every clipped corner, so sloped or buried roads cannot acquire a lid. */
+  public static boolean belowSurface(RoadStructures.Part part,Mesh road,double tolerance){
+    var base=part.base();var index=grid(road);
+    for(int i=1;i<base.size()-1;i++){
+      var t=new Triangle(base.get(0),base.get(i),base.get(i+1),0,0,0);if(Math.abs(t.det())<EPS)continue;
+      for(var q:index.near(t)){
+        var polygon=intersection(t.polygon(),q.polygon());if(area(polygon)<AREA_EPS)continue;
+        for(var point:polygon)if(t.height(point)+part.height()>q.height(point)+tolerance)return false;
+      }
+    }return true;
+  }
+
   /** Vertical alternatives against saved solids (rails, planter walls and piers).
    * Uses the same clipped triangles and framed heights as the final invasion test. */
   public static List<Contact> structureContacts(RoadStructures.Part part,Mesh road,double headroom){

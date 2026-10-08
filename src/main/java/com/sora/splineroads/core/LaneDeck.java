@@ -45,8 +45,13 @@ public final class LaneDeck {
         // Remove only the redundant shoulder. A separate cycle lane still needs
         // its deck and outer protection when the adjacent motor lane closes.
         var layout=RoadProfile.layout(raw,sample);
+        // Seat the rail and its widest 0.62-block footing inside the closed slot.
+        // Its inward inset must not consume any of the neighboring driving lane.
+        double shoulder=Math.min(2*RoadRailJoin.INSET,lane.width()*.25);
         if(lowOuter&&(layout.cycleWidth()<.01||!layout.catalog().twoWay()&&layout.outside()>0))lo=-sample.halfWidth();
+        else lo=Math.min(hi,lo+shoulder);
         if(highOuter&&(layout.cycleWidth()<.01||!layout.catalog().twoWay()&&layout.outside()<0))hi=sample.halfWidth();
+        else hi=Math.max(lo,hi-shoulder);
       }
       holes.add(new Span(lo,hi,false,false));
     }return holes;

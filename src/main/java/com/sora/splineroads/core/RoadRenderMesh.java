@@ -157,7 +157,7 @@ public final class RoadRenderMesh {
     Map<End, Integer> ends = new HashMap<>();
     Map<Integer,List<RoadStructures.Part>> runs=new HashMap<>();
     for (var p : parts) {
-      if(p.material()==RoadStructures.Material.CB_SIGN||p.material()==RoadStructures.Material.CB_NOISE){out.add(p);continue;}
+      if(p.material()==RoadStructures.Material.CB_SIGN||p.material()==RoadStructures.Material.CB_NOISE||LaneClosureLandscape.paved(p)){out.add(p);continue;}
       double length = p.b().sub(p.a()).horizontalLength();
       if (distant
           && p.material()==RoadStructures.Material.TACTILE
@@ -242,6 +242,7 @@ public final class RoadRenderMesh {
     for (var part : compacted) {
       var solid = part.material()==RoadStructures.Material.CB_NOISE?RoadNoiseModel.faces(part,distant):distant && RoadSignals.signal(part) ? signalHull(part) : part.faces();
       for (int i = 0; i < solid.size(); i++) {
+        if(i==0&&LaneClosureLandscape.paved(part))continue; // top belongs to the asphalt backend
         var face = solid.get(i);
         if(SidewalkFaces.walk(part)&&i>=2){faces.addAll(walks.exposed(part,face));continue;}
         // Leaf alpha holes can reveal an adjoining end face; retain those at close range.

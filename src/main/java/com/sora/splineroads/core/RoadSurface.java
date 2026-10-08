@@ -35,6 +35,19 @@ public final class RoadSurface {
 
   public record Geometry(List<Face> pavement, List<Face> markings) {}
 
+  /** Ground closure fills are real pavement in both VBO and terrain rendering.
+   * Neighboring decks own their coplanar overlap; sides remain structural solids. */
+  public static Geometry closurePavement(Geometry geometry,List<RoadStructures.Part> parts,List<Mesh> decks){
+    if(parts.stream().noneMatch(LaneClosureLandscape::paved))return geometry;
+    var pavement=new ArrayList<>(geometry.pavement());var occupied=new Grid(decks);
+    for(var part:parts)if(LaneClosureLandscape.paved(part)){
+      var top=part.base().stream().map(v->v.add(new V(0,part.height(),0))).toList();
+      for(int i=1;i<top.size()-1;i++)for(var poly:visible(List.of(top.get(0),top.get(i),top.get(i+1)),occupied,.025))
+        pavement.add(new Face(poly,0xDCDCDC));
+    }
+    return new Geometry(List.copyOf(pavement),geometry.markings());
+  }
+
   /** A host owns its paint at a lane connector, including when the host is itself a connector. */
   public static boolean higherPriority(UUID candidate,Mesh a,UUID current,Mesh b){
     if(candidate.equals(current))return false;

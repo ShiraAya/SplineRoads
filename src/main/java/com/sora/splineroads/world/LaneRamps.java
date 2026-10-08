@@ -308,15 +308,20 @@ public final class LaneRamps {
       // new parent outside its local throat; unrelated siblings are NOT globally exempted.
       if(other!=null&&(id.equals(other.from().road())||id.equals(other.to().road())))continue;
       Mesh old=mesh(road);
-      // Persisted ramp furniture is an obstacle during solving, not just a final veto.
-      if(other!=null&&!road.id().equals(link.from().road())&&!road.id().equals(link.to().road())
-          &&!other.from().equals(link.from())&&!other.to().equals(link.to())&&RoadIndex.overlapXZ(mesh,old,8))
-        for(var part:road.structures())for(var c:RoadClearance.structureContacts(part,mesh,4.25))out.add(new Obstacle(road.id(),c,true));
-      if(!RoadIndex.overlapXZ(mesh,old,0))continue;
       double sharedStart=-1,sharedEnd=mesh.length()+1;
       if(other!=null&&link.from().equals(other.from()))sharedStart=mesh.samples().get(contactEnd(mesh,Map.of(road.id(),road),Set.of(road.id()),true)).distance();
       if(other!=null&&link.to().equals(other.to()))sharedEnd=mesh.samples().get(contactEnd(mesh,Map.of(road.id(),road),Set.of(road.id()),false)).distance();
       if(sharedStart>mesh.length()*.9||sharedEnd<mesh.length()*.1)throw new IllegalArgumentException("同一车道点的两条匝道几乎全程重合，请使用不同汇入方向");
+      // Parent ramps and siblings remain obstacles outside their actual local
+      // throat. Exempting an entire related ramp hid later furniture collisions
+      // from the solver and left only a construction-time veto.
+      if(other!=null&&RoadIndex.overlapXZ(mesh,old,8))
+        for(var part:road.structures())for(var c:RoadClearance.structureContacts(part,mesh,4.25)){
+          if(sourceHosts.contains(road.id())&&c.to()<=sourceLimit+.01||targetHosts.contains(road.id())&&c.from()>=targetLimit-.01
+              ||c.to()<=sharedStart+.01||c.from()>=sharedEnd-.01)continue;
+          out.add(new Obstacle(road.id(),c,true));
+        }
+      if(!RoadIndex.overlapXZ(mesh,old,0))continue;
       var exactSlots=new LinkedHashSet<Integer>();
       if(link.protectedMerge()){
         for(var leg:chain(all,link.from()).legs())if(leg.road().id().equals(road.id()))exactSlots.add(leg.slot());

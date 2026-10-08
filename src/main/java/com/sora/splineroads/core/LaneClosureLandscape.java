@@ -29,11 +29,12 @@ public final class LaneClosureLandscape {
     return unsupported>=5;
   }
   public static final double MIN_GREEN_LENGTH=12;
+  public static boolean paved(Part part){return part.material()==Material.CONCRETE&&part.model().equals("sr:closed_lane_pavement");}
   public static List<Part> plan(Mesh mesh,Ground ground){
     if(mesh.settings().structure()==Structure.TUNNEL)return List.of();
     var raw=LaneSections.reference(mesh);var result=new ArrayList<Part>();
     for(var cut:closedIntervals(mesh,ground)){
-      int count=(int)Math.ceil(cut.end()-cut.begin());boolean[] clear=new boolean[count];
+      int count=(int)Math.ceil(cut.end()-cut.begin());boolean[] clear=new boolean[count],planted=new boolean[count];
       // Find whole usable planting runs. Independently clipping soil and leaves
       // created exposed soil wedges and chopped fronts under rising decks.
       for(int i=0;i<count;i++){
@@ -55,7 +56,7 @@ public final class LaneClosureLandscape {
             V center=lane.position().add(new V(0,-depth,0));double half=Math.max(.08,width/2);
             run.add(new Part(center.sub(at.left().mul(half)),center.add(at.left().mul(half)),.2,depth+.35,false,Material.CONCRETE));
           }
-          if(run.stream().noneMatch(ground::blocked)){result.addAll(run);}
+          if(run.stream().noneMatch(ground::blocked)){result.addAll(run);Arrays.fill(planted,i,end,true);}
         }i=end;
       }
       // Seal the entire closed slot, including the corners beside tapered planting.
@@ -65,8 +66,10 @@ public final class LaneClosureLandscape {
         if(raised(mesh,cut.lane(),(a+b)/2,ground))continue;
         var la=LanePoints.lane(raw,a,cut.lane());var lb=LanePoints.lane(raw,b,cut.lane());
         var sa=RoadStructures.sample(raw,a);var sb=RoadStructures.sample(raw,b);double depth=Math.max(.5,raw.settings().thickness()+.125);
-        var pad=new Part(la.position().add(new V(0,-depth,0)),lb.position().add(new V(0,-depth,0)),Math.max(la.width(),lb.width()),depth+.02,false,Material.CONCRETE)
-            .frames(sa.left().mul(la.width()/2),sb.left().mul(lb.width()/2));
+        // A ground-level ramp may leave no headroom for a planter. Restore an
+        // ordinary flush road surface there, retaining viable planting elsewhere.
+        var pad=new Part(la.position().add(new V(0,-depth,0)),lb.position().add(new V(0,-depth,0)),Math.max(la.width(),lb.width()),depth+(planted[i]?.02:0),false,Material.CONCRETE,
+            sa.left().mul(la.width()/2),sb.left().mul(lb.width()/2),planted[i]?"":"sr:closed_lane_pavement");
         addUnblocked(result,pad,ground,0);
       }
     }return List.copyOf(result);

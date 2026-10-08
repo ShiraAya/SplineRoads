@@ -162,6 +162,12 @@ final class StructurePlanner {
                   }
                   if(part.pier()&&part.material()==RoadStructures.Material.CONCRETE&&RoadSidewalks.blocksTactile(part,other.mesh))return true;
                   if(!part.pier()){
+                    if(LaneClosureLandscape.paved(part)&&RoadClearance.belowSurface(part,other.mesh,.025))continue;
+                    // The apron/edge slab of a real joining bridge may share the
+                    // floor volume. This permits no material above the driving surface.
+                    boolean joining=RoadInteractions.connected(built.record,other.record)||LaneMerge.linkedTo(built.mesh,other.mesh)||LaneMerge.linkedTo(other.mesh,built.mesh);
+                    if(joining&&part.material()==RoadStructures.Material.CONCRETE&&part.height()<=built.record.settings().thickness()+1e-7
+                        &&RoadClearance.belowSurface(part,other.mesh,.025))continue;
                     if(RoadClearance.structureInvades(part,other.mesh,Math.max(4.25,RoadInfrastructure.clearance(other.record.settings()))))return true;
                     continue;
                   }

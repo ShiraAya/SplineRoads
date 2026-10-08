@@ -301,6 +301,8 @@ public final class RoadRenderer {
                                 .map(com.sora.splineroads.world.RoadIndex.Built::renderMesh)
                                 .toList());
                     if (built.record.junction() != null) surface = RoadSurface.custom(surface,reduced,built.record.junction().get().paint());
+                    var decks=new ArrayList<Mesh>();decks.add(reduced);joined.forEach(r->decks.add(r.renderMesh()));
+                    surface=RoadSurface.closurePavement(surface,built.record.structures(),decks);
                     var terrain=RoadTerrainMesh.source(surface);
                     var result=new LinkedHashMap<Section,Prepared>();
                     RoadRenderMesh.layers(surface,built.record.structures()).forEach((key,piece)->result.put(key,Prepared.of(piece)));
