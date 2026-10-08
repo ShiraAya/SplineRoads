@@ -18,7 +18,8 @@ public final class Closure418Validation {
  static double holeWidth(Mesh raw,int slot,double station){
   var at=RoadStructures.sample(raw,station);var lane=LanePoints.lane(raw,station,slot);double center=lane.position().sub(at.center()).dot(at.left());
   double min=center,max=center;for(int other:LaneAdditions.slots(raw,station)){double x=LanePoints.lane(raw,station,other).position().sub(at.center()).dot(at.left());min=Math.min(min,x);max=Math.max(max,x);}
-  double lo=center==min?-at.halfWidth():center-lane.width()/2,hi=center==max?at.halfWidth():center+lane.width()/2;return hi-lo;
+  double ledge=Math.min(.68,lane.width()*.25);
+  double lo=center==min?-at.halfWidth():center-lane.width()/2+ledge,hi=center==max?at.halfWidth():center+lane.width()/2-ledge;return hi-lo;
  }
  static void rectangular(){
   for(var style:List.of(Style.O1_ONE,Style.O3_ONE,Style.O6_RAIL,Style.H6_RAIL))for(boolean left:new boolean[]{false,true})for(boolean curved:new boolean[]{false,true})for(boolean arrival:new boolean[]{false,true}){
@@ -32,7 +33,7 @@ public final class Closure418Validation {
     }
     for(double d:new double[]{begin-sign*.01,end+sign*.01})check(RoadQueries.contains(mesh,LanePoints.lane(raw,d,slot).position(),0,.01),"road outside closure disappeared");
     int quads=0;for(int i=1;i<mesh.samples().size();i++)for(var q:LaneDeck.holeQuads(mesh,mesh.samples().get(i-1),mesh.samples().get(i))){
-     near(q.get(0).distance(q.get(1)),holeWidth(raw,slot,RoadQueries.horizontal(raw,q.get(0)).sample().distance()),"first hole section must include only selected lane and its exterior shoulder");near(q.get(2).distance(q.get(3)),holeWidth(raw,slot,RoadQueries.horizontal(raw,q.get(2)).sample().distance()),"last hole section must include only selected lane and its exterior shoulder");quads++;
+     near(q.get(0).distance(q.get(1)),holeWidth(raw,slot,RoadQueries.horizontal(raw,q.get(0)).sample().distance()),"first hole section must retain rail footing inside the closed slot");near(q.get(2).distance(q.get(3)),holeWidth(raw,slot,RoadQueries.horizontal(raw,q.get(2)).sample().distance()),"last hole section must retain rail footing inside the closed slot");quads++;
     }
     check(quads>0,"no physical hole strips");check(LaneDeck.caps(mesh).size()==2,"missing transverse slab caps");
     near(LaneDeck.caps(mesh).get(0).a().distance(LaneDeck.caps(mesh).get(0).b()),holeWidth(raw,slot,Math.min(begin,end)),"cap spans other live lanes");
@@ -83,7 +84,7 @@ public final class Closure418Validation {
  static void compatibility(){
   var legacy=new LaneSections.Cut(new UUID(420,1),0,1,80,300,32,null,true,false);near(legacy.removed(96),.5,"old saved taper changed on load");
   var detached=new LaneSections.Cut(new UUID(420,2),0,1,80,300,32);near(detached.removed(96),.5,"DETACH shape restriction changed");
-  boolean rejected=false;try{new LaneSections.Cut(new UUID(420,3),0,1,80,300,32,null,false,false,true);}catch(IllegalArgumentException e){rejected=true;}check(rejected,"DETACH must not accept rectangular temporary flag");
+  var whole=new LaneSections.Cut(new UUID(420,3),0,1,80,300,32,null,false,false,true);near(whole.removed(80.01),1,"whole-lane departure must not create an inward merge taper");
   var raw=road(Style.O3_ONE,Structure.GROUND,false,false,100);check(LaneClosureLandscape.plan(apply(raw,List.of(legacy)),terrain(.3)).isEmpty(),"legacy load creates new landscaping silently");
   var a=new LaneSections.Cut(new UUID(420,4),1,1,80,150,32,null,true,false,true);var b=new LaneSections.Cut(new UUID(420,5),1,1,150,250,32,null,true,true,true);var mesh=apply(raw,List.of(a,b));
   check(LaneDeck.caps(mesh).size()==2,"adjacent holes gain an internal phantom wall");

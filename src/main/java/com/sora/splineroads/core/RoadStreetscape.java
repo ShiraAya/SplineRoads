@@ -33,6 +33,7 @@ public final class RoadStreetscape {
   public record Span(double from,double to){public Span{if(!RoadGeometry.finite(from,to)||from<0||to<=from)throw new IllegalArgumentException("无效的高架范围");}}
   public static List<Span> classify(Mesh mesh,Ground ground){
     if(mesh.settings().structure()!=Structure.AUTO)return List.of();
+    mesh=ground.terrainReference(mesh);
     var out=new ArrayList<Span>();double begin=-1;
     for(double d=0;d<mesh.length()-1e-6;d+=1){double end=Math.min(mesh.length(),d+1);boolean raised=bridge(mesh,RoadStructures.sample(mesh,(d+end)/2),ground);
       if(raised&&begin<0)begin=d;if(!raised&&begin>=0){out.add(new Span(begin,d));begin=-1;}}

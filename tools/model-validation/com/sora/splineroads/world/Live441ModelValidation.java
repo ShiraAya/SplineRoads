@@ -45,5 +45,20 @@ public final class Live441ModelValidation {
   boolean denied=false;try{RoadInteractions.influences(new RoadIndex.Built(child),new RoadIndex.Built(parent.structures(List.of(remote))));}catch(IllegalArgumentException e){denied=e.getMessage().contains(parent.id().toString());}
   check(denied,"out-of-mouth parent structure collision lost road identity or was exempted");
  }
- public static void main(String[]args){detach();joinedFurniture();System.out.println("Live441ModelValidation: "+checks+" checks PASS; whole-lane departure and preserved adjacent lanes/manual merge");}
+ static void stableTerrain(){
+  var settings=RoadLanes.configure(new Settings(Mode.STRAIGHT,Style.O6_GREEN,24,1,.4,90).options(RoadProfile.Options.DEFAULT.route(RoadProfile.Routing.DEFAULT.fit(false))),RoadProfile.Type.ORDINARY,new RoadLanes.Counts(2,3),4).structure(Structure.AUTO);
+  var initial=Hotfix429ModelValidation.road(new V(0,20,0),new V(0,20,80),settings);
+  var unstable=new RoadStructures.Ground(){public double top(double x,double z,double y){return x> -5.7?19:0;}public boolean blocked(RoadStructures.Part p){return false;}public boolean joined(V p){return false;}};
+  var first=RoadStreetscape.classify(initial.mesh(),unstable);var next=initial.derivedStreetscape(initial.settings().options().streetscape().raisedSpans(first));
+  var second=RoadStreetscape.classify(next.mesh(),unstable);
+  check(!first.equals(second),"fixture did not reproduce the terrain/median feedback loop");
+  var ref=initial.terrainClassificationMesh();
+  var stable=new RoadStructures.Ground(){public Mesh terrainReference(Mesh ignored){return ref;}public double top(double x,double z,double y){return unstable.top(x,z,y);}public boolean blocked(RoadStructures.Part p){return false;}public boolean joined(V p){return false;}};
+  for(int pass=0;pass<5;pass++){
+   var spans=RoadStreetscape.classify(next.mesh(),stable);check(spans.equals(first),"derived median changed terrain classification");
+   next=next.derivedStreetscape(next.settings().options().streetscape().raisedSpans(spans));
+   check(next.terrainClassificationMesh().samples().equals(ref.samples()),"terrain reference moved after derived classification");
+  }
+ }
+ public static void main(String[]args){detach();joinedFurniture();stableTerrain();System.out.println("Live441ModelValidation: "+checks+" checks PASS; whole-lane departure, exact shoulder mouths, parent furniture, stable terrain classification");}
 }

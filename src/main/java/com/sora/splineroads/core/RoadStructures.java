@@ -158,6 +158,8 @@ public final class RoadStructures {
   public interface Ground {
     /** Underground connector reservations remain openings, without a planter lid. */
     default boolean closedLanePlanting(UUID connection){return true;}
+    /** Terrain classification cannot feed back through its own derived median/closure. */
+    default Mesh terrainReference(Mesh mesh){return mesh;}
     /** Highest solid terrain below the deck; NaN means no valid foundation in range. */
     double top(double x, double z, double deckY);
 

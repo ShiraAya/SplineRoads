@@ -13,3 +13,11 @@
 已定位入口（不是完成证据）：LaneSections/CrossSections的DEPART仍使用渐变；closureRails把护栏向完好车道内缩INSET；RoadInfrastructure.plan的customBridge最终拒绝；RoadData第1057行三轮断面/恢复校验；RoadInteractions.influences对既有匝道构件后置拒绝；LaneRamps.crossings对共享接头/源目标宿主的构件跳过可能与后置校验不一致。
 
 阶段结果继续记录PROGRESS.md与SR_0_40_27_VALIDATION.md；新图全部通过前不将旧测试通过当成新图完成。
+
+## 18:04 UTC收敛根因复现
+
+2+3车道GREEN断面、AUTO、高度20、地形边缘X=-5.7（边缘一侧地面19、另一侧0）可稳定复现：原地形分类先得到0–80全段高架；派生中央隔离带改变物理横断面中心后又得到贴地；下一轮再次得到全段高架。增加循环次数不能收敛。
+
+修复以RoadRecord的原始完整断面作为地形分类参考，清除派生raisedSpans但保留用户几何；RoadStructures.Ground把这一参考同时提供给结构生成与最终分类。车道临时封闭或派生中央隔离带不能再改变自身判定依据。模型反例和稳定迭代检查通过；新增Minecraft岸边不对称道路BRIDGE→AUTO用例等待最终CI。
+
+旧Closure418/Rail419测试按本轮明确要求更新了两个旧前提：封闭槽保留护栏脚座支承边；整车道分离允许矩形切断。保留对向/相邻车道、真实孔区、实际标线面以及显式标线覆盖检查，没有删除碰撞/净空门禁。

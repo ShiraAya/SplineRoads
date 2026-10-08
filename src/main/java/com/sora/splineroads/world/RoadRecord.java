@@ -466,6 +466,8 @@ public record RoadRecord(
     var settings=readSettings(flat);var section=com.sora.splineroads.core.RoadTransitions.Section.of(settings).port(settings.options().ends().port());return t.contains("Sidewalk")?section:new com.sora.splineroads.core.RoadTransitions.Section(section.style(),section.width(),section.cycle(),section.cycleRail(),section.curb(),section.outerRail(),null,section.cycleAsphalt(),section.port(),section.streetscape(),section.lanes());
   }
 
+  /** Authored footprint, independent of terrain-derived medians and reversible lane cuts. */
+  public Mesh terrainClassificationMesh(){return derivedStreetscape(settings.options().streetscape().raisedSpans(List.of())).rawMesh();}
   public RoadRecord derivedStreetscape(com.sora.splineroads.core.RoadStreetscape.Config config){
     if(settings.options().streetscape().equals(config))return this;
     return new RoadRecord(id,owner,a,b,start,end,settings.options(settings.options().streetscape(config)),automatic,clearance,structures,endCaps,buildVersion,assembly,alignment,furniturePhase,junction);

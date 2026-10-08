@@ -568,7 +568,7 @@ public final class RoadSurface {
   public static boolean closedSlotBoundary(Mesh mesh,double station,double lateral){
     if(!LaneDeck.hasOpenings(mesh))return false;var sample=RoadStructures.sample(mesh,station);
     var raw=LaneSections.reference(mesh);
-    for(int slot:LaneAdditions.slots(raw,station))if(LaneClosureWarnings.covers(mesh,station,slot)){
+    for(int slot:LaneAdditions.slots(raw,station))if(LaneSections.removed(mesh,station,slot)>.999||LaneClosureWarnings.covers(mesh,station,slot)){
       var lane=LanePoints.lane(raw,station,slot);double center=lane.position().sub(sample.center()).dot(sample.left());
       if(Math.abs(Math.abs(lateral-center)-lane.width()/2)<.2)return true;
     }

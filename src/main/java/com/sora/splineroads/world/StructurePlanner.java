@@ -49,7 +49,9 @@ final class StructurePlanner {
     // Piers may stand outside their owning road's deck bounds and record endpoints
     // are not reliable geometric identity. Check their actual local shaft positions.
     var pierSpacing=new RoadPierSpacing(obstacles.stream().flatMap(r->r.record.structures().stream()).toList());
+    var terrainReference=built.record.terrainClassificationMesh();
     var ground = new RoadStructures.Ground() {
+              public Mesh terrainReference(Mesh mesh){return terrainReference;}
               public boolean closedLanePlanting(UUID connection){
                 return planting.computeIfAbsent(connection,id->nearby.stream().filter(r->r.record.id().equals(id)).noneMatch(r->buried(r.mesh,this)));
               }

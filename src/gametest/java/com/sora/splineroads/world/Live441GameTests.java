@@ -8,6 +8,40 @@ public final class Live441GameTests {
  public static void bridgeToAutomatic(GameTestHelper h){scenario(h,false,210000);}
  @GameTest(batch="splineroads_live441",template="empty",templateNamespace="splineroads_live441",timeoutTicks=18000)
  public static void lowGroundArrival(GameTestHelper h){scenario(h,true,212000);}
+ @GameTest(batch="splineroads_live441",template="empty",templateNamespace="splineroads_live441",timeoutTicks=18000)
+ public static void branchFromExistingRamp(GameTestHelper h){
+  var level=h.getLevel();var data=RoadData.get(level);int cx=214000,cz=cx;
+  for(int x=cx-108;x<=cx+18;x++)for(int z=cz;z<=cz+522;z++){var p=new BlockPos(x,188,z);level.getChunkAt(p);level.setBlock(p,Blocks.STONE.defaultBlockState(),2);}
+  var settings=RoadLanes.configure(Revision32GameTests.road(Style.O1_ONE,Structure.AUTO),RoadProfile.Type.ORDINARY,new RoadLanes.Counts(1,0),4);
+  settings=settings.options(settings.options().route(settings.options().routing().fit(false)));
+  var source=data.connect(level,null,Revision32GameTests.marker(h,cx,200,cz,0),Revision32GameTests.marker(h,cx,200,cz+80,0),settings,null);
+  var target=data.connect(level,null,Revision32GameTests.marker(h,cx,200,cz+350,0),Revision32GameTests.marker(h,cx,200,cz+520,0),settings,null);
+  var third=data.connect(level,null,Revision32GameTests.marker(h,cx-90,200,cz+300,0),Revision32GameTests.marker(h,cx-90,200,cz+520,0),settings,null);
+  var a=Build429GameTests.point(data,source,40,0);var b=Build429GameTests.point(data,target,80,0);
+  var parentOptions=new LanePoints.Options(LanePoints.Path.DIRECT,LanePoints.Departure.BRANCH,LanePoints.Arrival.MERGE,24,32,LanePoints.Elevation.AUTO,LanePoints.Landing.EXACT);
+  var parent=LaneRamps.generate(data,LaneTopology.records(data),UUID.randomUUID(),source.owner(),new LanePoints.Link(a,b,parentOptions,null));LaneRamps.build(data,level,null,parent);
+  parent=data.index.roads.get(parent.id()).record;var oldAlignment=parent.alignment();
+  var from=Build429GameTests.point(data,parent,100,0);var to=Build429GameTests.point(data,third,140,0);
+  var options=new LanePoints.Options(LanePoints.Path.LEFT,LanePoints.Departure.BRANCH,LanePoints.Arrival.EXTRA,24,32,LanePoints.Elevation.OVER,LanePoints.Landing.FLEXIBLE);
+  var child=LaneRamps.generate(data,LaneTopology.records(data),UUID.randomUUID(),source.owner(),new LanePoints.Link(from,to,options,null));System.out.println("LIVE441 CHILD_PLAN_PASS");LaneRamps.build(data,level,null,child);
+  h.assertTrue(data.index.roads.get(parent.id()).record.alignment().equals(oldAlignment),"branch rerouted saved parent");
+  var built=data.index.roads.get(child.id()).record;
+  for(var part:data.index.roads.get(parent.id()).record.structures())h.assertTrue(!RoadClearance.structureInvades(part,built.mesh(),4.25),"saved parent furniture still blocks new branch");
+  System.out.println("LIVE441 REAL_WORLD PASS branch: LEFT/BRANCH/EXTRA/OVER/FLEXIBLE build and parent furniture");h.succeed();
+ }
+ @GameTest(batch="splineroads_live441",template="empty",templateNamespace="splineroads_live441",timeoutTicks=18000)
+ public static void asymmetricBankSwitch(GameTestHelper h){
+  var level=h.getLevel();var data=RoadData.get(level);int cx=216000,cz=cx;
+  for(int x=cx-18;x<=cx+18;x++)for(int z=cz-3;z<=cz+103;z++){
+   var p=new BlockPos(x,x>=cx-5?199:188,z);level.getChunkAt(p);level.setBlock(p,Blocks.STONE.defaultBlockState(),2);
+  }
+  var a=Revision32GameTests.marker(h,cx,200,cz,0);var b=Revision32GameTests.marker(h,cx,200,cz+100,0);
+  ((NodeEntity)level.getBlockEntity(a)).offsetX=.25;((NodeEntity)level.getBlockEntity(b)).offsetX=.25;
+  var s=RoadLanes.configure(Revision32GameTests.road(Style.O6_GREEN,Structure.BRIDGE),RoadProfile.Type.ORDINARY,new RoadLanes.Counts(2,3),4);s=s.options(s.options().route(s.options().routing().fit(false)));
+  var road=data.connect(level,null,a,b,s,null);road=data.connect(level,null,a,b,road.settings().structure(Structure.AUTO),road.id());
+  var batch=new ArrayList<RoadIndex.Built>(data.index.roads.values());h.assertTrue(!LaneTopology.needsRefresh(data,batch,List.of(road.id())),"bank switch left lane-point drift");
+  System.out.println("LIVE441 REAL_WORLD PASS bank: asymmetric GREEN bridge to AUTO converged");h.succeed();
+ }
  private static void scenario(GameTestHelper h,boolean ground,int cx){
   var level=h.getLevel();var data=RoadData.get(level);int cz=cx;
   for(int x=cx-18;x<=cx+108;x++)for(int z=cz;z<=cz+402;z++){

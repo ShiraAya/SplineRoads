@@ -19,8 +19,8 @@ public final class Rail419MarkingValidation {
     // Choose an actual sample interval in the default six-block dash OFF phase.
     for(int i=1;i<mesh.samples().size();i++){var a=mesh.samples().get(i-1);var b=mesh.samples().get(i);double d=(a.distance()+b.distance())/2;if(d<100||d>101||d%6<3.7)continue;
      var sample=RoadStructures.sample(mesh,d);var layout=RoadProfile.layout(mesh,sample);var lines=layout.dividers();
-     for(int j=0;j<lines.size();j++){double lateral=lines.get(j);boolean lo=LaneDeck.present(mesh,sample,lateral-.025,0),hi=LaneDeck.present(mesh,sample,lateral+.025,0);boolean boundary=lo!=hi;
-      check(RoadSurface.closedSlotBoundary(mesh,d,lateral)==boundary,"closed-boundary helper doesn't follow actual strip material");
+     for(int j=0;j<lines.size();j++){double lateral=lines.get(j);boolean lo=LaneDeck.present(mesh,sample,lateral-.025,0),hi=LaneDeck.present(mesh,sample,lateral+.025,0);double closed=LanePoints.lane(original,d,slot).position().sub(sample.center()).dot(sample.left());boolean boundary=Math.abs(Math.abs(lateral-closed)-lane.width()/2)<.2;
+      check(RoadSurface.closedSlotBoundary(mesh,d,lateral)==boundary,"closed-boundary helper ignored a closed slot's supporting ledge");
       if(boundary){V p=sample.at(lateral+(lo?-.025:.025),0);check(paintAt(geo,p),"dash gap remains on live edge beside closed slot: "+style+" slot "+slot+" line "+j);continuous++;
        check(!paintAt(RoadSurface.build(override(raw,j,RoadLaneLines.Pattern.NONE),List.of(),List.of()),p),"explicit hidden paint override ignored");
        check(!paintAt(RoadSurface.build(override(raw,j,RoadLaneLines.Pattern.WHITE_DASHED),List.of(),List.of()),p),"explicit dashed paint override ignored");
