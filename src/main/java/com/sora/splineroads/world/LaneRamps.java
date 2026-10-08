@@ -89,6 +89,7 @@ public final class LaneRamps {
       var to=link.to().road()==null?null:resolvedArrival(context,link,id);
       if(LaneRampAlignment.axis(candidate,true).distance(from.position())<1e-5
           &&LaneRampAlignment.axis(candidate,false).distance(to==null?link.junctionMouth():to.position())<1e-5){
+        if(data!=null){var grounded=fitTerrain(data,candidate,context,id,link);if(grounded!=candidate){candidate=grounded;kept=kept.alignment(null,grounded);context=LaneCrossSections.staged(all,id,link,candidate);}}
         validate(candidate,context,id,link);
         for(var road:context.values())for(var cut:LaneTopology.metadata(road).cuts())if(cut.connection().equals(id)&&!cut.arrival()&&cut.temporary())LaneReopening.validateRestored(road.mesh(),cut.lane(),candidate,id);
         return new Generated(kept,link.options().path());
@@ -141,7 +142,8 @@ public final class LaneRamps {
         var baseMesh=fitHostContacts(LaneRampAlignment.fit(candidate.mesh(),lane.width(),targetLaneWidth,link.options().transition()),context,actual);
         for(Mesh mesh:heightCandidates(baseMesh,context,id,actual,errors,candidate.path(),preferOver&&elevationPass==0&&(!auto||profilePass>0),auto&&profilePass==0))try{
           if(data!=null&&!data.withinHeight(mesh)||data==null&&CURRENT.get()!=null&&(mesh.min().y()-mesh.settings().thickness()<CURRENT.get().minimumHeight||mesh.max().y()+4>=CURRENT.get().maximumHeight))throw new IllegalArgumentException("上跨／下穿超出世界高度范围");
-          if(data!=null)mesh=fitTerrain(data,mesh,context,id,actual);
+          if(data!=null){mesh=fitTerrain(data,mesh,context,id,actual);if(!data.withinHeight(mesh))throw new IllegalArgumentException("地形避让超出世界高度范围");}
+          if(auto&&profilePass==0&&!monotone(mesh))throw new IllegalArgumentException("地形要求当前候选反向起伏，继续检查单调路线");
           var finalContext=actual.options().departure()==LanePoints.Departure.TEMPORARY||actual.closesTarget()?
               LaneCrossSections.staged(all,id,actual,mesh):context;
           validate(mesh,finalContext,id,actual);

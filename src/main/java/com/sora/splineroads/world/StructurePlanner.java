@@ -34,7 +34,7 @@ final class StructurePlanner {
     boolean laneEdges=LaneTopology.metadata(built.record).link()!=null||nearby.stream().anyMatch(r->LaneTopology.metadata(r.record).link()!=null);
     var railJoin=laneEdges?new RoadRailJoin(nearby.stream().map(r->new RoadRailJoin.Neighbor(r.mesh,
         RoadSurface.higherPriority(r.record.id(),r.mesh,built.record.id(),built.mesh))).toList()):null;
-    var capMouths=RoadRailJoin.mouths(nearby.stream().filter(r->LaneMerge.linkedTo(built.mesh,r.mesh)||LaneMerge.linkedTo(r.mesh,built.mesh)).map(r->r.mesh).toList());
+    var capMouths=RoadRailJoin.mouths(nearby.stream().filter(r->LaneMerge.linkedTo(built.mesh,r.mesh)||LaneMerge.linkedTo(r.mesh,built.mesh)||LaneTopology.metadata(built.record).cuts().stream().anyMatch(c->c.connection().equals(r.record.id()))).map(r->r.mesh).toList());
     var approaches = built.record.assembly() == null ? List.<RoadSignals.Approach>of()
         : RoadSignals.approaches(built.mesh, nearby.stream()
             .filter(r -> built.record.assembly().equals(r.record.assembly()))

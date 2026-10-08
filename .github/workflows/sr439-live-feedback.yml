@@ -33,8 +33,9 @@ jobs:
         run: bash tools/check_sr439.sh
       - name: Real terrain and mouth regression
         run: |
-          bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run439terrain -ProadTestNamespaces=splineroads_live439 -ProadTestHeap=3G
-          grep -q 'LIVE439 REAL_WORLD PASS' run439terrain/logs/latest.log
+          set -o pipefail
+          bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run439terrain -ProadTestNamespaces=splineroads_live439 -ProadTestHeap=3G | tee run439terrain-console.log
+          grep -q 'LIVE439 REAL_WORLD PASS' run439terrain-console.log
       - name: Real Minecraft build matrix
         run: bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run439 -ProadTestNamespaces=splineroads_matrix434 -ProadTestHeap=3G
       - uses: actions/upload-artifact@v4
@@ -47,3 +48,4 @@ jobs:
             build/ramp39-model/logs/
             run439/logs/latest.log
             run439terrain/logs/latest.log
+            run439terrain-console.log

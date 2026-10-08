@@ -65,6 +65,14 @@ public final class RoadData extends SavedData {
             }
             columns.put(column,top);
           }
+          if(top>point.y()+1e-5){
+            boolean existing=false;
+            for(UUID road:index.inChunk(net.minecraft.world.level.ChunkPos.asLong(x>>4,z>>4))){
+              var built=index.roads.get(road);
+              if(built!=null&&!(mesh.settings().options().lanePoints().link()!=null&&Objects.equals(LaneTopology.metadata(built.record).link(),mesh.settings().options().lanePoints().link()))&&RoadQueries.contains(built.mesh,point,-.05,.1)){existing=true;break;}
+            }
+            if(existing)top=point.y();
+          }
           floor=Math.max(floor,top);
         }
         if(Double.isFinite(floor))bounds.add(new com.sora.splineroads.core.LaneRampCorridor.Bound(sample.distance(),sample.distance(),Math.max(0,floor-sample.center().y()),true));

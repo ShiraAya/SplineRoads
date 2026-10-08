@@ -29,7 +29,19 @@ public final class Ramp39WidgetValidation {
   check(!((Button)value(s,"build")).active&&value(s,"token")==null,"failed draft remains buildable");
   press(s,"失败详情");var page=Minecraft.getInstance().screen;check(page!=s,"details page did not open");
   page.onClose();check(Minecraft.getInstance().screen==s,"details close loses selected connector");
-  LaneRampScreen.clear();check(ClientRoads.preview==null&&ClientRoads.nodePreviews.isEmpty(),"clear releases both shared preview fields");
+  var start=new com.sora.splineroads.core.RoadGeometry.Node(new com.sora.splineroads.core.RoadGeometry.V(0,20,0),0,0);
+  var end=new com.sora.splineroads.core.RoadGeometry.Node(new com.sora.splineroads.core.RoadGeometry.V(0,20,64),0,0);
+  var settings=new com.sora.splineroads.core.RoadGeometry.Settings(com.sora.splineroads.core.RoadGeometry.Mode.STRAIGHT,com.sora.splineroads.core.RoadGeometry.Style.O1_ONE,4,1,.35,90);
+  var road=new RoadRecord(new UUID(439,99),new UUID(0,1),new net.minecraft.core.BlockPos(0,20,0),new net.minecraft.core.BlockPos(0,20,64),start,end,settings,false,4);
+  var reply=new CompoundTag();var conflicts=new ListTag();conflicts.add(road.header());reply.put("ConflictRoads",conflicts);
+  s.failed("实际冲突道路 "+road.id(),reply);
+  check(ClientRoads.conflictPreview&&ClientRoads.preview!=null&&ClientRoads.nodePreviews.size()==1,"failure did not publish red world geometry");
+  check(!value(s,"status").toString().contains(road.id().toString()),"UUID still exposed in player status");
+  s.onClose();check(ClientRoads.preview!=null&&ClientRoads.conflictPreview,"closing settings removed conflict highlight");
+  LaneRampScreen.resume();check(ClientRoads.preview!=null&&ClientRoads.conflictPreview,"resuming settings removed conflict highlight");
+  press(s,"汇入：");check(!ClientRoads.conflictPreview&&ClientRoads.preview==null,"changed options retained stale conflict");
+  s.failed("实际冲突道路 "+road.id(),reply);
+  LaneRampScreen.clear();check(!ClientRoads.conflictPreview,"shift-reset retained red state");check(ClientRoads.preview==null&&ClientRoads.nodePreviews.isEmpty(),"clear releases both shared preview fields");
   System.out.println("Ramp39WidgetValidation: "+checks+" checks passed; real screen state with test-only widgets, no Minecraft/GPU/network test");
  }
 }

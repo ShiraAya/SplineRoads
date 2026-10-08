@@ -51,6 +51,20 @@ public final class Live439Validation {
    check(contacts.stream().anyMatch(RoadClearance.Contact::blocked)==RoadClearance.structureInvades(pier,ramp,4.25),"solver and validator disagree on saved furniture");
   }
  }
+ static long centerPaint(RoadSurface.Geometry g,double x){return g.markings().stream().filter(f->{V p=f.points().stream().reduce(new V(0,0,0),V::add).mul(1d/f.points().size());return p.z()>55&&p.z()<85&&Math.abs(p.x()-x)<.1;}).count();}
+ static void paint(){
+  var raw=Live435Validation.road(Style.O3_ONE,Structure.BRIDGE);var point=LanePoints.point(new UUID(439,8),LanePoints.Origin.MANUAL,raw,90,1);
+  var settings=raw.settings().options(raw.settings().options().hideArrows(true).lanePoints(LanePoints.Data.EMPTY.points(List.of(point))));
+  var host=RoadRibbon.mesh(raw.samples(),settings);double divider=RoadProfile.layout(host,host.first()).dividers().get(0);
+  long original=centerPaint(RoadSurface.build(host,List.of(),List.of()),divider);check(original>0,"paint fixture lacks divider");
+  for(double dy:new double[]{-.2,5}){
+   var rawRamp=strip(40,100,20+dy,0,divider);
+   var link=new LanePoints.Link(LanePoints.Ref.lane(new UUID(439,1),new UUID(439,2)),LanePoints.Ref.lane(new UUID(439,3),point.id()),LanePoints.Options.DEFAULT,null);
+   var ramp=RoadRibbon.mesh(rawRamp.samples(),rawRamp.settings().options(rawRamp.settings().options().lanePoints(LanePoints.Data.EMPTY.link(link))));
+   long remaining=centerPaint(RoadSurface.build(host,List.of(),List.of(ramp)),divider);
+   if(dy<0)check(remaining==0,"host dashed line floats above slightly lower linked ramp mouth");else check(remaining==original,"overpass erased host divider");
+  }
+ }
  static void ids(){var id=new UUID(439,1);String text="与道路 "+id+" 冲突；道路 "+id;check(RoadConflictIds.read(text).size()==1,"duplicate conflict id");check(!RoadConflictIds.display(text).contains(id.toString()),"UUID exposed in user diagnostic");}
- public static void main(String[]args){mouths();grades();solids();ids();System.out.println("Live439Validation: "+checks+" checks PASS; mouths, monotone-first profiles, solid contacts and scene diagnostics");}
+ public static void main(String[]args){mouths();grades();solids();paint();ids();System.out.println("Live439Validation: "+checks+" checks PASS; mouths, monotone-first profiles, solid contacts and scene diagnostics");}
 }
