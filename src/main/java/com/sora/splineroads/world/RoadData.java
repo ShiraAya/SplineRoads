@@ -974,10 +974,10 @@ public final class RoadData extends SavedData {
       if(!deleting)for(var old:index.roads.values())if(!removed.contains(old.record.id())&&LaneTopology.metadata(old.record).link()!=null)
         for(var proposed:built)RoadInteractions.influences(proposed,old);
       for (UUID id : removed) if (index.roads.containsKey(id)) requested.add(index.roads.get(id));
-      // Re-plan neighboring elevated structures when adding a ground road or a junction.
+      // Re-plan affected structures, including a saved ramp joined by a new
+      // child mouth. influences keeps independent saved ramp furniture unchanged.
       for (var old : index.roads.values())
         if (!removed.contains(old.record.id())
-            && LaneTopology.metadata(old.record).link()==null
             && requested.stream().anyMatch(r -> RoadInteractions.influences(r, old))) {
           built.add(old.structures(List.of()));
           removed.add(old.record.id());

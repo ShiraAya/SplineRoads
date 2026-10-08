@@ -23,10 +23,12 @@ public final class Live441GameTests {
   parent=data.index.roads.get(parent.id()).record;var oldAlignment=parent.alignment();
   var from=Build429GameTests.point(data,parent,100,0);var to=Build429GameTests.point(data,third,140,0);
   var options=new LanePoints.Options(LanePoints.Path.LEFT,LanePoints.Departure.BRANCH,LanePoints.Arrival.EXTRA,24,32,LanePoints.Elevation.OVER,LanePoints.Landing.FLEXIBLE);
-  var child=LaneRamps.generate(data,LaneTopology.records(data),UUID.randomUUID(),source.owner(),new LanePoints.Link(from,to,options,null));System.out.println("LIVE441 CHILD_PLAN_PASS");LaneRamps.build(data,level,null,child);
+  var child=LaneRamps.generate(data,LaneTopology.records(data),UUID.randomUUID(),source.owner(),new LanePoints.Link(from,to,options,null));
+  h.assertTrue(data.index.roads.get(parent.id()).record.structures().stream().anyMatch(p->RoadClearance.structureInvades(p,child.mesh(),4.25)),"fixture lacks old parent furniture across branch mouth");
+  System.out.println("LIVE441 CHILD_PLAN_PASS");LaneRamps.build(data,level,null,child);
   h.assertTrue(data.index.roads.get(parent.id()).record.alignment().equals(oldAlignment),"branch rerouted saved parent");
   var built=data.index.roads.get(child.id()).record;
-  for(var part:data.index.roads.get(parent.id()).record.structures())h.assertTrue(!RoadClearance.structureInvades(part,built.mesh(),4.25),"saved parent furniture still blocks new branch");
+  for(var part:data.index.roads.get(parent.id()).record.structures())h.assertTrue(!RoadClearance.structureInvades(part,built.mesh(),4.25),"saved parent furniture still blocks new branch: "+part);
   System.out.println("LIVE441 REAL_WORLD PASS branch: LEFT/BRANCH/EXTRA/OVER/FLEXIBLE build and parent furniture");h.succeed();
  }
  @GameTest(batch="splineroads_live441",template="empty",templateNamespace="splineroads_live441",timeoutTicks=18000)
