@@ -27,7 +27,7 @@
 
 前两个检查点完整Forge编译通过。第二检查点真实Minecraft明确执行1项新增测试并输出 `LIVE439 REAL_WORLD PASS`，同时报告 `All 1 required tests passed`。当次工作流末尾检查标记误读了latest.log，已修正为读取控制台输出；该工作流整体失败且32项矩阵未执行，不作为最终全量通过证据。
 
-最终算法提交 `5f2f2c222835f024ad0c829997e23f9aeb171b99` 的完整Forge构建、核心/模型、新截图回归和真实地形开口测试均已通过（CI `37800369889`）。32组实际世界矩阵仍在运行，交付前记录最终状态。
+最终算法提交 `5f2f2c222835f024ad0c829997e23f9aeb171b99` 的完整Forge构建、核心/模型、新截图回归和真实地形开口测试均已通过（CI `37800369889`）。截至2026-10-08 15:40:18 UTC，32组实际世界矩阵仍在运行，尚未取得最终日志，不能计为通过。状态快照见 `validation-results/0.40.26/ci-status.json`；完整记录：[CI37800369889](https://github.com/ShiraAya/SplineRoads/actions/runs/37800369889)。
 
 打包核对发现基线 `mods.toml` 沿用0.40.22显示版本，现改为0.40.26。交付JAR仅该元数据条目与CI原产物不同，所有class和其他资源逐条字节相同；已检查完整ZIP CRC。交付SHA-256：`120c1ea2aa148387d577f96ec9b57bbfd2f693f659bbc259a43b6b1462355658`。原CI产物摘要及条目比对记录见 `validation-results/0.40.26/jar-metadata.json`。
 
