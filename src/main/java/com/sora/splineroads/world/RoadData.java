@@ -1249,7 +1249,7 @@ public final class RoadData extends SavedData {
       // Count only world writes. Cleared headroom has no restoration history.
       long changed=writes.size();
       for(long key:touched) {
-        if(body.containsKey(key)||air.contains(key)||sidewalks.containsKey(key)||moveTargets.contains(key))continue;
+        if(body.containsKey(key)||!deleting&&air.contains(key)||sidewalks.containsKey(key)||moveTargets.contains(key))continue;
         BlockState current=level.getBlockState(BlockPos.of(key));
         if(RoadBlocks.isCollider(current)||current.is(SplineRoads.TUNNEL_AIR.get())||current.equals(sidewalkPlaced.get(key)))changed++;
       }
