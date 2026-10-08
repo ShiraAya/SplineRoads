@@ -1,0 +1,4 @@
+Exception in thread "main" java.lang.AssertionError: full-lane arrival acquired a false dashed edge guide: MERGE
+	at com.sora.splineroads.Live440Validation.check(Live440Validation.java:7)
+	at com.sora.splineroads.Live440Validation.guides(Live440Validation.java:20)
+	at com.sora.splineroads.Live440Validation.main(Live440Validation.java:30)

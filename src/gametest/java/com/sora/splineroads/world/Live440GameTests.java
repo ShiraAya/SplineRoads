@@ -19,9 +19,9 @@ public final class Live440GameTests {
   }
   var settings=RoadLanes.configure(Revision32GameTests.road(Style.O1_ONE,Structure.AUTO),RoadProfile.Type.ORDINARY,new RoadLanes.Counts(1,0),4);
   settings=settings.options(settings.options().route(settings.options().routing().fit(false)));
-  var source=data.connect(level,player,Revision32GameTests.marker(h,cx,200,cz,0),Revision32GameTests.marker(h,cx,200,cz+80,0),settings,null);
+  var source=data.connect(level,player,ownedMarker(h,player,cx,200,cz),ownedMarker(h,player,cx,200,cz+80),settings,null);
   int by=underground?200:208;
-  var target=data.connect(level,player,Revision32GameTests.marker(h,cx+90,by,cz+200,0),Revision32GameTests.marker(h,cx+90,by,cz+360,0),settings,null);
+  var target=data.connect(level,player,ownedMarker(h,player,cx+90,by,cz+200),ownedMarker(h,player,cx+90,by,cz+360),settings,null);
   var from=Build429GameTests.point(data,source,40,0);var to=Build429GameTests.point(data,target,60,0);
   var options=new LanePoints.Options(LanePoints.Path.AUTO,LanePoints.Departure.TEMPORARY,LanePoints.Arrival.MERGE,24,32,LanePoints.Elevation.AUTO,LanePoints.Landing.FLEXIBLE);
   var tool=new ItemStack(SplineRoads.RAMP_CONNECTOR.get());player.setItemInHand(InteractionHand.MAIN_HAND,tool);
@@ -49,5 +49,8 @@ public final class Live440GameTests {
   var cells=new HashSet<>(data.index.roads.get(before.id()).cells.keySet());data.remove(level,player,before.id());
   for(long p:cells)if(!data.index.occupied(p))h.assertTrue(!RoadBlocks.isCollider(level.getBlockState(BlockPos.of(p))),"orphan collider after delete");
   System.out.println("LIVE440 REAL_WORLD PASS underground="+underground+": actual request/compute/publish/build, rectangle, flexible B, monotone, NBT, deletion");h.succeed();
+ }
+ private static BlockPos ownedMarker(GameTestHelper h,net.minecraft.server.level.ServerPlayer player,int x,int y,int z){
+  var p=Revision32GameTests.marker(h,x,y,z,0);((NodeEntity)h.getLevel().getBlockEntity(p)).owner=player.getUUID();return p;
  }
 }
