@@ -38,6 +38,7 @@ public final class LaneDeck {
       if(rectangular&&half>1e-7){
         boolean lowOuter=true,highOuter=true;
         for(int other:LaneAdditions.slots(raw,sample.distance()))if(other!=slot){
+          if(other>=8&&LaneAdditions.find(raw,other).fraction(sample.distance())<1e-7||LaneAdditions.permanentRemoval(raw,sample.distance(),other)>.999999)continue;
           double x=LanePoints.lane(raw,sample.distance(),other).position().sub(sample.center()).dot(sample.left());
           if(x<center-1e-6)lowOuter=false;if(x>center+1e-6)highOuter=false;
         }

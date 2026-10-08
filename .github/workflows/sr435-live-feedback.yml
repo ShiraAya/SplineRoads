@@ -1,4 +1,4 @@
-name: SR436 second feedback build and matrix
+name: SR437 slope joins and local edits regression
 on:
   push:
     branches: [chat/sr-04021-ramp-matrix]
@@ -27,6 +27,7 @@ jobs:
         run: |
           bash tools/check_sr435.sh
           bash tools/check_sr436.sh
+          bash tools/check_sr437.sh
       - name: Full Forge build
         run: bash gradlew --no-daemon --max-workers=2 compileJava compileGameTestJava jar
       - name: Real 32-case Minecraft build matrix
@@ -36,7 +37,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: sr436-verified-${{ github.sha }}
+          name: sr437-verified-${{ github.sha }}
           path: |
             build/libs/*.jar
             build/ramp39-core/logs/

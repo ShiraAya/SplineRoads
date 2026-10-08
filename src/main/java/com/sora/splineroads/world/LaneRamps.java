@@ -399,6 +399,13 @@ public final class LaneRamps {
   static void validate(Mesh mesh,Map<UUID,RoadRecord> all,UUID id,LanePoints.Link link){
     RoadRibbon.checkSelfIntersections(mesh,4);LaneRampPaths.checkVolume(mesh);
     LaneRampGrade.validate(mesh,gradeLimit(all,link));
+    for(var other:all.values()){
+      var saved=LaneTopology.metadata(other).link();
+      if(saved==null||other.id().equals(id)||other.id().equals(link.from().road())||other.id().equals(link.to().road())
+          ||saved.from().equals(link.from())||saved.to().equals(link.to())||!RoadIndex.overlapXZ(mesh,mesh(other),2))continue;
+      for(var part:other.structures())if(RoadClearance.structureInvades(part,mesh,4.25))
+        throw new IllegalArgumentException("候选路线侵入已建匝道设施，不能通过重建旧匝道腾出空间");
+    }
     for(var obstacle:crossings(mesh,all,id,link)){
       var c=obstacle.contact();var mode=link.options().elevation();
       boolean wrongLayer=mode==LanePoints.Elevation.OVER&&c.ours().y()<c.other().y()||mode==LanePoints.Elevation.UNDER&&c.ours().y()>c.other().y();

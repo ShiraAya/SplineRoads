@@ -10,6 +10,13 @@ final class RoadInteractions {
     if(connected(a.record,b.record))return true;
     double walkway=Math.max(walkExtent(a.mesh),walkExtent(b.mesh));
     if(!RoadIndex.overlapXZ(a.mesh,b.mesh,3+walkway))return false;
+    if(LaneTopology.metadata(b.record).link()!=null){
+      // A nearby independent ramp is saved authored work. Safe additions keep its
+      // furniture; an actual collision must be resolved by the proposed road.
+      for(var part:b.record.structures())if(RoadClearance.structureInvades(part,a.mesh,4.25))
+        throw new IllegalArgumentException("新道路与已有匝道设施冲突；已保留原匝道，请调整新路线");
+      return false;
+    }
     // Any existing elevated road depends on a new lower corridor, including
     // saved ramp decks. Rebuild its supports and the lower road's lamps.
     // Same-height independent neighbours keep their saved furniture.

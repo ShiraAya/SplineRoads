@@ -466,7 +466,7 @@ public final class RoadRaster {
             || only.y() + 1 <= Math.min(part.a().y(), part.b().y()) - part.verticalFrame()
             || only.y() >= Math.max(part.a().y(), part.b().y()) + part.height() + part.verticalFrame()) continue;
       }
-      if (part.pier()) {
+      if (part.pier() && part.frameA()==null && part.frameB()==null && Math.abs(part.a().y()-part.b().y())<1e-9) {
         V a = part.a();
         double w = part.halfExtent();
         addBox(

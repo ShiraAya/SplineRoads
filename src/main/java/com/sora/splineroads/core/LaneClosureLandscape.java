@@ -77,10 +77,13 @@ public final class LaneClosureLandscape {
     return RoadStructures.planting(la.position(),lb.position(),RoadStructures.sample(raw,a).left(),RoadStructures.sample(raw,b).left(),
         (la.width()-.12)*wa,(lb.width()-.12)*wb,1,Math.max(.5,raw.settings().thickness()+.125));
   }
+  private static boolean connectorAddition(Mesh mesh,LaneSections.Cut cut){
+    return cut.lane()>=8&&mesh.settings().options().lanePoints().additions().stream().anyMatch(a->a.slot()==cut.lane()&&a.connection().equals(cut.connection()));
+  }
   private record Interval(int lane,double begin,double end){}
   private static List<Interval> closedIntervals(Mesh mesh){
     var raw=LaneSections.reference(mesh);var intervals=new ArrayList<Interval>();
-    for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.temporary()&&cut.rectangular()&&!cut.underpass()){
+    for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.temporary()&&cut.rectangular()&&!cut.underpass()&&!connectorAddition(mesh,cut)){
       double a=Math.max(raw.first().distance(),Math.min(cut.begin(),cut.end()));
       double b=Math.min(raw.last().distance(),Math.max(cut.begin(),cut.end()));
       if(b>a+1e-7)intervals.add(new Interval(cut.lane(),a,b));

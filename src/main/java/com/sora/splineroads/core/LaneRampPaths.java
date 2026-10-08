@@ -31,6 +31,11 @@ public final class LaneRampPaths {
     if(distance<4||distance>2048)return List.of();
     var out=new ArrayList<Candidate>();
     boolean returning=delta.dot(a.direction())<0||delta.dot(b.direction())<0;
+    if(!returning)for(double fraction:new double[]{.6,.85,1.1})try{
+      var frames=new ArrayList<Frame>();quintic(frames,a.position(),a.direction(),b.position(),b.direction(),distance*fraction);
+      var mesh=finish(a,b,settings,frames,0,maxGrade);
+      if(RoadRibbon.minRadius(mesh)+1e-3>=options.radius())out.add(new Candidate(LanePoints.Path.AUTO,mesh));
+    }catch(IllegalArgumentException ignored){}
     if(returning){
       // Three tangent circles cover return layouts whose two-circle solution
       // degenerates. Every curved segment has the same generous radius.
@@ -49,6 +54,17 @@ public final class LaneRampPaths {
       out.add(new Candidate(LanePoints.Path.AUTO,mesh));
     }catch(IllegalArgumentException ignored){}
     out.sort(Comparator.comparingDouble(c->c.mesh().length()));return out;
+  }
+  private static void quintic(List<Frame> out,V a,V da,V b,V db,double handle){
+    V[] p={a,a.add(da.mul(handle/2)),a.add(da.mul(handle)),b.sub(db.mul(handle)),b.sub(db.mul(handle/2)),b};
+    double length=0;for(int i=1;i<p.length;i++)length+=p[i].sub(p[i-1]).horizontalLength();
+    int count=Math.max(16,(int)Math.ceil(length/.5));
+    for(int i=0;i<=count;i++){
+      double t=(double)i/count,u=1-t;V[] q=p.clone();
+      for(int n=5;n>1;n--)for(int j=0;j<n;j++)q[j]=q[j].mul(u).add(q[j+1].mul(t));
+      V direction=q[1].sub(q[0]);if(direction.horizontalLength()<1e-8)throw new IllegalArgumentException("平滑曲线折返");
+      add(out,q[0].mul(u).add(q[1].mul(t)),direction.horizontalUnit());
+    }
   }
   private static List<Frame> roundReturn(Port a,Port b,double radius,int side,int bend){
     V ca=a.position().add(a.direction().left().mul(side*radius));
