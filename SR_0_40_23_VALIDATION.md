@@ -24,7 +24,9 @@
 - `tools/check_sr435.sh`：通过。Live435 几何 1536 项；Closure418 128 组 / 533498 项；Rail419 标线 76 组 / 813 项；上跨优先、下穿回退及端点模型 2364 项。
 - `tools/check_sr436.sh`：通过。新增几何、实体、标线检查 829 项；连续建造生产拓扑检查 5 项。
 - Forge `compileJava compileGameTestJava jar`：通过。
-- 真实 ServerLevel 第一组测试步骤：通过；固定东端第二组正在运行，连续建造明细等待最终日志。
+- 真实 ServerLevel 第一组：**32/32 通过**；固定东端第二组：**32/32 通过**，共 64 次独立建造、预检、保存和删除恢复。
+- `Sequential436GameTests.keepSavedSibling`：**两次真实世界运行均通过**。新增第二条共享主路的匝道后，第一条的线形、设施、碰撞格与世界方块完全一致；删除第二条后无孤立碰撞块，NBT 保存/加载后第一条不变。
+- 两次服务端均报告 `All 2 required tests passed`；完整 CI 结论 `success`。日志中的首次启动缺少 `server.properties` 是空测试运行目录的初始化提示，随后正常建世界并完成测试。
 
 CI：[37766165150](https://github.com/ShiraAya/SplineRoads/actions/runs/37766165150)。客户端 VBO / terrain、光影、用户原世界画面尚未验证。
 
