@@ -16,6 +16,17 @@ public final class Live440ModelValidation {
   all.put(id,road);LaneCrossSections.reconcile(all);
   var tunnel=LaneRamps.reconfigure(road,road.settings().structure(Structure.TUNNEL),all);
   check(tunnel.settings().structure()==Structure.TUNNEL,"connector tunnel skin rejected");
+  var ground=new RoadStructures.Ground(){public double top(double x,double z,double y){return 98;}public boolean blocked(RoadStructures.Part p){return false;}public boolean joined(V p){return false;}};
+  var shell=RoadStructures.plan(tunnel.mesh(),ground);
+  var center=RoadStructures.sample(tunnel.mesh(),tunnel.mesh().length()/2).center();
+  var crossing=Hotfix429ModelValidation.road(center.add(new V(-30,0,0)),center.add(new V(30,0,0)),s);
+  var hosts=new ArrayList<RoadIndex.Built>();for(var r:all.values())if(!r.id().equals(tunnel.id()))hosts.add(new RoadIndex.Built(r));hosts.add(new RoadIndex.Built(crossing));
+  var hostIds=Set.of(source.id(),target.id());
+  check(shell.stream().anyMatch(p->p.material()==RoadStructures.Material.TUNNEL&&hosts.stream().anyMatch(h->hostIds.contains(h.record.id())&&RoadInteractions.invades(p,h.mesh))),"fixture lacks the real lane-mouth shell conflict");
+  var opened=RoadInteractions.openPortal(new RoadIndex.Built(tunnel),shell,hosts);
+  check(opened.stream().noneMatch(p->p.material()==RoadStructures.Material.TUNNEL&&hosts.stream().anyMatch(h->hostIds.contains(h.record.id())&&RoadInteractions.invades(p,h.mesh))),"lane mouth remains blocked by tunnel shell");
+  var blocked=shell.stream().filter(p->p.material()==RoadStructures.Material.TUNNEL&&RoadInteractions.invades(p,crossing.mesh())).toList();
+  check(!blocked.isEmpty()&&opened.containsAll(blocked),"unrelated crossing incorrectly excused by portal opening");
  }
  static void mixedBelowAbove(){
   var s=Hotfix429ModelValidation.settings(RoadProfile.Type.ORDINARY,1,0,false);var host=Hotfix429ModelValidation.road(new V(0,100,0),new V(0,100,220),s);
@@ -26,5 +37,5 @@ public final class Live440ModelValidation {
   LaneRoadChain.of(all,ref).reserve(events,UUID.randomUUID(),ramp,List.of(),false,0,32,true);
   check(events.get(host.id()).get(0).underpass(),"later higher crest re-enabled vegetation above earlier buried stretch");
  }
- public static void main(String[]args){publication();mixedBelowAbove();System.out.println("Live440ModelValidation: "+checks+" checks PASS; raw/normalized link regression, explicit tunnel edit and mixed below/above reservation");}
+ public static void main(String[]args){publication();mixedBelowAbove();System.out.println("Live440ModelValidation: "+checks+" checks PASS; raw/normalized link, tunnel mouth opening and unrelated collision preservation, mixed below/above reservation");}
 }

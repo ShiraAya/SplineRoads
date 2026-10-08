@@ -9,7 +9,7 @@ mkdir -p "$OUT/classes" "$OUT/logs"
 mapfile -d '' SUPPORT < <(find "$ROOT/tools/model-test-support" -name '*.java' ! -name 'RampJunctions.java' -print0)
 mapfile -d '' TESTS < <(find "$ROOT/tools/model-validation" -name '*.java' -print0)
 SOURCES=()
-for name in RoadRecord RoadContinuations LanePointCodec RoadSignCodec AttachedPointCodec JunctionCodec LaneTopology LaneRoadChain LaneCrossSections LaneRamps RampJunctions; do
+for name in RoadRecord RoadContinuations LanePointCodec RoadSignCodec AttachedPointCodec JunctionCodec LaneTopology LaneRoadChain LaneCrossSections LaneRamps RampJunctions RoadInteractions; do
  SOURCES+=("$ROOT/src/main/java/com/sora/splineroads/world/$name.java")
 done
 for name in LanePointScreen LaneRampScreen; do SOURCES+=("$ROOT/src/main/java/com/sora/splineroads/client/$name.java"); done

@@ -14,6 +14,8 @@
 3. 封闭区以前用最大绝对高差判断underpass，后半段较高的上跨会盖过前半段埋地。现在任何真实下穿重叠均不种植；结合原始地形识别埋地/隧道连接，省去该连接封闭区的植被及封盖，避免把洞口重新封住。不删除无关道路的中央绿化。
 4. RoadJunction.mainGuides给MERGE/ADD/REPLACE也产生辅助并道线，再投影到铺装并集，形成匝道中的多余虚线。限制为真实EXTRA辅助渐变；普通主路分隔线与EXTRA引导不变。用旧RoadJunction运行新增用例明确失败，用修正代码通过。
 
+5. 真实GameTest又发现显式TUNNEL接头墙体冲突：原openPortal只认道路共享端点，不认车道点。现按实际Link宿主与连续接触区裁剪墙顶；无关道路及后续交叉仍保留碰撞拒绝。
+
 ## 验证边界
 
 新增实际Minecraft测试覆盖FakePlayer请求、preparePreview、compute、finishPreview、build；另覆盖同车道实际B偏移、地下AUTO自动衬砌、TUNNEL编辑、对应闭区无绿化、NBT和删除。

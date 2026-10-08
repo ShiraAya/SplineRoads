@@ -255,7 +255,7 @@ public final class LaneRamps {
     return chain(all,ref).ids();
   }
 
-  private static int contactEnd(Mesh mesh,Map<UUID,RoadRecord> all,Set<UUID> hosts,boolean first){
+  static int contactEnd(Mesh mesh,Map<UUID,RoadRecord> all,Set<UUID> hosts,boolean first){
     int n=mesh.samples().size(),i=first?0:n-1;
     var roads=hosts.stream().map(all::get).filter(Objects::nonNull).map(LaneRamps::mesh).toList();
     while(i>=0&&i<n){var sample=mesh.samples().get(i);boolean touching=false;
