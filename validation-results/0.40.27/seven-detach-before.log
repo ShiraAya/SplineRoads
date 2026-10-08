@@ -1,0 +1,6 @@
+Oct 08, 2026 10:49:47 PM com.sora.splineroads.world.LaneRamps$Planning close
+INFO: SR route plan total_ms=6927.940 clearance_ms=311.412 candidates=69 contact_queries=280 cached_meshes=5
+Exception in thread "main" java.lang.AssertionError: whole-lane DETACH still tapers inward for 32.0m; removal just after A=3.050327479844006E-10
+	at com.sora.splineroads.world.Live441ModelValidation.check(Live441ModelValidation.java:4)
+	at com.sora.splineroads.world.Live441ModelValidation.detach(Live441ModelValidation.java:15)
+	at com.sora.splineroads.world.Live441ModelValidation.main(Live441ModelValidation.java:23)

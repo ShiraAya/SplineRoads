@@ -16,7 +16,7 @@ public final class LaneSections {
     public Cut(UUID connection,int lane,int sign,double begin,double end,double transition,UUID replacement){this(connection,lane,sign,begin,end,transition,replacement,false);}
     public Cut(UUID connection,int lane,int sign,double begin,double end,double transition){this(connection,lane,sign,begin,end,transition,null);}
     public Cut {
-      if((arrival||rectangular)&&!temporary||connection==null||lane<0||lane>31||(sign!=1&&sign!=-1)||!RoadGeometry.finite(begin,end,transition)
+      if(arrival&&!temporary||connection==null||lane<0||lane>31||(sign!=1&&sign!=-1)||!RoadGeometry.finite(begin,end,transition)
           ||transition<2||transition>256||sign*(end-begin)<-.0001)
         throw new IllegalArgumentException("车道分离区间无效");
     }
@@ -62,7 +62,7 @@ public final class LaneSections {
           &&event.sign()*(event.station()-old.begin())>=0&&event.sign()*(event.station()-old.end())<-.01)
         throw new IllegalArgumentException("同一车道空位内重复整车道分离；Y 分叉请使用普通分流（原车道直行）");
       if(replacement!=null&&!used.add(replacement.connection()))throw new IllegalArgumentException("补入车道同时匹配多个分离接头");
-      cuts.add(new Cut(event.connection(),event.lane(),event.sign(),event.station(),end,event.transition(),replacement==null?null:replacement.connection(),event.kind()==Kind.TEMPORARY,false,event.kind()==Kind.TEMPORARY&&event.rectangular(),event.underpass()));
+      cuts.add(new Cut(event.connection(),event.lane(),event.sign(),event.station(),end,event.transition(),replacement==null?null:replacement.connection(),event.kind()==Kind.TEMPORARY,false,event.rectangular(),event.underpass()));
     }
     for(Event event:ordered)if(event.kind()==Kind.ARRIVE){
       var lane=LanePoints.lane(raw,event.station(),event.lane());
@@ -193,6 +193,10 @@ public final class LaneSections {
     var stations=new TreeSet<Double>();for(var s:mesh.samples())stations.add(s.distance());
     for(var cut:mesh.settings().options().lanePoints().cuts())for(double center:new double[]{cut.begin(),cut.end()})
       for(double d=center-cut.transition();d<=center+cut.transition()+.001;d+=.5)if(d>0&&d<mesh.length())stations.add(d);
+    // A complete lane departure has a step at its actual mouth. Preserve both
+    // sides of that section instead of interpolating a diagonal inward merge.
+    for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.rectangular()&&!cut.temporary())
+      for(double center:new double[]{cut.begin(),cut.end()})for(double d:new double[]{center-1e-5,center,center+1e-5})if(d>0&&d<mesh.length())stations.add(d);
     for(var added:mesh.settings().options().lanePoints().additions()){
       double begin=added.station()-added.sign()*added.transition();
       for(double d=Math.min(begin,added.station());d<=Math.max(begin,added.station())+.001;d+=.5)if(d>0&&d<mesh.length())stations.add(d);

@@ -1,4 +1,4 @@
-> 新增硬约束：用户SR截图/文字反馈默认就是继续修代码的指令，不再只做分析或反问是否要改。修复以新实机反馈为准，最新P1入口见docs/issues/0440-live-feedback-027.md（旧0414记录保留）。
+> 新增硬约束：用户SR截图/文字反馈默认就是继续修代码的指令，不再只做分析或反问是否要改。修复以新实机反馈为准，最新P1入口见docs/issues/0441-live-seven-followup-027.md（0440修复继续保留）（旧0414记录保留）。
 
 > 当前排期补充：必须先处理完《问题2》全部 P1，之后才可开始《问题3》的四项 terrain 缺陷及多线程专项 P2。读取 `docs/PRIORITIES.md` 和 `docs/issues/problem3-second-priority.md`。Q2-06 等旧 P1 显示问题不降级。
 

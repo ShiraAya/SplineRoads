@@ -98,7 +98,7 @@ public final class LaneCrossSections {
   private static void add(Map<UUID,List<LaneSections.Event>> events,Map<UUID,RoadRecord> all,UUID connection,LanePoints.Link link,Set<UUID> hosts,RoadGeometry.Mesh candidate,List<RoadStructures.Part> parts){
     if(link==null)return;
     if(link.options().separatesLane()&&(hosts==null||hosts.contains(link.from().road()))) {
-      if(link.options().departure()==LanePoints.Departure.DETACH)add(events,all,connection,link.from(),LaneSections.Kind.DEPART,0,link.options().transition());
+      if(link.options().departure()==LanePoints.Departure.DETACH)add(events,all,connection,link.from(),LaneSections.Kind.DEPART,0,link.options().transition(),link.rectangularClosure());
       else if(candidate!=null) {
         // No invented chain-wide provisional cut: real ranges require a candidate.
         // Slot-specific collision guards remain active during route search.
@@ -121,11 +121,14 @@ public final class LaneCrossSections {
     }
   }
   private static void add(Map<UUID,List<LaneSections.Event>> events,Map<UUID,RoadRecord> all,UUID connection,LanePoints.Ref ref,LaneSections.Kind kind,double offset,double transition){
+    add(events,all,connection,ref,kind,offset,transition,false);
+  }
+  private static void add(Map<UUID,List<LaneSections.Event>> events,Map<UUID,RoadRecord> all,UUID connection,LanePoints.Ref ref,LaneSections.Kind kind,double offset,double transition,boolean rectangular){
     var road=all.get(ref.road());if(road==null)throw new IllegalArgumentException("车道接头引用的道路已不存在");
     var point=LaneTopology.point(road,ref.point());var lane=LanePoints.lane(road.rawMesh(),point);
     double station=lane.station()+offset*lane.sign();
     if(station<-.001||station>road.rawMesh().length()+.001)throw new IllegalArgumentException("车道补入位置超出所属路段");
-    events.computeIfAbsent(road.id(),key->new ArrayList<>()).add(new LaneSections.Event(connection,kind,point.lane(),lane.sign(),station,transition));
+    events.computeIfAbsent(road.id(),key->new ArrayList<>()).add(new LaneSections.Event(connection,kind,point.lane(),lane.sign(),station,transition,Double.NaN,rectangular));
   }
   /** After structures were planned, rederive only temporary hosts touched by this transaction. */
   static boolean needsRestoreRefresh(List<RoadIndex.Built> planning,Collection<UUID> changed){

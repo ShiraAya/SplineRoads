@@ -1,0 +1,3 @@
+Oct 08, 2026 10:52:45 PM com.sora.splineroads.world.LaneRamps$Planning close
+INFO: SR route plan total_ms=6916.547 clearance_ms=329.905 candidates=69 contact_queries=280 cached_meshes=5
+Live441ModelValidation: 18 checks PASS; whole-lane departure and preserved adjacent lanes/manual merge
