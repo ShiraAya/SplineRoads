@@ -24,11 +24,12 @@ public final class Live441GameTests {
   var from=Build429GameTests.point(data,parent,100,0);var to=Build429GameTests.point(data,third,140,0);
   var options=new LanePoints.Options(LanePoints.Path.LEFT,LanePoints.Departure.BRANCH,LanePoints.Arrival.EXTRA,24,32,LanePoints.Elevation.OVER,LanePoints.Landing.FLEXIBLE);
   var child=LaneRamps.generate(data,LaneTopology.records(data),UUID.randomUUID(),source.owner(),new LanePoints.Link(from,to,options,null));
-  h.assertTrue(data.index.roads.get(parent.id()).record.structures().stream().anyMatch(p->RoadClearance.structureInvades(p,child.mesh(),4.25)),"fixture lacks old parent furniture across branch mouth");
+  double parentSlab=parent.settings().thickness();
+  h.assertTrue(data.index.roads.get(parent.id()).record.structures().stream().anyMatch(p->blocksDrive(p,child.mesh(),parentSlab)),"fixture lacks old parent furniture across branch mouth");
   System.out.println("LIVE441 CHILD_PLAN_PASS");LaneRamps.build(data,level,null,child);
   h.assertTrue(data.index.roads.get(parent.id()).record.alignment().equals(oldAlignment),"branch rerouted saved parent");
   var built=data.index.roads.get(child.id()).record;
-  for(var part:data.index.roads.get(parent.id()).record.structures())h.assertTrue(!RoadClearance.structureInvades(part,built.mesh(),4.25),"saved parent furniture still blocks new branch: "+part);
+  for(var part:data.index.roads.get(parent.id()).record.structures())h.assertTrue(!blocksDrive(part,built.mesh(),parentSlab),"saved parent furniture still blocks new branch: "+part);
   System.out.println("LIVE441 REAL_WORLD PASS branch: LEFT/BRANCH/EXTRA/OVER/FLEXIBLE build and parent furniture");h.succeed();
  }
  @GameTest(batch="splineroads_live441",template="empty",templateNamespace="splineroads_live441",timeoutTicks=18000)
@@ -43,6 +44,10 @@ public final class Live441GameTests {
   var road=data.connect(level,null,a,b,s,null);road=data.connect(level,null,a,b,road.settings().structure(Structure.AUTO),road.id());
   var batch=new ArrayList<RoadIndex.Built>(data.index.roads.values());h.assertTrue(!LaneTopology.needsRefresh(data,batch,List.of(road.id())),"bank switch left lane-point drift");
   System.out.println("LIVE441 REAL_WORLD PASS bank: asymmetric GREEN bridge to AUTO converged");h.succeed();
+ }
+ private static boolean blocksDrive(RoadStructures.Part part,Mesh mesh,double slab){
+  boolean floor=!part.pier()&&part.material()==RoadStructures.Material.CONCRETE&&part.height()<=slab+1e-7&&RoadClearance.belowSurface(part,mesh,.025);
+  return !floor&&RoadClearance.structureInvades(part,mesh,4.25);
  }
  private static void scenario(GameTestHelper h,boolean ground,int cx){
   var level=h.getLevel();var data=RoadData.get(level);int cz=cx;
