@@ -32,5 +32,15 @@ public final class Live441Validation {
   check(!RoadClearance.belowSurface(pad,below,.025),"pavement lid allowed over a buried road");
   check(LaneClosureLandscape.plan(host,Live435Validation.ground(19.8)).stream().anyMatch(p->p.material()==Material.GREEN),"unobstructed ground planting disappeared");
  }
- public static void main(String[]args){liveLaneRail();pavedGroundClosure();System.out.println("Live441Validation: "+checks+" checks PASS; live-lane rail clearance, ground closure pavement in VBO/terrain and buried-lid protection");}
+ static void girderClearance(){
+  var s=new Settings(Mode.STRAIGHT,Style.C1_RAMP,4,1,.4,90);
+  var ground=RoadRibbon.mesh(List.of(new Sample(new V(-20,0,0),new V(0,0,1),0,2),new Sample(new V(20,0,0),new V(0,0,1),40,2)),s);
+  var upper=RoadRibbon.mesh(List.of(new Sample(new V(0,5.2,-20),new V(-1,0,0),0,2),new Sample(new V(0,5.2,20),new V(-1,0,0),40,2)),s);
+  check(RoadClearance.contacts(upper,ground).stream().noneMatch(RoadClearance.Contact::blocked),"plain slab fixture is not clear");
+  var bridge=s.structure(Structure.BRIDGE).options(s.options().infrastructure(s.options().infrastructure().bridge(RoadInfrastructure.Bridge.OVERPASS)));
+  var beam=RoadRibbon.mesh(upper.samples(),bridge);
+  check(RoadClearance.contacts(beam,ground).stream().anyMatch(RoadClearance.Contact::blocked),"solver ignored the 0.9-block overpass girder");
+  check(RoadClearance.contacts(beam,ground).stream().mapToDouble(RoadClearance.Contact::raise).max().orElse(0)>.79,"solver did not request sufficient bridge lift");
+ }
+ public static void main(String[]args){liveLaneRail();pavedGroundClosure();girderClearance();System.out.println("Live441Validation: "+checks+" checks PASS; live-lane rail clearance, ground closure pavement in VBO/terrain and buried-lid protection");}
 }

@@ -129,6 +129,7 @@ public final class RoadClearance {
     }
     return List.copyOf(out);
   }
+  private static double solidDepth(Mesh mesh){return mesh.settings().thickness()+RoadInfrastructure.girderDepth(mesh);}
   private static void appendContact(List<Contact> out,Mesh a,Mesh b,Triangle t,Triangle q){
     var clipped=CLIP.get();int n=clipped.intersection(t.polygon(),q.polygon());
     if(clipped.area(n)<AREA_EPS)return;
@@ -138,19 +139,19 @@ public final class RoadClearance {
     V ours=null,other=null;int negative=0,positive=0;
     for(int i=0;i<n;i+=3){
       double x=polygon[i],z=polygon[i+2];double ya=t.height(x,z),yb=q.height(x,z),difference=ya-yb;
-      double gap=Math.abs(difference)-(difference>=0?a.settings().thickness():b.settings().thickness());
+      double gap=Math.abs(difference)-(difference>=0?solidDepth(a):solidDepth(b));
       if(gap<min){min=gap;ours=new V(x,ya,z);other=new V(x,yb,z);}
       double station=t.station(x,z);from=Math.min(from,station);to=Math.max(to,station);
       if(difference<minDiff){minDiff=difference;negative=i;}if(difference>maxDiff){maxDiff=difference;positive=i;}
-      raise=Math.max(raise,yb+REQUIRED+a.settings().thickness()+.10-ya);
-      lower=Math.max(lower,ya+REQUIRED+b.settings().thickness()+.10-yb);
+      raise=Math.max(raise,yb+REQUIRED+solidDepth(a)+.10-ya);
+      lower=Math.max(lower,ya+REQUIRED+solidDepth(b)+.10-yb);
     }
     if(minDiff<0&&maxDiff>0){
       double alpha=-minDiff/(maxDiff-minDiff);
       double x=polygon[negative]+(polygon[positive]-polygon[negative])*alpha;
       double z=polygon[negative+2]+(polygon[positive+2]-polygon[negative+2])*alpha;
       ours=new V(x,t.height(x,z),z);other=new V(x,q.height(x,z),z);
-      min=-Math.min(a.settings().thickness(),b.settings().thickness());
+      min=-Math.min(solidDepth(a),solidDepth(b));
     }
     out.add(new Contact(from,to,ours,other,min,raise,lower));
   }
@@ -225,11 +226,11 @@ public final class RoadClearance {
         double minGap=Double.POSITIVE_INFINITY,maxGap=Double.NEGATIVE_INFINITY;V ours=null,other=null;
         for(var p:polygon){double deck=q.height(p),bottom=t.height(p),gap=bottom-deck;
           from=Math.min(from,q.station(p));to=Math.max(to,q.station(p));minGap=Math.min(minGap,gap);maxGap=Math.max(maxGap,gap);
-          raise=Math.max(raise,bottom+part.height()+road.settings().thickness()+.10-deck);
+          raise=Math.max(raise,bottom+part.height()+solidDepth(road)+.10-deck);
           lower=Math.max(lower,deck+headroom+.10-bottom);
           ours=new V(p.x(),deck,p.z());other=new V(p.x(),bottom+part.height()/2,p.z());
         }
-        boolean blocked=minGap<headroom-EPS&&maxGap>-road.settings().thickness()+.04-part.height()+EPS;
+        boolean blocked=minGap<headroom-EPS&&maxGap>-solidDepth(road)+.04-part.height()+EPS;
         out.add(new Contact(from,to,ours,other,blocked?0:REQUIRED,raise,lower));
       }
     }

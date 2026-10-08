@@ -171,8 +171,12 @@ public final class RoadInfrastructure {
     double t=Math.max(0,Math.min(1,Math.min(s.distance(),mesh.length()-s.distance())/Math.min(12,mesh.length()*.12)));
     return t*t*(3-2*t);
   }
+  public static double girderDepth(Mesh mesh){
+    if(!customBridge(mesh))return 0;
+    var bridge=mesh.settings().options().infrastructure().bridge();return bridge==Bridge.BEAM?.7:bridge==Bridge.OVERPASS?.9:1.2;
+  }
   private static void bridge(Mesh mesh,Config c,Ground ground,List<Part> out){
-    double depth=c.bridge()==Bridge.BEAM?.7:c.bridge()==Bridge.OVERPASS?.9:1.2;
+    double depth=girderDepth(mesh);
     // Two longitudinal box girders remain below the driving slab, following curve and grade.
     for(double d=0;d<mesh.length()-1e-6;d+=2){
       Sample a=sample(mesh,d),b=sample(mesh,d+2);

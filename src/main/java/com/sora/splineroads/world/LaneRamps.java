@@ -81,7 +81,7 @@ public final class LaneRamps {
     // Rechecking an unchanged connector must first validate its saved alignment.
     // Searching from scratch can choose a different family or reject an old valid
     // layout after a candidate ordering update. This still runs current clearance.
-    if(old!=null&&Objects.equals(LaneTopology.metadata(old).link(),link)&&base.width()==old.settings().width()
+    if(old!=null&&(edited==null||old.settings().options().ends().start()!=null&&old.settings().options().ends().end()!=null)&&Objects.equals(LaneTopology.metadata(old).link(),link)&&base.width()==old.settings().width()
         &&base.thickness()==old.settings().thickness()&&base.style()==old.settings().style()
         &&(link.options().elevation()!=LanePoints.Elevation.AUTO||monotone(old.mesh())))try{
       var kept=old.settings(base);var candidate=kept.mesh();var context=LaneCrossSections.staged(all,id,link,candidate);
@@ -138,7 +138,11 @@ public final class LaneRamps {
       for(var candidate:routeCandidates(a,b,settings,link.options(),source,p,targetPosition==null?null:targetPosition.road(),targetPosition==null?null:targetPosition.point(),0,maxGrade,errors,stage))try{
         RoadPlanningBudget.check();
         if(CURRENT.get()!=null)CURRENT.get().routeCount++;
-        var baseMesh=fitHostContacts(LaneRampAlignment.fit(candidate.mesh(),lane.width(),targetLaneWidth,link.options().transition()),context,actual);
+        var sourceMouth=actual.options().sourceExtra()?new LaneRampAlignment.Mouth(lane.width(),0,0):LaneRampAlignment.mouth(currentSource.rawMesh(),LanePoints.lane(currentSource.rawMesh(),p));
+        var targetMouth=targetPosition==null||actual.options().targetExtra()?new LaneRampAlignment.Mouth(targetLaneWidth,0,0):LaneRampAlignment.mouth(targetPosition.road().rawMesh(),LanePoints.lane(targetPosition.road().rawMesh(),targetPosition.point()));
+        // ADD has a new outer slot, not the old selected slot.
+        if(actual.options().arrival()==LanePoints.Arrival.ADD)targetMouth=new LaneRampAlignment.Mouth(targetLaneWidth,0,0);
+        var baseMesh=fitHostContacts(LaneRampAlignment.fit(candidate.mesh(),sourceMouth,targetMouth),context,actual);
         for(Mesh mesh:heightCandidates(baseMesh,context,id,actual,errors,candidate.path(),preferOver&&elevationPass==0&&(!auto||profilePass>0),auto&&profilePass==0))try{
           if(data!=null&&!data.withinHeight(mesh)||data==null&&CURRENT.get()!=null&&(mesh.min().y()-mesh.settings().thickness()<CURRENT.get().minimumHeight||mesh.max().y()+4>=CURRENT.get().maximumHeight))throw new IllegalArgumentException("上跨／下穿超出世界高度范围");
           var finalContext=actual.options().departure()==LanePoints.Departure.TEMPORARY||actual.closesTarget()?
@@ -148,7 +152,7 @@ public final class LaneRamps {
             for(var road:finalContext.values())for(var cut:LaneTopology.metadata(road).cuts())if(cut.connection().equals(id)&&!cut.arrival())
               LaneReopening.validateRestored(road.mesh(),cut.lane(),mesh,id);
           var start=RoadRibbon.start(mesh);var end=RoadRibbon.end(mesh);
-          var record=new RoadRecord(id,owner,RampJunctions.at(start.position()),RampJunctions.at(end.position()),start,end,settings,false,4).alignment(null,mesh);
+          var record=new RoadRecord(id,owner,RampJunctions.at(start.position()),RampJunctions.at(end.position()),start,end,mesh.settings(),false,4).alignment(null,mesh);
           if(old!=null)record=record.furniturePhase(old.furniturePhase());
           return new Generated(record,candidate.path());
         }catch(IllegalArgumentException e){errors.put(candidate.path(),e.getMessage());error=e.getMessage();}

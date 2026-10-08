@@ -17,13 +17,17 @@ public final class Live441GameTests {
   settings=settings.options(settings.options().route(settings.options().routing().fit(false)).infrastructure(settings.options().infrastructure().bridge(RoadInfrastructure.Bridge.OVERPASS)));
   var source=data.connect(level,null,Revision32GameTests.marker(h,cx,200,cz,0),Revision32GameTests.marker(h,cx,200,cz+200,0),settings,null);
   var target=data.connect(level,null,Revision32GameTests.marker(h,cx+90,ground?200:208,cz+180,0),Revision32GameTests.marker(h,cx+90,ground?200:208,cz+400,0),settings,null);
-  int slot=LaneSections.live(source.mesh(),60).lanes().stream().filter(l->l.sign()==1&&LaneSections.edge(source.mesh(),60,l.index())).findFirst().orElseThrow().index();
+  var sourceMesh=source.mesh();int slot=LaneSections.live(sourceMesh,60).lanes().stream().filter(l->l.sign()==1&&LaneSections.edge(sourceMesh,60,l.index())).findFirst().orElseThrow().index();
   var from=Build429GameTests.point(data,source,60,slot);var to=Build429GameTests.point(data,target,140,slot);
   var options=new LanePoints.Options(LanePoints.Path.AUTO,LanePoints.Departure.TEMPORARY,LanePoints.Arrival.MERGE,24,32,LanePoints.Elevation.AUTO,LanePoints.Landing.FLEXIBLE);
   var ramp=LaneRamps.generate(data,LaneTopology.records(data),UUID.randomUUID(),source.owner(),new LanePoints.Link(from,to,options,null));
   System.out.println("LIVE441 PLAN_PASS ground="+ground);LaneRamps.build(data,level,null,ramp);
   System.out.println("LIVE441 BUILD_PASS ground="+ground);
-  if(!ground){source=data.index.roads.get(source.id()).record;data.connect(level,null,source.a(),source.b(),source.settings().structure(Structure.AUTO),source.id());System.out.println("LIVE441 SWITCH_PASS");}
+  if(!ground){
+   ramp=data.index.roads.get(ramp.id()).record;var bridge=ramp.settings().structure(Structure.BRIDGE);bridge=bridge.options(bridge.options().infrastructure(bridge.options().infrastructure().bridge(RoadInfrastructure.Bridge.OVERPASS)));
+   var edit=LaneRamps.reconfigure(ramp,bridge,LaneTopology.records(data));LaneRamps.build(data,level,null,edit);System.out.println("LIVE441 RAMP_OVERPASS_PASS");
+   ramp=data.index.roads.get(ramp.id()).record;edit=LaneRamps.reconfigure(ramp,ramp.settings().structure(Structure.AUTO),LaneTopology.records(data));LaneRamps.build(data,level,null,edit);System.out.println("LIVE441 RAMP_AUTO_PASS");
+   source=data.index.roads.get(source.id()).record;data.connect(level,null,source.a(),source.b(),source.settings().structure(Structure.AUTO),source.id());System.out.println("LIVE441 SWITCH_PASS");}
   else {
    var host=data.index.roads.get(target.id()).record;
    h.assertTrue(host.structures().stream().anyMatch(LaneClosureLandscape::paved),"ground arrival left former planter unpaved");

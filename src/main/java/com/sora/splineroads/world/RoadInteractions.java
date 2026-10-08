@@ -14,14 +14,17 @@ final class RoadInteractions {
       // A nearby independent ramp is saved authored work. Safe additions keep its
       // furniture; an actual collision must be resolved by the proposed road.
       var link=LaneTopology.metadata(a.record).link();
-      boolean source=link!=null&&b.record.id().equals(link.from().road()),target=link!=null&&b.record.id().equals(link.to().road());
+      var oldLink=LaneTopology.metadata(b.record).link();
+      boolean source=link!=null&&(b.record.id().equals(link.from().road())||link.from().equals(oldLink.from())),target=link!=null&&(b.record.id().equals(link.to().road())||link.to().equals(oldLink.to()));
       var host=Map.of(b.record.id(),b.record);var ids=Set.of(b.record.id());
       double begin=source?a.mesh.samples().get(LaneRamps.contactEnd(a.mesh,host,ids,true)).distance():-1;
       double end=target?a.mesh.samples().get(LaneRamps.contactEnd(a.mesh,host,ids,false)).distance():a.mesh.length()+1;
       for(var part:b.record.structures())for(var contact:RoadClearance.structureContacts(part,a.mesh,4.25))if(contact.blocked()
           &&!(source&&contact.to()<=begin+.01||target&&contact.from()>=end-.01))
         throw new IllegalArgumentException(String.format(Locale.ROOT,"新道路与已有匝道设施冲突；冲突道路 %s，构件 %s，坐标 %.2f %.2f %.2f；已保留原匝道",b.record.id(),part.material(),part.a().x(),part.a().y(),part.a().z()));
-      return false;
+      // The joined ramp must rebuild its rails against the new paved mouth.
+      // Keeping its old furniture after exempting the throat leaves a real fence.
+      return source||target;
     }
     // Any existing elevated road depends on a new lower corridor, including
     // saved ramp decks. Rebuild its supports and the lower road's lamps.
