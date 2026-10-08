@@ -27,7 +27,7 @@
 - 原核心、匝道连接、复合布局、界面模型回归通过。
 - 普通道路精确落点模型：32/32；左行高速固定西端、同车道弹性落点模型：32/32。
 - 最终 Forge compileJava、compileGameTestJava、jar/reobfJar：通过。
-- 最终 Minecraft ServerLevel 两组建造矩阵：**结果待写入**。每组包含规划、真实预检、写入、生产净空校验、Mojang NBT 保存加载和删除恢复。
+- 最终 Minecraft ServerLevel 两组建造矩阵：**两组均 32/32，通过 64 次独立建造**。每组包含规划、真实预检、写入、生产净空校验、Mojang NBT 保存加载和删除恢复。
 
 完整最终 CI：[GitHub Actions 37757928893](https://github.com/ShiraAya/SplineRoads/actions/runs/37757928893)。服务端测试不包含客户端 VBO/terrain、光影材质、车辆、多人网络或用户原存档画面；图 2–4、7–11 仍需安装此版在原场景复看。没有关闭任何碰撞或净空校验来制造成功。
 
