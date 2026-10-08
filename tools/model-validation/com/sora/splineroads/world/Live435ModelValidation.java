@@ -33,7 +33,12 @@ public final class Live435ModelValidation {
       built=work.compute().road();
     }else built=LaneRamps.generate(null,all,new UUID(435,4),new UUID(435,5),link);
     var contacts=RoadClearance.contacts(built.mesh(),obstacle.mesh());check(!contacts.isEmpty(),"fixture misses obstacle");
-    for(var c:contacts){check(!c.blocked(),"fallback bypassed clearance");check((c.ours().y()>c.other().y())!=ceiling,"AUTO did not prefer over / fall back under blocked ceiling");}
+    // SR439 user priority supersedes blanket OVER preference: this obstacle is at
+    // target height, so crossing below it is the only possible monotone ascent.
+    for(var c:contacts){check(!c.blocked(),"fallback bypassed clearance");
+      if(rise>0)check(c.ours().y()<c.other().y(),"AUTO rejected feasible monotone underpass in favor of unnecessary crest");
+      else check((c.ours().y()>c.other().y())!=ceiling,"level AUTO did not prefer over / fall back under blocked ceiling");}
+    if(rise>0)check(LaneRamps.monotone(built.mesh()),"avoidable reversal in ascending AUTO profile");
     check(LaneTopology.metadata(built).link().options().elevation()==LanePoints.Elevation.AUTO,"automatic policy changed saved user choice");
     System.out.println("AUTO435 rise="+rise+" ceiling="+ceiling+" PASS");
   }

@@ -1,0 +1,9 @@
+{
+  "ci_jar_sha256": "daa5e3f604719b6f0581516f41e54b460d4e4a4d9828efe2170f86b7ccf586f7",
+  "delivered_jar_sha256": "120c1ea2aa148387d577f96ec9b57bbfd2f693f659bbc259a43b6b1462355658",
+  "size_bytes": 5625190,
+  "changed_entries": [
+    "META-INF/mods.toml"
+  ],
+  "reason": "Correct inherited mods.toml display version 0.40.22-alpha to match 0.40.26-alpha; all other entries identical to CI artifact."
+}
