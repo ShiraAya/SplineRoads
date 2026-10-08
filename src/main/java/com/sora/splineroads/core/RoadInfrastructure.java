@@ -195,6 +195,7 @@ public final class RoadInfrastructure {
       for(int side:new int[]{-1,1}){
         girder(out,bearing,a,b,side*a.halfWidth()*.62,side*b.halfWidth()*.62,
             -mesh.settings().thickness()-depth,Math.min(2.4,mesh.settings().width()/5),depth);
+        if(c.bridge()==Bridge.BEAM||c.bridge()==Bridge.OVERPASS)continue;
         if(LaneDeck.outerOpening(mesh,middle,side))continue;
         // A continuous edge slab attaches outboard ribs, hangers and cable anchors to the deck.
         double ra=edgeReach(mesh,a),rb=edgeReach(mesh,b);
@@ -204,6 +205,9 @@ public final class RoadInfrastructure {
             .frames(a.left().mul((ra+.05)/2),b.left().mul((rb+.05)/2)));
       }
     }
+    // These two bridge types have the same non-bearing fascia as AUTO decks.
+    // Clip it at joined paved edges; the full slab and box girders remain checked.
+    if(c.bridge()==Bridge.BEAM||c.bridge()==Bridge.OVERPASS)out.addAll(RoadStructures.edgeSlabs(mesh,ground));
     int spans=c.autoSpan()&&(c.bridge()==Bridge.CABLE||c.bridge()==Bridge.SUSPENSION)?1:Math.max(1,(int)Math.ceil(mesh.length()/c.span()-1e-3));double span=mesh.length()/spans;
     for(int i=0;i<=spans;i++)support(mesh,Math.min(mesh.length()-1,Math.max(1,i*span)),depth,c.bridge(),ground,out);
     for(int i=0;i<spans;i++){

@@ -41,6 +41,21 @@ public final class Live441Validation {
   var beam=RoadRibbon.mesh(upper.samples(),bridge);
   check(RoadClearance.contacts(beam,ground).stream().anyMatch(RoadClearance.Contact::blocked),"solver ignored the 0.9-block overpass girder");
   check(RoadClearance.contacts(beam,ground).stream().mapToDouble(RoadClearance.Contact::raise).max().orElse(0)>.79,"solver did not request sufficient bridge lift");
+  var marginal=RoadRibbon.mesh(upper.samples().stream().map(p->new Sample(p.center().add(new V(0,.8,0)),p.left(),p.distance(),p.halfWidth())).toList(),bridge);
+  check(RoadClearance.contacts(marginal,ground).stream().anyMatch(c->c.blocked()&&Math.abs(c.required()-4.25)<1e-7),"bridge solver accepted 4.1m while final beam validation requires 4.25m");
+ }
+ static void footingClearance(){
+  var raw=Live435Validation.road(Style.O3_ONE,Structure.BRIDGE);var host=Live435Validation.cut(raw,1,40,160,false);
+  var lane=LanePoints.lane(raw,100,1);var at=RoadStructures.sample(raw,100);
+  V p=lane.position().add(at.left().mul(lane.width()/2-.2));
+  check(LaneDeck.present(host,at,p.sub(at.center()).dot(at.left()),0),"fixture lacks the physical rail footing ledge");
+  var part=new Part(p,p.add(new V(0,0,.3)),.1,1,false,Material.CONCRETE);
+  check(!RoadClearance.structureInvades(part,host,4.25),"closed-slot footing treated as a vehicle lane");
+  check(RoadClearance.structureContacts(part,host,4.25).stream().noneMatch(RoadClearance.Contact::blocked),"solver still treats closed-slot footing as traffic");
+  var restored=new Part(p.add(new V(0,0,80)),p.add(new V(0,0,80.3)),.1,1,false,Material.CONCRETE);
+  check(RoadClearance.structureInvades(restored,host,4.25),"restored downstream lane lost clearance protection");
+  var adjacent=LanePoints.lane(raw,100,0).position();
+  check(RoadClearance.structureInvades(new Part(adjacent,adjacent.add(new V(0,0,.3)),.1,1,false,Material.CONCRETE),host,4.25),"adjacent live lane lost clearance protection");
  }
  static void bridgeClosure(){
   var base=Live435Validation.road(Style.O3_ONE,Structure.BRIDGE);
@@ -53,5 +68,5 @@ public final class Live441Validation {
   }
   check(checked>0,"bridge fixture erased all remaining girders");
  }
- public static void main(String[]args){liveLaneRail();pavedGroundClosure();girderClearance();bridgeClosure();System.out.println("Live441Validation: "+checks+" checks PASS; live-lane rail clearance, ground closure pavement in VBO/terrain and buried-lid protection");}
+ public static void main(String[]args){liveLaneRail();pavedGroundClosure();girderClearance();bridgeClosure();footingClearance();System.out.println("Live441Validation: "+checks+" checks PASS; live-lane rail clearance, ground closure pavement in VBO/terrain and buried-lid protection");}
 }

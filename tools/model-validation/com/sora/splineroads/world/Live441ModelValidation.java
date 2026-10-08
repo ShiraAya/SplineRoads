@@ -128,6 +128,19 @@ public final class Live441ModelValidation {
   check(conflict==0,"actual bridge edge or beam remains over connector: "+conflict);
   check(parts.stream().anyMatch(p->!p.pier()&&p.material()==RoadStructures.Material.CONCRETE),"all bridge floor structures disappeared");
  }
+ var bridge=ramp.settings().structure(Structure.BRIDGE);bridge=bridge.options(bridge.options().infrastructure(bridge.options().infrastructure().bridge(RoadInfrastructure.Bridge.OVERPASS)));
+ var edited=LaneRamps.reconfigure(ramp,bridge,all);all.put(edited.id(),edited);LaneCrossSections.reconcile(all);
+ var hosts=List.of(all.get(source.id()).mesh(),all.get(target.id()).mesh());
+ var joins=new RoadRailJoin(hosts.stream().map(m->new RoadRailJoin.Neighbor(m,true)).toList());
+ var actual=new RoadStructures.Ground(){
+  public double top(double x,double z,double y){return 9;}public boolean joined(V p){return false;}
+  public List<RoadRailJoin.Span> railSpans(V a,V b,V outside){return joins.exposed(a,b,outside);}
+  public boolean blocked(RoadStructures.Part p){return hosts.stream().anyMatch(m->RoadClearance.structureInvades(p,m,4.25)&&!(!p.pier()&&p.material()==RoadStructures.Material.CONCRETE&&p.height()<=1&&RoadClearance.belowSurface(p,m,.025)));}
+ };
+ var parts=RoadInfrastructure.plan(edited.mesh(),actual);
+ check(parts.stream().noneMatch(actual::blocked),"edited bridge left an actual structure in a live host lane");
+ check(parts.stream().anyMatch(p->!p.pier()&&Math.abs(p.height()-.9)<1e-6),"edited bridge lost all girders");
+ check(LaneRamps.monotone(edited.mesh()),"unnecessary crest introduced during bridge edit");
  }
  public static void main(String[]args){detach();joinedFurniture();stableTerrain();addedMouth();beamReservation();ancestorMarkers();bridgeEdgeReservation();System.out.println("Live441ModelValidation: "+checks+" checks PASS; whole-lane departure, exact shoulder mouths, parent furniture, stable terrain classification, beam reservation and ancestor markers");}
 }

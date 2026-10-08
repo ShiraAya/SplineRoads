@@ -27,6 +27,9 @@ public final class LaneDeck {
     return holes(mesh,sample,probe);
   }
   private static List<Span> holes(Mesh mesh,Sample sample,double interval){
+    return holes(mesh,sample,interval,true);
+  }
+  private static List<Span> holes(Mesh mesh,Sample sample,double interval,boolean footings){
     var raw=LaneSections.reference(mesh);var holes=new ArrayList<Span>();
     for(int slot:slots(mesh)){
       double removed=0;for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.temporary()&&cut.lane()==slot)removed=Math.max(removed,cut.removed(cut.rectangular()||cut.arrival()&&Math.abs(sample.distance()-cut.end())<1e-7?interval:sample.distance()));
@@ -47,7 +50,7 @@ public final class LaneDeck {
         var layout=RoadProfile.layout(raw,sample);
         // Seat the rail and its widest 0.62-block footing inside the closed slot.
         // Its inward inset must not consume any of the neighboring driving lane.
-        double shoulder=Math.min(2*RoadRailJoin.INSET,lane.width()*.25);
+        double shoulder=footings?Math.min(2*RoadRailJoin.INSET,lane.width()*.25):0;
         if(lowOuter&&(layout.cycleWidth()<.01||!layout.catalog().twoWay()&&layout.outside()>0))lo=-sample.halfWidth();
         else lo=Math.min(hi,lo+shoulder);
         if(highOuter&&(layout.cycleWidth()<.01||!layout.catalog().twoWay()&&layout.outside()<0))hi=sample.halfWidth();
@@ -68,16 +71,25 @@ public final class LaneDeck {
     return spans(mesh,sample,probe);
   }
   private static List<Span> spans(Mesh mesh,Sample sample,double interval){
+    return spans(mesh,sample,interval,true);
+  }
+  private static List<Span> spans(Mesh mesh,Sample sample,double interval,boolean footings){
     if(!hasOpenings(mesh))return List.of(new Span(-sample.halfWidth(),sample.halfWidth(),true,true));
     var out=new ArrayList<Span>();double low=-sample.halfWidth();boolean wall=true;
-    for(var hole:holes(mesh,sample,interval)){
+    for(var hole:holes(mesh,sample,interval,footings)){
       double high=Math.max(low,hole.low());boolean open=hole.high()-hole.low()>1e-7;
       out.add(new Span(low,high,wall,open));low=Math.max(low,hole.high());wall=open;
     }
     out.add(new Span(low,sample.halfWidth(),wall,true));return out;
   }
   public static List<Strip> strips(Mesh mesh,Sample a,Sample b){
-    double probe=(a.distance()+b.distance())/2;var aa=spans(mesh,a,probe);var bb=spans(mesh,b,probe);var result=new ArrayList<Strip>();
+    return strips(mesh,a,b,true);
+  }
+  /** Closed-slot rail footings remain physical material, not vehicle lanes.
+   * Preserve the exact closure interval: restored downstream lanes stay protected. */
+  public static List<Strip> drivingStrips(Mesh mesh,Sample a,Sample b){return strips(mesh,a,b,false);}
+  private static List<Strip> strips(Mesh mesh,Sample a,Sample b,boolean footings){
+    double probe=(a.distance()+b.distance())/2;var aa=spans(mesh,a,probe,footings);var bb=spans(mesh,b,probe,footings);var result=new ArrayList<Strip>();
     for(int i=0;i<aa.size();i++){
       var x=aa.get(i);var y=bb.get(i);if(Math.max(x.high()-x.low(),y.high()-y.low())<1e-8)continue;
       result.add(new Strip(a.at(x.high(),0),a.at(x.low(),0),b.at(y.high(),0),b.at(y.low(),0),x.lowWall()||y.lowWall(),x.highWall()||y.highWall()));

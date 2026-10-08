@@ -416,7 +416,7 @@ public final class LaneRamps {
     // Name real obstacle identities and both vertical alternatives, not just a
     // propagated solver sample that can be several blocks away from the obstacle.
     var c=contacts.stream().filter(v->v.contact().blocked()).min(Comparator.comparingDouble(v->Math.min(v.contact().from(),base.length()-v.contact().to()))).orElse(contacts.get(0));
-    var v=c.contact();return String.format(Locale.ROOT,"；实际冲突道路 %s，交叠区在候选路线距 A 沿线 %.1f–%.1f 格（路线全长 %.1f 格，AB 水平直距 %.1f 格），%s；要求净空 %.2f 格，上跨需抬升 %.2f 格，下穿需降低 %.2f 格",c.road(),v.from(),v.to(),base.length(),base.last().center().sub(base.first().center()).horizontalLength(),RoadClearance.clearanceLabel(v.usableClearance()),RoadClearance.REQUIRED,v.raise(),v.lower());
+    var v=c.contact();return String.format(Locale.ROOT,"；实际冲突道路 %s，交叠区在候选路线距 A 沿线 %.1f–%.1f 格（路线全长 %.1f 格，AB 水平直距 %.1f 格），%s；要求净空 %.2f 格，上跨需抬升 %.2f 格，下穿需降低 %.2f 格",c.road(),v.from(),v.to(),base.length(),base.last().center().sub(base.first().center()).horizontalLength(),RoadClearance.clearanceLabel(v.usableClearance()),v.required(),v.raise(),v.lower());
   }
   static boolean monotone(Mesh m){return verticalEffort(m)<=Math.abs(m.last().center().y()-m.first().center().y())+1e-5;}
   /** Keep several feasible layer assignments. A locally cheaper underpass must not

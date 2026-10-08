@@ -11,15 +11,16 @@ public final class RoadClearance {
   }
   private static final double EPS = 1e-8, AREA_EPS = 1e-4;
   public record Contact(double from,double to,V ours,V other,double usableClearance,
-                        double raise,double lower) {
-    public boolean blocked(){return usableClearance < REQUIRED - .025;}
+                        double raise,double lower,double required) {
+    public Contact(double from,double to,V ours,V other,double usableClearance,double raise,double lower){this(from,to,ours,other,usableClearance,raise,lower,REQUIRED);}
+    public boolean blocked(){return usableClearance < required - .025;}
   }
   public static final class Conflict extends IllegalArgumentException {
     private final Contact contact;
     public Conflict(Contact c){
       super(String.format(Locale.ROOT,
         "道路投影交叠于 X=%.2f Z=%.2f；新路 Y=%.2f、既有路 Y=%.2f，%s / 要求净空 %.2f 格",
-        c.ours().x(),c.ours().z(),c.ours().y(),c.other().y(),clearanceLabel(c.usableClearance()),REQUIRED));
+        c.ours().x(),c.ours().z(),c.ours().y(),c.other().y(),clearanceLabel(c.usableClearance()),c.required()));
       contact=c;
     }
     public Contact contact(){return contact;}
@@ -63,9 +64,10 @@ public final class RoadClearance {
   private static final class Grid {
     private record Indexed(Triangle triangle,int id){}
     final Map<Long,List<Indexed>> cells=new HashMap<>(); final int size;
-    Grid(Mesh mesh){
+    Grid(Mesh mesh){this(mesh,false);}
+    Grid(Mesh mesh,boolean driving){
       Map<Triangle,Indexed> unique=new HashMap<>();
-      for(Triangle t:triangles(mesh)){
+      for(Triangle t:driving?makeTriangles(mesh,true):triangles(mesh)){
         Indexed indexed=unique.get(t);
         if(indexed==null){indexed=new Indexed(t,unique.size());unique.put(t,indexed);}
         for(int x=cell(t.minX());x<=cell(t.maxX());x++)for(int z=cell(t.minZ());z<=cell(t.maxZ());z++)
@@ -91,7 +93,10 @@ public final class RoadClearance {
   private static final WeakIdentityCache<Mesh,Grid> GRIDS=new WeakIdentityCache<>(256,500_000,
       grid->grid.cells.values().stream().mapToInt(List::size).sum());
   private static Grid grid(Mesh mesh){return GRIDS.get(mesh,Grid::new);}
-  public static void clearPreparedCache(){GRIDS.clear();TRIANGLES.clear();}
+  private static final WeakIdentityCache<Mesh,Grid> DRIVING_GRIDS=new WeakIdentityCache<>(256,500_000,
+      grid->grid.cells.values().stream().mapToInt(List::size).sum());
+  private static Grid drivingGrid(Mesh mesh){return LaneDeck.hasOpenings(mesh)?DRIVING_GRIDS.get(mesh,m->new Grid(m,true)):grid(mesh);}
+  public static void clearPreparedCache(){GRIDS.clear();DRIVING_GRIDS.clear();TRIANGLES.clear();}
   public static WeakIdentityCache.Stats preparedCacheStats(){return GRIDS.stats();}
   /** Immutable prepared deck index; callers may retain it only for their current planning query. */
   public static final class Prepared {
@@ -136,6 +141,7 @@ public final class RoadClearance {
     double[] polygon=clipped.first;
     double from=Double.POSITIVE_INFINITY,to=Double.NEGATIVE_INFINITY,min=Double.POSITIVE_INFINITY;
     double raise=0,lower=0,minDiff=Double.POSITIVE_INFINITY,maxDiff=Double.NEGATIVE_INFINITY;
+    double required=RoadInfrastructure.girderDepth(a)>0||RoadInfrastructure.girderDepth(b)>0?4.25:REQUIRED;
     V ours=null,other=null;int negative=0,positive=0;
     for(int i=0;i<n;i+=3){
       double x=polygon[i],z=polygon[i+2];double ya=t.height(x,z),yb=q.height(x,z),difference=ya-yb;
@@ -143,8 +149,8 @@ public final class RoadClearance {
       if(gap<min){min=gap;ours=new V(x,ya,z);other=new V(x,yb,z);}
       double station=t.station(x,z);from=Math.min(from,station);to=Math.max(to,station);
       if(difference<minDiff){minDiff=difference;negative=i;}if(difference>maxDiff){maxDiff=difference;positive=i;}
-      raise=Math.max(raise,yb+REQUIRED+solidDepth(a)+.10-ya);
-      lower=Math.max(lower,ya+REQUIRED+solidDepth(b)+.10-yb);
+      raise=Math.max(raise,yb+required+solidDepth(a)+.10-ya);
+      lower=Math.max(lower,ya+required+solidDepth(b)+.10-yb);
     }
     if(minDiff<0&&maxDiff>0){
       double alpha=-minDiff/(maxDiff-minDiff);
@@ -153,7 +159,7 @@ public final class RoadClearance {
       ours=new V(x,t.height(x,z),z);other=new V(x,q.height(x,z),z);
       min=-Math.min(solidDepth(a),solidDepth(b));
     }
-    out.add(new Contact(from,to,ours,other,min,raise,lower));
+    out.add(new Contact(from,to,ours,other,min,raise,lower,required));
   }
   /** At most six vertices for triangle/triangle intersection, with extra room
    * for duplicate boundary vertices. Same clipping arithmetic as the list path. */
@@ -184,7 +190,7 @@ public final class RoadClearance {
    * Boundary-only contact is not an obstruction. LaneDeck preserves real cut slots. */
   public static boolean structureInvades(RoadStructures.Part part,Mesh road,double headroom){
     var base=part.base();if(base.size()<3)return false;
-    var index=grid(road);
+    var index=drivingGrid(road);
     for(int i=1;i<base.size()-1;i++){
       var t=new Triangle(base.get(0),base.get(i),base.get(i+1),0,0,0);
       if(Math.abs(t.det())<EPS)continue;
@@ -217,7 +223,7 @@ public final class RoadClearance {
    * Uses the same clipped triangles and framed heights as the final invasion test. */
   public static List<Contact> structureContacts(RoadStructures.Part part,Mesh road,double headroom){
     var out=new ArrayList<Contact>();var base=part.base();if(base.size()<3)return out;
-    var index=grid(road);
+    var index=drivingGrid(road);
     for(int i=1;i<base.size()-1;i++){
       var t=new Triangle(base.get(0),base.get(i),base.get(i+1),0,0,0);if(Math.abs(t.det())<EPS)continue;
       for(var q:index.near(t)){
@@ -243,11 +249,14 @@ public final class RoadClearance {
       new WeakIdentityCache<>(256,500_000,List::size);
   private static List<Triangle> triangles(Mesh mesh){return TRIANGLES.get(mesh,RoadClearance::makeTriangles);}
   private static List<Triangle> makeTriangles(Mesh mesh){
+    return makeTriangles(mesh,false);
+  }
+  private static List<Triangle> makeTriangles(Mesh mesh,boolean driving){
     var out=new ArrayList<Triangle>();var samples=mesh.samples();
     for(int i=1;i<samples.size();i++){
       if((i&63)==0)RoadPlanningBudget.check();
       var a=samples.get(i-1);var b=samples.get(i);
-      for(var strip:LaneDeck.strips(mesh,a,b)) {
+      for(var strip:driving?LaneDeck.drivingStrips(mesh,a,b):LaneDeck.strips(mesh,a,b)) {
         V al=strip.al(),ar=strip.ar(),bl=strip.bl(),br=strip.br();
         for(var t:List.of(new Triangle(al,ar,br,a.distance(),a.distance(),b.distance()),new Triangle(al,br,bl,a.distance(),b.distance(),b.distance())))
           if(Math.abs(t.det())>EPS)out.add(t);
