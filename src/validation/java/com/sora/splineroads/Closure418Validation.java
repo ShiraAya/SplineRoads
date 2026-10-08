@@ -15,6 +15,11 @@ public final class Closure418Validation {
  }
  static Mesh apply(Mesh raw,List<LaneSections.Cut> cuts){return LaneSections.apply(RoadRibbon.mesh(raw.samples(),raw.settings().options(raw.settings().options().lanePoints(LanePoints.Data.EMPTY.cuts(cuts)))));}
  static Ground terrain(double gap){return new Ground(){public double top(double x,double z,double y){return y-gap;}public boolean blocked(Part p){return false;}public boolean joined(V p){return false;}};}
+ static double holeWidth(Mesh raw,int slot,double station){
+  var at=RoadStructures.sample(raw,station);var lane=LanePoints.lane(raw,station,slot);double center=lane.position().sub(at.center()).dot(at.left());
+  double min=center,max=center;for(int other:LaneAdditions.slots(raw,station)){double x=LanePoints.lane(raw,station,other).position().sub(at.center()).dot(at.left());min=Math.min(min,x);max=Math.max(max,x);}
+  double lo=center==min?-at.halfWidth():center-lane.width()/2,hi=center==max?at.halfWidth():center+lane.width()/2;return hi-lo;
+ }
  static void rectangular(){
   for(var style:List.of(Style.O1_ONE,Style.O3_ONE,Style.O6_RAIL,Style.H6_RAIL))for(boolean left:new boolean[]{false,true})for(boolean curved:new boolean[]{false,true})for(boolean arrival:new boolean[]{false,true}){
    var raw=road(style,Structure.BRIDGE,left,curved,curved?340:-32);int count=RoadProfile.catalog(style).lanes();
@@ -27,10 +32,10 @@ public final class Closure418Validation {
     }
     for(double d:new double[]{begin-sign*.01,end+sign*.01})check(RoadQueries.contains(mesh,LanePoints.lane(raw,d,slot).position(),0,.01),"road outside closure disappeared");
     int quads=0;for(int i=1;i<mesh.samples().size();i++)for(var q:LaneDeck.holeQuads(mesh,mesh.samples().get(i-1),mesh.samples().get(i))){
-     near(q.get(0).distance(q.get(1)),4,"first section of hole narrows into a tip");near(q.get(2).distance(q.get(3)),4,"last section of hole narrows into a tip");quads++;
+     near(q.get(0).distance(q.get(1)),holeWidth(raw,slot,RoadQueries.horizontal(raw,q.get(0)).sample().distance()),"first hole section must include only selected lane and its exterior shoulder");near(q.get(2).distance(q.get(3)),holeWidth(raw,slot,RoadQueries.horizontal(raw,q.get(2)).sample().distance()),"last hole section must include only selected lane and its exterior shoulder");quads++;
     }
     check(quads>0,"no physical hole strips");check(LaneDeck.caps(mesh).size()==2,"missing transverse slab caps");
-    near(LaneDeck.caps(mesh).get(0).a().distance(LaneDeck.caps(mesh).get(0).b()),4,"cap spans other slots");
+    near(LaneDeck.caps(mesh).get(0).a().distance(LaneDeck.caps(mesh).get(0).b()),holeWidth(raw,slot,Math.min(begin,end)),"cap spans other live lanes");
     check(LaneClosureLandscape.plan(mesh,terrain(.1)).isEmpty(),"bridge hole filled with vegetation");
     for(var slice:LaneDeck.rasterPieces(mesh,96))for(var sample:slice.samples())check(sample.distance()>=slice.first().distance(),"raster slices rebase stations");
     if(slot==0){var surface=RoadSurface.build(mesh,List.of(),List.of());check(!surface.pavement().isEmpty(),"all pavement disappeared");

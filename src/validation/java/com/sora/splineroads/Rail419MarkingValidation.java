@@ -27,7 +27,8 @@ public final class Rail419MarkingValidation {
       }else if(lo&&hi){check(!paintAt(geo,sample.at(lateral,0)),"unrelated two-live-lane divider was made solid");dashed++;}
      }break;
     }
-    var before=RoadStructures.sample(mesh,40.5);var first=RoadProfile.layout(mesh,before).dividers().get(0);check(!RoadSurface.closedSlotBoundary(mesh,40.5,first),"closed-boundary policy leaked outside actual reservation");
+    // The 29 m warning approach now deliberately uses solid white boundaries.
+    var before=RoadStructures.sample(mesh,10.5);var first=RoadProfile.layout(mesh,before).dividers().get(0);check(!RoadSurface.closedSlotBoundary(mesh,10.5,first),"closed-boundary policy leaked outside reservation and warning approach");
    }
   }
   check(continuous>0&&dashed>0,"test never exercised both boundary and two-live-lane markings");

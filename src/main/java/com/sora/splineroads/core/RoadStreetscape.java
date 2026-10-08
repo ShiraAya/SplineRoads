@@ -116,6 +116,9 @@ public final class RoadStreetscape {
     return List.copyOf(out);
   }
   private static void addLamp(List<Part> out,Mesh mesh,Ground g,Sample at,double lateral,double up,int style,int side,boolean bracket){
+    // An outer closure removes the supporting shoulder too. Keep median lamps,
+    // but do not leave an exterior lamp/bracket suspended beside that opening.
+    if(LaneDeck.outerOpening(mesh,at.distance(),side)&&Math.abs(lateral)>at.halfWidth()-1)return;
     V foot=at.at(lateral,-up);if(g.joined(foot)||g.furnitureClear(foot))return;
     var parts=new ArrayList<>(lamp(foot,at.left().mul(-side),style));
     if(bracket){

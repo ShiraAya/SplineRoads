@@ -190,12 +190,13 @@ public final class LaneRamps {
       b=new LaneRampPaths.Port(q.position(),q.direction(),b.outside(),b.extraWidth(),delta.y()/Math.max(.001,delta.horizontalLength()));
       for(double d=.5;d<=tailLength+.001;d+=.5){var at=LanePoints.lane(raw,start+lane.sign()*d,slot);after.add(new Sample(at.position(),at.direction().left(),d,settings.width()/2));}
     }
+    var smoothCandidates=smooth&&options.elevation()==LanePoints.Elevation.AUTO?LaneRampPaths.smoothTurns(a,b,settings,options,maxGrade):List.<LaneRampPaths.Candidate>of();
     var candidates=new ArrayList<LaneRampPaths.Candidate>();
     if(automaticTurns)candidates.addAll(LaneRampPaths.automaticTurns(a,b,settings,options,maxGrade));
     try{candidates.addAll(LaneRampPaths.candidates(a,b,settings,options,maxGrade));}
-    catch(IllegalArgumentException failure){if(candidates.isEmpty())throw failure;}
+    catch(IllegalArgumentException failure){if(candidates.isEmpty()&&smoothCandidates.isEmpty())throw failure;}
     candidates.sort(Comparator.comparingDouble(c->c.mesh().length()));
-    if(smooth&&options.elevation()==LanePoints.Elevation.AUTO)candidates.addAll(0,LaneRampPaths.smoothTurns(a,b,settings,options,maxGrade));
+    candidates.addAll(0,smoothCandidates);
     if(before.isEmpty()&&after.isEmpty())return candidates;
     var out=new ArrayList<LaneRampPaths.Candidate>();
     for(var c:candidates)try{

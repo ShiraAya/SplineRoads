@@ -14,6 +14,8 @@ public final class LaneRampPaths {
   /** One smooth free-span curve with exact endpoint tangents. Fixed extra-lane
    * approaches are kept outside the curve, and the requested radius is a minimum. */
   public static List<Candidate> smoothTurns(Port a,Port b,Settings settings,LanePoints.Options options,double maxGrade){
+    LaneRampGrade.checked(maxGrade);
+    if(LaneRampGrade.exceeds(a.grade(),1,maxGrade)||LaneRampGrade.exceeds(b.grade(),1,maxGrade))return List.of();
     if(options.sourceExtra()||options.targetExtra()){
       var prefix=options.sourceExtra()?approach(a,true,settings.width(),options.transition()):List.<Sample>of();
       var suffix=options.targetExtra()?approach(b,false,settings.width(),options.transition()):List.<Sample>of();

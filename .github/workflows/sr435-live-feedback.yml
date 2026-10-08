@@ -23,6 +23,8 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Core and model regression
         run: bash tools/test_ramp39_model.sh
+      - name: Screenshot geometry regression
+        run: bash tools/check_sr435.sh
       - name: Full Forge build
         run: bash gradlew --no-daemon --max-workers=2 compileJava compileGameTestJava jar
       - name: Real 32-case Minecraft build matrix

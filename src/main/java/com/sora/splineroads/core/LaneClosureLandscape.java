@@ -97,9 +97,8 @@ public final class LaneClosureLandscape {
     }
     return merged;
   }
-  /** Clip an obstructed component locally; never discard its unobstructed soil or
-   * kerbs because a leaf layer meets the rising ramp. A bounded subdivision avoids
-   * full 1-metre gaps at a partial crossing and retains the same framed solid/UVs. */
+  /** Clip only the low unplanted foundation. Vegetation is accepted as a complete
+   * run above; subdividing its individual layers would expose cut soil faces. */
   private static void addUnblocked(List<Part> out,Part part,Ground ground,int depth){
     if(!ground.blocked(part)){out.add(part);return;}
     if(depth>=4||part.a().sub(part.b()).horizontalLength()<.125)return;
