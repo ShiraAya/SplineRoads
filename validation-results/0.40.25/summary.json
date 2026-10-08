@@ -1,0 +1,291 @@
+{
+  "version": "0.40.25-alpha",
+  "commit": "e0b167a9d45bb1f9e7d0f5f390b450c5d5e7ab39",
+  "run": 37782662956,
+  "jar_sha256": "9ca566be37e30d90f8023e2686a709cb41476c34c2598cec1e743e8dc7cd302b",
+  "gpu_or_user_world_verified": false,
+  "jobs": [
+    {
+      "id": 113329626820,
+      "mode": "standard",
+      "cases": [
+        {
+          "case": "A1",
+          "ms": 3917.544
+        },
+        {
+          "case": "A2",
+          "ms": 4537.627
+        },
+        {
+          "case": "A3",
+          "ms": 3600.06
+        },
+        {
+          "case": "A4",
+          "ms": 3221.726
+        },
+        {
+          "case": "A5",
+          "ms": 3353.015
+        },
+        {
+          "case": "A6",
+          "ms": 3451.612
+        },
+        {
+          "case": "A7",
+          "ms": 3723.008
+        },
+        {
+          "case": "A8",
+          "ms": 3051.002
+        },
+        {
+          "case": "B1",
+          "ms": 4032.948
+        },
+        {
+          "case": "B2",
+          "ms": 4273.125
+        },
+        {
+          "case": "B3",
+          "ms": 3560.399
+        },
+        {
+          "case": "B4",
+          "ms": 3457.601
+        },
+        {
+          "case": "B5",
+          "ms": 3649.066
+        },
+        {
+          "case": "B6",
+          "ms": 3745.073
+        },
+        {
+          "case": "B7",
+          "ms": 5245.789
+        },
+        {
+          "case": "B8",
+          "ms": 3518.239
+        },
+        {
+          "case": "C1",
+          "ms": 3115.631
+        },
+        {
+          "case": "C2",
+          "ms": 3398.971
+        },
+        {
+          "case": "C3",
+          "ms": 3441.363
+        },
+        {
+          "case": "C4",
+          "ms": 3287.069
+        },
+        {
+          "case": "C5",
+          "ms": 3435.46
+        },
+        {
+          "case": "C6",
+          "ms": 3296.659
+        },
+        {
+          "case": "C7",
+          "ms": 3405.78
+        },
+        {
+          "case": "C8",
+          "ms": 3213.656
+        },
+        {
+          "case": "D1",
+          "ms": 3207.355
+        },
+        {
+          "case": "D2",
+          "ms": 3568.61
+        },
+        {
+          "case": "D3",
+          "ms": 3359.632
+        },
+        {
+          "case": "D4",
+          "ms": 3550.806
+        },
+        {
+          "case": "D5",
+          "ms": 3584.566
+        },
+        {
+          "case": "D6",
+          "ms": 3304.605
+        },
+        {
+          "case": "D7",
+          "ms": 3400.674
+        },
+        {
+          "case": "D8",
+          "ms": 3255.949
+        }
+      ],
+      "evidence": [
+        "2026-10-08T13:21:50.1215852Z LIVE438 REAL_WORLD PASS: ADD preview/build rechecked 3 times, stable alignment/ports, Mojang NBT, deletion with invalid saved neighbor, no orphan colliders",
+        "2026-10-08T13:25:18.3224770Z MATRIX434 SUMMARY 32/32 []",
+        "2026-10-08T13:26:41.9197371Z CLOSE437 REAL_WORLD PASS: add two shared-host ramps, first alignment/structures/cells/blocks unchanged, remove second, no orphan colliders, NBT reload",
+        "2026-10-08T13:28:28.4202333Z SEQUENTIAL436 REAL_WORLD PASS: add two shared-host ramps, first alignment/structures/cells/blocks unchanged, remove second, no orphan colliders, NBT reload",
+        "2026-10-08T13:28:39.0206068Z EXPANSION437 REAL_WORLD PASS: blue point expands 3 to 4, Mojang NBT reload, cancel restores 3"
+      ]
+    },
+    {
+      "id": 113329627070,
+      "mode": "fixed_east",
+      "cases": [
+        {
+          "case": "A1",
+          "ms": 5346.193
+        },
+        {
+          "case": "A2",
+          "ms": 5432.416
+        },
+        {
+          "case": "A3",
+          "ms": 6093.02
+        },
+        {
+          "case": "A4",
+          "ms": 6280.743
+        },
+        {
+          "case": "A5",
+          "ms": 4007.015
+        },
+        {
+          "case": "A6",
+          "ms": 3754.038
+        },
+        {
+          "case": "A7",
+          "ms": 4018.637
+        },
+        {
+          "case": "A8",
+          "ms": 3446.794
+        },
+        {
+          "case": "B1",
+          "ms": 7119.474
+        },
+        {
+          "case": "B2",
+          "ms": 7396.458
+        },
+        {
+          "case": "B3",
+          "ms": 12691.671
+        },
+        {
+          "case": "B4",
+          "ms": 13034.87
+        },
+        {
+          "case": "B5",
+          "ms": 3888.306
+        },
+        {
+          "case": "B6",
+          "ms": 3837.469
+        },
+        {
+          "case": "B7",
+          "ms": 5670.752
+        },
+        {
+          "case": "B8",
+          "ms": 4089.717
+        },
+        {
+          "case": "C1",
+          "ms": 4565.637
+        },
+        {
+          "case": "C2",
+          "ms": 6278.666
+        },
+        {
+          "case": "C3",
+          "ms": 9626.096
+        },
+        {
+          "case": "C4",
+          "ms": 6056.241
+        },
+        {
+          "case": "C5",
+          "ms": 3929.513
+        },
+        {
+          "case": "C6",
+          "ms": 3830.493
+        },
+        {
+          "case": "C7",
+          "ms": 3506.282
+        },
+        {
+          "case": "C8",
+          "ms": 3731.144
+        },
+        {
+          "case": "D1",
+          "ms": 4578.369
+        },
+        {
+          "case": "D2",
+          "ms": 6255.684
+        },
+        {
+          "case": "D3",
+          "ms": 9919.997
+        },
+        {
+          "case": "D4",
+          "ms": 9772.26
+        },
+        {
+          "case": "D5",
+          "ms": 3701.312
+        },
+        {
+          "case": "D6",
+          "ms": 3681.901
+        },
+        {
+          "case": "D7",
+          "ms": 3936.438
+        },
+        {
+          "case": "D8",
+          "ms": 3528.816
+        }
+      ],
+      "evidence": [
+        "2026-10-08T13:19:36.2808420Z LIVE438 REAL_WORLD PASS: ADD preview/build rechecked 3 times, stable alignment/ports, Mojang NBT, deletion with invalid saved neighbor, no orphan colliders",
+        "2026-10-08T13:24:45.2809896Z MATRIX434 SUMMARY 32/32 []",
+        "2026-10-08T13:26:01.2807004Z CLOSE437 REAL_WORLD PASS: add two shared-host ramps, first alignment/structures/cells/blocks unchanged, remove second, no orphan colliders, NBT reload",
+        "2026-10-08T13:28:00.2807875Z SEQUENTIAL436 REAL_WORLD PASS: add two shared-host ramps, first alignment/structures/cells/blocks unchanged, remove second, no orphan colliders, NBT reload",
+        "2026-10-08T13:28:12.1816829Z EXPANSION437 REAL_WORLD PASS: blue point expands 3 to 4, Mojang NBT reload, cancel restores 3"
+      ]
+    }
+  ]
+}

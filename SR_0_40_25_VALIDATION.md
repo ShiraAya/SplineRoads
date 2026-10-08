@@ -19,8 +19,8 @@
 - 本地生产模型：基础817项、复合2805项、界面状态20项通过。这些使用测试适配器，不能当作真实Minecraft建造。
 - 新SR438：16031项真实几何/构件检查、16项生产规划与记录模型检查通过。
 - 相关回归：SR435 1776项；Closure418 128组/533498项；Rail419标线813项；AUTO435 2364项；SR436 837+5项；SR437 377+35项通过。
-- 第一检查点938d5f7：Forge完整编译和新增实际Minecraft测试通过；随后因最终修复提交取消该工作流，不能当作最终版本全量通过。
-- 最终CI [37782662956](https://github.com/ShiraAya/SplineRoads/actions/runs/37782662956)：完整Forge编译通过；新增Minecraft复查/故障旧世界删除测试通过；两组32项矩阵仍在运行。
+- 第一检查点938d5f7：Forge编译通过，后因最终提交取消。最终日志发现专用splineroads_live438步骤注册0项测试，不能计作新增测试通过；LIVE438实际在两个splineroads_matrix434任务中各执行一次并输出PASS，每组共5项GameTest全部通过。最终结论采用这两份非空执行日志。
+- 最终CI [37782662956](https://github.com/ShiraAya/SplineRoads/actions/runs/37782662956)：全部成功：完整Forge编译、新增Minecraft复查/故障旧世界删除测试、原始32/32和固定东端32/32均通过。另两轮共享主路多匝道保留、删除无残留、扩流撤销与NBT检查通过。逐项结果见 `validation-results/0.40.25/summary.json`。
 
 新增Minecraft测试运行真实ServerLevel、只读预览、正式建造、Mojang NBT保存/加载，以及模拟故障旧世界后的删除恢复。它不是用户原存档、GPU、光影或车辆画面验收。
 
