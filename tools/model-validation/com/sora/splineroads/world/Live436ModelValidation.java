@@ -11,7 +11,7 @@ public final class Live436ModelValidation {
     LaneTopology.reconcile(data,batch,removed);removed.forEach(data.index.roads::remove);batch.forEach(data.index::put);
   }
   static void sequential(){
-    var all=new LinkedHashMap<UUID,RoadRecord>();
+    Map<UUID,RoadRecord> all=new LinkedHashMap<>();
     var settings=Hotfix429ModelValidation.settings(RoadProfile.Type.ORDINARY,3,0,false);
     var main=Hotfix429ModelValidation.road(new V(0,108,0),new V(0,108,1000),settings);
     var one=Hotfix429ModelValidation.settings(RoadProfile.Type.ORDINARY,1,0,false);
@@ -34,7 +34,7 @@ public final class Live436ModelValidation {
     check(after.header().equals(before),"adding noncontact sibling changes saved ramp metadata");
     apply(data,null,second.id());
     check(data.index.roads.get(first.id()).record.header().equals(before),"deleting sibling changes old ramp");
-    all=LaneTopology.records(data);var changed=all.get(main.id()).settings(main.settings().thickness(.5));all.put(main.id(),changed);
+    all=LaneTopology.records(data);var changed=all.get(main.id()).settings(main.settings().options(main.settings().options().outerRail(RoadProfile.OuterRail.OFF)));all.put(main.id(),changed);
     scope=LaneTopology.editScope(data,all,List.of(new RoadIndex.Built(changed)),Set.of(main.id()));
     check(scope.contains(first.id()),"real host edit lost dependent validation");
     System.out.println("SEQUENTIAL436 PASS: add two ramps sharing host, preserve first, delete second; actual topology planner, no world writes");

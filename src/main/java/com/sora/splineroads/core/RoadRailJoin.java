@@ -10,7 +10,7 @@ import java.util.*;
 public final class RoadRailJoin {
   // Keep even the 0.62 m highway footing wholly inside its owning deck.
   // A 0.16 m inset left the base in the adjacent live-lane clearance corridor.
-  public static final double INSET=.32;
+  public static final double INSET=.34;
   public record Span(V a,V b) {}
   /** Higher-priority neighbour owns coincident boundaries; strict interiors always win. */
   public record Neighbor(Mesh mesh,boolean ownsBoundary) {}

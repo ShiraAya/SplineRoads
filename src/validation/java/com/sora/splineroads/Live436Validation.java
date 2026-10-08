@@ -13,7 +13,7 @@ public final class Live436Validation {
     var parts=LaneClosureLandscape.plan(mesh,Live435Validation.ground(19.8));
     for(double z:new double[]{50.01,50.5,51.5,78.5,79.5,79.99})for(double x:new double[]{-.499,0,.499}){
       V p=LanePoints.lane(raw,z,1).position().add(new V(x*LanePoints.lane(raw,z,1).width(),0,0));
-      check(parts.stream().anyMatch(q->q.material()==Material.CONCRETE&&q.height()<1&&JunctionPaint.inside(q.base(),p)),"grass/daylight corner at "+p);
+      check(parts.stream().anyMatch(q->q.material()==Material.CONCRETE&&q.a().y()+q.height()<20.03&&JunctionPaint.inside(q.base(),p)),"grass/daylight corner at "+p);
     }
     for(var p:parts)if(p.material()==Material.SOIL)for(var v:p.base())check(v.z()>=50.2-1e-6&&v.z()<=79.8+1e-6,"soil protrudes beyond sealed end cap");
     var surface=RoadSurface.build(mesh,List.of(),List.of());
@@ -37,22 +37,22 @@ public final class Live436Validation {
       }
     }
   }
-  static void rails(){
-    var raw=Live435Validation.road(Style.C1_RAMP,Structure.BRIDGE);
+  static void rails(){for(var style:List.of(Style.C1_RAMP,Style.C1_HIGHWAY_RAMP)){
+    var raw=Live435Validation.road(style,Structure.BRIDGE);
     var md=LanePoints.Data.EMPTY.openings(List.of(new LanePoints.Opening(new UUID(436,1),List.of(new V(100,20,0),new V(100,20,200)),2)));
     var samples=raw.samples().stream().map(s->new Sample(s.center(),s.left(),s.distance(),2)).toList();
     var own=RoadRibbon.mesh(samples,raw.settings().options(raw.settings().options().lanePoints(md)));
     var neighbors=new ArrayList<Mesh>();
-    for(int side:new int[]{-1,1})neighbors.add(RoadRibbon.mesh(samples.stream().map(s->new Sample(s.center().add(new V(side*4,-2,0)),s.left(),s.distance(),2)).toList(),raw.settings()));
+    for(int side:new int[]{-1,1})neighbors.add(RoadRibbon.mesh(samples.stream().map(s->new Sample(s.center().add(new V(side*3.98,-2,0)),s.left(),s.distance(),2)).toList(),raw.settings()));
     var join=new RoadRailJoin(neighbors.stream().map(m->new RoadRailJoin.Neighbor(m,true)).toList());
     Ground ground=new Ground(){public double top(double x,double z,double y){return 0;}public boolean joined(V p){return false;}
       public List<RoadRailJoin.Span> railSpans(V a,V b,V outside){return join.exposed(a,b,outside);}
       public boolean blocked(Part p){return neighbors.stream().anyMatch(m->RoadClearance.structureInvades(p,m,4.25));}};
     var parts=RoadStructures.plan(own,ground);
     for(int side:new int[]{-1,1})for(double z:new double[]{20.25,70.25,120.25,180.25})
-      check(parts.stream().anyMatch(p->p.material()==Material.STEEL&&Math.abs(p.a().y()-20.65)<.01&&p.a().x()*side>1&&Math.min(p.a().z(),p.b().z())<=z&&Math.max(p.a().z(),p.b().z())>=z),"exposed guardrail deleted beside lower live lane");
+      check(parts.stream().anyMatch(p->(p.material()==Material.STEEL&&Math.abs(p.a().y()-20.65)<.01||p.material()==Material.CONCRETE&&Math.abs(p.a().y()-20)<.01&&Math.abs(p.height()-.8)<.01)&&p.a().x()*side>1&&Math.min(p.a().z(),p.b().z())<=z&&Math.max(p.a().z(),p.b().z())>=z),"exposed guardrail deleted beside lower live lane");
     for(var p:parts)check(!ground.blocked(p),"restored rail invades adjacent live clearance");
-  }
+  }}
   static void loops(){
     var settings=Live435Validation.road(Style.C1_RAMP,Structure.BRIDGE).settings();
     for(int mirror:new int[]{-1,1})for(int rotation=0;rotation<4;rotation++){
