@@ -42,5 +42,16 @@ public final class Live441Validation {
   check(RoadClearance.contacts(beam,ground).stream().anyMatch(RoadClearance.Contact::blocked),"solver ignored the 0.9-block overpass girder");
   check(RoadClearance.contacts(beam,ground).stream().mapToDouble(RoadClearance.Contact::raise).max().orElse(0)>.79,"solver did not request sufficient bridge lift");
  }
- public static void main(String[]args){liveLaneRail();pavedGroundClosure();girderClearance();System.out.println("Live441Validation: "+checks+" checks PASS; live-lane rail clearance, ground closure pavement in VBO/terrain and buried-lid protection");}
+ static void bridgeClosure(){
+  var base=Live435Validation.road(Style.O3_ONE,Structure.BRIDGE);
+  var cfg=base.settings().options();var settings=base.settings().options(cfg.infrastructure(cfg.infrastructure().bridge(RoadInfrastructure.Bridge.OVERPASS)));
+  var raw=RoadRibbon.mesh(base.samples(),settings);var host=Live435Validation.cut(raw,0,40,160,false);
+  var parts=RoadInfrastructure.plan(host,Live435Validation.ground(0));int checked=0;
+  for(var p:parts)if(!p.pier()&&Math.abs(p.height()-.9)<1e-6&&p.a().distance(p.b())<3&&p.a().z()>45&&p.b().z()<155){
+   var q=RoadQueries.horizontal(raw,p.a().add(p.b()).mul(.5));var lane=LanePoints.lane(raw,q.sample().distance(),0);
+   for(var v:p.base())check(Math.abs(v.sub(lane.position()).dot(q.sample().left()))>=lane.width()/2-1e-6,"closed lane retained a custom bridge girder");checked++;
+  }
+  check(checked>0,"bridge fixture erased all remaining girders");
+ }
+ public static void main(String[]args){liveLaneRail();pavedGroundClosure();girderClearance();bridgeClosure();System.out.println("Live441Validation: "+checks+" checks PASS; live-lane rail clearance, ground closure pavement in VBO/terrain and buried-lid protection");}
 }

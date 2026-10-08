@@ -1,4 +1,4 @@
-name: SR440 live feedback verification
+name: SR441 live feedback verification
 on:
   push:
     branches: [work/sr-04027-live-feedback]
@@ -34,6 +34,8 @@ jobs:
           bash tools/check_sr439.sh
           bash tools/check_sr440.sh
           bash tools/check_sr441.sh
+          bash tools/check_sr435.sh
+          bash tools/check_sr438.sh
       - name: Real request publication, underground and tunnel regression
         run: |
           set -o pipefail
@@ -44,8 +46,6 @@ jobs:
           set -o pipefail
           bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run441 -ProadTestNamespaces=splineroads_live441 -ProadTestHeap=3G | tee run441-console.log
           grep -q 'LIVE441 REAL_WORLD PASS' run441-console.log
-      - name: Real Minecraft build matrix
-        run: bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run440 -ProadTestNamespaces=splineroads_matrix434 -ProadTestHeap=3G
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -59,3 +59,35 @@ jobs:
             run440terrain-console.log
             run441/logs/latest.log
             run441-console.log
+
+  matrix:
+    name: Minecraft matrix row ${{ matrix.row }}
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        row: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Real Minecraft preview build save delete matrix
+        run: |
+          set -o pipefail
+          bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run441matrix -ProadTestNamespaces=splineroads_matrix434 -ProadMatrixRow=${{ matrix.row }} -ProadTestHeap=3G | tee matrix-${{ matrix.row }}.log
+          grep -q 'MATRIX434 SUMMARY 8/8' matrix-${{ matrix.row }}.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr441-matrix-${{ matrix.row }}-${{ github.sha }}
+          path: |
+            matrix-${{ matrix.row }}.log
+            run441matrix/logs/latest.log

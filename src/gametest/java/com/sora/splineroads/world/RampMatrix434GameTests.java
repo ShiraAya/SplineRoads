@@ -31,9 +31,12 @@ public final class RampMatrix434GameTests {
       &&Math.abs(upper.end().position().sub(upper.start().position()).horizontalLength()-500)<1e-6,"marker centres must span exactly 500 metres");
   System.out.println("MATRIX434 FIXTURE node_span=500 fixed_east="+fixedEnd+" mesh_lengths="+ground.mesh().length()+","+upper.mesh().length());
   h.assertTrue(Math.abs(upper.mesh().first().center().y()-ground.mesh().first().center().y()-8)<1e-6,"8 metre level difference changed");
+  int selectedRow=Integer.parseInt(System.getProperty("sr.matrix.row","-1"));
+  h.assertTrue(selectedRow>=-1&&selectedRow<4,"invalid matrix row");int expected=selectedRow<0?32:8;
   var failures=new ArrayList<String>();int passed=0;
   int[] slots={2,2,1,0,3,4,5,5};
   for(int row=0;row<4;row++)for(int col=1;col<=8;col++){
+   if(selectedRow>=0&&row!=selectedRow)continue;
    String label=""+(char)('A'+row)+col;String stage="plan";long started=System.nanoTime();UUID id=UUID.randomUUID();
    try{
     ground=data.index.roads.get(ground.id()).record;upper=data.index.roads.get(upper.id()).record;
@@ -62,7 +65,7 @@ public final class RampMatrix434GameTests {
     if(data.index.roads.containsKey(id))data.remove(level,null,id);
    }
   }
-  System.out.println("MATRIX434 SUMMARY "+passed+"/32 "+failures);
-  h.assertTrue(failures.isEmpty(),String.join("; ",failures));h.succeed();
+  System.out.println("MATRIX434 SUMMARY "+passed+"/"+expected+" row="+selectedRow+" "+failures);
+  h.assertTrue(passed==expected&&failures.isEmpty(),String.join("; ",failures));h.succeed();
  }
 }

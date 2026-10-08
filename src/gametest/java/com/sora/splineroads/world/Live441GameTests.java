@@ -47,7 +47,7 @@ public final class Live441GameTests {
   for(int x=cx-18;x<=cx+108;x++)for(int z=cz;z<=cz+402;z++){
    var p=new BlockPos(x,ground?198:188,z);level.getChunkAt(p);level.setBlock(p,Blocks.GRASS_BLOCK.defaultBlockState(),2);
   }
-  var settings=RoadLanes.configure(Revision32GameTests.road(Style.O4_RAIL,ground?Structure.AUTO:Structure.BRIDGE),RoadProfile.Type.ORDINARY,new RoadLanes.Counts(2,3),4);
+  var settings=RoadLanes.configure(Revision32GameTests.road(Style.O4_RAIL,ground?Structure.AUTO:Structure.BRIDGE),RoadProfile.Type.ORDINARY,new RoadLanes.Counts(ground?1:2,ground?0:3),4);
   settings=settings.options(settings.options().route(settings.options().routing().fit(false)).infrastructure(settings.options().infrastructure().bridge(RoadInfrastructure.Bridge.OVERPASS)));
   var source=data.connect(level,null,Revision32GameTests.marker(h,cx,200,cz,0),Revision32GameTests.marker(h,cx,200,cz+200,0),settings,null);
   var target=data.connect(level,null,Revision32GameTests.marker(h,cx+90,ground?200:208,cz+180,0),Revision32GameTests.marker(h,cx+90,ground?200:208,cz+400,0),settings,null);
@@ -55,6 +55,7 @@ public final class Live441GameTests {
   var from=Build429GameTests.point(data,source,60,slot);var to=Build429GameTests.point(data,target,140,slot);
   var options=new LanePoints.Options(LanePoints.Path.AUTO,LanePoints.Departure.TEMPORARY,LanePoints.Arrival.MERGE,24,32,LanePoints.Elevation.AUTO,LanePoints.Landing.FLEXIBLE);
   var ramp=LaneRamps.generate(data,LaneTopology.records(data),UUID.randomUUID(),source.owner(),new LanePoints.Link(from,to,options,null));
+  if(ground)h.assertTrue(ramp.mesh().min().y()>199.99&&ramp.mesh().max().y()<200.01,"ground fixture must remain flat and unburied");
   System.out.println("LIVE441 PLAN_PASS ground="+ground);LaneRamps.build(data,level,null,ramp);
   System.out.println("LIVE441 BUILD_PASS ground="+ground);
   if(!ground){

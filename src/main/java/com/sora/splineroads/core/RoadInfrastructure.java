@@ -178,11 +178,19 @@ public final class RoadInfrastructure {
   private static void bridge(Mesh mesh,Config c,Ground ground,List<Part> out){
     double depth=girderDepth(mesh);
     // Two longitudinal box girders remain below the driving slab, following curve and grade.
-    for(double d=0;d<mesh.length()-1e-6;d+=2){
-      Sample a=sample(mesh,d),b=sample(mesh,d+2);
+    var stations=new TreeSet<Double>();for(double d=0;d<mesh.length();d+=2)stations.add(d);stations.add(mesh.length());
+    for(var cut:mesh.settings().options().lanePoints().cuts())for(double d:new double[]{cut.begin(),cut.end()})for(double e:new double[]{-1e-5,0,1e-5})if(d+e>0&&d+e<mesh.length())stations.add(d+e);
+    var distances=new ArrayList<>(stations);
+    for(int index=1;index<distances.size();index++){
+      Sample a=sample(mesh,distances.get(index-1)),b=sample(mesh,distances.get(index));double middle=(a.distance()+b.distance())/2;
+      var bearing=mesh;
+      // A temporarily removed lane has no box girder. Its small closure-rail
+      // footing belongs to the remaining slab, not to an invisible beam over the ramp.
+      for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.temporary()&&cut.removed(middle)>.999)bearing=LaneDeck.excludingSlot(bearing,cut.lane());
       for(int side:new int[]{-1,1}){
-        longitudinal(out,a,b,side*a.halfWidth()*.62,side*b.halfWidth()*.62,
-            -mesh.settings().thickness()-depth,Math.min(2.4,mesh.settings().width()/5),depth,Material.CONCRETE);
+        girder(out,bearing,a,b,side*a.halfWidth()*.62,side*b.halfWidth()*.62,
+            -mesh.settings().thickness()-depth,Math.min(2.4,mesh.settings().width()/5),depth);
+        if(LaneDeck.outerOpening(mesh,middle,side))continue;
         // A continuous edge slab attaches outboard ribs, hangers and cable anchors to the deck.
         double reach=c.bridge()==Bridge.CABLE||c.bridge()==Bridge.SUSPENSION?2.1:c.bridge()==Bridge.ARCH?1.25:.35;
         double ra=reach*endTaper(mesh,a),rb=reach*endTaper(mesh,b);
@@ -198,6 +206,15 @@ public final class RoadInfrastructure {
       double start=i*span;
       if(c.bridge()==Bridge.ARCH)arch(mesh,start,span,out);
       if(c.bridge()==Bridge.CABLE||c.bridge()==Bridge.SUSPENSION)cables(mesh,start,span,depth,c.bridge(),ground,out);
+    }
+  }
+  private static void girder(List<Part> out,Mesh bearing,Sample a,Sample b,double offsetA,double offsetB,double y,double width,double height){
+    for(var strip:LaneDeck.strips(bearing,a,b)){
+      double loA=Math.max(offsetA-width/2,strip.ar().sub(a.center()).dot(a.left())),hiA=Math.min(offsetA+width/2,strip.al().sub(a.center()).dot(a.left()));
+      double loB=Math.max(offsetB-width/2,strip.br().sub(b.center()).dot(b.left())),hiB=Math.min(offsetB+width/2,strip.bl().sub(b.center()).dot(b.left()));
+      if(hiA-loA<1e-6||hiB-loB<1e-6)continue;
+      out.add(new Part(at(a,(loA+hiA)/2,y),at(b,(loB+hiB)/2,y),Math.max(hiA-loA,hiB-loB),height,false,Material.CONCRETE)
+          .frames(a.left().mul((hiA-loA)/2),b.left().mul((hiB-loB)/2)));
     }
   }
   private static void support(Mesh mesh,double station,double depth,Bridge style,Ground ground,List<Part> out){
