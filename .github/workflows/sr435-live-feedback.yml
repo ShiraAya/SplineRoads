@@ -30,6 +30,12 @@ jobs:
           bash tools/check_sr437.sh
       - name: Full Forge build
         run: bash gradlew --no-daemon --max-workers=2 compileJava compileGameTestJava jar
+      - name: Save compiled installation package
+        uses: actions/upload-artifact@v4
+        with:
+          name: sr437-build-${{ github.sha }}
+          path: build/libs/*.jar
+          retention-days: 30
       - name: Real 32-case Minecraft build matrix
         run: bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run435 -ProadTestNamespaces=splineroads_matrix434 -ProadTestHeap=3G
       - name: Real fixed-east-end 32-case Minecraft matrix
