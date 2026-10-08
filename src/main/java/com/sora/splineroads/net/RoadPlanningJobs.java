@@ -55,7 +55,7 @@ public final class RoadPlanningJobs {
     System.getLogger("SplineRoads/planner").log(e instanceof RoadPlanningBudget.Aborted?System.Logger.Level.WARNING:System.Logger.Level.INFO,"Ramp preview: "+e.getMessage());
     if(!(e instanceof IllegalArgumentException)&&!(e instanceof RoadPlanningBudget.Aborted))System.getLogger("SplineRoads/planner").log(System.Logger.Level.ERROR,"Preview error",e);
     var reply=new CompoundTag();reply.putString("Kind","laneRampCheck");reply.putLong("Request",t.getLong("Request"));
-    reply.putString("Dimension",p.level().dimension().location().toString());reply.putString("Error",e.getMessage()==null?"匝道预览失败，详见 latest.log":e.getMessage());RoadNetwork.open(p,reply);
+    reply.putString("Dimension",p.level().dimension().location().toString());reply.putString("Error",e.getMessage()==null?"匝道预览失败，详见 latest.log":e.getMessage());LaneRamps.conflictRoads(reply,p,reply.getString("Error"));RoadNetwork.open(p,reply);
   }
   private RoadPlanningJobs(){}
 }

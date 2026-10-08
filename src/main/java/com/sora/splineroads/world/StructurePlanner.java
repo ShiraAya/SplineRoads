@@ -34,6 +34,7 @@ final class StructurePlanner {
     boolean laneEdges=LaneTopology.metadata(built.record).link()!=null||nearby.stream().anyMatch(r->LaneTopology.metadata(r.record).link()!=null);
     var railJoin=laneEdges?new RoadRailJoin(nearby.stream().map(r->new RoadRailJoin.Neighbor(r.mesh,
         RoadSurface.higherPriority(r.record.id(),r.mesh,built.record.id(),built.mesh))).toList()):null;
+    var capMouths=RoadRailJoin.mouths(nearby.stream().filter(r->LaneMerge.linkedTo(built.mesh,r.mesh)||LaneMerge.linkedTo(r.mesh,built.mesh)).map(r->r.mesh).toList());
     var approaches = built.record.assembly() == null ? List.<RoadSignals.Approach>of()
         : RoadSignals.approaches(built.mesh, nearby.stream()
             .filter(r -> built.record.assembly().equals(r.record.assembly()))
@@ -112,6 +113,11 @@ final class StructurePlanner {
                 return railJoin==null?RoadStructures.Ground.super.railSpans(a,b,outside):railJoin.exposed(a,b,outside);
               }
 
+              public List<RoadRailJoin.Span> capRailSpans(V a,V b,V outside){
+                var result=new ArrayList<RoadRailJoin.Span>();
+                for(var span:railSpans(a,b,outside))result.addAll(capMouths.exposed(span.a(),span.b()));
+                return result;
+              }
               public boolean joined(V point) {
                 if(LanePoints.opening(built.mesh,point))return true;
                 for (var other : nearby)

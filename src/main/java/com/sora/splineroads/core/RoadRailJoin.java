@@ -157,6 +157,23 @@ public final class RoadRailJoin {
     }
     return List.copyOf(out);
   }
+  /** Account for the slab end cap and the inward rail offset at a declared joining port.
+   * The caller supplies only linked neighbors; no proximity-only opening is invented. */
+  public static RoadRailJoin mouths(List<Mesh> linked){
+    var extensions=new ArrayList<Neighbor>();
+    for(var mesh:linked)for(boolean start:new boolean[]{true,false}){
+      int n=mesh.samples().size();if(n<2)continue;
+      var at=start?mesh.first():mesh.last();var next=mesh.samples().get(start?1:n-2);
+      V delta=at.center().sub(next.center());double run=delta.horizontalLength();if(run<1e-8)continue;
+      var layout=RoadProfile.layout(mesh,at);
+      // Motor width only. Shoulders do not authorize opening a neighboring slot.
+      double half=(layout.motorMax()-layout.motorMin())/2;
+      V center=at.at(layout.motorCenter(),0),extension=delta.mul(.86/run);
+      var samples=List.of(new Sample(center.sub(extension),at.left(),0,half),new Sample(center.add(extension),at.left(),1.72,half));
+      extensions.add(new Neighbor(RoadRibbon.mesh(samples,mesh.settings()),true));
+    }
+    return new RoadRailJoin(extensions);
+  }
   private static boolean clip(double[] t,double a,double b,double min){
     double d=b-a;if(Math.abs(d)<1e-12)return a>=min;
     double crossing=(min-a)/d;if(d>0)t[0]=Math.max(t[0],crossing);else t[1]=Math.min(t[1],crossing);

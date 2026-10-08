@@ -15,6 +15,9 @@ public final class LaneRampCorridor {
   }
   /** AUTO may pass over a low road and under another elevated road in one route. */
   public static Mesh solveMixed(Mesh base,double freeFrom,double freeTo,List<Bound> constraints,double grade){
+    return solveMixed(base,freeFrom,freeTo,constraints,grade,false);
+  }
+  public static Mesh solveMixed(Mesh base,double freeFrom,double freeTo,List<Bound> constraints,double grade,boolean monotoneOnly){
     LaneRampGrade.checked(grade);int n=base.samples().size();
     double[] x=new double[n],lo=new double[n],hi=new double[n],y=new double[n];
     for(int i=0;i<n;i++){
@@ -69,6 +72,7 @@ public final class LaneRampCorridor {
     // only an actual crossing bound can require a crest/valley.
     int monotone=tangentAllows?direction:2;
     if(monotone==2||!propagate(x,lo,hi,grade,monotone)){
+      if(monotoneOnly)throw failure(base,freeFrom,freeTo,grade,firstConflict(lo,hi),"此候选无法单调连接，继续检查其他路线");
       lo=lower;hi=upper;monotone=2;
       if(!propagate(x,lo,hi,grade,monotone))throw failure(base,freeFrom,freeTo,grade,firstConflict(lo,hi),"端口、障碍与逐段坡比约束无法同时满足");
     }

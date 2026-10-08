@@ -175,6 +175,8 @@ public final class RoadStructures {
       return joined(outside)?List.of():List.of(new RoadRailJoin.Span(a,b));
     }
 
+    default List<RoadRailJoin.Span> capRailSpans(V a,V b,V outside){return railSpans(a,b,outside);}
+
     /** Leave the node's editing target clear of raised median furniture. */
     default boolean marker(V point) {
       return false;
@@ -350,7 +352,7 @@ public final class RoadStructures {
       boolean outerB=Math.abs(cap.b().sub(at.center()).dot(at.left()))>=at.halfWidth()-1e-5;
       V first=cap.a().add(axis.mul((outerA?1:-1)*RoadRailJoin.INSET)).add(inward),last=cap.b().add(axis.mul((outerB?-1:1)*RoadRailJoin.INSET)).add(inward);
       V outside=mid.sub(axis.left().mul(.4));
-      for(var span:ground.railSpans(first,last,outside)){
+      for(var span:ground.capRailSpans(first,last,outside)){
         int steps=Math.max(1,(int)Math.ceil(span.a().distance(span.b())/.5));
         for(int j=0;j<steps;j++){
           V a=span.a().add(span.b().sub(span.a()).mul(j/(double)steps));

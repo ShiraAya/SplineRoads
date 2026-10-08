@@ -18,7 +18,7 @@ public final class LaneRampScreen extends Screen {
   private LanePoints.Path path;private boolean pending,gradeOverride;
   private LanePoints.Departure departure;private LanePoints.Arrival arrival;
   private LanePoints.Elevation elevation;private LanePoints.Landing landing;
-  private List<RoadGeometry.Mesh> checkedRoads=List.of();
+  private List<RoadGeometry.Mesh> checkedRoads=List.of(),conflictRoads=List.of();
   private String radiusText,transitionText;
   private EditBox radius,transition;private Button build,previewButton,details,back;private boolean diagnostic;private UUID token;private RoadGeometry.Mesh checkedMesh;
   private long request=++sequence,pendingSince;private int x,y;
@@ -38,11 +38,12 @@ public final class LaneRampScreen extends Screen {
     }
     resume();
   }
-  public static void resume(){if(active!=null){ClientRoads.preview=active.checkedMesh;ClientRoads.nodePreviews=active.checkedRoads;Minecraft.getInstance().setScreen(active);}}
+  public static void resume(){if(active!=null){active.showWorld();Minecraft.getInstance().setScreen(active);}}
+  private void showWorld(){ClientRoads.conflictPreview=!conflictRoads.isEmpty();ClientRoads.preview=conflictRoads.isEmpty()?checkedMesh:conflictRoads.get(0);ClientRoads.nodePreviews=conflictRoads.isEmpty()?checkedRoads:conflictRoads;}
   public static void resume(CompoundTag t){if(active==null&&t.contains("Fallback"))open(t.getCompound("Fallback"));else resume();}
-  public static void clear(){active=null;++sequence;ClientRoads.preview=null;ClientRoads.nodePreviews=List.of();}
+  public static void clear(){ClientRoads.conflictPreview=false;active=null;++sequence;ClientRoads.preview=null;ClientRoads.nodePreviews=List.of();}
   public static void checkedReply(CompoundTag t){if(active!=null)active.checked(t);}
-  public static void failedPending(String message){if(active!=null&&active.pending&&active.token!=null)active.failed(message);}
+  public static void failedPending(String message,CompoundTag reply){if(active!=null&&active.pending&&active.token!=null)active.failed(message,reply);}
   @Override protected void init(){
     x=(width-354)/2;y=(height-306)/2;
     for(var choice:LanePoints.Path.values())addRenderableWidget(Button.builder(Component.literal((choice==path?"● ":"")+choice.label),b->{path=choice;invalidate();rebuildWidgets();}).bounds(x+12+choice.ordinal()*66,y+51,64,20).build());
@@ -61,7 +62,7 @@ public final class LaneRampScreen extends Screen {
 
   }
   private void cancelPreview(){var t=new CompoundTag();t.putString("Action","laneRampCancel");t.putLong("Request",request);RoadNetwork.CHANNEL.sendToServer(new RoadNetwork.Action(t));}
-  private void invalidate(){if(pending)cancelPreview();diagnostic=false;if(details!=null){details.visible=false;details.active=false;}token=null;checkedMesh=null;checkedRoads=List.of();pending=false;if(build!=null)build.active=false;if(previewButton!=null)previewButton.active=true;ClientRoads.preview=null;ClientRoads.nodePreviews=List.of();request=++sequence;status=switch(departure){
+  private void invalidate(){conflictRoads=List.of();ClientRoads.conflictPreview=false;if(pending)cancelPreview();diagnostic=false;if(details!=null){details.visible=false;details.active=false;}token=null;checkedMesh=null;checkedRoads=List.of();pending=false;if(build!=null)build.active=false;if(previewButton!=null)previewButton.active=true;ClientRoads.preview=null;ClientRoads.nodePreviews=List.of();request=++sequence;status=switch(departure){
       case TEMPORARY -> "保留车道分离：直连匝道，主路暂时关闭该车道；净空安全后恢复。地面封闭绿化、高架直角孔区。请预览。";
       case DETACH -> "整车道分离：直连匝道，主路下游取消该车道。请预览。";
       case BRANCH -> "普通分流：原车道继续直行；不是先关闭再恢复。请预览。";
@@ -71,7 +72,7 @@ public final class LaneRampScreen extends Screen {
   private void preview(){try{invalidate();var t=command("laneRampPreview");pending=true;pendingSince=System.nanoTime();previewButton.active=false;RoadNetwork.CHANNEL.sendToServer(new RoadNetwork.Action(t));status="正在后台检查方向、汇入范围与净空，可取消计算…";}catch(IllegalArgumentException e){failed(e.getMessage());}}
   public void checked(CompoundTag t){
     if(t.getLong("Request")!=request)return;pending=false;
-    if(t.contains("Error")){failed(t.getString("Error"));return;}
+    if(t.contains("Error")){failed(t.getString("Error"),t);return;}
     try{var r=RoadRecord.load(t.getCompound("Road"));checkedMesh=r.mesh();var views=new ArrayList<RoadGeometry.Mesh>();for(Tag value:t.getList("ChangedRoads",Tag.TAG_COMPOUND))views.add(RoadRecord.load((CompoundTag)value).mesh());checkedRoads=views.isEmpty()?List.of(checkedMesh):List.copyOf(views);ClientRoads.preview=checkedMesh;ClientRoads.nodePreviews=checkedRoads;token=t.getUUID("Token");build.active=true;previewButton.active=true;
       double offset=t.getDouble("TargetOffset");String landing=payload.getCompound("To").hasUUID("Junction")?"":String.format(Locale.ROOT," 汇入口：沿 B 行驶方向 %+.1f 格。",offset);
       String grade=t.contains("GradeLimit")?" 坡比上限 "+LaneRampGrade.label(t.getDouble("GradeLimit"))+"。":"";
@@ -83,7 +84,11 @@ public final class LaneRampScreen extends Screen {
     }catch(IllegalArgumentException e){failed(e.getMessage());}
   }
   private void submit(){try{if(token==null||pending)return;var t=command("laneRamp");t.putUUID("Token",token);pending=true;pendingSince=System.nanoTime();status="正在建造：服务端校验接头、生成设施并写入道路，请勿重复提交。";build.active=false;previewButton.active=false;RoadNetwork.CHANNEL.sendToServer(new RoadNetwork.Action(t));}catch(IllegalArgumentException e){failed(e.getMessage());}}
-  public void failed(String s){status=s;diagnostic=true;if(details!=null){details.visible=true;details.active=true;}pending=false;if(build!=null)build.active=false;if(previewButton!=null)previewButton.active=true;token=null;checkedMesh=null;checkedRoads=List.of();ClientRoads.preview=null;ClientRoads.nodePreviews=List.of();}
+  public void failed(String s){failed(s,new CompoundTag());}
+  public void failed(String s,CompoundTag reply){
+    var roads=new ArrayList<RoadGeometry.Mesh>();
+    for(Tag value:reply.getList("ConflictRoads",Tag.TAG_COMPOUND))try{roads.add(RoadRecord.load((CompoundTag)value).mesh());}catch(IllegalArgumentException ignored){}
+    conflictRoads=List.copyOf(roads);status=RoadConflictIds.display(s)+(roads.isEmpty()?"":"；冲突道路已标红，返回实景查看，Shift＋右键清除。");diagnostic=true;if(details!=null){details.visible=true;details.active=true;}pending=false;if(build!=null)build.active=false;if(previewButton!=null)previewButton.active=true;token=null;checkedMesh=null;checkedRoads=List.of();showWorld();}
   private static String brief(String message){
     int end=message.indexOf('；');if(end<0)end=message.indexOf('。');
     String first=end>0?message.substring(0,end):message;

@@ -40,6 +40,38 @@ public final class RoadData extends SavedData {
   public final RoadIndex index = new RoadIndex();
   private ServerLevel owningLevel;
   boolean withinHeight(com.sora.splineroads.core.RoadGeometry.Mesh mesh){return owningLevel==null||mesh.min().y()-mesh.settings().thickness()>=owningLevel.getMinBuildHeight()&&mesh.max().y()+4<owningLevel.getMaxBuildHeight();}
+  /** Main-thread, read-only natural surface constraints. Never scan the world on the planner worker. */
+  List<com.sora.splineroads.core.LaneRampCorridor.Bound> connectorTerrain(Mesh mesh){
+    if(owningLevel==null)return List.of();
+    var bounds=new ArrayList<com.sora.splineroads.core.LaneRampCorridor.Bound>();var columns=new HashMap<Long,Double>();
+    try(var work=RoadWorkChunks.open(owningLevel)){
+      work.load(com.sora.splineroads.core.RoadCoverage.chunks(mesh,2));
+      for(var sample:mesh.samples()){
+        double floor=Double.NEGATIVE_INFINITY;
+        for(double lateral=-sample.halfWidth()+.1;lateral<=sample.halfWidth()-.1+1e-7;lateral+=Math.min(1,Math.max(.2,sample.halfWidth()))){
+          V point=sample.at(lateral,0);int x=(int)Math.floor(point.x()),z=(int)Math.floor(point.z());long column=((long)x<<32)^(z&0xffffffffL);
+          Double top=columns.get(column);
+          if(top==null){
+            top=Double.NEGATIVE_INFINITY;
+            int ceiling=Math.min(owningLevel.getMaxBuildHeight()-1,Math.max((int)Math.ceil(mesh.max().y()+8),owningLevel.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,x,z)));
+            for(int y=ceiling;y>=owningLevel.getMinBuildHeight();y--){
+              BlockPos pos=new BlockPos(x,y,z);BlockState state=owningLevel.getBlockState(pos);
+              state=com.sora.splineroads.core.RoadFoundation.source(pos.asLong(),state,RoadBlocks.isCollider(state)||state.is(SplineRoads.TUNNEL_AIR.get()),state.isAir(),terrainOriginal,terrainFill,Blocks.AIR.defaultBlockState());
+              if(state.isAir()||state.is(SplineRoads.NODE.get())||state.is(net.minecraft.tags.BlockTags.LEAVES)||state.is(net.minecraft.tags.BlockTags.LOGS)||!state.getFluidState().isEmpty())continue;
+              var shape=state.getCollisionShape(owningLevel,pos);
+              // Plants, signs, fences and furniture are cleared by the normal transaction.
+              if(!net.minecraft.world.level.block.Block.isShapeFullBlock(shape))continue;
+              top=y+1d;break;
+            }
+            columns.put(column,top);
+          }
+          floor=Math.max(floor,top);
+        }
+        if(Double.isFinite(floor))bounds.add(new com.sora.splineroads.core.LaneRampCorridor.Bound(sample.distance(),sample.distance(),Math.max(0,floor-sample.center().y()),true));
+      }
+    }
+    return bounds;
+  }
   private Set<UUID> confirmedLaneDeletes=Set.of();
   void removeWithDependents(ServerLevel level,ServerPlayer player,UUID id,Set<UUID> dependents){for(var v:dependents)if(player!=null)requireOwner(player,index.roads.get(v).record.owner());confirmedLaneDeletes=Set.copyOf(dependents);try{remove(level,player,id);}finally{confirmedLaneDeletes=Set.of();}}
   final Map<UUID,RoadRecord> streets = new LinkedHashMap<>();

@@ -199,6 +199,30 @@ public final class RoadClearance {
     return false;
   }
 
+  /** Vertical alternatives against saved solids (rails, planter walls and piers).
+   * Uses the same clipped triangles and framed heights as the final invasion test. */
+  public static List<Contact> structureContacts(RoadStructures.Part part,Mesh road,double headroom){
+    var out=new ArrayList<Contact>();var base=part.base();if(base.size()<3)return out;
+    var index=grid(road);
+    for(int i=1;i<base.size()-1;i++){
+      var t=new Triangle(base.get(0),base.get(i),base.get(i+1),0,0,0);if(Math.abs(t.det())<EPS)continue;
+      for(var q:index.near(t)){
+        var polygon=intersection(t.polygon(),q.polygon());if(area(polygon)<AREA_EPS)continue;
+        double from=Double.POSITIVE_INFINITY,to=Double.NEGATIVE_INFINITY,raise=0,lower=0;
+        double minGap=Double.POSITIVE_INFINITY,maxGap=Double.NEGATIVE_INFINITY;V ours=null,other=null;
+        for(var p:polygon){double deck=q.height(p),bottom=t.height(p),gap=bottom-deck;
+          from=Math.min(from,q.station(p));to=Math.max(to,q.station(p));minGap=Math.min(minGap,gap);maxGap=Math.max(maxGap,gap);
+          raise=Math.max(raise,bottom+part.height()+road.settings().thickness()+.10-deck);
+          lower=Math.max(lower,deck+headroom+.10-bottom);
+          ours=new V(p.x(),deck,p.z());other=new V(p.x(),bottom+part.height()/2,p.z());
+        }
+        boolean blocked=minGap<headroom-EPS&&maxGap>-road.settings().thickness()+.04-part.height()+EPS;
+        out.add(new Contact(from,to,ours,other,blocked?0:REQUIRED,raise,lower));
+      }
+    }
+    return out;
+  }
+
   // The same immutable candidate is inspected by height solving, reopening and
   // final validation. Retain its exact tessellation, not just its destination grid.
   private static final WeakIdentityCache<Mesh,List<Triangle>> TRIANGLES=

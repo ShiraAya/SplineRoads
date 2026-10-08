@@ -226,8 +226,9 @@ public final class RoadNetwork {
     t.putString("Type", "result");
     t.putBoolean("Success", success);
     t.putString("Message", message);
+    if(!success)LaneRamps.conflictRoads(t,p,message);
     send(p, t);
-    p.displayClientMessage(Component.literal(message), false);
+    p.displayClientMessage(Component.literal(com.sora.splineroads.core.RoadConflictIds.display(message)), false);
   }
 
   private static final Map<UUID, Long> LAST_ACTION = new HashMap<>();
@@ -255,7 +256,7 @@ public final class RoadNetwork {
     if(t.getString("Action").equals("interchangePreview")||t.getString("Action").equals("laneRampPreview")){
       try{perform(player,t);}catch(RuntimeException e){
         if(!(e instanceof IllegalArgumentException))System.getLogger("SplineRoads/build").log(System.Logger.Level.ERROR,"Road preview failed",e);
-        CompoundTag reply=new CompoundTag();reply.putString("Kind",t.getString("Action").equals("laneRampPreview")?"laneRampCheck":"corridorCheck");reply.putLong("Request",t.getLong("Request"));reply.putString("Dimension",player.level().dimension().location().toString());reply.putString("Error",e.getMessage()==null?"预览参数无效":e.getMessage());open(player,reply);
+        CompoundTag reply=new CompoundTag();reply.putString("Kind",t.getString("Action").equals("laneRampPreview")?"laneRampCheck":"corridorCheck");reply.putLong("Request",t.getLong("Request"));reply.putString("Dimension",player.level().dimension().location().toString());reply.putString("Error",e.getMessage()==null?"预览参数无效":e.getMessage());LaneRamps.conflictRoads(reply,player,reply.getString("Error"));open(player,reply);
       }return;
     }
     try {

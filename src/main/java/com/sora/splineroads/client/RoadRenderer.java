@@ -415,7 +415,7 @@ public final class RoadRenderer {
   }
   private static void drawPreview(RenderLevelStageEvent event) {
     if (ClientRoads.preview == null) { clearPreviewBuffer(); return; }
-    boolean deleting = Minecraft.getInstance().screen instanceof RoadDeleteScreen;
+    boolean deleting = Minecraft.getInstance().screen instanceof RoadDeleteScreen || ClientRoads.conflictPreview;
     boolean junction = ClientRoads.preview == JunctionScreen.previewMesh;
     if (ghostMesh != ClientRoads.preview || ghostRoads != ClientRoads.nodePreviews
         || ghostFaces != JunctionScreen.previewFaces || ghostDelete != deleting || ghostJunction != junction) {
@@ -463,7 +463,7 @@ public final class RoadRenderer {
               l,
               r,
               rr,
-              (mc.screen instanceof RoadDeleteScreen ? 0xFF5D45 : 0x3FDCDD),
+              (mc.screen instanceof RoadDeleteScreen || ClientRoads.conflictPreview ? 0xFF5D45 : 0x3FDCDD),
               105,
               LightTexture.FULL_BRIGHT,
               false,
@@ -474,7 +474,7 @@ public final class RoadRenderer {
               l,
               rr,
               ll,
-              (mc.screen instanceof RoadDeleteScreen ? 0xFF5D45 : 0x3FDCDD),
+              (mc.screen instanceof RoadDeleteScreen || ClientRoads.conflictPreview ? 0xFF5D45 : 0x3FDCDD),
               105,
               LightTexture.FULL_BRIGHT,
               false,
@@ -497,7 +497,7 @@ public final class RoadRenderer {
             triangle(pose,c,vertices.get(0).add(new V(0,.035,0)),vertices.get(i).add(new V(0,.035,0)),
                 vertices.get(i+1).add(new V(0,.035,0)),face.color(),205,LightTexture.FULL_BRIGHT,false,true);
         }
-      if (!(mc.screen instanceof RoadDeleteScreen) && ClientRoads.nodePreviews.size() < 3)
+      if (!ClientRoads.conflictPreview && !(mc.screen instanceof RoadDeleteScreen) && ClientRoads.nodePreviews.size() < 3)
         for (var face : previewFurniture(ClientRoads.preview)) {
           var vertices = face.points();
           for (int i = 1; i < vertices.size() - 1; i++)

@@ -1,1 +1,1 @@
-package com.sora.splineroads.client;import com.sora.splineroads.core.RoadGeometry.Mesh;import java.util.*;public class ClientRoads {public static Mesh preview;public static List<Mesh> nodePreviews=List.of();}
+package com.sora.splineroads.client;import com.sora.splineroads.core.RoadGeometry.Mesh;import java.util.*;public class ClientRoads {public static boolean conflictPreview;public static Mesh preview;public static List<Mesh> nodePreviews=List.of();}

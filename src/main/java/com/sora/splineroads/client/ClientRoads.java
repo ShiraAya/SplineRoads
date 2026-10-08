@@ -38,6 +38,7 @@ public final class ClientRoads {
 
   public static RoadGeometry.Mesh preview;
   public static List<RoadGeometry.Mesh> nodePreviews = List.of();
+  public static boolean conflictPreview;
   public static String error = "";
   private static String dimension = "";
   private static Object currentLevel;
@@ -88,7 +89,7 @@ public final class ClientRoads {
         if (mc.screen instanceof LaneLineScreen screen) screen.failed(error);
         if (mc.screen instanceof AttachedPointScreen screen) screen.failed(error);
         if (mc.screen instanceof LanePointScreen screen) screen.failed(error);
-        if (mc.screen instanceof LaneRampScreen screen) screen.failed(error);else LaneRampScreen.failedPending(error);
+        if (mc.screen instanceof LaneRampScreen screen) screen.failed(error,t);else LaneRampScreen.failedPending(error,t);
         if (mc.screen instanceof JunctionRoadScreen screen) screen.failed(error);
         if (mc.screen instanceof YJunctionScreen screen) screen.failed(error);
         if (mc.screen instanceof GantryScreen screen) screen.failed(error);

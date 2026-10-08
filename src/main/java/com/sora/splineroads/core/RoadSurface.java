@@ -266,7 +266,7 @@ public final class RoadSurface {
           for (int j = 0; j < Math.min(aa.size(),bb.size()); j++)
             if ((aa.get(j)>la.motorMin()+.12&&aa.get(j)<la.motorMax()-.12||bb.get(j)>lb.motorMin()+.12&&bb.get(j)<lb.motorMax()-.12) && !overrideLine(markings,mesh,a,b,"divider:"+j,aa.get(j),bb.get(j),dividers) && (dash || closedSlotBoundary(mesh,(a.distance()+b.distance())/2,(aa.get(j)+bb.get(j))/2) || RoadSignals.solid(approaches, (a.distance() + b.distance()) / 2,
                 (aa.get(j) + bb.get(j)-la.medianCenter()-lb.medianCenter()) / 2)))
-              stripe(markings, a, b, aa.get(j), bb.get(j), .12, false, defaultDividers);
+              stripe(markings, a, b, aa.get(j), bb.get(j), .12, false, defaultDividers, .35);
         }
         continue;
       }
@@ -396,7 +396,8 @@ public final class RoadSurface {
       double ob,
       double width,
       boolean yellow,
-      Grid joined) {
+      Grid joined) {stripe(output,a,b,oa,ob,width,yellow,joined,.06);}
+  private static void stripe(List<Face> output,Sample a,Sample b,double oa,double ob,double width,boolean yellow,Grid joined,double tolerance) {
     List<V> quad =
         List.of(
             a.at(oa - width / 2, 0),
@@ -407,7 +408,7 @@ public final class RoadSurface {
         List.of(
             List.of(quad.get(0), quad.get(1), quad.get(2)),
             List.of(quad.get(0), quad.get(2), quad.get(3))))
-      for (List<V> part : visible(triangle, joined, .06))
+      for (List<V> part : visible(triangle, joined, tolerance))
         output.add(new Face(part, yellow ? 0xFAC136 : 0xEDEEE2));
   }
 
