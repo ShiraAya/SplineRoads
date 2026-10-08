@@ -1,4 +1,4 @@
-name: SR435 live feedback build and matrix
+name: SR436 second feedback build and matrix
 on:
   push:
     branches: [chat/sr-04021-ramp-matrix]
@@ -24,7 +24,9 @@ jobs:
       - name: Core and model regression
         run: bash tools/test_ramp39_model.sh
       - name: Screenshot geometry regression
-        run: bash tools/check_sr435.sh
+        run: |
+          bash tools/check_sr435.sh
+          bash tools/check_sr436.sh
       - name: Full Forge build
         run: bash gradlew --no-daemon --max-workers=2 compileJava compileGameTestJava jar
       - name: Real 32-case Minecraft build matrix
@@ -34,7 +36,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: sr435-verified-${{ github.sha }}
+          name: sr436-verified-${{ github.sha }}
           path: |
             build/libs/*.jar
             build/ramp39-core/logs/

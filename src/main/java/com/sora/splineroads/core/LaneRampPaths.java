@@ -28,8 +28,18 @@ public final class LaneRampPaths {
       }catch(IllegalArgumentException ignored){}return out;
     }
     V delta=b.position().sub(a.position());double distance=delta.horizontalLength();
-    if(distance<4||distance>2048||delta.dot(a.direction())<0||delta.dot(b.direction())<0)return List.of();
+    if(distance<4||distance>2048)return List.of();
     var out=new ArrayList<Candidate>();
+    if(delta.dot(a.direction())<0||delta.dot(b.direction())<0){
+      // Backward-facing ports need a sweeping return, not a small-radius CSC
+      // rectangle. A biarc preserves both tangents with two joined circular arcs.
+      try{
+        var frames=biarc(a,b,options.radius());
+        var mesh=finish(a,b,settings,frames,0,maxGrade);
+        if(RoadRibbon.minRadius(mesh)+1e-3>=options.radius())out.add(new Candidate(LanePoints.Path.AUTO,mesh));
+      }catch(IllegalArgumentException ignored){}
+      return List.copyOf(out);
+    }
     for(double fraction:new double[]{.55,.4,.7})try{
       RoadPlanningBudget.check();var frames=new ArrayList<Frame>();
       bezier(frames,a.position(),a.direction(),b.position(),b.direction(),Math.max(options.radius(),distance*fraction));
@@ -37,6 +47,31 @@ public final class LaneRampPaths {
       if(RoadRibbon.minRadius(mesh)+1e-3<options.radius())continue;
       out.add(new Candidate(LanePoints.Path.AUTO,mesh));
     }catch(IllegalArgumentException ignored){}return out;
+  }
+  private static List<Frame> biarc(Port a,Port b,double minimumRadius){
+    V v=b.position().sub(a.position());v=new V(v.x(),0,v.z());
+    double aa=2*(1-a.direction().dot(b.direction())),bb=2*v.dot(a.direction().add(b.direction()));
+    double squared=v.dot(v),d;
+    if(Math.abs(aa)<1e-9){if(bb<=1e-9)throw new IllegalArgumentException("平行回环需要更多空间");d=squared/bb;}
+    else d=(-bb+Math.sqrt(bb*bb+4*aa*squared))/(2*aa);
+    V middle=a.position().add(b.position()).add(a.direction().sub(b.direction()).mul(d)).mul(.5);
+    var first=new ArrayList<Frame>();var reverse=new ArrayList<Frame>();
+    arcTo(first,a.position(),a.direction(),middle,minimumRadius);
+    arcTo(reverse,b.position(),b.direction().mul(-1),middle,minimumRadius);
+    if(first.get(first.size()-1).d().dot(reverse.get(reverse.size()-1).d().mul(-1))<.999999)
+      throw new IllegalArgumentException("回环圆弧切线不连续");
+    for(int i=reverse.size()-1;i>=0;i--){var f=reverse.get(i);add(first,f.p(),f.d().mul(-1));}
+    return first;
+  }
+  private static void arcTo(List<Frame> frames,V start,V direction,V end,double minimumRadius){
+    V chord=end.sub(start);chord=new V(chord.x(),0,chord.z());double side=chord.dot(direction.left());
+    if(Math.abs(side)<1e-8){if(chord.dot(direction)<=0)throw new IllegalArgumentException("圆弧折返");line(frames,start,end,direction);return;}
+    double signedRadius=chord.dot(chord)/(2*side),radius=Math.abs(signedRadius);
+    if(radius+1e-6<minimumRadius)throw new IllegalArgumentException("回环半径不足");
+    V center=start.add(direction.left().mul(signedRadius));
+    V endDirection=end.sub(center).left().mul(signedRadius>0?1:-1).horizontalUnit();
+    double turn=positive((signedRadius>0?1:-1)*(angle(endDirection)-angle(direction)));
+    if(signedRadius>0)arc(frames,center,radius,angle(direction),turn);else arcLeft(frames,center,radius,angle(direction),turn);
   }
   /** Complete circle-straight-circle direction families for AUTO fallback.
    * Short right/left turns cannot reach a target behind its incoming tangent.

@@ -17,7 +17,15 @@ public final class LaneDeck {
     var out=new ArrayList<Integer>();for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.temporary()&&!out.contains(cut.lane()))out.add(cut.lane());
     var at=RoadStructures.sample(raw,d);out.sort(Comparator.comparingDouble(slot->LanePoints.lane(raw,d,slot).position().sub(at.center()).dot(at.left())));return List.copyOf(out);
   }
-  private static List<Span> holes(Mesh mesh,Sample sample){return holes(mesh,sample,sample.distance());}
+  private static List<Span> holes(Mesh mesh,Sample sample){
+    // Terminal faces use the interior cross-section. A rectangular cut is open
+    // at its exact mathematical endpoint, but that must not restore a paper-thin
+    // wall across a lane which remains closed right up to the road end.
+    double probe=sample.distance();
+    if(Math.abs(probe-mesh.first().distance())<1e-7)probe+=1e-5;
+    if(Math.abs(probe-mesh.last().distance())<1e-7)probe-=1e-5;
+    return holes(mesh,sample,probe);
+  }
   private static List<Span> holes(Mesh mesh,Sample sample,double interval){
     var raw=LaneSections.reference(mesh);var holes=new ArrayList<Span>();
     for(int slot:slots(mesh)){
@@ -47,7 +55,12 @@ public final class LaneDeck {
     var sample=RoadStructures.sample(mesh,station);
     return !present(mesh,sample,side*(sample.halfWidth()-.025),0);
   }
-  public static List<Span> spans(Mesh mesh,Sample sample){return spans(mesh,sample,sample.distance());}
+  public static List<Span> spans(Mesh mesh,Sample sample){
+    double probe=sample.distance();
+    if(Math.abs(probe-mesh.first().distance())<1e-7)probe+=1e-5;
+    if(Math.abs(probe-mesh.last().distance())<1e-7)probe-=1e-5;
+    return spans(mesh,sample,probe);
+  }
   private static List<Span> spans(Mesh mesh,Sample sample,double interval){
     if(!hasOpenings(mesh))return List.of(new Span(-sample.halfWidth(),sample.halfWidth(),true,true));
     var out=new ArrayList<Span>();double low=-sample.halfWidth();boolean wall=true;

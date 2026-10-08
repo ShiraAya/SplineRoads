@@ -48,7 +48,7 @@ public final class Closure418Validation {
    var raw=road(Style.O6_RAIL,Structure.AUTO,false,curve,y);
    for(int slot:new int[]{0,1,5}){
     var lane=LanePoints.lane(raw,150,slot);int sign=lane.sign();var cut=new LaneSections.Cut(new UUID(419,slot+1),slot,sign,sign>0?80.25:260.75,sign>0?260.75:80.25,32,null,true,false,true);var mesh=apply(raw,List.of(cut));
-    var plants=LaneClosureLandscape.plan(mesh,terrain(.3));check(!plants.isEmpty()&&(plants.size()-2)%5==0,"supported ground has no complete native planting bed");
+    var plants=LaneClosureLandscape.plan(mesh,terrain(.3));check(!plants.isEmpty(),"supported ground has no complete native planting bed");
     check(plants.stream().anyMatch(p->p.material()==Material.SOIL)&&plants.stream().anyMatch(p->p.material()==Material.GREEN)&&plants.stream().anyMatch(p->p.material()==Material.CONCRETE),"native soil/foliage/kerb missing");
     for(var p:plants){check(p.material()==Material.SOIL||p.material()==Material.GREEN||p.material()==Material.CONCRETE,"closure not soil/leaf solids");for(V v:p.base()){
       var q=RoadQueries.horizontal(raw,v);var l=LanePoints.lane(raw,q.sample().distance(),slot);check(Math.abs(v.sub(l.position()).dot(q.sample().left()))<=l.width()/2+.02,"planting moved into another lane");

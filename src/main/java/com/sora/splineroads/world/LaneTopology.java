@@ -100,8 +100,10 @@ public final class LaneTopology {
     if(l.from().road()!=null)scope.add(l.from().road());if(l.to().road()!=null)scope.add(l.to().road());
   }
   private static void addScopeRecord(RoadRecord r,Set<UUID> scope,Set<net.minecraft.core.BlockPos> nodes,Set<UUID> groups){
-    if(r==null)return;nodes.add(r.a());nodes.add(r.b());if(r.assembly()!=null)groups.add(r.assembly());
-    addLinkHosts(r,scope);var l=metadata(r).link();if(l!=null&&l.to().junction()!=null)groups.add(l.to().junction());
+    if(r==null)return;var l=metadata(r).link();
+    // Connector endpoints are lane points, not road-network nodes. Add hosts only
+    // after dependent closure, otherwise one new ramp enlists every sibling.
+    if(l==null){nodes.add(r.a());nodes.add(r.b());if(r.assembly()!=null)groups.add(r.assembly());}
   }
   private static boolean topologyChanged(RoadRecord a,RoadRecord b){
     return !a.a().equals(b.a())||!a.b().equals(b.b())||!a.start().equals(b.start())||!a.end().equals(b.end())
@@ -214,7 +216,7 @@ public final class LaneTopology {
     return result;
   }
   private static boolean adjacentBefore(RoadData data,RoadRecord candidate,RoadRecord old){var b=data.index.roads.get(candidate.id());var r=b==null?candidate:b.record;return r.a().equals(old.a())||r.a().equals(old.b())||r.b().equals(old.a())||r.b().equals(old.b());}
-  private static boolean sameGeometry(RoadData data,Map<UUID,RoadRecord> all,LanePoints.Ref ref){if(ref.road()==null)return true;var old=data.index.roads.get(ref.road());var now=all.get(ref.road());return old!=null&&now!=null&&old.mesh.samples().equals(now.mesh().samples());}
+  private static boolean sameGeometry(RoadData data,Map<UUID,RoadRecord> all,LanePoints.Ref ref){if(ref.road()==null)return true;var old=data.index.roads.get(ref.road());var now=all.get(ref.road());return old!=null&&now!=null&&old.record.rawMesh().samples().equals(now.rawMesh().samples());}
   private static boolean samePort(RoadData data,Map<UUID,RoadRecord> all,LanePoints.Ref ref){if(ref.road()==null)return true;var old=data.index.roads.get(ref.road());var now=all.get(ref.road());if(old==null||now==null||old.record.settings().style()!=now.settings().style())return false;try{return LaneRamps.port(old.record,point(old.record,ref.point())).equals(LaneRamps.port(now,point(now,ref.point())));}catch(IllegalArgumentException e){return false;}}
   private static void rebuild(RoadData data,UUID id,Map<UUID,RoadRecord> all,Set<UUID> done,Set<UUID> visiting,Set<UUID> scope){if(done.contains(id)||!scope.contains(id))return;var r=all.get(id);if(r==null)throw new IllegalArgumentException("依赖道路已不存在："+id);var l=metadata(r).link();if(l==null){done.add(id);return;}if(!visiting.add(id))throw new IllegalArgumentException("匝道引用出现循环依赖");rebuild(data,l.from().road(),all,done,visiting,scope);if(l.to().road()!=null)rebuild(data,l.to().road(),all,done,visiting,scope);
     var existing=data.index.roads.get(id);

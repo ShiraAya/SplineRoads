@@ -8,7 +8,9 @@ import java.util.*;
  * using it here removes exposed rails around tapers and grade-separated mouths.
  * Triangles retain real deck heights, holes, widths and flat longitudinal ends. */
 public final class RoadRailJoin {
-  public static final double INSET=.16;
+  // Keep even the 0.62 m highway footing wholly inside its owning deck.
+  // A 0.16 m inset left the base in the adjacent live-lane clearance corridor.
+  public static final double INSET=.32;
   public record Span(V a,V b) {}
   /** Higher-priority neighbour owns coincident boundaries; strict interiors always win. */
   public record Neighbor(Mesh mesh,boolean ownsBoundary) {}

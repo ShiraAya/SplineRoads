@@ -33,7 +33,7 @@ public final class LaneClosureLandscape {
     if(mesh.settings().structure()==Structure.TUNNEL)return List.of();
     var raw=LaneSections.reference(mesh);var result=new ArrayList<Part>();
     for(var cut:closedIntervals(mesh)){
-      int count=(int)Math.ceil(cut.end()-cut.begin());boolean[] clear=new boolean[count],planted=new boolean[count];
+      int count=(int)Math.ceil(cut.end()-cut.begin());boolean[] clear=new boolean[count];
       // Find whole usable planting runs. Independently clipping soil and leaves
       // created exposed soil wedges and chopped fronts under rising decks.
       for(int i=0;i<count;i++){
@@ -45,27 +45,28 @@ public final class LaneClosureLandscape {
         if(to-from>=MIN_GREEN_LENGTH){
           var run=new ArrayList<Part>();
           for(int j=i;j<end;j++){
-            double a=cut.begin()+j,b=Math.min(to,a+1);
+            double a=Math.max(from+.2,cut.begin()+j),b=Math.min(to-.2,cut.begin()+j+1);
+            if(b<=a)continue;
             run.addAll(bed(raw,cut.lane(),a,b,taper(a,from,to),taper(b,from,to)));
           }
           for(double d:new double[]{from+.1,to-.1}){
             var at=RoadStructures.sample(raw,d);var lane=LanePoints.lane(raw,d,cut.lane());
-            double width=(lane.width()-.12)*taper(d,from,to),depth=Math.max(.5,raw.settings().thickness()+.125);
+            double width=(lane.width()-.12)*taper(d<from+1?from+.2:to-.2,from,to),depth=Math.max(.5,raw.settings().thickness()+.125);
             V center=lane.position().add(new V(0,-depth,0));double half=Math.max(.08,width/2);
             run.add(new Part(center.sub(at.left().mul(half)),center.add(at.left().mul(half)),.2,depth+.35,false,Material.CONCRETE));
           }
-          if(run.stream().noneMatch(ground::blocked)){result.addAll(run);Arrays.fill(planted,i,end,true);}
+          if(run.stream().noneMatch(ground::blocked)){result.addAll(run);}
         }i=end;
       }
-      // Short/obstructed runs retain a low sealed foundation, without tiny shrubs,
-      // bare raised soil or a triangular daylight gap below the departing ramp.
-      for(int i=0;i<count;i++)if(!planted[i]){
+      // Seal the entire closed slot, including the corners beside tapered planting.
+      // Shrinking the greenery must never shrink its underlying road foundation.
+      for(int i=0;i<count;i++){
         double a=cut.begin()+i,b=Math.min(cut.end(),a+1);
         if(raised(mesh,cut.lane(),(a+b)/2,ground))continue;
         var la=LanePoints.lane(raw,a,cut.lane());var lb=LanePoints.lane(raw,b,cut.lane());
         var sa=RoadStructures.sample(raw,a);var sb=RoadStructures.sample(raw,b);double depth=Math.max(.5,raw.settings().thickness()+.125);
-        var pad=new Part(la.position().add(new V(0,-depth,0)),lb.position().add(new V(0,-depth,0)),Math.max(la.width(),lb.width())-.12,depth+.02,false,Material.CONCRETE)
-            .frames(sa.left().mul((la.width()-.12)/2),sb.left().mul((lb.width()-.12)/2));
+        var pad=new Part(la.position().add(new V(0,-depth,0)),lb.position().add(new V(0,-depth,0)),Math.max(la.width(),lb.width()),depth+.02,false,Material.CONCRETE)
+            .frames(sa.left().mul(la.width()/2),sb.left().mul(lb.width()/2));
         addUnblocked(result,pad,ground,0);
       }
     }return List.copyOf(result);

@@ -42,7 +42,7 @@ public final class LaneClosureWarnings {
       double boundary=lane.sign()>0?Math.min(cut.begin(),cut.end()):Math.max(cut.begin(),cut.end());
       double lead=lane.sign()*(boundary-station);
       double before=boundary-lane.sign()*.25,after=boundary+lane.sign()*.25;
-      if(lead>=3&&lead<=29&&before>=0&&after>=0&&before<=mesh.length()&&after<=mesh.length()
+      if(lead>=0&&lead<=29&&before>=0&&after>=0&&before<=mesh.length()&&after<=mesh.length()
           &&LaneSections.active(mesh,before,slot)&&!LaneSections.active(mesh,after,slot))return true;
     }return false;
   }
