@@ -115,7 +115,7 @@ final class StructurePlanner {
 
               public List<RoadRailJoin.Span> capRailSpans(V a,V b,V outside){
                 var result=new ArrayList<RoadRailJoin.Span>();
-                for(var span:railSpans(a,b,outside))result.addAll(capMouths.exposed(span.a(),span.b()));
+                for(var span:railSpans(a,b,outside))result.addAll(capMouths.exposedMouth(span.a(),span.b()));
                 return result;
               }
               public boolean joined(V point) {

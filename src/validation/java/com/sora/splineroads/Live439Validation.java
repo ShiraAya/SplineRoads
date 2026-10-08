@@ -19,7 +19,7 @@ public final class Live439Validation {
    var join=new RoadRailJoin(List.of(new RoadRailJoin.Neighbor(ramp,false)));var mouths=RoadRailJoin.mouths(List.of(ramp));
    Ground ground=new Ground(){public double top(double x,double z,double y){return 0;}public boolean joined(V p){return false;}public boolean blocked(Part p){return RoadClearance.structureInvades(p,ramp,4.25);}
     public List<RoadRailJoin.Span> railSpans(V a,V b,V outside){return join.exposed(a,b,outside);}
-    public List<RoadRailJoin.Span> capRailSpans(V a,V b,V outside){var out=new ArrayList<RoadRailJoin.Span>();for(var span:railSpans(a,b,outside))out.addAll(mouths.exposed(span.a(),span.b()));return out;}};
+    public List<RoadRailJoin.Span> capRailSpans(V a,V b,V outside){var out=new ArrayList<RoadRailJoin.Span>();for(var span:railSpans(a,b,outside))out.addAll(mouths.exposedMouth(span.a(),span.b()));return out;}};
    var parts=RoadStructures.plan(host,ground);
    double z=(arrival?150:50)+(arrival?-.34:.34);
    var barriers=parts.stream().filter(p->p.material()==Material.STEEL&&Math.abs(p.a().z()-z)<.02&&Math.abs(p.b().z()-z)<.02).toList();

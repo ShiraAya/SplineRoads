@@ -159,6 +159,7 @@ public final class RoadRailJoin {
   }
   /** Account for the slab end cap and the inward rail offset at a declared joining port.
    * The caller supplies only linked neighbors; no proximity-only opening is invented. */
+  public List<Span> exposedMouth(V a,V b){return exposed(material,a,b);}
   public static RoadRailJoin mouths(List<Mesh> linked){
     var extensions=new ArrayList<Neighbor>();
     for(var mesh:linked)for(boolean start:new boolean[]{true,false}){
