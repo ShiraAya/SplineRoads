@@ -413,9 +413,10 @@ public final class RoadScreen extends Screen {
         if((pathButton!=null))pathButton.setMessage(Component.literal(mode==Mode.AUTO?"智能选线 ▸":"手动："+RoadPlanner.name(mode)+" ▸"));
 
         if(laneRoad()){
-          var all=new LinkedHashMap<java.util.UUID,RoadRecord>();ClientRoads.INDEX.roads.forEach((id,built)->all.put(id,built.record));
-          var old=RoadRecord.load(payload.getCompound("Road"));all.put(old.id(),old);
-          ClientRoads.preview=com.sora.splineroads.world.LaneRamps.reconfigure(old,s,all).mesh();ClientRoads.nodePreviews=List.of();
+          var cached=ClientRoads.INDEX.roads.get(payload.getUUID("Id"));
+          var old=cached==null?RoadRecord.load(payload.getCompound("Road")):cached.record;
+          // Attribute preview uses the saved path; route search belongs to explicit server validation.
+          ClientRoads.preview=old.settings(s).mesh();ClientRoads.nodePreviews=List.of();
           status="单向 1 车道匝道；路宽、附属设置可编辑，路径使用匝道连接器调整";
           if(pathButton!=null)pathButton.setMessage(Component.literal("线路与扩出：用匝道连接器编辑"));
           ClientRoads.storeDraft(payload);if(save!=null)save.active=!pending;return true;

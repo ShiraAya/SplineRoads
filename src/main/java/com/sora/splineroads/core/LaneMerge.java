@@ -19,7 +19,7 @@ public final class LaneMerge {
   }
   public static boolean allowed(Mesh mesh,LanePoints.Point point){try{event(mesh,point.merge(32));return true;}catch(IllegalArgumentException e){return false;}}
   public static boolean sameDefinitions(LanePoints.Data a,LanePoints.Data b){
-    return a.points().stream().filter(p->p.mergeLength()>0).toList().equals(b.points().stream().filter(p->p.mergeLength()>0).toList());
+    return a.points().stream().filter(p->p.mergeLength()!=0).toList().equals(b.points().stream().filter(p->p.mergeLength()!=0).toList());
   }
   public static boolean linkedTo(Mesh host,Mesh candidate){
     var l=candidate.settings().options().lanePoints().link();if(l==null)return false;

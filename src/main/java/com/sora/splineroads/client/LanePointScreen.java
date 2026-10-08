@@ -20,7 +20,7 @@ public final class LanePointScreen extends Screen {
   private final LanePoints.Point point;
   private int lane,x,y,w,h,viewX,viewY,viewW,viewH,requestedLane;
   private String status="";
-  private Button apply,remove,merge;
+  private Button apply,remove,merge,expand;
   private boolean confirm,pending;
   private LanePointPreview.Image image;
   private CompletableFuture<LanePointPreview.Image> drawing;
@@ -40,10 +40,11 @@ public final class LanePointScreen extends Screen {
       if(!payload.getList("Dependencies",Tag.TAG_STRING).isEmpty()&&!confirm){minecraft.setScreen(new LaneDeleteConfirmScreen(this,payload.getList("Dependencies",Tag.TAG_STRING),()->{confirm=true;send(true);}));return;}
       send(true);
     }).bounds(x+w-100,y+h-30,88,20).build());
-    merge=addRenderableWidget(Button.builder(Component.literal(point.mergeLength()>0?"取消合流缩减":"外侧合流缩减"),b->mergeLane()).bounds(x+108,y+h-30,126,20).build());
+    merge=addRenderableWidget(Button.builder(Component.literal(point.mergeLength()>0?"取消合流缩减":"外侧合流缩减"),b->mergeLane()).bounds(x+104,y+h-30,108,20).build());
+    expand=addRenderableWidget(Button.builder(Component.literal(point.mergeLength()<0?"取消外侧扩流":"外侧扩流加道"),b->expandLane()).bounds(x+216,y+h-30,108,20).build());
     buttons();requestView();
   }
-  private void buttons(){if(merge!=null)merge.active=!point.automatic()&&!pending&&lane==point.lane()&&payload.getBoolean("Supported")&&(point.mergeLength()>0||LaneMerge.allowed(mesh,point));apply.active=!point.automatic()&&!pending&&lane!=point.lane();remove.active=!point.automatic()&&!pending;}
+  private void buttons(){if(merge!=null)merge.active=point.mergeLength()>=0&&!point.automatic()&&!pending&&lane==point.lane()&&payload.getBoolean("Supported")&&(point.mergeLength()>0||LaneMerge.allowed(mesh,point));if(expand!=null)expand.active=point.mergeLength()<=0&&!point.automatic()&&!pending&&lane==point.lane()&&payload.getBoolean("Supported")&&(point.mergeLength()<0||LaneExpansion.allowed(mesh,point));apply.active=!point.automatic()&&!pending&&lane!=point.lane();remove.active=!point.automatic()&&!pending;}
   private void requestView(){
     if(drawing!=null)return;requestedLane=lane;int chosen=lane,vw=viewW,vh=viewH;
     drawing=CompletableFuture.supplyAsync(()->LanePointPreview.render(mesh,point,vw,vh,chosen),PREVIEW);
@@ -68,6 +69,12 @@ public final class LanePointScreen extends Screen {
     var t=new CompoundTag();t.putUUID("Id",payload.getUUID("Id"));t.putUUID("Point",point.id());t.putInt("Signature",payload.getInt("Signature"));
     t.putString("Action","lanePoint");t.putDouble("MergeLength",point.mergeLength()>0?0:32);
     pending=true;status="正在提交合流缩减；不创建汇出匝道…";buttons();RoadNetwork.CHANNEL.sendToServer(new RoadNetwork.Action(t));
+  }
+  private void expandLane(){
+    if(pending||point.automatic())return;
+    var t=new CompoundTag();t.putUUID("Id",payload.getUUID("Id"));t.putUUID("Point",point.id());t.putInt("Signature",payload.getInt("Signature"));
+    t.putString("Action","lanePoint");t.putDouble("MergeLength",point.mergeLength()<0?0:-32);
+    pending=true;status="正在提交外侧扩流…";buttons();RoadNetwork.CHANNEL.sendToServer(new RoadNetwork.Action(t));
   }
   private void send(boolean delete){
     if(pending||point.automatic()||!delete&&lane==point.lane())return;

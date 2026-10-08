@@ -35,13 +35,13 @@ public final class LanePointTool extends Item {
     if(t.contains("MergeLength")){
       if(r.assembly()!=null||!LanePoints.supported(r.settings()))throw new IllegalArgumentException("仅独立且支持车道连接的道路可设置合流缩减");
       double length=t.getDouble("MergeLength");var next=p.merge(length);
-      if(length>0)LaneMerge.event(r.rawMesh(),next);
+      if(length>0)LaneMerge.event(r.rawMesh(),next);else if(length<0)LaneExpansion.addition(r.rawMesh(),next,8);
       if(p.mergeLength()>0&&length==0&&md.cuts().stream().anyMatch(c->c.connection().equals(p.id())&&c.replacement()!=null))
         throw new IllegalArgumentException("此空位已有补入匝道，请先删除或改为其他汇入模式，再取消合流缩减");
-      points.set(points.indexOf(p),next);update(level,player,r,md.points(points),Set.of());return length>0?"外侧车道已合流缩减，下游空位可补入":"合流缩减已取消，主路已恢复";
+      points.set(points.indexOf(p),next);update(level,player,r,md.points(points),Set.of());return length>0?"外侧车道已合流缩减，下游空位可补入":length<0?"已设置外侧扩流，下游新增一条同向车道":"车道增减已取消，主路已恢复";
     }
 
-    if(t.getBoolean("Delete")){for(var cut:md.cuts())if(cut.connection().equals(p.id())&&cut.replacement()!=null)removed.add(cut.replacement());var refs=LaneTopology.references(LaneTopology.records(data).values(),LanePoints.Ref.lane(r.id(),p.id()));removed.addAll(refs);removed.addAll(LaneTopology.dependents(data,removed));LaneDeletes.requireConfirmation(t,removed);if(player!=null)for(UUID id:removed)RoadData.requireOwner(player,data.index.roads.get(id).record.owner());points.remove(p);}else{if(p.mergeLength()>0)throw new IllegalArgumentException("请先取消合流缩减，再切换此车道点");int lane=t.getInt("Lane");var selected=LanePoints.lane(b.mesh,LanePoints.lane(b.mesh,p).station(),lane);points.set(points.indexOf(p),p.at(selected,b.mesh));}
+    if(t.getBoolean("Delete")){for(var cut:md.cuts())if(cut.connection().equals(p.id())&&cut.replacement()!=null)removed.add(cut.replacement());var refs=LaneTopology.references(LaneTopology.records(data).values(),LanePoints.Ref.lane(r.id(),p.id()));removed.addAll(refs);removed.addAll(LaneTopology.dependents(data,removed));LaneDeletes.requireConfirmation(t,removed);if(player!=null)for(UUID id:removed)RoadData.requireOwner(player,data.index.roads.get(id).record.owner());points.remove(p);}else{if(p.mergeLength()!=0)throw new IllegalArgumentException("请先取消车道增减，再切换此车道点");int lane=t.getInt("Lane");var selected=LanePoints.lane(b.mesh,LanePoints.lane(b.mesh,p).station(),lane);points.set(points.indexOf(p),p.at(selected,b.mesh));}
     update(level,player,r,md.points(points),removed);return t.getBoolean("Delete")?"手动车道点及确认的依赖匝道已删除":"车道已切换，依赖匝道已同步重建";}
   private static void update(ServerLevel level,ServerPlayer player,RoadRecord r,LanePoints.Data md,Set<UUID> deleted){
     var data=RoadData.get(level);boolean referenced=false;

@@ -31,11 +31,11 @@ public final class LaneDeck {
     for(int slot:slots(mesh)){
       double removed=0;for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.temporary()&&cut.lane()==slot)removed=Math.max(removed,cut.removed(cut.rectangular()||cut.arrival()&&Math.abs(sample.distance()-cut.end())<1e-7?interval:sample.distance()));
       var lane=LanePoints.lane(raw,sample.distance(),slot);
-      double center=lane.position().sub(sample.center()).dot(sample.left()),half=lane.width()*removed/2;
+      double center=lane.position().sub(sample.center()).dot(sample.left()),half=lane.width()*removed*(slot>=8?LaneAdditions.find(raw,slot).fraction(sample.distance()):1)/2;
       double lo=Math.max(-sample.halfWidth(),Math.min(sample.halfWidth(),center-half));
       double hi=Math.max(lo,Math.min(sample.halfWidth(),center+half));
       boolean rectangular=mesh.settings().options().lanePoints().cuts().stream().anyMatch(c->c.lane()==slot&&c.rectangular()&&c.removed(interval)>.999);
-      if(rectangular){
+      if(rectangular&&half>1e-7){
         boolean lowOuter=true,highOuter=true;
         for(int other:LaneAdditions.slots(raw,sample.distance()))if(other!=slot){
           double x=LanePoints.lane(raw,sample.distance(),other).position().sub(sample.center()).dot(sample.left());
@@ -96,13 +96,16 @@ public final class LaneDeck {
       if(d<=mesh.first().distance()+1e-7||d>=mesh.last().distance()-1e-7)continue;
       var sample=RoadStructures.sample(mesh,d);
       var before=holes(mesh,sample,d-1e-5);var after=holes(mesh,sample,d+1e-5);
-      for(int i=0;i<before.size();i++){
-        var a=before.get(i);var b=after.get(i);
-        if(Math.abs((a.high()-a.low())-(b.high()-b.low()))<1e-6)continue;
-        boolean opening=b.high()-b.low()>a.high()-a.low();var hole=opening?b:a;
-        V low=sample.at(hole.low(),0),high=sample.at(hole.high(),0);
-        result.add(new Cap(opening?low:high,opening?high:low));
+      var edges=new TreeSet<Double>();for(var h:before){edges.add(h.low());edges.add(h.high());}for(var h:after){edges.add(h.low());edges.add(h.high());}
+      var boundaries=new ArrayList<>(edges);Double from=null;boolean opening=false;
+      for(int i=1;i<boundaries.size();i++){
+        double lo=boundaries.get(i-1),hi=boundaries.get(i),middle=(lo+hi)/2;
+        boolean was=before.stream().anyMatch(h->middle>h.low()&&middle<h.high());
+        boolean now=after.stream().anyMatch(h->middle>h.low()&&middle<h.high());
+        if(from!=null&&(was==now||now!=opening)){V low=sample.at(from,0),high=sample.at(lo,0);result.add(new Cap(opening?low:high,opening?high:low));from=null;}
+        if(was!=now&&from==null){from=lo;opening=now;}
       }
+      if(from!=null){V low=sample.at(from,0),high=sample.at(boundaries.get(boundaries.size()-1),0);result.add(new Cap(opening?low:high,opening?high:low));}
     }
     return List.copyOf(result);
   }

@@ -6,10 +6,10 @@ import java.util.*;
 /** Lane-specific ramp ports. No attached-road-point conversion exists. */
 public final class LanePoints {
   public enum Origin { AUTOMATIC_START, AUTOMATIC_END, MANUAL }
-  /** Anchor is the longitudinal position on the road spine; position is a derived lane-center cache. */
+  /** Anchor is the spine station. Positive mergeLength narrows; negative expands an outer lane. */
   public record Point(UUID id,Origin origin,int lane,V position,V anchor,double mergeLength) {
     public Point(UUID id,Origin origin,int lane,V position,V anchor){this(id,origin,lane,position,anchor,0);}
-    public Point {Objects.requireNonNull(id);Objects.requireNonNull(origin);if(!Double.isFinite(mergeLength)||mergeLength!=0&&(mergeLength<8||mergeLength>256)||origin!=Origin.MANUAL&&mergeLength!=0||lane<0||lane>31||position==null||!RoadGeometry.finite(position.x(),position.y(),position.z())||anchor!=null&&!RoadGeometry.finite(anchor.x(),anchor.y(),anchor.z()))throw new IllegalArgumentException("车道点数据无效");}
+    public Point {Objects.requireNonNull(id);Objects.requireNonNull(origin);if(!Double.isFinite(mergeLength)||mergeLength!=0&&(Math.abs(mergeLength)<8||Math.abs(mergeLength)>256)||origin!=Origin.MANUAL&&mergeLength!=0||lane<0||lane>31||position==null||!RoadGeometry.finite(position.x(),position.y(),position.z())||anchor!=null&&!RoadGeometry.finite(anchor.x(),anchor.y(),anchor.z()))throw new IllegalArgumentException("车道点数据无效");}
     /** Read compatibility for pre-anchor saves. Canonicalize once against the actual road mesh. */
     public Point(UUID id,Origin origin,int lane,V position){this(id,origin,lane,position,null);}
     public boolean automatic(){return origin!=Origin.MANUAL;}

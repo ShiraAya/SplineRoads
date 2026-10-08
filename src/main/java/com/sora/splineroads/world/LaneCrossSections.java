@@ -82,6 +82,14 @@ public final class LaneCrossSections {
       if(slot>31)throw new IllegalArgumentException("此路段新增车道身份数量达到上限，请分段建设");
       list.add(new LaneAdditions.Addition(entry.getKey(),slot,lane.sign(),station,link.options().transition()));
     }
+    for(var road:records.values())if(hosts==null||hosts.contains(road.id()))for(var point:LaneTopology.metadata(road).points())if(point.mergeLength()<0){
+      var list=additions.computeIfAbsent(road.id(),k->new ArrayList<>());
+      var previous=LaneTopology.metadata(road).additions().stream().filter(a->a.connection().equals(point.id())).findFirst().orElse(null);
+      int slot=previous==null?8:previous.slot();
+      if(previous==null){var used=new HashSet<Integer>();for(var a:LaneTopology.metadata(road).additions())used.add(a.slot());for(var a:list)used.add(a.slot());while(used.contains(slot))slot++;}
+      if(slot>31)throw new IllegalArgumentException("新增车道身份数量达到上限");
+      list.add(LaneExpansion.addition(road.rawMesh(),point,slot));
+    }
     for(var road:new ArrayList<>(records.values()))if(hosts==null||hosts.contains(road.id())){
       var list=additions.getOrDefault(road.id(),List.of());var md=LaneTopology.metadata(road);
       if(!list.equals(md.additions()))records.put(road.id(),road.withLanePoints(md.additions(list)));
@@ -101,6 +109,12 @@ public final class LaneCrossSections {
       LaneRoadChain.of(all,link.to()).reserve(events,connection,candidate,parts,true,link.targetOffset(),link.options().transition(),link.rectangularClosure());
     }
 
+    if(link.options().arrival()==LanePoints.Arrival.ADD&&(hosts==null||hosts.contains(link.to().road()))){
+      var location=LaneRoadChain.of(all,link.to()).at(link.targetOffset());var road=location.road();
+      var addition=LaneAdditions.owned(road.rawMesh(),connection);
+      double start=Math.max(0,Math.min(road.rawMesh().length(),addition.station()-addition.sign()*addition.transition()));
+      events.computeIfAbsent(road.id(),k->new ArrayList<>()).add(new LaneSections.Event(connection,LaneSections.Kind.ARRIVE,addition.slot(),addition.sign(),addition.station(),addition.transition(),start,true));
+    }
     if(link.options().arrival()==LanePoints.Arrival.REPLACE&&(hosts==null||hosts.contains(link.to().road()))){
       if(link.to().road()==null)throw new IllegalArgumentException("路口中心不能作为车道空位补入目标");
       add(events,all,connection,link.to(),LaneSections.Kind.REPLACE,link.targetOffset(),link.options().transition());

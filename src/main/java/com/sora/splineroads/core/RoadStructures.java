@@ -213,16 +213,16 @@ public final class RoadStructures {
                 ||modern&&mesh.settings().style().ramp() ||mesh.settings().structure()==Structure.BRIDGE
                 ||mesh.settings().structure()!=Structure.GROUND&&raised);
         var spans=visible?ground.railSpans(aa,bb,outside):List.<RoadRailJoin.Span>of();
-        if(spans.isEmpty()){emitRailRun(out,run,mesh,ground,modern,highway,side);run.clear();}
+        if(spans.isEmpty()){emitOuterRailRun(out,run,mesh,ground,modern,highway,side);run.clear();}
         for(var span:spans){
-          if(!run.isEmpty()&&run.get(run.size()-1).b().distance(span.a())>1e-5){emitRailRun(out,run,mesh,ground,modern,highway,side);run.clear();}
+          if(!run.isEmpty()&&run.get(run.size()-1).b().distance(span.a())>1e-5){emitOuterRailRun(out,run,mesh,ground,modern,highway,side);run.clear();}
           double fraction=aa.sub(bb).horizontalLength()<1e-9?0:aa.sub(span.a()).horizontalLength()/aa.sub(bb).horizontalLength();
           double endFraction=aa.sub(bb).horizontalLength()<1e-9?1:aa.sub(span.b()).horizontalLength()/aa.sub(bb).horizontalLength();
           run.add(new RailSpan(span.a(),span.b(),raised,d+fraction*(b.distance()-a.distance()),d+endFraction*(b.distance()-a.distance())));
         }
-        if(!spans.isEmpty()&&spans.get(spans.size()-1).b().distance(bb)>1e-5){emitRailRun(out,run,mesh,ground,modern,highway,side);run.clear();}
+        if(!spans.isEmpty()&&spans.get(spans.size()-1).b().distance(bb)>1e-5){emitOuterRailRun(out,run,mesh,ground,modern,highway,side);run.clear();}
       }
-      emitRailRun(out,run,mesh,ground,modern,highway,side);
+      emitOuterRailRun(out,run,mesh,ground,modern,highway,side);
     }
     closureRails(out,mesh,ground,modern,highway);
     if (modern) { furniture(mesh, ground, out, phase); terminalPosts(out,ground); }
@@ -248,7 +248,14 @@ public final class RoadStructures {
         double ra=.35*RoadInfrastructure.endTaper(mesh,a),rb=.35*RoadInfrastructure.endTaper(mesh,b);
         V first=a.at(side*(a.halfWidth()+(ra-.05)/2),depth),last=b.at(side*(b.halfWidth()+(rb-.05)/2),depth);
         var part=new Part(first,last,Math.max(ra,rb)+.05,depth,false,Material.CONCRETE).frames(a.left().mul((ra+.05)/2),b.left().mul((rb+.05)/2));
-        if(!ground.joined(mid.at(side*(mid.halfWidth()+.2),0))&&!ground.blocked(part))out.add(part);
+        for(var span:ground.railSpans(a.at(side*a.halfWidth(),0),b.at(side*b.halfWidth(),0),mid.at(side*(mid.halfWidth()+.2),0))){
+          double length=a.center().sub(b.center()).horizontalLength();
+          double ta=length<1e-7?0:span.a().sub(a.at(side*a.halfWidth(),0)).horizontalLength()/Math.max(1e-7,a.at(side*a.halfWidth(),0).sub(b.at(side*b.halfWidth(),0)).horizontalLength());
+          double tb=length<1e-7?1:span.b().sub(a.at(side*a.halfWidth(),0)).horizontalLength()/Math.max(1e-7,a.at(side*a.halfWidth(),0).sub(b.at(side*b.halfWidth(),0)).horizontalLength());
+          var clipped=new Part(first.add(last.sub(first).mul(ta)),first.add(last.sub(first).mul(tb)),part.width(),depth,false,Material.CONCRETE)
+              .frames(part.frameA().add(part.frameB().sub(part.frameA()).mul(ta)),part.frameA().add(part.frameB().sub(part.frameA()).mul(tb)));
+          if(!ground.blocked(clipped))out.add(clipped);
+        }
       }
     }return List.copyOf(out);
   }
@@ -289,12 +296,8 @@ public final class RoadStructures {
         double d = target + shift;
         if (d < 0 || d >= mesh.length() || d - previous < 10) continue;
         Sample s = sample(mesh, d);
-        if(mesh.settings().style().connectorRamp()){
-          double bottom=s.center().y()-mesh.settings().thickness();
-          for(double local:new double[]{-1.1,1.1})bottom=Math.min(bottom,sample(mesh,Math.max(0,Math.min(mesh.length(),d+local))).center().y()-mesh.settings().thickness());
-          s=new Sample(new V(s.center().x(),bottom+mesh.settings().thickness(),s.center().z()),s.left(),s.distance(),s.halfWidth());
-        }
-        var support=mesh.settings().style().ramp()?RoadSupports.ramp(s,mesh.settings().thickness(),ground):RoadSupports.clearStandard(s,mesh.settings().thickness(),ground);
+        var support=mesh.settings().style().connectorRamp()?RoadSupports.ramp(mesh,d,ground):
+            mesh.settings().style().ramp()?RoadSupports.ramp(s,mesh.settings().thickness(),ground):RoadSupports.clearStandard(s,mesh.settings().thickness(),ground);
         if(support.isEmpty()||support.stream().anyMatch(ground::blocked))continue;
         out.addAll(support);
         previous = d;
@@ -330,7 +333,9 @@ public final class RoadStructures {
       V axis=cap.b().sub(cap.a()).horizontalUnit(),mid=cap.a().add(cap.b()).mul(.5);
       boolean raised=mesh.settings().structure()==Structure.BRIDGE||elevated(mesh,mid,ground.top(mid.x(),mid.z(),mid.y()),ground);
       if(!raised)continue;
-      V first=cap.a().sub(axis.mul(RoadRailJoin.INSET)),last=cap.b().add(axis.mul(RoadRailJoin.INSET));
+      if(cap.a().distance(cap.b())<2*RoadRailJoin.INSET+.05)continue;
+      V inward=axis.left().mul(RoadRailJoin.INSET);
+      V first=cap.a().add(axis.mul(RoadRailJoin.INSET)).add(inward),last=cap.b().sub(axis.mul(RoadRailJoin.INSET)).add(inward);
       V outside=mid.sub(axis.left().mul(.4));
       for(var span:ground.railSpans(first,last,outside)){
         int steps=Math.max(1,(int)Math.ceil(span.a().distance(span.b())/.5));
@@ -344,6 +349,12 @@ public final class RoadStructures {
     }
   }
   private record RailSpan(V a,V b,boolean raised,double distance,double endDistance){}
+  private static void emitOuterRailRun(List<Part> out,List<RailSpan> run,Mesh mesh,Ground ground,boolean modern,boolean highway,int side){
+    if(!run.isEmpty()&&mesh.settings().options().outerRail()==RoadProfile.OuterRail.AUTO
+        &&run.get(0).distance()>1&&run.get(run.size()-1).endDistance()<mesh.length()-1
+        &&run.stream().mapToDouble(r->r.a().distance(r.b())).sum()<.75)return;
+    emitRailRun(out,run,mesh,ground,modern,highway,side);
+  }
   private static void emitRailRun(List<Part> out,List<RailSpan> run,Mesh mesh,Ground ground,boolean modern,boolean highway,int side){
     if(run.isEmpty())return;
     double length=run.stream().mapToDouble(r->r.a.distance(r.b)).sum();

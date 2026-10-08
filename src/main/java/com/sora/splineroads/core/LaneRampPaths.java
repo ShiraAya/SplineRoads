@@ -34,20 +34,21 @@ public final class LaneRampPaths {
     if(returning){
       // Three tangent circles cover return layouts whose two-circle solution
       // degenerates. Every curved segment has the same generous radius.
-      for(double scale:new double[]{.4,.55,.75})for(int side:new int[]{1,-1})for(int bend:new int[]{1,-1})try{
+      for(double scale:new double[]{.16,.22,.3,.4})for(int side:new int[]{1,-1})for(int bend:new int[]{1,-1})try{
         double radius=Math.max(options.radius(),distance*scale);
         var mesh=finish(a,b,settings,roundReturn(a,b,radius,side,bend),0,maxGrade);
         if(RoadRibbon.minRadius(mesh)+1e-3>=options.radius())out.add(new Candidate(LanePoints.Path.AUTO,mesh));
       }catch(IllegalArgumentException ignored){}
       out.sort(Comparator.comparingDouble(c->c.mesh().length()));
     }
-    for(double fraction:returning?new double[]{3,2.5,4}:new double[]{.55,.4,.7})try{
+    for(double fraction:returning?new double[]{.7,1.1,1.6}:new double[]{.55,.4,.7})for(double ratio:new double[]{1,.55,1.8})try{
       RoadPlanningBudget.check();var frames=new ArrayList<Frame>();
-      bezier(frames,a.position(),a.direction(),b.position(),b.direction(),Math.max(options.radius(),distance*fraction));
+      bezier(frames,a.position(),a.direction(),b.position(),b.direction(),Math.max(options.radius(),distance*fraction),Math.max(options.radius(),distance*fraction*ratio));
       var mesh=finish(a,b,settings,frames,0,maxGrade);
       if(RoadRibbon.minRadius(mesh)+1e-3<options.radius())continue;
       out.add(new Candidate(LanePoints.Path.AUTO,mesh));
-    }catch(IllegalArgumentException ignored){}return out;
+    }catch(IllegalArgumentException ignored){}
+    out.sort(Comparator.comparingDouble(c->c.mesh().length()));return out;
   }
   private static List<Frame> roundReturn(Port a,Port b,double radius,int side,int bend){
     V ca=a.position().add(a.direction().left().mul(side*radius));
@@ -266,7 +267,8 @@ public final class LaneRampPaths {
   private static void arc(List<Frame> f,V c,double r,double start,double turn){int n=Math.max(1,(int)Math.ceil(r*turn/.65));for(int i=0;i<=n;i++){double t=start+turn*i/n;V d=new V(Math.cos(t),0,Math.sin(t));add(f,c.sub(d.left().mul(r)),d);}}
   private static void arcLeft(List<Frame> f,V c,double r,double start,double turn){int n=Math.max(1,(int)Math.ceil(r*turn/.65));for(int i=0;i<=n;i++){double t=start-turn*i/n;V d=new V(Math.cos(t),0,Math.sin(t));add(f,c.add(d.left().mul(r)),d);}}
   private static void line(List<Frame> f,V a,V b,V dir){int n=Math.max(1,(int)Math.ceil(a.sub(b).horizontalLength()/.65));for(int i=0;i<=n;i++)add(f,a.add(b.sub(a).mul((double)i/n)),dir);}
-  private static void bezier(List<Frame> f,V a,V da,V b,V db,double k){V p=a.add(da.mul(k)),q=b.sub(db.mul(k));int n=Math.max(8,(int)Math.ceil((a.sub(p).horizontalLength()+p.sub(q).horizontalLength()+q.sub(b).horizontalLength())/.55));for(int i=0;i<=n;i++){double t=(double)i/n,u=1-t;V v=a.mul(u*u*u).add(p.mul(3*u*u*t)).add(q.mul(3*u*t*t)).add(b.mul(t*t*t));V d=p.sub(a).mul(u*u).add(q.sub(p).mul(2*u*t)).add(b.sub(q).mul(t*t));if(d.horizontalLength()<1e-7)throw new IllegalArgumentException("匝道过渡折返");add(f,v,d.horizontalUnit());}}
+  private static void bezier(List<Frame> f,V a,V da,V b,V db,double k){bezier(f,a,da,b,db,k,k);}
+  private static void bezier(List<Frame> f,V a,V da,V b,V db,double ka,double kb){V p=a.add(da.mul(ka)),q=b.sub(db.mul(kb));int n=Math.max(8,(int)Math.ceil((a.sub(p).horizontalLength()+p.sub(q).horizontalLength()+q.sub(b).horizontalLength())/.55));for(int i=0;i<=n;i++){double t=(double)i/n,u=1-t;V v=a.mul(u*u*u).add(p.mul(3*u*u*t)).add(q.mul(3*u*t*t)).add(b.mul(t*t*t));V d=p.sub(a).mul(u*u).add(q.sub(p).mul(2*u*t)).add(b.sub(q).mul(t*t));if(d.horizontalLength()<1e-7)throw new IllegalArgumentException("匝道过渡折返");add(f,v,d.horizontalUnit());}}
   private static void shortVolume(Mesh mesh){var p=mesh.samples();double width=mesh.samples().stream().mapToDouble(s->s.halfWidth()*2).max().orElse(mesh.settings().width()),clearance=4+mesh.settings().thickness();for(int i=0;i<p.size();i+=3){RoadPlanningBudget.check();for(int j=i+3;j<p.size();j+=3){var a=p.get(i);var b=p.get(j);if(b.distance()-a.distance()<width*3)continue;double horizontal=a.center().sub(b.center()).horizontalLength();if(horizontal<a.halfWidth()+b.halfWidth()+.35&&Math.abs(a.center().y()-b.center().y())<clearance-.05)throw new IllegalArgumentException("回环路面体积净空不足，请增大半径、间距或过渡长度");}}}
   private LaneRampPaths(){}
 }

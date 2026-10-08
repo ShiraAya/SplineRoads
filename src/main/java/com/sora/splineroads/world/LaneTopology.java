@@ -107,8 +107,16 @@ public final class LaneTopology {
   }
   private static boolean topologyChanged(RoadRecord a,RoadRecord b){
     return !a.a().equals(b.a())||!a.b().equals(b.b())||!a.start().equals(b.start())||!a.end().equals(b.end())
-        ||!a.settings().equals(b.settings())||!a.alignment().equals(b.alignment())
+        ||!authoredSettings(a).equals(authoredSettings(b))||!a.alignment().equals(b.alignment())
         ||!Objects.equals(a.assembly(),b.assembly())||!Objects.equals(a.junction(),b.junction());
+  }
+  private static Settings authoredSettings(RoadRecord r){
+    var o=r.settings().options();var md=o.lanePoints();
+    // Cuts, opening capsules, added lane reservations and raised spans are outputs,
+    // not a request to reroute every connector sharing the host in a second pass.
+    var points=md.points().stream().filter(p->!p.automatic()).map(p->new LanePoints.Point(p.id(),p.origin(),p.lane(),p.anchor()==null?p.position():p.anchor(),p.anchor(),p.mergeLength())).toList();
+    return r.settings().options(o.lanePoints(new LanePoints.Data(points,md.link(),List.of(),0,List.of()))
+        .streetscape(o.streetscape().raisedSpans(List.of())));
   }
   private static boolean sameDeck(RoadRecord a,RoadRecord b){
     return a.settings().thickness()==b.settings().thickness()&&a.settings().style()==b.settings().style()

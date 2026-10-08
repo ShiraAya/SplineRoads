@@ -63,7 +63,8 @@ public final class Live436Validation {
       var m=paths.get(0).mesh();LaneRampGrade.validate(m,.2);
       check(RoadRibbon.start(m).direction().dot(a)>.999&&RoadRibbon.end(m).direction().dot(b)>.999,"biarc changed lane directions");
       check(m.first().center().distance(start)<1e-6&&m.last().center().distance(end)<1e-6,"biarc moved selected points");
-      check(RoadRibbon.minRadius(m)>60,"return still uses tiny corner arcs");
+      check(RoadRibbon.minRadius(m)+1e-3>=24,"return violates requested minimum radius");
+      check(m.length()<end.sub(start).horizontalLength()*3.5,"return expands into an unnecessarily large loop");
       double straight=0;for(int i=1;i<m.samples().size();i++)if(m.samples().get(i).left().dot(m.samples().get(i-1).left())>1-1e-10)straight+=m.samples().get(i).center().sub(m.samples().get(i-1).center()).horizontalLength();
       check(straight<m.length()*.01,"return dominated by straight segments");
     }

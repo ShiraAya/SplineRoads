@@ -46,6 +46,24 @@ public final class RoadSupports {
     var shaft=new Part(foot,foot,1.5,top-floor,true,Material.CONCRETE);
     if(ground.blocked(shaft))return List.of();out.add(shaft);return List.copyOf(out);
   }
+  public static List<Part> ramp(Mesh mesh,double station,Ground ground){
+    var s=RoadStructures.sample(mesh,station);double thickness=mesh.settings().thickness();
+    var before=RoadStructures.sample(mesh,Math.max(0,station-.75));
+    var after=RoadStructures.sample(mesh,Math.min(mesh.length(),station+.75));
+    V delta=after.center().sub(before.center());double grade=delta.y()/Math.max(1e-6,delta.horizontalLength());
+    V tangent=delta.horizontalUnit();double gx=grade*tangent.x(),gz=grade*tangent.z();
+    double top=s.center().y()-thickness-.006;
+    double floor=foundation(s.center(),top,1.5,ground);
+    if(!Double.isFinite(floor)||top-floor<2)return List.of();
+    // Bury the sloped bottom entirely below the foundation; all four top corners
+    // follow the deck underside instead of ending at the lowest sampled height.
+    double height=top-floor+.75*(Math.abs(gx)+Math.abs(gz))+.02;
+    V a=new V(s.center().x(),top-height-.75*gz,s.center().z());
+    V b=new V(s.center().x(),top-height+.75*gz,s.center().z());
+    V frame=new V(.75,.75*gx,0);
+    var shaft=new Part(a,b,1.5,height,true,Material.CONCRETE).frames(frame,frame);
+    return ground.blocked(shaft)?List.of():List.of(shaft);
+  }
   public static List<Part> portal(Sample s,double thickness,double depth,double offset,double width,Ground ground){
     double top=s.center().y()-thickness-depth;
     var out=new ArrayList<Part>();double[] feet=new double[2];int i=0;
