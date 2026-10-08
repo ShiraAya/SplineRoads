@@ -93,6 +93,9 @@ public final class LaneTopology {
       var old=data.index.roads.get(id);addLinkHosts(old==null?null:old.record,scope);
       addLinkHosts(all.get(id),scope);
     }
+    // Derived host changes still need their own points snapped. Add them after
+    // dependency closure so a terrain pass cannot enlist every sibling ramp.
+    for(var b:built)scope.add(b.record.id());
     return scope;
   }
   private static void addLinkHosts(RoadRecord r,Set<UUID> scope){
@@ -204,6 +207,31 @@ public final class LaneTopology {
     for(var r:all.values()){var old=data.index.roads.get(r.id());boolean authored=built.stream().anyMatch(b->b.record.id().equals(r.id()));if(authored||old==null||!old.record.equals(r)){if(old!=null)removed.add(r.id());built.removeIf(b->b.record.id().equals(r.id()));built.add(new RoadIndex.Built(r.structures(List.of())));}}
     Set<UUID> finalIds=all.keySet();built.removeIf(b->!finalIds.contains(b.record.id()));
     for(var old:data.index.roads.values())if(!all.containsKey(old.record.id()))removed.add(old.record.id());
+  }
+  /** Deletion releases the saved reservations. It is not a new route proposal:
+   * a broken surviving route must never prevent removing the offending road. */
+  static void reconcileDeletion(RoadData data,List<RoadIndex.Built> built,Set<UUID> removed){
+    var all=records(data);removed.forEach(all::remove);for(var b:built)all.put(b.record.id(),b.record);
+    var deleted=new HashSet<>(removed);for(var b:built)deleted.remove(b.record.id());
+    var ends=endpointOwners(all.values());
+    for(var r:new ArrayList<>(all.values())){
+      var md=metadata(r);var additions=md.additions().stream().filter(a->!deleted.contains(a.connection())).toList();
+      var cuts=new ArrayList<LaneSections.Cut>();
+      for(var c:md.cuts())if(!deleted.contains(c.connection())){
+        if(c.replacement()!=null&&deleted.contains(c.replacement()))c=new LaneSections.Cut(c.connection(),c.lane(),c.sign(),c.begin(),c.sign()>0?r.rawMesh().length()+2*c.transition():-2*c.transition(),c.transition(),null,c.temporary(),c.arrival(),c.rectangular(),c.underpass());
+        cuts.add(c);
+      }
+      var points=md.points().stream().filter(p->p.lane()<8||additions.stream().anyMatch(a->a.slot()==p.lane())).toList();
+      var next=r.withLanePoints(md.cuts(cuts).additions(additions).points(points).openings(md.openings().stream().filter(o->!deleted.contains(o.connection())).toList()));
+      boolean authored=built.stream().anyMatch(b->b.record.id().equals(r.id()));
+      if(!next.equals(r)||authored){
+        // Only normal hosts acquire new free endpoint points; surviving ramp
+        // alignments and furniture remain saved work, including imperfect ones.
+        if(normal(next))next=automatic(next,ends);
+        if(data.index.roads.containsKey(r.id()))removed.add(r.id());
+        built.removeIf(b->b.record.id().equals(r.id()));built.add(new RoadIndex.Built(next.structures(List.of())));
+      }
+    }
   }
   /** Store only contiguous physical contact runs. Never join disjoint runs with a
    * fictitious chord and never copy a whole kilometre-long ramp into every host header. */

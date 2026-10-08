@@ -971,10 +971,13 @@ public final class RoadData extends SavedData {
       if(built.stream().noneMatch(r->r.record.junction()!=null))normalizeTransitions(built, removed, player,deleting);
       timing.stage("normalize_transitions");com.sora.splineroads.core.RoadPlanningBudget.phase("normalize_transitions");
       List<RoadIndex.Built> requested = new ArrayList<>(built);
+      if(!deleting)for(var old:index.roads.values())if(!removed.contains(old.record.id())&&LaneTopology.metadata(old.record).link()!=null)
+        for(var proposed:built)RoadInteractions.influences(proposed,old);
       for (UUID id : removed) if (index.roads.containsKey(id)) requested.add(index.roads.get(id));
       // Re-plan neighboring elevated structures when adding a ground road or a junction.
       for (var old : index.roads.values())
         if (!removed.contains(old.record.id())
+            && LaneTopology.metadata(old.record).link()==null
             && requested.stream().anyMatch(r -> RoadInteractions.influences(r, old))) {
           built.add(old.structures(List.of()));
           removed.add(old.record.id());
@@ -985,9 +988,9 @@ public final class RoadData extends SavedData {
       for(var r:built)if(r.record.junction()!=null)supportGroups.add(r.record.assembly());
       for(var old:index.roads.values())if(old.record.junction()!=null&&supportGroups.contains(old.record.assembly())&&!removed.contains(old.record.id())&&built.stream().noneMatch(r->r.record.id().equals(old.record.id()))){built.add(old.structures(List.of()));removed.add(old.record.id());}
       timing.stage("affected_structures");com.sora.splineroads.core.RoadPlanningBudget.phase("affected_structures");
-      AttachedPoints.reconcile(this,built,removed,deleting,deletedPoints);
+      if(!deleting)AttachedPoints.reconcile(this,built,removed,false,deletedPoints);
       timing.stage("attached_points");com.sora.splineroads.core.RoadPlanningBudget.phase("attached_points");
-      LaneTopology.reconcile(this,built,removed);
+      if(deleting)LaneTopology.reconcileDeletion(this,built,removed);else LaneTopology.reconcile(this,built,removed);
       timing.stage("topology");com.sora.splineroads.core.RoadPlanningBudget.phase("topology");
       built.sort(Comparator.comparing(r -> r.record.id()));
       List<RoadIndex.Built> planning = new ArrayList<>();
@@ -1050,7 +1053,7 @@ public final class RoadData extends SavedData {
       timing.stage("structure_plan");com.sora.splineroads.core.RoadPlanningBudget.phase("structure_plan");
       // Terrain-derived raised medians can change a lane center after planning. Resolve
       // dependent ports again before any world write; never save an off-center marker.
-      for(int pass=0;(LaneTopology.needsRefresh(this,planning,built.stream().map(b->b.record.id()).toList())||LaneCrossSections.needsRestoreRefresh(planning,built.stream().map(b->b.record.id()).toList()));pass++){
+      for(int pass=0;!deleting&&(LaneTopology.needsRefresh(this,planning,built.stream().map(b->b.record.id()).toList())||LaneCrossSections.needsRestoreRefresh(planning,built.stream().map(b->b.record.id()).toList()));pass++){
         if(pass>=3)throw new IllegalArgumentException("断面与车道点未能稳定，请调整道路样式后重试");
         LaneTopology.reconcile(this,built,removed);
         planning.clear();for(var old:index.roads.values())if(!removed.contains(old.record.id()))planning.add(old);planning.addAll(built);
@@ -1075,7 +1078,7 @@ public final class RoadData extends SavedData {
       for(var old:index.roads.values())if(!removed.contains(old.record.id()))shellFinal.add(old);
       shellFinal.addAll(built);
       var shellChanged=new HashSet<UUID>();for(var changed:built)shellChanged.add(changed.record.id());
-      TunnelShellValidation.check(shellFinal,shellChanged,index.roads);
+      if(!deleting)TunnelShellValidation.check(shellFinal,shellChanged,index.roads);
       if(!deleting)checkJoints(built, removed);
       timing.stage("caps_shell_and_joint_validation");com.sora.splineroads.core.RoadPlanningBudget.phase("caps_shell_and_joint_validation");
       final List<RoadIndex.Built> committed = built;
@@ -1174,6 +1177,7 @@ public final class RoadData extends SavedData {
         if (!roadBody && !headroom && !walkway) continue;
         if (state.is(SplineRoads.NODE.get())) {
           if (!endpoints.contains(p)
+              && !deleting
               && (walkway || committed.stream()
                   .anyMatch(r -> r.cells.containsKey(key) || r.clearanceCells.contains(key))))
             throw new IllegalArgumentException("道路范围内有其他端点：" + p.toShortString());
@@ -1181,11 +1185,15 @@ public final class RoadData extends SavedData {
         }
         // A road always owns its slab collision, including a deck flush with terrain.
         // Existing infrastructure above the new driving corridor cannot be silently erased.
-        if (headroom
+        if (!deleting && headroom
             && !roadBody
             && RoadBlocks.isCollider(state)
             && index.at(key).stream().anyMatch(id -> !removedIds.contains(id)))
           throw new IllegalArgumentException("通行空间与另一条道路相交");
+        // Restored host clearance must not erase a surviving road or the user's
+        // blocks while deleting. Its existing geometry is allowed to remain.
+        if(deleting&&!roadBody&&!walkway)continue;
+        if(deleting&&!RoadBlocks.isCollider(state)&&(state.hasBlockEntity()||state.getDestroySpeed(level,p)<0))continue;
         BlockState target =
             roadBody ? collisionState(key, state, body.get(key), sidewalks.get(key),dry.contains(key),finalByChunk.getOrDefault(new net.minecraft.world.level.ChunkPos(p).toLong(),List.of())) : walkway ? sidewalks.get(key) : dry.contains(key)?SplineRoads.TUNNEL_AIR.get().defaultBlockState():Blocks.AIR.defaultBlockState();
         if (state.equals(target) && !(target.is(SplineRoads.FILLED_COLLIDER.get())
@@ -1294,7 +1302,7 @@ public final class RoadData extends SavedData {
         marker.apply(move.target());
       }
       for (long key : touched) {
-        if (body.containsKey(key) || air.contains(key) || sidewalks.containsKey(key) || moveTargets.contains(key)) continue;
+        if (body.containsKey(key) || !deleting&&air.contains(key) || sidewalks.containsKey(key) || moveTargets.contains(key)) continue;
         BlockPos p = BlockPos.of(key);
         BlockState current = level.getBlockState(p);
         BlockState fill = terrainFill.remove(key);

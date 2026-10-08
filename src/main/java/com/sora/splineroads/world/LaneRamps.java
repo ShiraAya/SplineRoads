@@ -78,6 +78,21 @@ public final class LaneRamps {
       options=options.infrastructure(options.infrastructure().gantry(RoadInfrastructure.Gantry.OFF));
     base=new Settings(base.mode(),kind,base.width(),base.thickness(),base.tension(),base.arcDegrees(),base.startWidth(),base.endWidth(),base.structure(),base.taperVersion(),base.rampTurn(),options);
     base.validate();
+    // Rechecking an unchanged connector must first validate its saved alignment.
+    // Searching from scratch can choose a different family or reject an old valid
+    // layout after a candidate ordering update. This still runs current clearance.
+    if(old!=null&&Objects.equals(LaneTopology.metadata(old).link(),link)&&base.width()==old.settings().width()
+        &&base.thickness()==old.settings().thickness()&&base.style()==old.settings().style())try{
+      var kept=old.settings(base);var candidate=kept.mesh();var context=LaneCrossSections.staged(all,id,link,candidate);
+      var from=port(host(context,link.from()),LaneTopology.point(host(context,link.from()),link.from().point()));
+      var to=link.to().road()==null?null:resolvedArrival(context,link,id);
+      if(LaneRampAlignment.axis(candidate,true).distance(from.position())<1e-5
+          &&LaneRampAlignment.axis(candidate,false).distance(to==null?link.junctionMouth():to.position())<1e-5){
+        validate(candidate,context,id,link);
+        for(var road:context.values())for(var cut:LaneTopology.metadata(road).cuts())if(cut.connection().equals(id)&&!cut.arrival()&&cut.temporary())LaneReopening.validateRestored(road.mesh(),cut.lane(),candidate,id);
+        return new Generated(kept,link.options().path());
+      }
+    }catch(IllegalArgumentException ignored){/* changed world: run the normal constrained search */}
     var a=port(source,p);if(link.options().sourceExtra())a=approach(source,p,0,true,base,link.options().transition());
     var offsets=new LinkedHashSet<Double>();if(Math.abs(link.targetOffset())<=targetReach(link.options()))offsets.add(link.targetOffset());offsets.add(0d);
     if(link.to().road()!=null&&link.options().landing()!=LanePoints.Landing.EXACT){double reach=targetReach(link.options());for(double step=8;step<reach;step+=8){offsets.add(step);offsets.add(-step);}offsets.add(reach);offsets.add(-reach);}

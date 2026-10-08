@@ -311,6 +311,7 @@ public final class RoadStructures {
     if(!LaneDeck.hasOpenings(mesh)||mesh.settings().structure()==Structure.GROUND||mesh.settings().structure()==Structure.TUNNEL
         ||mesh.settings().options().outerRail()==RoadProfile.OuterRail.OFF)return;
     var samples=mesh.samples();
+    var caps=LaneDeck.caps(mesh);
     for(int i=1;i<samples.size();i++){
       var a=samples.get(i-1);var b=samples.get(i);double station=(a.distance()+b.distance())/2;
       for(var strip:LaneDeck.strips(mesh,a,b))for(int side:new int[]{-1,1}){
@@ -318,7 +319,14 @@ public final class RoadStructures {
         V first=side>0?strip.al():strip.ar(),last=side>0?strip.bl():strip.br();
         if(first.distance(a.at(side*a.halfWidth(),0))<1e-6&&last.distance(b.at(side*b.halfWidth(),0))<1e-6)continue;
         double widthA=strip.al().distance(strip.ar()),widthB=strip.bl().distance(strip.br());if(Math.min(widthA,widthB)<.5)continue;
+        V rawFirst=first,rawLast=last;
         first=first.sub(a.left().mul(side*RoadRailJoin.INSET));last=last.sub(b.left().mul(side*RoadRailJoin.INSET));
+        // Meet the cap on its pavement side, including the last 34 cm at each
+        // concave corner. Both bars use the same corner, not unrelated offsets.
+        for(var cap:caps){V inward=cap.b().sub(cap.a()).horizontalUnit().left().mul(RoadRailJoin.INSET);
+          if(rawFirst.distance(cap.a())<1e-5||rawFirst.distance(cap.b())<1e-5)first=first.add(inward);
+          if(rawLast.distance(cap.a())<1e-5||rawLast.distance(cap.b())<1e-5)last=last.add(inward);
+        }
         V mid=first.add(last).mul(.5);
         boolean raised=mesh.settings().structure()==Structure.BRIDGE||elevated(mesh,mid,ground.top(mid.x(),mid.z(),mid.y()),ground);
         if(!raised)continue;
@@ -329,13 +337,18 @@ public final class RoadStructures {
     }
     // Transverse ends are also exposed edges. Previously only the two sides of
     // the hole had rails, allowing vehicles to enter the void straight ahead.
-    for(var cap:LaneDeck.caps(mesh)){
+    for(var cap:caps){
       V axis=cap.b().sub(cap.a()).horizontalUnit(),mid=cap.a().add(cap.b()).mul(.5);
       boolean raised=mesh.settings().structure()==Structure.BRIDGE||elevated(mesh,mid,ground.top(mid.x(),mid.z(),mid.y()),ground);
       if(!raised)continue;
       if(cap.a().distance(cap.b())<2*RoadRailJoin.INSET+.05)continue;
       V inward=axis.left().mul(RoadRailJoin.INSET);
-      V first=cap.a().add(axis.mul(RoadRailJoin.INSET)).add(inward),last=cap.b().sub(axis.mul(RoadRailJoin.INSET)).add(inward);
+      // A hole is concave: its side rails sit OUTSIDE the hole in intact pavement.
+      // Extend across the two corners instead of shortening into the empty slot.
+      var at=RoadQueries.horizontal(mesh,mid).sample();
+      boolean outerA=Math.abs(cap.a().sub(at.center()).dot(at.left()))>=at.halfWidth()-1e-5;
+      boolean outerB=Math.abs(cap.b().sub(at.center()).dot(at.left()))>=at.halfWidth()-1e-5;
+      V first=cap.a().add(axis.mul((outerA?1:-1)*RoadRailJoin.INSET)).add(inward),last=cap.b().add(axis.mul((outerB?-1:1)*RoadRailJoin.INSET)).add(inward);
       V outside=mid.sub(axis.left().mul(.4));
       for(var span:ground.railSpans(first,last,outside)){
         int steps=Math.max(1,(int)Math.ceil(span.a().distance(span.b())/.5));
