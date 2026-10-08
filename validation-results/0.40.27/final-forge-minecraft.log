@@ -1,0 +1,51 @@
+Source remote commit: 6b11ce7d165ee9ae172a169309c0cc97d5ef702c
+Source local commit: eb1d6153a619e4df735bdadacaa9aea88270440f
+Workflow: https://github.com/ShiraAya/SplineRoads/actions/runs/37832221887
+Job: 113500629069 (success)
+These are verbatim selected validation lines from completed GitHub Actions job logs, not client GPU verification.
+
+2026-10-08T19:31:51.2085322Z BUILD SUCCESSFUL in 2m 6s
+2026-10-08T19:31:57.5487790Z EndpointV2 core PASS: continuity, scope, paint isolation, identity, control interpolation, green taper, sidewalk walls
+2026-10-08T19:31:57.8183956Z LanePointSnapValidation: 742 checks passed; reproduced old maximum drift=0.01943854553513143
+2026-10-08T19:31:58.4158751Z LaneInteractionValidation: 254 checks passed
+2026-10-08T19:32:00.0409903Z LaneRampV2Validation: 2836 checks passed
+2026-10-08T19:32:00.5995031Z LaneRampWorkflowValidation: 9190 checks passed
+2026-10-08T19:32:02.0057218Z Ramp39Validation: 16171 checks passed (production core; no Forge/client claims)
+2026-10-08T19:32:06.0433656Z Ramp39ModelValidation: 817 checks passed; real LaneRamps/LaneTopology/LanePointCodec/RoadRecord, test-only NBT/world adapters; NO game/client/world-write claim
+2026-10-08T19:32:10.0427996Z Ramp39CompoundValidation: 2805 checks passed; in-memory production planner/reconcile only, NOT Minecraft construction/rendering
+2026-10-08T19:32:10.2039702Z Ramp39WidgetValidation: 26 checks passed; real screen state with test-only widgets, no Minecraft/GPU/network test
+2026-10-08T19:32:12.5267719Z Live439Validation: 1335 checks PASS; mouths, monotone-first profiles, solid contacts and scene diagnostics
+2026-10-08T19:32:13.7453727Z Live439ModelValidation: 1152 checks PASS; ascending/descending mixed-road clearance and NBT adapter round trip
+2026-10-08T19:32:14.9724099Z Live440Validation: 5 checks PASS; full-lane vs auxiliary guides, buried reservation vegetation and lid
+2026-10-08T19:32:15.4998241Z Live440ModelValidation: 8 checks PASS; raw/normalized link, tunnel mouth opening and unrelated collision preservation, mixed below/above reservation
+2026-10-08T19:32:17.4496448Z Live441Validation: 236 checks PASS; live-lane rail clearance, ground closure pavement in VBO/terrain and buried-lid protection
+2026-10-08T19:33:17.4955967Z Live441ModelValidation: 57 checks PASS; whole-lane departure, exact shoulder mouths, parent furniture, stable terrain classification, beam reservation and ancestor markers
+2026-10-08T19:33:19.3209264Z Live435Validation: 1776 checks PASS; production geometry/paint/solids, NO GPU.
+2026-10-08T19:33:25.3195053Z Closure418Validation: 128 rectangular lane/sign/style/curve cases, 533498 checks; real deck/paint/solid/classification, NOT Minecraft writes or GPU.
+2026-10-08T19:33:45.2324222Z Rail419MarkingValidation: 76 actual painted-face cases, 813 checks, 104 closed boundaries / 160 live dash gaps; explicit overrides retained. NO GPU/world.
+2026-10-08T19:33:46.4201092Z AUTO435 rise=0.0 ceiling=false PASS
+2026-10-08T19:33:46.5736930Z AUTO435 rise=0.0 ceiling=true PASS
+2026-10-08T19:33:46.6145122Z AUTO435 rise=8.0 ceiling=false PASS
+2026-10-08T19:33:46.6442287Z AUTO435 rise=8.0 ceiling=true PASS
+2026-10-08T19:33:46.6456987Z Live435ModelValidation: 2366 checks PASS; production planner and endpoint reservations, NO world writes.
+2026-10-08T19:33:48.7562016Z Live438Validation: 16031 checks PASS; connected cap corners and tight graded-seam rails, production geometry
+2026-10-08T19:33:51.0378332Z Live438ModelValidation: 16 checks PASS; deletion recovery, derived points, stable ADD recheck and explicit turns, world adapters
+2026-10-08T19:35:23.4973652Z LIVE440 REAL_WORLD PASS underground=true: actual request/compute/publish/build, rectangle, flexible B, monotone, NBT, deletion
+2026-10-08T19:35:44.5981631Z LIVE440 REAL_WORLD PASS underground=false: actual request/compute/publish/build, rectangle, flexible B, monotone, NBT, deletion
+2026-10-08T19:35:44.6093335Z [19:35:44] [Server thread/INFO] [minecraft/GameTestServer]: All 2 required tests passed :)
+2026-10-08T19:35:51.6971675Z BUILD SUCCESSFUL in 2m
+2026-10-08T19:37:43.2493216Z LIVE441 CHILD_PLAN_PASS
+2026-10-08T19:37:44.2504391Z LIVE441 REAL_WORLD PASS branch: LEFT/BRANCH/EXTRA/OVER/FLEXIBLE build and parent furniture
+2026-10-08T19:38:51.1495902Z LIVE441 PLAN_PASS ground=false
+2026-10-08T19:38:52.6494814Z LIVE441 BUILD_PASS ground=false
+2026-10-08T19:39:37.2505388Z LIVE441 RAMP_OVERPASS_PASS
+2026-10-08T19:39:38.4500507Z LIVE441 RAMP_AUTO_PASS
+2026-10-08T19:39:38.4500995Z LIVE441 HOST_SWITCH logical=true handles=true
+2026-10-08T19:39:39.4493736Z LIVE441 SWITCH_PASS
+2026-10-08T19:39:39.6490735Z LIVE441 REAL_WORLD PASS ground=false
+2026-10-08T19:39:44.4490604Z LIVE441 REAL_WORLD PASS bank: asymmetric GREEN bridge to AUTO converged
+2026-10-08T19:40:06.5490923Z LIVE441 PLAN_PASS ground=true
+2026-10-08T19:40:06.8496902Z LIVE441 BUILD_PASS ground=true
+2026-10-08T19:40:07.0494841Z LIVE441 REAL_WORLD PASS ground=true
+2026-10-08T19:40:07.0569503Z [19:40:07] [Server thread/INFO] [minecraft/GameTestServer]: All 4 required tests passed :)
+2026-10-08T19:40:17.3473092Z BUILD SUCCESSFUL in 4m 25s
