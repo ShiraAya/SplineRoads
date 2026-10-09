@@ -1,0 +1,669 @@
+﻿2026-10-09T07:30:07.8337045Z Current runner version: '2.337.0'
+2026-10-09T07:30:07.8373982Z ##[group]Runner Image Provisioner
+2026-10-09T07:30:07.8375361Z Hosted Compute Agent
+2026-10-09T07:30:07.8376483Z Version: 20261002.596
+2026-10-09T07:30:07.8377498Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+2026-10-09T07:30:07.8378723Z Build Date: 2026-10-02T22:28:27Z
+2026-10-09T07:30:07.8380147Z Worker ID: {7949a7ae-a7b4-47e8-a86b-79c62ce824c7}
+2026-10-09T07:30:07.8381334Z Region: eastus
+2026-10-09T07:30:07.8382682Z Cloud: Azure
+2026-10-09T07:30:07.8383581Z ##[endgroup]
+2026-10-09T07:30:07.8386054Z ##[group]Operating System
+2026-10-09T07:30:07.8387226Z Ubuntu
+2026-10-09T07:30:07.8388669Z 24.04.5
+2026-10-09T07:30:07.8389591Z LTS
+2026-10-09T07:30:07.8390430Z ##[endgroup]
+2026-10-09T07:30:07.8391683Z ##[group]Runner Image
+2026-10-09T07:30:07.8392829Z Image: ubuntu-24.04
+2026-10-09T07:30:07.8393877Z Version: 20261004.327.1
+2026-10-09T07:30:07.8395976Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-09T07:30:07.8398862Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+2026-10-09T07:30:07.8400605Z ##[endgroup]
+2026-10-09T07:30:07.8402936Z ##[group]GITHUB_TOKEN Permissions
+2026-10-09T07:30:07.8405888Z Contents: read
+2026-10-09T07:30:07.8407013Z Metadata: read
+2026-10-09T07:30:07.8407970Z ##[endgroup]
+2026-10-09T07:30:07.8411219Z Secret source: Actions
+2026-10-09T07:30:07.8412966Z Cache mode: write
+2026-10-09T07:30:07.8414573Z Prepare workflow directory
+2026-10-09T07:30:07.8835270Z Prepare all required actions
+2026-10-09T07:30:07.8885148Z Getting action download info
+2026-10-09T07:30:08.0884215Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-09T07:30:08.2296562Z Download action repository 'actions/setup-java@v4' (SHA:cf277c60eb25467037889841efdb72551f06f6c3)
+2026-10-09T07:30:08.4747378Z Download action repository 'gradle/actions@v4' (SHA:ed408507eac070d1f99cc633dbcf757c94c7933a)
+2026-10-09T07:30:09.1783087Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-09T07:30:09.3989270Z Complete job name: Minecraft matrix row 2
+2026-10-09T07:30:09.4887097Z ##[group]Run actions/checkout@v4
+2026-10-09T07:30:09.4887867Z with:
+2026-10-09T07:30:09.4888227Z   persist-credentials: false
+2026-10-09T07:30:09.4888639Z   repository: ShiraAya/SplineRoads
+2026-10-09T07:30:09.4891606Z   token: ***
+2026-10-09T07:30:09.4891955Z   ssh-strict: true
+2026-10-09T07:30:09.4892284Z   ssh-user: git
+2026-10-09T07:30:09.4892597Z   clean: true
+2026-10-09T07:30:09.4892937Z   sparse-checkout-cone-mode: true
+2026-10-09T07:30:09.4893322Z   fetch-depth: 1
+2026-10-09T07:30:09.4893644Z   fetch-tags: false
+2026-10-09T07:30:09.4894003Z   show-progress: true
+2026-10-09T07:30:09.4894346Z   lfs: false
+2026-10-09T07:30:09.4894658Z   submodules: false
+2026-10-09T07:30:09.4894994Z   set-safe-directory: true
+2026-10-09T07:30:09.4895384Z   allow-unsafe-pr-checkout: false
+2026-10-09T07:30:09.4896068Z ##[endgroup]
+2026-10-09T07:30:09.5966373Z Syncing repository: ShiraAya/SplineRoads
+2026-10-09T07:30:09.5968815Z ##[group]Getting Git version info
+2026-10-09T07:30:09.5969830Z Working directory is '/home/runner/work/SplineRoads/SplineRoads'
+2026-10-09T07:30:09.5971241Z [command]/usr/bin/git version
+2026-10-09T07:30:09.6024464Z git version 2.55.0
+2026-10-09T07:30:09.6049350Z ##[endgroup]
+2026-10-09T07:30:09.6066923Z Temporarily overriding HOME='/home/runner/work/_temp/abd6b44b-eda8-4dba-be2b-092f28325600' before making global git config changes
+2026-10-09T07:30:09.6068126Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-09T07:30:09.6073782Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/SplineRoads/SplineRoads
+2026-10-09T07:30:09.6139883Z Deleting the contents of '/home/runner/work/SplineRoads/SplineRoads'
+2026-10-09T07:30:09.6150597Z ##[group]Initializing the repository
+2026-10-09T07:30:09.6152186Z [command]/usr/bin/git init /home/runner/work/SplineRoads/SplineRoads
+2026-10-09T07:30:09.6269090Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-09T07:30:09.6270775Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-09T07:30:09.6272583Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-09T07:30:09.6273504Z hint: call:
+2026-10-09T07:30:09.6274429Z hint:
+2026-10-09T07:30:09.6275344Z hint: 	git config --global init.defaultBranch <name>
+2026-10-09T07:30:09.6276009Z hint:
+2026-10-09T07:30:09.6276619Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-09T07:30:09.6277486Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-09T07:30:09.6278172Z hint:
+2026-10-09T07:30:09.6278677Z hint: 	git branch -m <name>
+2026-10-09T07:30:09.6279231Z hint:
+2026-10-09T07:30:09.6279855Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-09T07:30:09.6281267Z Initialized empty Git repository in /home/runner/work/SplineRoads/SplineRoads/.git/
+2026-10-09T07:30:09.6284636Z [command]/usr/bin/git remote add origin https://github.com/ShiraAya/SplineRoads
+2026-10-09T07:30:09.6344887Z ##[endgroup]
+2026-10-09T07:30:09.6345959Z ##[group]Disabling automatic garbage collection
+2026-10-09T07:30:09.6346804Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-09T07:30:09.6396668Z ##[endgroup]
+2026-10-09T07:30:09.6482362Z ##[group]Setting up auth
+2026-10-09T07:30:09.6483635Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-09T07:30:09.6487936Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-09T07:30:09.6863850Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-09T07:30:09.6890521Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-09T07:30:09.7137212Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-09T07:30:09.7175940Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-09T07:30:09.7410512Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-09T07:30:09.7455146Z ##[endgroup]
+2026-10-09T07:30:09.7456355Z ##[group]Fetching the repository
+2026-10-09T07:30:09.7467126Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +01cf4843917ebe9b7f9ca06418babb8666e97eb5:refs/remotes/origin/work/sr-04028-validation
+2026-10-09T07:30:10.2713016Z From https://github.com/ShiraAya/SplineRoads
+2026-10-09T07:30:10.2715130Z  * [new ref]         01cf4843917ebe9b7f9ca06418babb8666e97eb5 -> origin/work/sr-04028-validation
+2026-10-09T07:30:10.2717750Z ##[endgroup]
+2026-10-09T07:30:10.2718642Z ##[group]Determining the checkout info
+2026-10-09T07:30:10.2720353Z ##[endgroup]
+2026-10-09T07:30:10.2728351Z [command]/usr/bin/git sparse-checkout disable
+2026-10-09T07:30:10.2785229Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-09T07:30:10.2818841Z ##[group]Checking out the ref
+2026-10-09T07:30:10.2824282Z [command]/usr/bin/git checkout --progress --force -B work/sr-04028-validation refs/remotes/origin/work/sr-04028-validation
+2026-10-09T07:30:10.5092367Z Switched to a new branch 'work/sr-04028-validation'
+2026-10-09T07:30:10.5103811Z branch 'work/sr-04028-validation' set up to track 'origin/work/sr-04028-validation'.
+2026-10-09T07:30:10.5112926Z ##[endgroup]
+2026-10-09T07:30:10.5163977Z [command]/usr/bin/git log -1 --format=%H
+2026-10-09T07:30:10.5194157Z 01cf4843917ebe9b7f9ca06418babb8666e97eb5
+2026-10-09T07:30:10.5204720Z ##[group]Removing auth
+2026-10-09T07:30:10.5208908Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-09T07:30:10.5245930Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-09T07:30:10.5490159Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-09T07:30:10.5519924Z http.https://github.com/.extraheader
+2026-10-09T07:30:10.5528268Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-09T07:30:10.5564831Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-09T07:30:10.5804709Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-09T07:30:10.5841152Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-09T07:30:10.6070361Z ##[endgroup]
+2026-10-09T07:30:10.6359087Z ##[group]Run actions/setup-java@v4
+2026-10-09T07:30:10.6359472Z with:
+2026-10-09T07:30:10.6359738Z   distribution: temurin
+2026-10-09T07:30:10.6360028Z   java-version: 17
+2026-10-09T07:30:10.6360293Z   java-package: jdk
+2026-10-09T07:30:10.6360556Z   check-latest: false
+2026-10-09T07:30:10.6360817Z   server-id: github
+2026-10-09T07:30:10.6361088Z   server-username: GITHUB_ACTOR
+2026-10-09T07:30:10.6361769Z   server-password: GITHUB_TOKEN
+2026-10-09T07:30:10.6362121Z   overwrite-settings: true
+2026-10-09T07:30:10.6362414Z   job-status: success
+2026-10-09T07:30:10.6364843Z   token: ***
+2026-10-09T07:30:10.6365110Z ##[endgroup]
+2026-10-09T07:30:10.8076354Z ##[warning]setup-java v4 is deprecated and will no longer receive updates. Please migrate to actions/setup-java@v5.
+2026-10-09T07:30:10.8085019Z ##[group]Installed distributions
+2026-10-09T07:30:10.8261006Z Resolved Java 17.0.20+1 from tool-cache
+2026-10-09T07:30:10.8261964Z Setting Java 17.0.20+1 as the default
+2026-10-09T07:30:10.8272578Z (node:2390) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-09T07:30:10.8273403Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-09T07:30:10.8276762Z Creating toolchains.xml for JDK version 17 from temurin
+2026-10-09T07:30:10.8355938Z Writing to /home/runner/.m2/toolchains.xml
+2026-10-09T07:30:10.8356526Z
+2026-10-09T07:30:10.8356762Z Java configuration:
+2026-10-09T07:30:10.8357322Z   Distribution: temurin
+2026-10-09T07:30:10.8357875Z   Version: 17.0.20+1
+2026-10-09T07:30:10.8358595Z   Path: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T07:30:10.8359169Z
+2026-10-09T07:30:10.8359911Z ##[endgroup]
+2026-10-09T07:30:10.8378624Z Creating settings.xml with server-id: github
+2026-10-09T07:30:10.8442604Z Writing to /home/runner/.m2/settings.xml
+2026-10-09T07:30:10.8775015Z ##[group]Run gradle/actions/setup-gradle@v4
+2026-10-09T07:30:10.8775429Z with:
+2026-10-09T07:30:10.8775698Z   cache-disabled: false
+2026-10-09T07:30:10.8775994Z   cache-read-only: true
+2026-10-09T07:30:10.8776280Z   cache-write-only: false
+2026-10-09T07:30:10.8776587Z   cache-overwrite-existing: false
+2026-10-09T07:30:10.8776925Z   cache-cleanup: on-success
+2026-10-09T07:30:10.8777276Z   gradle-home-cache-includes: caches
+notifications
+
+2026-10-09T07:30:10.8777651Z   add-job-summary: always
+2026-10-09T07:30:10.8777961Z   add-job-summary-as-pr-comment: never
+2026-10-09T07:30:10.8778299Z   dependency-graph: disabled
+2026-10-09T07:30:10.8778668Z   dependency-graph-report-dir: dependency-graph-reports
+2026-10-09T07:30:10.8779093Z   dependency-graph-continue-on-failure: true
+2026-10-09T07:30:10.8779458Z   build-scan-publish: false
+2026-10-09T07:30:10.8779758Z   validate-wrappers: true
+2026-10-09T07:30:10.8780242Z   allow-snapshot-wrappers: false
+2026-10-09T07:30:10.8780612Z   gradle-home-cache-strict-match: false
+2026-10-09T07:30:10.8780961Z   workflow-job-context: {
+  "row": 2
+}
+2026-10-09T07:30:10.8783658Z   github-token: ***
+2026-10-09T07:30:10.8783940Z env:
+2026-10-09T07:30:10.8784295Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T07:30:10.8784846Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T07:30:10.8785285Z ##[endgroup]
+2026-10-09T07:30:11.3183431Z Merged default JDK locations into /home/runner/.m2/toolchains.xml
+2026-10-09T07:30:11.3185463Z ##[group]Restore Gradle state from cache
+2026-10-09T07:30:11.3998494Z Gradle User Home cache not found. Will initialize empty.
+2026-10-09T07:30:11.3999593Z ##[endgroup]
+2026-10-09T07:30:11.4760713Z ##[group]All Gradle Wrapper jars are valid
+2026-10-09T07:30:11.4762308Z ✓ Found known Gradle Wrapper JAR files:
+2026-10-09T07:30:11.4763366Z   cb0da6751c2b753a16ac168bb354870ebb1e162e9083f116729cec9c781156b8 gradle/wrapper/gradle-wrapper.jar
+2026-10-09T07:30:11.4764335Z ##[endgroup]
+2026-10-09T07:30:11.4985553Z ##[group]Run set -o pipefail
+2026-10-09T07:30:11.4986000Z set -o pipefail
+2026-10-09T07:30:11.4986961Z bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run441matrix -ProadTestNamespaces=splineroads_matrix434 -ProadMatrixRow=2 -ProadTestHeap=3G | tee matrix-2.log
+2026-10-09T07:30:11.4987979Z grep -q 'MATRIX434 SUMMARY 8/8' matrix-2.log
+2026-10-09T07:30:11.5248633Z shell: /usr/bin/bash -e {0}
+2026-10-09T07:30:11.5249090Z env:
+2026-10-09T07:30:11.5249569Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T07:30:11.5250321Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T07:30:11.5250955Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
+2026-10-09T07:30:11.5251657Z   GRADLE_USER_HOME: /home/runner/.gradle
+2026-10-09T07:30:11.5252079Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+2026-10-09T07:30:11.5252576Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+2026-10-09T07:30:11.5253177Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+2026-10-09T07:30:11.5253828Z   DEVELOCITY_INJECTION_CUSTOM_VALUE: gradle-actions
+2026-10-09T07:30:11.5254272Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+2026-10-09T07:30:11.5254652Z ##[endgroup]
+2026-10-09T07:30:11.6762278Z Downloading https://services.gradle.org/distributions/gradle-8.8-bin.zip
+2026-10-09T07:30:13.9105427Z .............10%.............20%.............30%.............40%.............50%.............60%..............70%.............80%.............90%.............100%
+2026-10-09T07:30:15.2112206Z
+2026-10-09T07:30:15.2113150Z Welcome to Gradle 8.8!
+2026-10-09T07:30:15.2113981Z
+2026-10-09T07:30:15.2114604Z Here are the highlights of this release:
+2026-10-09T07:30:15.2116751Z  - Running Gradle on Java 22
+2026-10-09T07:30:15.2117653Z  - Configurable Gradle daemon JVM
+2026-10-09T07:30:15.2119313Z  - Improved IDE performance for large projects
+2026-10-09T07:30:15.2120267Z
+2026-10-09T07:30:15.2122134Z For more details see https://docs.gradle.org/8.8/release-notes.html
+2026-10-09T07:30:15.2122754Z
+2026-10-09T07:30:15.3144110Z To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.8/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+2026-10-09T07:30:16.4104527Z Daemon will be stopped at the end of the build
+2026-10-09T07:30:52.3110615Z
+2026-10-09T07:30:52.3133606Z > Task :compileJava
+2026-10-09T07:30:52.3162471Z Setting up MCP environment
+2026-10-09T07:30:52.3163476Z Initializing steps
+2026-10-09T07:30:52.5103934Z Executing steps
+2026-10-09T07:30:52.5117393Z  > Running 'downloadManifest'
+2026-10-09T07:30:52.5118146Z  > Running 'downloadJson'
+2026-10-09T07:30:52.5118836Z  > Running 'downloadClient'
+2026-10-09T07:30:52.6104223Z  > Running 'downloadServer'
+2026-10-09T07:30:52.7104725Z  > Running 'extractServer'
+2026-10-09T07:30:53.1103726Z  > Running 'downloadClientMappings'
+2026-10-09T07:30:53.1105015Z  > Running 'mergeMappings'
+2026-10-09T07:30:54.8102936Z  > Running 'stripClient'
+2026-10-09T07:30:57.0103723Z  > Running 'stripServer'
+2026-10-09T07:30:58.5103126Z  > Running 'merge'
+2026-10-09T07:31:01.8107528Z  > Running 'listLibraries'
+2026-10-09T07:31:10.7103624Z  > Running 'rename'
+2026-10-09T07:31:17.9103401Z Stopping at requested step: /home/runner/.gradle/caches/forge_gradle/mcp_repo/de/oceanlabs/mcp/mcp_config/1.20.1-20230612.114412/joined/rename/output.jar
+2026-10-09T07:31:28.3125280Z [07:31:28] [main/INFO]: Writing debug log file accesstransform.log
+2026-10-09T07:31:28.3132279Z [07:31:28] [main/INFO]: Access Transformer processor running version 8.2.14
+2026-10-09T07:31:28.3135748Z [07:31:28] [main/INFO]: Command line arguments [--inJar, /home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20/forge-1.20.1-47.4.20-injected.jar, --outJar, /home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar, --logFile, accesstransform.log, --atFile, /home/runner/work/SplineRoads/SplineRoads/build/_atJar_4/parent_at.cfg]
+2026-10-09T07:31:28.3138426Z [07:31:28] [main/INFO]: Reading from /home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20/forge-1.20.1-47.4.20-injected.jar
+2026-10-09T07:31:28.3139773Z [07:31:28] [main/INFO]: Writing to /home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar
+2026-10-09T07:31:28.3140835Z [07:31:28] [main/INFO]: Transformer file /home/runner/work/SplineRoads/SplineRoads/build/_atJar_4/parent_at.cfg
+2026-10-09T07:31:28.3142932Z [07:31:28] [main/WARN]: Found existing output jar /home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar, overwriting
+2026-10-09T07:31:31.5104552Z [07:31:31] [main/INFO]: JAR transformation complete /home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar
+2026-10-09T07:31:31.5112341Z Creating SRG -> MCP TSRG
+2026-10-09T07:31:44.0105204Z /home/runner/work/SplineRoads/SplineRoads/src/main/java/com/sora/splineroads/SplineRoads.java:93: warning: [removal] get() in FMLJavaModLoadingContext has been deprecated and marked for removal
+2026-10-09T07:31:44.0107093Z     IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+2026-10-09T07:31:44.0109883Z                                             ^
+2026-10-09T07:31:44.0111771Z /home/runner/work/SplineRoads/SplineRoads/src/main/java/com/sora/splineroads/SplineRoads.java:98: warning: [removal] get() in ModLoadingContext has been deprecated and marked for removal
+2026-10-09T07:31:44.0113689Z     net.minecraftforge.fml.ModLoadingContext.get().registerConfig(
+2026-10-09T07:31:44.0114575Z                                             ^
+2026-10-09T07:31:49.6103153Z Note: Some input files use or override a deprecated API.
+2026-10-09T07:31:49.6104001Z Note: Recompile with -Xlint:deprecation for details.
+2026-10-09T07:31:49.6104584Z 2 warnings
+2026-10-09T07:31:57.5102490Z
+2026-10-09T07:31:57.5104371Z > Task :processResources
+2026-10-09T07:31:57.5105155Z > Task :classes
+2026-10-09T07:31:59.3101486Z
+2026-10-09T07:31:59.3105738Z /home/runner/work/SplineRoads/SplineRoads/src/gametest/java/com/sora/splineroads/world/Command35GameTests.java:31: warning: [removal] ResourceLocation(String,String) in ResourceLocation has been deprecated and marked for removal
+2026-10-09T07:31:59.3107656Z > Task :compileGameTestJava
+2026-10-09T07:31:59.3111620Z    Block log=net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(new net.minecraft.resources.ResourceLocation("minecraft",species+"_log"));
+2026-10-09T07:31:59.3113368Z                                                                        ^
+2026-10-09T07:31:59.3119607Z /home/runner/work/SplineRoads/SplineRoads/src/gametest/java/com/sora/splineroads/world/Command35GameTests.java:32: warning: [removal] ResourceLocation(String,String) in ResourceLocation has been deprecated and marked for removal
+2026-10-09T07:31:59.3121195Z
+2026-10-09T07:31:59.3122483Z    Block leaf=net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(new net.minecraft.resources.ResourceLocation("minecraft",species+"_leaves"));
+2026-10-09T07:31:59.3123883Z                                                                         ^
+2026-10-09T07:31:59.3125665Z /home/runner/work/SplineRoads/SplineRoads/src/gametest/java/com/sora/splineroads/world/Command35GameTests.java:33: warning: [removal] ResourceLocation(String,String) in ResourceLocation has been deprecated and marked for removal
+2026-10-09T07:31:59.3127687Z > Task :processGameTestResources
+2026-10-09T07:31:59.3129408Z    Block stripped=net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(new net.minecraft.resources.ResourceLocation("minecraft","stripped_"+species+"_wood"));
+2026-10-09T07:31:59.3131012Z                                                                             ^
+2026-10-09T07:31:59.3131980Z Note: Some input files use or override a deprecated API.
+2026-10-09T07:31:59.3132718Z Note: Recompile with -Xlint:deprecation for details.
+2026-10-09T07:31:59.3133324Z 3 warnings
+2026-10-09T07:31:59.3133883Z > Task :gameTestClasses
+2026-10-09T07:31:59.3134492Z > Task :downloadMcpConfig
+2026-10-09T07:32:00.2105521Z > Task :extractSrg
+2026-10-09T07:32:01.5142514Z > Task :createSrgToMcp
+2026-10-09T07:32:01.6106871Z > Task :downloadMCMeta
+2026-10-09T07:32:01.6107815Z > Task :extractNatives
+2026-10-09T07:32:01.6108742Z > Task :makeSrcDirs
+2026-10-09T07:32:01.6109444Z > Task :prepareRuns
+2026-10-09T07:32:01.6110147Z > Task :prepareRunGameTestServer
+2026-10-09T07:32:01.6110852Z > Task :prepareRunGameTestServerCompile
+2026-10-09T07:32:03.9104255Z
+2026-10-09T07:32:03.9107690Z > Task :runGameTestServer
+2026-10-09T07:32:03.9108920Z 2026-10-09 07:32:03,883 main WARN Advanced terminal features are not available in this environment
+2026-10-09T07:32:04.0108637Z [07:32:03] [main/INFO] [cp.mo.mo.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgegametestserveruserdev, --gameDir, ., --fml.forgeVersion, 47.4.20, --fml.mcVersion, 1.20.1, --fml.forgeGroup, net.minecraftforge, --fml.mcpVersion, 20230612.114412]
+2026-10-09T07:32:04.0118603Z [07:32:03] [main/INFO] [cp.mo.mo.Launcher/MODLAUNCHER]: ModLauncher 10.0.9+10.0.9+main.dcd20f30 starting: java version 17.0.20.1 by Eclipse Adoptium; OS Linux arch amd64 version 6.17.0-1022-azure
+2026-10-09T07:32:04.1109239Z [07:32:04] [main/WARN] [ne.mi.fm.lo.FMLConfig/CORE]: Configuration file /home/runner/work/SplineRoads/SplineRoads/run441matrix/config/fml.toml is not correct. Correcting
+2026-10-09T07:32:04.1119111Z [07:32:04] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowSkipGLVersions] was corrected from null to []
+2026-10-09T07:32:04.1120909Z [07:32:04] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowLogHelpMessage] was corrected from null to true
+2026-10-09T07:32:04.1122862Z [07:32:04] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowSquir] was corrected from null to false
+2026-10-09T07:32:04.1124407Z [07:32:04] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowShowCPU] was corrected from null to false
+2026-10-09T07:32:04.2107309Z [07:32:04] [main/INFO] [ne.mi.fm.lo.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgegametestserveruserdev
+2026-10-09T07:32:04.2112714Z [07:32:04] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.5 Source=union:/home/runner/.gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.5/9d1c0c3a304ae6697ecd477218fa61b850bf57fc/mixin-0.8.5.jar%23116!/ Service=ModLauncher Env=SERVER
+2026-10-09T07:32:04.5121651Z [07:32:04] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/javafmllanguage/1.20.1-47.4.20/c354b21002937b393c4f86163a98dccdf1d51e72/javafmllanguage-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T07:32:04.5125419Z [07:32:04] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/lowcodelanguage/1.20.1-47.4.20/865d75f8c18329ddb31db5856701ab86609108b5/lowcodelanguage-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T07:32:04.5128909Z [07:32:04] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/mclanguage/1.20.1-47.4.20/af599930362212ae937e392709f49047e6abbbf/mclanguage-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T07:32:04.5132754Z [07:32:04] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/fmlcore/1.20.1-47.4.20/e8cc697c69f3911e76caa2f005d9486597cd7448/fmlcore-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T07:32:04.6106043Z [07:32:04] [main/INFO] [ne.mi.fm.lo.mo.JarInJarDependencyLocator/]: No dependencies to load found. Skipping!
+2026-10-09T07:32:06.0116258Z [07:32:05] [main/INFO] [cp.mo.mo.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgegametestserveruserdev' with arguments [--gameDir, .]
+2026-10-09T07:32:11.2107531Z [07:32:11] [modloading-worker-0/INFO] [ne.mi.co.ForgeMod/FORGEMOD]: Forge mod loading, version 47.4.20, for MC 1.20.1 with MCP 20230612.114412
+2026-10-09T07:32:11.2109640Z [07:32:11] [modloading-worker-0/INFO] [ne.mi.co.MinecraftForge/FORGE]: MinecraftForge v47.4.20 Initialized
+2026-10-09T07:32:11.7106998Z [07:32:11] [Forge Version Check/INFO] [ne.mi.fm.VersionChecker/]: [forge] Starting version check at https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json
+2026-10-09T07:32:12.0107347Z [07:32:11] [Forge Version Check/INFO] [ne.mi.fm.VersionChecker/]: [forge] Found status: OUTDATED Current: 47.4.20 Target: 47.4.26
+2026-10-09T07:32:12.7103902Z [07:32:12] [main/ERROR] [minecraft/Settings]: Failed to load properties from file: server.properties
+2026-10-09T07:32:12.7107976Z java.nio.file.NoSuchFileException: server.properties
+2026-10-09T07:32:12.7142643Z 	at sun.nio.fs.UnixException.translateToIOException(UnixException.java:92) ~[?:?] {}
+2026-10-09T07:32:12.7146023Z 	at sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:106) ~[?:?] {}
+2026-10-09T07:32:12.7147426Z 	at sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111) ~[?:?] {}
+2026-10-09T07:32:12.7148892Z 	at sun.nio.fs.UnixFileSystemProvider.newByteChannel(UnixFileSystemProvider.java:218) ~[?:?] {}
+2026-10-09T07:32:12.7150214Z 	at java.nio.file.Files.newByteChannel(Files.java:380) ~[?:?] {}
+2026-10-09T07:32:12.7151241Z 	at java.nio.file.Files.newByteChannel(Files.java:432) ~[?:?] {}
+2026-10-09T07:32:12.7153028Z 	at java.nio.file.spi.FileSystemProvider.newInputStream(FileSystemProvider.java:422) ~[?:?] {}
+2026-10-09T07:32:12.7154352Z 	at java.nio.file.Files.newInputStream(Files.java:160) ~[?:?] {}
+2026-10-09T07:32:12.7159962Z 	at net.minecraft.server.dedicated.Settings.loadFromFile(Settings.java:36) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T07:32:12.7162663Z 	at net.minecraft.server.dedicated.DedicatedServerProperties.fromFile(DedicatedServerProperties.java:137) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T07:32:12.7165468Z 	at net.minecraft.server.dedicated.DedicatedServerSettings.<init>(DedicatedServerSettings.java:12) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T07:32:12.7167610Z 	at net.minecraft.server.Main.main(Main.java:126) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T07:32:12.7169535Z 	at net.minecraftforge.gametest.GameTestMain.main(GameTestMain.java:16) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T07:32:12.7172069Z 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?] {}
+2026-10-09T07:32:12.7173701Z 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?] {}
+2026-10-09T07:32:12.7175546Z 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?] {}
+2026-10-09T07:32:12.7177100Z 	at java.lang.reflect.Method.invoke(Method.java:569) ~[?:?] {}
+2026-10-09T07:32:12.7179138Z 	at net.minecraftforge.fml.loading.targets.ForgeGametestUserdevLaunchHandler.devService(ForgeGametestUserdevLaunchHandler.java:16) ~[fmlloader-1.20.1-47.4.20.jar:?] {}
+2026-10-09T07:32:12.7182343Z 	at net.minecraftforge.fml.loading.targets.CommonDevLaunchHandler.lambda$makeService$7(CommonDevLaunchHandler.java:135) ~[fmlloader-1.20.1-47.4.20.jar:?] {}
+2026-10-09T07:32:12.7185058Z 	at cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:30) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T07:32:12.7187844Z 	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:53) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T07:32:12.7189843Z 	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:71) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T07:32:12.7191975Z 	at cpw.mods.modlauncher.Launcher.run(Launcher.java:108) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T07:32:12.7193357Z 	at cpw.mods.modlauncher.Launcher.main(Launcher.java:78) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T07:32:12.7194951Z 	at cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:26) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T07:32:12.7196875Z 	at cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:23) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T07:32:12.7198806Z 	at cpw.mods.bootstraplauncher.BootstrapLauncher.main(BootstrapLauncher.java:141) ~[bootstraplauncher-1.1.2.jar:?] {}
+2026-10-09T07:32:12.8106585Z [07:32:12] [main/INFO] [mojang/YggdrasilAuthenticationService]: Environment: authHost='https://authserver.mojang.com', accountsHost='https://api.mojang.com', sessionHost='https://sessionserver.mojang.com', servicesHost='https://api.minecraftservices.com', name='PROD'
+2026-10-09T07:32:12.8113133Z [07:32:12] [main/WARN] [minecraft/VanillaPackResourcesBuilder]: Assets URL 'union:/home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar%23181!/assets/.mcassetsroot' uses unexpected schema
+2026-10-09T07:32:12.8117399Z [07:32:12] [main/WARN] [minecraft/VanillaPackResourcesBuilder]: Assets URL 'union:/home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar%23181!/data/.mcassetsroot' uses unexpected schema
+2026-10-09T07:32:14.3105802Z [07:32:14] [main/INFO] [minecraft/RecipeManager]: Loaded 7 recipes
+2026-10-09T07:32:14.4110316Z [07:32:14] [main/INFO] [minecraft/AdvancementList]: Loaded 1271 advancements
+2026-10-09T07:32:14.9104955Z [07:32:14] [main/INFO] [ne.mi.ga.ForgeGameTestHooks/]: Enabled Gametest Namespaces: [splineroads_matrix434]
+2026-10-09T07:32:15.0123813Z [07:32:14] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Configuration file ./world/serverconfig/forge-server.toml is not correct. Correcting
+2026-10-09T07:32:15.0125610Z [07:32:14] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server was corrected from null to its default, SimpleCommentedConfig:{}.
+2026-10-09T07:32:15.0127636Z [07:32:14] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.removeErroringBlockEntities was corrected from null to its default, false.
+2026-10-09T07:32:15.0143427Z [07:32:14] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.removeErroringEntities was corrected from null to its default, false.
+2026-10-09T07:32:15.0145619Z [07:32:14] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.fullBoundingBoxLadders was corrected from null to its default, false.
+2026-10-09T07:32:15.0148139Z [07:32:14] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.zombieBaseSummonChance was corrected from null to its default, 0.1.
+2026-10-09T07:32:15.0150114Z [07:32:14] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.zombieBabyChance was corrected from null to its default, 0.05.
+2026-10-09T07:32:15.0152392Z [07:32:14] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.permissionHandler was corrected from null to its default, forge:default_handler.
+2026-10-09T07:32:15.0154666Z [07:32:14] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.advertiseDedicatedServerToLan was corrected from null to its default, true.
+2026-10-09T07:32:15.0156876Z [07:32:14] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.useItemWithDurationZero was corrected from null to its default, false.
+2026-10-09T07:32:26.5103262Z [07:32:26] [Server thread/INFO] [minecraft/MinecraftServer]: Preparing start region for dimension minecraft:overworld
+2026-10-09T07:32:27.4108991Z [07:32:27] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:27.4134329Z [07:32:27] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:27.5132663Z [07:32:27] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:28.0110805Z [07:32:27] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:28.5105211Z [07:32:28] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:29.0106927Z [07:32:28] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:29.5104794Z [07:32:29] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:30.0113516Z [07:32:29] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:30.5105823Z [07:32:30] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:31.0102616Z [07:32:30] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:31.5103061Z [07:32:31] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:32.0102453Z [07:32:31] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:32.5105716Z [07:32:32] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:33.0107429Z [07:32:32] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:33.5115042Z [07:32:33] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:34.0106893Z [07:32:33] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:34.5105998Z [07:32:34] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:35.0106568Z [07:32:34] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:35.5106780Z [07:32:35] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:36.0105818Z [07:32:35] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:36.5104786Z [07:32:36] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:37.0103785Z [07:32:36] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:37.5102908Z [07:32:37] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:38.0104459Z [07:32:37] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:38.5105847Z [07:32:38] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:39.0116255Z [07:32:38] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:39.5112458Z [07:32:39] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:40.0104182Z [07:32:39] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:40.5105454Z [07:32:40] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:41.0112541Z [07:32:40] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:41.5104344Z [07:32:41] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:42.0107046Z [07:32:41] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:42.5105205Z [07:32:42] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:43.0104679Z [07:32:42] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:43.5104978Z [07:32:43] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:44.0105620Z [07:32:43] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:44.5104535Z [07:32:44] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:45.0108104Z [07:32:44] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T07:32:45.5117260Z [07:32:45] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 10%
+2026-10-09T07:32:46.0105599Z [07:32:45] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 19%
+2026-10-09T07:32:46.5106799Z [07:32:46] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 42%
+2026-10-09T07:32:47.0111276Z [07:32:46] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 45%
+2026-10-09T07:32:47.5106121Z [07:32:47] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 46%
+2026-10-09T07:32:48.0105841Z [07:32:47] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 48%
+2026-10-09T07:32:48.5109988Z [07:32:48] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 51%
+2026-10-09T07:32:49.0107608Z [07:32:48] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 52%
+2026-10-09T07:32:49.5122998Z [07:32:49] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 54%
+2026-10-09T07:32:50.0107570Z [07:32:49] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 54%
+2026-10-09T07:32:50.5105390Z [07:32:50] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 56%
+2026-10-09T07:32:51.0103242Z [07:32:50] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 57%
+2026-10-09T07:32:51.5105795Z [07:32:51] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 58%
+2026-10-09T07:32:52.0106748Z [07:32:51] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 60%
+2026-10-09T07:32:52.5106605Z [07:32:52] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 61%
+2026-10-09T07:32:53.0105554Z [07:32:52] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 63%
+2026-10-09T07:32:53.5114673Z [07:32:53] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 65%
+2026-10-09T07:32:54.0102220Z [07:32:53] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 67%
+2026-10-09T07:32:54.5102489Z [07:32:54] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 67%
+2026-10-09T07:32:55.0110742Z [07:32:54] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 67%
+2026-10-09T07:32:55.5106727Z [07:32:55] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 67%
+2026-10-09T07:32:56.0108554Z [07:32:55] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 67%
+2026-10-09T07:32:56.5104275Z [07:32:56] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 67%
+2026-10-09T07:32:57.0105140Z [07:32:56] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 67%
+2026-10-09T07:32:57.5104915Z [07:32:57] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 67%
+2026-10-09T07:32:58.0102946Z [07:32:57] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 67%
+2026-10-09T07:32:58.5107857Z [07:32:58] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 67%
+2026-10-09T07:32:59.0109652Z [07:32:58] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 67%
+2026-10-09T07:32:59.5108489Z [07:32:59] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 67%
+2026-10-09T07:33:00.0102381Z [07:32:59] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 67%
+2026-10-09T07:33:00.5105850Z [07:33:00] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 67%
+2026-10-09T07:33:01.0103877Z [07:33:00] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 67%
+2026-10-09T07:33:01.5104792Z [07:33:01] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 67%
+2026-10-09T07:33:02.0104515Z [07:33:01] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 67%
+2026-10-09T07:33:02.5104885Z [07:33:02] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 67%
+2026-10-09T07:33:03.0102453Z [07:33:02] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 67%
+2026-10-09T07:33:03.8109037Z [07:33:03] [Server thread/INFO] [minecraft/LoggerChunkProgressListener]: Time elapsed: 37335 ms
+2026-10-09T07:33:03.8113166Z [07:33:03] [Server thread/INFO] [minecraft/GameTestServer]: Started game test server
+2026-10-09T07:33:03.8114441Z [07:33:03] [Server thread/INFO] [ne.mi.se.pe.PermissionAPI/]: Successfully initialized permission handler forge:default_handler
+2026-10-09T07:33:04.6106299Z [07:33:04] [Server thread/INFO] [minecraft/GameTestBatchRunner]: Running test batch 'splineroads_live438:1' (1 tests)...
+2026-10-09T07:33:04.7113028Z [07:33:04] [Server thread/INFO] [minecraft/GameTestServer]: 5 tests are now running!
+2026-10-09T07:33:59.6102740Z Oct 09, 2026 7:33:59 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:33:59.6106482Z INFO: SR edit: 941 ms, roads=0, requested=1, phases(ms)={normalize_transitions=11.302708, affected_structures=0.408353, attached_points=1.409184, topology=19.593335, caps_and_dependencies=11.995353, terrain_chunk_access=3.476589, furniture_phase=10.034898, structure_candidate_index=0.530251, structure_plan=362.774732, dependent_replanning=1.525952, caps_shell_and_joint_validation=8.016275, edit_raster=166.440571, sidewalks=2.315107, local_collision=81.317684, validation_commit_sync=259.837557}
+2026-10-09T07:33:59.6109774Z Oct 09, 2026 7:33:59 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:33:59.6110538Z INFO: SR connect: 1,012 ms, roads=0, requested=1, phases(ms)={}
+2026-10-09T07:34:02.7101961Z Oct 09, 2026 7:34:02 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:34:02.7109583Z INFO: SR edit: 2,580 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.068127, affected_structures=5.438276, attached_points=0.054271, topology=142.915297, caps_and_dependencies=0.060724, terrain_chunk_access=1.785517, furniture_phase=0.234799, structure_candidate_index=0.045475, structure_plan=628.743302, dependent_replanning=559.584311, caps_shell_and_joint_validation=40.319675, edit_raster=666.505215, sidewalks=0.240108, local_collision=88.647864, validation_commit_sync=444.884923}
+2026-10-09T07:34:03.5102140Z Oct 09, 2026 7:34:03 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:34:03.5105291Z INFO: SR edit: 733 ms, roads=3, requested=1, phases(ms)={normalize_transitions=0.129232, affected_structures=7.896704, attached_points=1.66937, topology=4.635751, caps_and_dependencies=0.018615, terrain_chunk_access=0.37471, furniture_phase=0.012974, structure_candidate_index=0.002785, structure_plan=111.309937, dependent_replanning=20.919106, caps_shell_and_joint_validation=14.904458, edit_raster=468.527347, sidewalks=0.197389, local_collision=60.97617}
+2026-10-09T07:34:04.1103032Z Oct 09, 2026 7:34:04 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:34:04.1113251Z INFO: SR edit: 554 ms, roads=3, requested=1, phases(ms)={normalize_transitions=0.095008, affected_structures=4.752269, attached_points=0.09634, topology=4.344237, caps_and_dependencies=0.014828, terrain_chunk_access=0.330197, furniture_phase=0.010569, structure_candidate_index=0.002445, structure_plan=99.164854, dependent_replanning=19.08512, caps_shell_and_joint_validation=14.582206, edit_raster=362.519017, sidewalks=0.198841, local_collision=17.056179, validation_commit_sync=31.934518}
+2026-10-09T07:34:04.9102138Z Oct 09, 2026 7:34:04 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:34:04.9105759Z INFO: SR edit: 652 ms, roads=3, requested=1, phases(ms)={normalize_transitions=0.126527, affected_structures=4.727282, attached_points=0.125495, topology=4.063352, caps_and_dependencies=0.019166, terrain_chunk_access=0.387634, furniture_phase=0.015439, structure_candidate_index=0.003396, structure_plan=145.753132, dependent_replanning=16.837129, caps_shell_and_joint_validation=11.455354, edit_raster=428.246376, sidewalks=0.156683, local_collision=9.604435}
+2026-10-09T07:34:05.4113647Z Oct 09, 2026 7:34:05 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:34:05.4119745Z INFO: SR edit: 495 ms, roads=3, requested=1, phases(ms)={normalize_transitions=0.099777, affected_structures=4.723535, attached_points=0.095609, topology=3.910897, caps_and_dependencies=0.014748, terrain_chunk_access=0.313135, furniture_phase=0.010189, structure_candidate_index=0.002695, structure_plan=89.558385, dependent_replanning=16.317639, caps_shell_and_joint_validation=8.860906, edit_raster=329.353966, sidewalks=0.142757, local_collision=6.300327, validation_commit_sync=35.140677}
+2026-10-09T07:34:06.1102488Z Oct 09, 2026 7:34:06 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:34:06.1135328Z INFO: SR edit: 613 ms, roads=3, requested=1, phases(ms)={normalize_transitions=0.084277, affected_structures=5.513647, attached_points=0.105216, topology=4.396809, caps_and_dependencies=0.017934, terrain_chunk_access=0.375642, furniture_phase=0.013044, structure_candidate_index=0.003206, structure_plan=119.970825, dependent_replanning=20.807435, caps_shell_and_joint_validation=11.557434, edit_raster=403.529897, sidewalks=0.214281, local_collision=9.171734}
+2026-10-09T07:34:06.7102595Z Oct 09, 2026 7:34:06 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:34:06.7105885Z INFO: SR edit: 598 ms, roads=3, requested=1, phases(ms)={normalize_transitions=0.105808, affected_structures=5.578197, attached_points=0.110036, topology=4.745781, caps_and_dependencies=0.022892, terrain_chunk_access=0.58839, furniture_phase=0.018224, structure_candidate_index=0.003577, structure_plan=131.535813, dependent_replanning=14.50317, caps_shell_and_joint_validation=9.727423, edit_raster=387.060743, sidewalks=0.181439, local_collision=9.910736, validation_commit_sync=34.244732}
+2026-10-09T07:34:07.5102989Z Oct 09, 2026 7:34:07 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:34:07.5107856Z INFO: SR edit: 625 ms, roads=4, requested=0, phases(ms)={normalize_transitions=0.137868, affected_structures=2.875585, attached_points=0.004158, topology=10.360546, caps_and_dependencies=0.039334, terrain_chunk_access=1.26254, furniture_phase=0.025337, structure_candidate_index=0.003697, structure_plan=138.856217, dependent_replanning=0.009939, caps_shell_and_joint_validation=0.569314, edit_raster=131.150492, sidewalks=0.194364, local_collision=64.614891, validation_commit_sync=274.585539}
+2026-10-09T07:34:07.7103495Z LIVE438 REAL_WORLD PASS: ADD preview/build rechecked 3 times, stable alignment/ports, Mojang NBT, deletion with invalid saved neighbor, no orphan colliders
+2026-10-09T07:34:09.8102358Z [07:34:09] [Server thread/INFO] [minecraft/GameTestBatchRunner]: Running test batch 'splineroads_matrix434:1' (4 tests)...
+2026-10-09T07:34:10.0103786Z [07:34:09] [Server thread/WARN] [minecraft/MinecraftServer]: Can't keep up! Is the server overloaded? Running 66137ms or 1322 ticks behind
+2026-10-09T07:35:47.1103373Z Oct 09, 2026 7:35:47 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:35:47.1111333Z INFO: SR edit: 385 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.105046, affected_structures=0.016371, attached_points=0.035586, topology=4.974422, caps_and_dependencies=1.947578, terrain_chunk_access=0.384138, furniture_phase=0.362848, structure_candidate_index=0.003496, structure_plan=60.484053, dependent_replanning=0.22497, caps_shell_and_joint_validation=0.753347, edit_raster=38.663633, sidewalks=0.194664, local_collision=19.367938, validation_commit_sync=257.473644}
+2026-10-09T07:35:47.2102671Z Oct 09, 2026 7:35:47 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:35:47.2105015Z INFO: SR connect: 411 ms, roads=2, requested=1, phases(ms)={}
+2026-10-09T07:35:48.0105117Z Oct 09, 2026 7:35:47 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:35:48.0108597Z INFO: SR edit: 823 ms, roads=3, requested=1, phases(ms)={normalize_transitions=0.110466, affected_structures=0.982265, attached_points=0.078407, topology=7.317759, caps_and_dependencies=2.025243, terrain_chunk_access=1.967325, furniture_phase=0.640637, structure_candidate_index=0.004819, structure_plan=128.279553, dependent_replanning=1.449407, caps_shell_and_joint_validation=1.520801, edit_raster=164.554694, sidewalks=0.237423, local_collision=57.456929, validation_commit_sync=456.282153}
+2026-10-09T07:35:48.0112276Z MATRIX434 FIXTURE node_span=500 fixed_east=false mesh_lengths=501.0,501.0
+2026-10-09T07:35:48.0113832Z Oct 09, 2026 7:35:47 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:35:48.0115279Z INFO: SR connect: 836 ms, roads=3, requested=1, phases(ms)={}
+2026-10-09T07:35:49.3102511Z Oct 09, 2026 7:35:49 AM com.sora.splineroads.world.LaneRamps$Planning close
+2026-10-09T07:35:49.3126568Z INFO: SR route plan total_ms=1300.429 clearance_ms=65.224 candidates=10 contact_queries=44 cached_meshes=5
+2026-10-09T07:35:49.3127773Z MATRIX434 C1 PLAN_PASS
+2026-10-09T07:35:50.5102308Z Oct 09, 2026 7:35:50 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:35:50.5105730Z INFO: SR edit: 1,214 ms, roads=4, requested=1, phases(ms)={normalize_transitions=0.119072, affected_structures=1.843428, attached_points=0.069209, topology=59.181186, caps_and_dependencies=0.073007, terrain_chunk_access=0.746632, furniture_phase=0.159006, structure_candidate_index=0.003427, structure_plan=398.072557, dependent_replanning=12.955618, caps_shell_and_joint_validation=1.834732, edit_raster=310.593672, sidewalks=0.368598, local_collision=61.52138}
+2026-10-09T07:35:50.5108700Z MATRIX434 C1 PREVIEW_PASS
+2026-10-09T07:35:51.7102519Z Oct 09, 2026 7:35:51 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:35:51.7105592Z INFO: SR edit: 1,217 ms, roads=4, requested=1, phases(ms)={normalize_transitions=0.097692, affected_structures=1.617196, attached_points=0.063729, topology=67.786643, caps_and_dependencies=0.052218, terrain_chunk_access=0.699684, furniture_phase=0.018905, structure_candidate_index=0.002505, structure_plan=324.188203, dependent_replanning=10.657694, caps_shell_and_joint_validation=1.916764, edit_raster=298.492708, sidewalks=0.236671, local_collision=59.074197, validation_commit_sync=451.8524}
+2026-10-09T07:35:53.3101987Z Oct 09, 2026 7:35:53 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:35:53.3105983Z INFO: SR edit: 1,159 ms, roads=5, requested=0, phases(ms)={normalize_transitions=0.128089, affected_structures=2.006601, attached_points=0.003447, topology=6.315226, caps_and_dependencies=0.048941, terrain_chunk_access=1.100202, furniture_phase=0.027902, structure_candidate_index=0.003346, structure_plan=94.631041, dependent_replanning=0.013055, caps_shell_and_joint_validation=0.354731, edit_raster=258.912852, sidewalks=0.239286, local_collision=70.088987, validation_commit_sync=724.60662}
+2026-10-09T07:35:53.3108795Z MATRIX434 C1 PASS ms=5330.226
+2026-10-09T07:35:54.6102297Z Oct 09, 2026 7:35:54 AM com.sora.splineroads.world.LaneRamps$Planning close
+2026-10-09T07:35:54.6105268Z MATRIX434 C2 PLAN_PASS
+2026-10-09T07:35:54.6107009Z INFO: SR route plan total_ms=1281.807 clearance_ms=87.192 candidates=10 contact_queries=44 cached_meshes=6
+2026-10-09T07:35:56.3102021Z Oct 09, 2026 7:35:56 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:35:56.3105708Z INFO: SR edit: 1,704 ms, roads=4, requested=1, phases(ms)={normalize_transitions=0.230191, affected_structures=2.228915, attached_points=0.112671, topology=79.777362, caps_and_dependencies=0.302726, terrain_chunk_access=0.805606, furniture_phase=0.275715, structure_candidate_index=0.052348, structure_plan=380.520114, dependent_replanning=463.546258, caps_shell_and_joint_validation=1.449559, edit_raster=325.926674, sidewalks=0.312783, local_collision=67.810698}
+2026-10-09T07:35:56.3108707Z MATRIX434 C2 PREVIEW_PASS
+2026-10-09T07:35:57.7101872Z Oct 09, 2026 7:35:57 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:35:57.7105056Z INFO: SR edit: 1,382 ms, roads=4, requested=1, phases(ms)={normalize_transitions=0.138589, affected_structures=2.193341, attached_points=0.073757, topology=100.534163, caps_and_dependencies=0.041097, terrain_chunk_access=0.880753, furniture_phase=0.024515, structure_candidate_index=0.002986, structure_plan=403.142948, dependent_replanning=23.47773, caps_shell_and_joint_validation=16.713834, edit_raster=322.378509, sidewalks=0.267829, local_collision=71.216541, validation_commit_sync=440.805875}
+2026-10-09T07:35:58.9102268Z Oct 09, 2026 7:35:58 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:35:58.9105878Z INFO: SR edit: 885 ms, roads=5, requested=0, phases(ms)={normalize_transitions=0.11318, affected_structures=1.669985, attached_points=0.002164, topology=6.659471, caps_and_dependencies=0.028203, terrain_chunk_access=0.968827, furniture_phase=0.018555, structure_candidate_index=0.002725, structure_plan=137.816881, dependent_replanning=0.009678, caps_shell_and_joint_validation=0.254625, edit_raster=159.795966, sidewalks=0.239727, local_collision=68.175047, validation_commit_sync=508.485259}
+2026-10-09T07:35:58.9109071Z MATRIX434 C2 PASS ms=5540.980
+2026-10-09T07:36:34.1102069Z Oct 09, 2026 7:36:34 AM com.sora.splineroads.world.LaneRamps$Planning close
+2026-10-09T07:36:34.1105121Z INFO: SR route plan total_ms=35261.633 clearance_ms=1752.728 candidates=395 contact_queries=1584 cached_meshes=6
+2026-10-09T07:36:34.1106426Z MATRIX434 C3 PLAN_PASS
+2026-10-09T07:36:35.3101822Z Oct 09, 2026 7:36:35 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:36:35.3107340Z INFO: SR edit: 1,206 ms, roads=4, requested=1, phases(ms)={normalize_transitions=0.103473, affected_structures=0.258252, attached_points=0.073748, topology=72.035962, caps_and_dependencies=0.038682, terrain_chunk_access=0.849527, furniture_phase=0.169356, structure_candidate_index=0.012894, structure_plan=392.067877, dependent_replanning=19.399768, caps_shell_and_joint_validation=1.782358, edit_raster=364.302408, sidewalks=0.246089, local_collision=55.574952}
+2026-10-09T07:36:35.3110082Z MATRIX434 C3 PREVIEW_PASS
+2026-10-09T07:36:36.6102065Z Oct 09, 2026 7:36:36 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:36:36.6104902Z INFO: SR edit: 1,250 ms, roads=4, requested=1, phases(ms)={normalize_transitions=0.088505, affected_structures=0.221815, attached_points=0.0754, topology=75.101597, caps_and_dependencies=0.04259, terrain_chunk_access=0.859945, furniture_phase=0.021561, structure_candidate_index=0.002224, structure_plan=395.379051, dependent_replanning=15.528759, caps_shell_and_joint_validation=1.575291, edit_raster=363.431321, sidewalks=0.290793, local_collision=57.459752, validation_commit_sync=339.223845}
+2026-10-09T07:36:36.9101999Z Oct 09, 2026 7:36:36 AM com.sora.splineroads.core.RoadTimings reportLoad
+2026-10-09T07:36:36.9103218Z INFO: SR load: 120 ms, roads=5
+2026-10-09T07:36:37.7119841Z Oct 09, 2026 7:36:37 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:36:37.7120555Z MATRIX434 C3 PASS ms=38804.387
+2026-10-09T07:36:37.7127872Z INFO: SR edit: 741 ms, roads=5, requested=0, phases(ms)={normalize_transitions=0.115977, affected_structures=0.350544, attached_points=9.42E-4, topology=6.477837, caps_and_dependencies=0.026149, terrain_chunk_access=0.929536, furniture_phase=0.01598, structure_candidate_index=0.002174, structure_plan=74.354361, dependent_replanning=0.004097, caps_shell_and_joint_validation=0.209161, edit_raster=138.013322, sidewalks=0.229909, local_collision=56.546144, validation_commit_sync=463.806712}
+2026-10-09T07:37:18.8103049Z Oct 09, 2026 7:37:18 AM com.sora.splineroads.world.LaneRamps$Planning close
+2026-10-09T07:37:18.8103867Z MATRIX434 C4 PLAN_PASS
+2026-10-09T07:37:18.8105087Z INFO: SR route plan total_ms=41134.520 clearance_ms=1853.396 candidates=397 contact_queries=1592 cached_meshes=6
+2026-10-09T07:37:20.0104575Z Oct 09, 2026 7:37:19 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:37:20.0107978Z INFO: SR edit: 1,228 ms, roads=4, requested=1, phases(ms)={normalize_transitions=0.093485, affected_structures=0.23047, attached_points=0.084457, topology=55.399139, caps_and_dependencies=0.028423, terrain_chunk_access=0.854154, furniture_phase=0.206345, structure_candidate_index=0.002415, structure_plan=399.393136, dependent_replanning=18.590735, caps_shell_and_joint_validation=1.001569, edit_raster=347.616008, sidewalks=0.270435, local_collision=68.453952}
+2026-10-09T07:37:20.0112252Z MATRIX434 C4 PREVIEW_PASS
+2026-10-09T07:37:21.5102268Z Oct 09, 2026 7:37:21 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:37:21.5106465Z INFO: SR edit: 1,409 ms, roads=4, requested=1, phases(ms)={normalize_transitions=0.099286, affected_structures=0.19303, attached_points=0.097191, topology=117.595072, caps_and_dependencies=0.047579, terrain_chunk_access=0.807988, furniture_phase=0.015198, structure_candidate_index=0.002264, structure_plan=413.025739, dependent_replanning=17.484259, caps_shell_and_joint_validation=0.940626, edit_raster=309.289872, sidewalks=0.281204, local_collision=68.150256, validation_commit_sync=480.395683}
+2026-10-09T07:37:22.5102343Z Oct 09, 2026 7:37:22 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:37:22.5103087Z MATRIX434 C4 PASS ms=44797.167
+2026-10-09T07:37:22.5109828Z INFO: SR edit: 709 ms, roads=5, requested=0, phases(ms)={normalize_transitions=0.13421, affected_structures=0.229108, attached_points=5.72E-4, topology=5.355808, caps_and_dependencies=0.060894, terrain_chunk_access=0.909558, furniture_phase=0.018745, structure_candidate_index=0.002614, structure_plan=68.928372, dependent_replanning=0.004108, caps_shell_and_joint_validation=0.266337, edit_raster=144.908056, sidewalks=0.224078, local_collision=65.220399, validation_commit_sync=422.911446}
+2026-10-09T07:39:18.4113037Z Oct 09, 2026 7:39:18 AM com.sora.splineroads.world.LaneRamps$Planning close
+2026-10-09T07:39:18.4113798Z MATRIX434 C5 PLAN_PASS
+2026-10-09T07:39:18.4114680Z INFO: SR route plan total_ms=115936.888 clearance_ms=3831.303 candidates=730 contact_queries=2924 cached_meshes=6
+2026-10-09T07:39:19.7101629Z Oct 09, 2026 7:39:19 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:39:19.7102494Z MATRIX434 C5 PREVIEW_PASS
+2026-10-09T07:39:19.7107292Z INFO: SR edit: 1,282 ms, roads=4, requested=1, phases(ms)={normalize_transitions=0.091722, affected_structures=2.106574, attached_points=0.082855, topology=73.263354, caps_and_dependencies=0.024195, terrain_chunk_access=0.726237, furniture_phase=0.119823, structure_candidate_index=0.002024, structure_plan=387.576016, dependent_replanning=15.847048, caps_shell_and_joint_validation=0.853154, edit_raster=365.377305, sidewalks=0.275835, local_collision=65.276247}
+2026-10-09T07:39:21.0102076Z Oct 09, 2026 7:39:20 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:39:21.0107026Z INFO: SR edit: 1,287 ms, roads=4, requested=1, phases(ms)={normalize_transitions=0.115896, affected_structures=1.501865, attached_points=0.075612, topology=80.658796, caps_and_dependencies=0.022763, terrain_chunk_access=0.687854, furniture_phase=0.029185, structure_candidate_index=0.002885, structure_plan=399.811546, dependent_replanning=15.410908, caps_shell_and_joint_validation=0.838916, edit_raster=346.066905, sidewalks=0.322132, local_collision=53.19365, validation_commit_sync=388.038}
+2026-10-09T07:39:22.1101655Z Oct 09, 2026 7:39:22 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:39:22.1108980Z INFO: SR edit: 796 ms, roads=5, requested=0, phases(ms)={normalize_transitions=0.115586, affected_structures=1.455398, attached_points=9.62E-4, topology=5.463271, caps_and_dependencies=0.016461, terrain_chunk_access=0.626279, furniture_phase=0.030147, structure_candidate_index=0.002905, structure_plan=98.919486, dependent_replanning=0.003647, caps_shell_and_joint_validation=0.193882, edit_raster=127.569178, sidewalks=0.200244, local_collision=56.548799, validation_commit_sync=504.75143}
+2026-10-09T07:39:22.1112354Z MATRIX434 C5 PASS ms=119614.309
+2026-10-09T07:41:26.9102634Z Oct 09, 2026 7:41:26 AM com.sora.splineroads.world.LaneRamps$Planning close
+2026-10-09T07:41:26.9103693Z MATRIX434 C6 PLAN_PASS
+2026-10-09T07:41:26.9105313Z INFO: SR route plan total_ms=124817.023 clearance_ms=3969.489 candidates=732 contact_queries=2932 cached_meshes=6
+2026-10-09T07:41:28.1102090Z Oct 09, 2026 7:41:28 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:41:28.1105540Z INFO: SR edit: 1,161 ms, roads=4, requested=1, phases(ms)={normalize_transitions=0.111298, affected_structures=1.636217, attached_points=0.093644, topology=53.913878, caps_and_dependencies=0.028484, terrain_chunk_access=0.654242, furniture_phase=0.133088, structure_candidate_index=0.001994, structure_plan=422.227505, dependent_replanning=16.485396, caps_shell_and_joint_validation=0.891346, edit_raster=300.57444, sidewalks=0.223097, local_collision=54.708893}
+2026-10-09T07:41:28.1108738Z MATRIX434 C6 PREVIEW_PASS
+2026-10-09T07:41:29.4101625Z Oct 09, 2026 7:41:29 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:41:29.4104682Z INFO: SR edit: 1,353 ms, roads=4, requested=1, phases(ms)={normalize_transitions=0.110917, affected_structures=1.84669, attached_points=0.076813, topology=76.266476, caps_and_dependencies=0.021239, terrain_chunk_access=0.624587, furniture_phase=0.01057, structure_candidate_index=0.001473, structure_plan=413.059938, dependent_replanning=14.560751, caps_shell_and_joint_validation=0.933684, edit_raster=303.985624, sidewalks=0.258152, local_collision=157.035472, validation_commit_sync=384.195065}
+2026-10-09T07:41:30.4101610Z Oct 09, 2026 7:41:30 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:41:30.4105553Z INFO: SR edit: 708 ms, roads=5, requested=0, phases(ms)={normalize_transitions=0.0907, affected_structures=1.455619, attached_points=6.61E-4, topology=5.444361, caps_and_dependencies=0.018314, terrain_chunk_access=0.751835, furniture_phase=0.028513, structure_candidate_index=0.002665, structure_plan=62.992176, dependent_replanning=0.004188, caps_shell_and_joint_validation=0.20322, edit_raster=187.548238, sidewalks=0.194082, local_collision=53.015289, validation_commit_sync=395.617378}
+2026-10-09T07:41:30.4108911Z MATRIX434 C6 PASS ms=128330.932
+2026-10-09T07:43:44.8105516Z MATRIX434 C7 PLAN_PASS
+2026-10-09T07:43:44.8109262Z Oct 09, 2026 7:43:44 AM com.sora.splineroads.world.LaneRamps$Planning close
+2026-10-09T07:43:44.8110595Z INFO: SR route plan total_ms=134365.890 clearance_ms=3906.142 candidates=732 contact_queries=2932 cached_meshes=6
+2026-10-09T07:43:46.0102148Z Oct 09, 2026 7:43:45 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:43:46.0103152Z MATRIX434 C7 PREVIEW_PASS
+2026-10-09T07:43:46.0106053Z INFO: SR edit: 1,180 ms, roads=4, requested=1, phases(ms)={normalize_transitions=0.098354, affected_structures=1.609277, attached_points=0.072556, topology=52.276691, caps_and_dependencies=0.02138, terrain_chunk_access=0.606032, furniture_phase=0.099055, structure_candidate_index=0.002024, structure_plan=364.35295, dependent_replanning=17.336824, caps_shell_and_joint_validation=0.872841, edit_raster=386.607964, sidewalks=0.21405, local_collision=52.967061}
+2026-10-09T07:43:47.2102820Z Oct 09, 2026 7:43:47 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:43:47.2106494Z INFO: SR edit: 1,248 ms, roads=4, requested=1, phases(ms)={normalize_transitions=0.089107, affected_structures=1.350364, attached_points=0.070612, topology=78.045949, caps_and_dependencies=0.024035, terrain_chunk_access=0.607876, furniture_phase=0.007815, structure_candidate_index=0.002033, structure_plan=399.192338, dependent_replanning=16.303843, caps_shell_and_joint_validation=0.866469, edit_raster=363.684046, sidewalks=0.210995, local_collision=48.108165, validation_commit_sync=339.62214}
+2026-10-09T07:43:48.2101916Z Oct 09, 2026 7:43:48 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:43:48.2103114Z MATRIX434 C7 PASS ms=137818.683
+2026-10-09T07:43:48.2106457Z INFO: SR edit: 698 ms, roads=5, requested=0, phases(ms)={normalize_transitions=0.065392, affected_structures=1.370221, attached_points=7.62E-4, topology=6.758261, caps_and_dependencies=0.019346, terrain_chunk_access=0.93616, furniture_phase=0.01071, structure_candidate_index=0.003076, structure_plan=102.903839, dependent_replanning=0.003406, caps_shell_and_joint_validation=0.196828, edit_raster=130.314925, sidewalks=0.298808, local_collision=56.580209, validation_commit_sync=397.999802}
+2026-10-09T07:44:29.5102290Z Oct 09, 2026 7:44:29 AM com.sora.splineroads.world.LaneRamps$Planning close
+2026-10-09T07:44:29.5103449Z INFO: SR route plan total_ms=41298.630 clearance_ms=1487.727 candidates=256 contact_queries=1028 cached_meshes=5
+2026-10-09T07:44:29.5104300Z MATRIX434 C8 PLAN_PASS
+2026-10-09T07:44:30.6103077Z Oct 09, 2026 7:44:30 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:44:30.6105795Z INFO: SR edit: 1,102 ms, roads=4, requested=1, phases(ms)={normalize_transitions=0.143388, affected_structures=1.25748, attached_points=0.09613, topology=65.999639, caps_and_dependencies=0.020739, terrain_chunk_access=0.612775, furniture_phase=0.101049, structure_candidate_index=0.002084, structure_plan=311.534707, dependent_replanning=9.362095, caps_shell_and_joint_validation=1.124641, edit_raster=309.870338, sidewalks=0.210443, local_collision=59.66384}
+2026-10-09T07:44:30.6107876Z MATRIX434 C8 PREVIEW_PASS
+2026-10-09T07:44:31.9105481Z Oct 09, 2026 7:44:31 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:44:31.9109373Z INFO: SR edit: 1,306 ms, roads=4, requested=1, phases(ms)={normalize_transitions=0.078687, affected_structures=2.000309, attached_points=0.095298, topology=109.090581, caps_and_dependencies=0.03212, terrain_chunk_access=0.846873, furniture_phase=0.011932, structure_candidate_index=0.003276, structure_plan=319.778983, dependent_replanning=8.032079, caps_shell_and_joint_validation=0.936791, edit_raster=347.551019, sidewalks=0.256098, local_collision=65.722021, validation_commit_sync=451.085168}
+2026-10-09T07:44:33.0101678Z Oct 09, 2026 7:44:32 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:44:33.0102530Z MATRIX434 C8 PASS ms=44784.540
+2026-10-09T07:44:33.0108016Z INFO: SR edit: 777 ms, roads=5, requested=0, phases(ms)={normalize_transitions=0.087193, affected_structures=1.254785, attached_points=8.21E-4, topology=3.491845, caps_and_dependencies=0.014588, terrain_chunk_access=0.584492, furniture_phase=0.007203, structure_candidate_index=0.002375, structure_plan=70.756619, dependent_replanning=0.004428, caps_shell_and_joint_validation=0.220732, edit_raster=141.655003, sidewalks=0.229118, local_collision=129.585339, validation_commit_sync=429.339913}
+2026-10-09T07:44:33.0133227Z MATRIX434 SUMMARY 8/8 row=2 []
+2026-10-09T07:46:01.8125033Z Oct 09, 2026 7:46:01 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:46:01.8135609Z INFO: SR edit: 279 ms, roads=4, requested=1, phases(ms)={normalize_transitions=0.071124, affected_structures=0.008605, attached_points=0.019207, topology=1.49296, caps_and_dependencies=0.457165, terrain_chunk_access=0.217326, furniture_phase=0.198371, structure_candidate_index=0.002394, structure_plan=38.676622, dependent_replanning=0.158145, caps_shell_and_joint_validation=0.178915, edit_raster=17.636204, sidewalks=0.284041, local_collision=34.494104, validation_commit_sync=184.907978}
+2026-10-09T07:46:01.8192762Z Oct 09, 2026 7:46:01 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:46:01.8222382Z INFO: SR connect: 287 ms, roads=4, requested=1, phases(ms)={}
+2026-10-09T07:46:03.2102174Z Oct 09, 2026 7:46:03 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:46:03.2105821Z INFO: SR edit: 1,075 ms, roads=7, requested=1, phases(ms)={normalize_transitions=0.09634, affected_structures=1.11806, attached_points=0.078878, topology=45.944095, caps_and_dependencies=0.029405, terrain_chunk_access=0.548986, furniture_phase=0.120956, structure_candidate_index=0.002435, structure_plan=221.740585, dependent_replanning=338.412548, caps_shell_and_joint_validation=1.614819, edit_raster=238.489418, sidewalks=0.438109, local_collision=26.601768, validation_commit_sync=199.376775}
+2026-10-09T07:46:05.8101678Z Oct 09, 2026 7:46:05 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:46:05.8105204Z INFO: SR edit: 2,087 ms, roads=8, requested=1, phases(ms)={normalize_transitions=0.107511, affected_structures=11.769814, attached_points=0.126096, topology=190.583876, caps_and_dependencies=0.073367, terrain_chunk_access=0.907557, furniture_phase=0.154749, structure_candidate_index=0.003106, structure_plan=556.886895, dependent_replanning=730.967425, caps_shell_and_joint_validation=1.778354, edit_raster=202.006883, sidewalks=0.409395, local_collision=45.603979, validation_commit_sync=345.230869}
+2026-10-09T07:46:06.8101937Z Oct 09, 2026 7:46:06 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:46:06.8105518Z INFO: SR edit: 575 ms, roads=9, requested=0, phases(ms)={normalize_transitions=0.133389, affected_structures=2.413452, attached_points=0.001112, topology=6.232873, caps_and_dependencies=0.05368, terrain_chunk_access=0.645136, furniture_phase=0.019907, structure_candidate_index=0.003006, structure_plan=155.840512, dependent_replanning=0.004268, caps_shell_and_joint_validation=0.245118, edit_raster=68.059211, sidewalks=0.356796, local_collision=43.129644, validation_commit_sync=297.466899}
+2026-10-09T07:46:06.9106252Z CLOSE437 REAL_WORLD PASS: add two shared-host ramps, first alignment/structures/cells/blocks unchanged, remove second, no orphan colliders, NBT reload
+2026-10-09T07:46:08.7101992Z Oct 09, 2026 7:46:08 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:46:08.7106035Z INFO: SR edit: 1,588 ms, roads=8, requested=1, phases(ms)={normalize_transitions=0.111939, affected_structures=4.724513, attached_points=0.077805, topology=113.086882, caps_and_dependencies=0.039634, terrain_chunk_access=0.599751, furniture_phase=0.116128, structure_candidate_index=0.003035, structure_plan=330.126809, dependent_replanning=602.604841, caps_shell_and_joint_validation=1.869365, edit_raster=233.747192, sidewalks=0.421488, local_collision=77.369857, validation_commit_sync=223.092743}
+2026-10-09T07:46:09.6103878Z Oct 09, 2026 7:46:09 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:46:09.6108925Z INFO: SR edit: 850 ms, roads=9, requested=0, phases(ms)={normalize_transitions=0.120375, affected_structures=1.801298, attached_points=0.001473, topology=7.237891, caps_and_dependencies=0.029465, terrain_chunk_access=0.676174, furniture_phase=0.014678, structure_candidate_index=0.002094, structure_plan=152.397705, dependent_replanning=0.003907, caps_shell_and_joint_validation=0.275876, edit_raster=306.851204, sidewalks=0.514372, local_collision=80.751368, validation_commit_sync=299.328791}
+2026-10-09T07:47:57.4101661Z Oct 09, 2026 7:47:57 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:47:57.4114711Z INFO: SR edit: 575 ms, roads=8, requested=1, phases(ms)={normalize_transitions=0.076734, affected_structures=0.018073, attached_points=0.018475, topology=2.279841, caps_and_dependencies=0.645717, terrain_chunk_access=0.286506, furniture_phase=0.34244, structure_candidate_index=0.002675, structure_plan=89.838127, dependent_replanning=0.330337, caps_shell_and_joint_validation=0.362378, edit_raster=88.306801, sidewalks=0.566469, local_collision=27.251024, validation_commit_sync=364.728326}
+2026-10-09T07:47:57.4124844Z Oct 09, 2026 7:47:57 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:47:57.4125911Z INFO: SR connect: 581 ms, roads=8, requested=1, phases(ms)={}
+2026-10-09T07:47:59.2101547Z Oct 09, 2026 7:47:59 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:47:59.2125078Z INFO: SR edit: 1,502 ms, roads=11, requested=1, phases(ms)={normalize_transitions=0.079979, affected_structures=0.876959, attached_points=0.073047, topology=33.944385, caps_and_dependencies=0.048691, terrain_chunk_access=0.659193, furniture_phase=0.104896, structure_candidate_index=0.002053, structure_plan=249.214256, dependent_replanning=363.564792, caps_shell_and_joint_validation=1.898518, edit_raster=427.45563, sidewalks=0.690521, local_collision=42.663262, validation_commit_sync=380.313286}
+2026-10-09T07:48:01.5102044Z Oct 09, 2026 7:48:01 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:48:01.5106076Z INFO: SR edit: 1,734 ms, roads=12, requested=1, phases(ms)={normalize_transitions=0.130394, affected_structures=2.885924, attached_points=0.089908, topology=178.742388, caps_and_dependencies=0.056716, terrain_chunk_access=0.954975, furniture_phase=0.184134, structure_candidate_index=0.002786, structure_plan=313.763607, dependent_replanning=710.73205, caps_shell_and_joint_validation=2.655643, edit_raster=233.655477, sidewalks=0.595483, local_collision=34.980703, validation_commit_sync=253.849932}
+2026-10-09T07:48:02.4101730Z Oct 09, 2026 7:48:02 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:48:02.4105107Z INFO: SR edit: 557 ms, roads=13, requested=0, phases(ms)={normalize_transitions=0.197128, affected_structures=2.598748, attached_points=0.005069, topology=7.125619, caps_and_dependencies=0.215242, terrain_chunk_access=0.725205, furniture_phase=0.064651, structure_candidate_index=0.017663, structure_plan=229.686717, dependent_replanning=0.010429, caps_shell_and_joint_validation=0.44382, edit_raster=72.518892, sidewalks=0.508871, local_collision=27.330152, validation_commit_sync=214.885506}
+2026-10-09T07:48:03.1102178Z Oct 09, 2026 7:48:03 AM com.sora.splineroads.core.RoadTimings reportLoad
+2026-10-09T07:48:03.1103550Z INFO: SR load: 592 ms, roads=12
+2026-10-09T07:48:03.1107298Z SEQUENTIAL436 REAL_WORLD PASS: add two shared-host ramps, first alignment/structures/cells/blocks unchanged, remove second, no orphan colliders, NBT reload
+2026-10-09T07:48:13.1102734Z Oct 09, 2026 7:48:13 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:48:13.1144914Z INFO: SR edit: 272 ms, roads=12, requested=1, phases(ms)={normalize_transitions=0.126827, affected_structures=0.148127, attached_points=0.057097, topology=12.181107, caps_and_dependencies=2.138757, terrain_chunk_access=0.16569, furniture_phase=0.17146, structure_candidate_index=0.002245, structure_plan=103.872958, dependent_replanning=0.260407, caps_shell_and_joint_validation=0.249366, edit_raster=19.004781, sidewalks=0.822688, local_collision=9.371666, validation_commit_sync=123.165284}
+2026-10-09T07:48:13.1172359Z Oct 09, 2026 7:48:13 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:48:13.1188770Z INFO: SR connect: 281 ms, roads=12, requested=1, phases(ms)={}
+2026-10-09T07:48:13.9101761Z Oct 09, 2026 7:48:13 AM com.sora.splineroads.core.RoadTimings reportLoad
+2026-10-09T07:48:13.9103462Z INFO: SR load: 540 ms, roads=13
+2026-10-09T07:48:14.2103034Z Oct 09, 2026 7:48:14 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T07:48:14.2165405Z INFO: SR edit: 259 ms, roads=13, requested=1, phases(ms)={normalize_transitions=0.135854, affected_structures=0.012934, attached_points=0.038442, topology=4.895089, caps_and_dependencies=0.016541, terrain_chunk_access=0.270676, furniture_phase=0.007033, structure_candidate_index=0.002515, structure_plan=26.779863, dependent_replanning=0.624437, caps_shell_and_joint_validation=0.193832, edit_raster=152.860089, sidewalks=0.567701, local_collision=6.237508, validation_commit_sync=65.768886}
+2026-10-09T07:48:14.3123285Z EXPANSION437 REAL_WORLD PASS: blue point expands 3 to 4, Mojang NBT reload, cancel restores 3
+2026-10-09T07:48:14.3142112Z [07:48:14] [Server thread/INFO] [minecraft/GameTestServer]: [+++++]
+2026-10-09T07:48:14.3172493Z [07:48:14] [Server thread/INFO] [minecraft/GameTestServer]: ========= 5 GAME TESTS COMPLETE ======================
+2026-10-09T07:48:14.3173683Z [07:48:14] [Server thread/INFO] [minecraft/GameTestServer]: All 5 required tests passed :)
+2026-10-09T07:48:14.3174808Z [07:48:14] [Server thread/INFO] [minecraft/GameTestServer]: ====================================================
+2026-10-09T07:48:14.3175818Z [07:48:14] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server
+2026-10-09T07:48:14.3176653Z [07:48:14] [Server thread/INFO] [minecraft/MinecraftServer]: Saving players
+2026-10-09T07:48:14.3177475Z [07:48:14] [Server thread/INFO] [minecraft/MinecraftServer]: Saving worlds
+2026-10-09T07:48:37.6104844Z [07:48:37] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:overworld
+2026-10-09T07:48:52.4102247Z [07:48:52] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_end
+2026-10-09T07:48:52.4103972Z [07:48:52] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_nether
+2026-10-09T07:48:52.6132941Z [07:48:52] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (world): All chunks are saved
+2026-10-09T07:48:52.6192598Z [07:48:52] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+2026-10-09T07:48:52.6252481Z [07:48:52] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+2026-10-09T07:48:52.6312334Z [07:48:52] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved
+2026-10-09T07:48:53.3104270Z [07:48:53] [Server thread/INFO] [minecraft/GameTestServer]: Game test server shutting down
+2026-10-09T07:48:55.0106487Z gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1791531019711.json
+2026-10-09T07:48:55.0107844Z
+2026-10-09T07:48:55.0108529Z Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+2026-10-09T07:48:55.0109397Z
+2026-10-09T07:48:55.0110411Z You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+2026-10-09T07:48:55.0112122Z
+2026-10-09T07:48:55.0113313Z For more on this, please refer to https://docs.gradle.org/8.8/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+2026-10-09T07:48:55.0114749Z
+2026-10-09T07:48:55.0115176Z BUILD SUCCESSFUL in 18m 43s
+2026-10-09T07:48:55.0115815Z 11 actionable tasks: 11 executed
+2026-10-09T07:48:55.3592774Z ##[group]Run actions/upload-artifact@v4
+2026-10-09T07:48:55.3593269Z with:
+2026-10-09T07:48:55.3593552Z   name: sr441-matrix-2-01cf4843917ebe9b7f9ca06418babb8666e97eb5
+2026-10-09T07:48:55.3593955Z   path: matrix-2.log
+run441matrix/logs/latest.log
+
+2026-10-09T07:48:55.3594270Z   if-no-files-found: warn
+2026-10-09T07:48:55.3594509Z   compression-level: 6
+2026-10-09T07:48:55.3594731Z   overwrite: false
+2026-10-09T07:48:55.3594951Z   include-hidden-files: false
+2026-10-09T07:48:55.3595181Z env:
+2026-10-09T07:48:55.3595478Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T07:48:55.3595975Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T07:48:55.3596397Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
+2026-10-09T07:48:55.3596716Z   GRADLE_USER_HOME: /home/runner/.gradle
+2026-10-09T07:48:55.3597003Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+2026-10-09T07:48:55.3597354Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+2026-10-09T07:48:55.3597789Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+2026-10-09T07:48:55.3598278Z   DEVELOCITY_INJECTION_CUSTOM_VALUE: gradle-actions
+2026-10-09T07:48:55.3598595Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+2026-10-09T07:48:55.3598855Z ##[endgroup]
+2026-10-09T07:48:55.5428035Z (node:3201) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-09T07:48:55.5429524Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-09T07:48:55.5510350Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-09T07:48:55.5592580Z The least common ancestor is /home/runner/work/SplineRoads/SplineRoads. This will be the root directory of the artifact
+2026-10-09T07:48:55.5602125Z With the provided path, there will be 2 files uploaded
+2026-10-09T07:48:55.5651052Z Artifact name is valid!
+2026-10-09T07:48:55.5673609Z Root directory input is valid!
+2026-10-09T07:48:55.7534666Z Beginning upload of artifact content to blob storage
+2026-10-09T07:48:55.7766706Z (node:3201) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-09T07:48:55.8019622Z Uploaded bytes 8418
+2026-10-09T07:48:55.8202752Z Finished uploading artifact content to blob storage!
+2026-10-09T07:48:55.8204275Z SHA256 digest of uploaded artifact zip is 20eedfefe2dc166dbc241bb1ae7ee01b5522659230de3f47b2bcc0b80d825af4
+2026-10-09T07:48:55.8205417Z Finalizing artifact upload
+2026-10-09T07:48:56.1946716Z Artifact sr441-matrix-2-01cf4843917ebe9b7f9ca06418babb8666e97eb5.zip successfully finalized. Artifact ID 11602736855
+2026-10-09T07:48:56.1948428Z Artifact sr441-matrix-2-01cf4843917ebe9b7f9ca06418babb8666e97eb5 has been successfully uploaded! Final size is 8418 bytes. Artifact ID is 11602736855
+2026-10-09T07:48:56.1953631Z Artifact download URL: https://github.com/ShiraAya/SplineRoads/actions/runs/37899367630/artifacts/11602736855
+2026-10-09T07:48:56.2190141Z Post job cleanup.
+2026-10-09T07:48:56.4688741Z In post-action step
+2026-10-09T07:48:56.4712325Z Cache is read-only: will not save state for use in subsequent builds.
+2026-10-09T07:48:56.4715479Z Generating Job Summary
+2026-10-09T07:48:56.4742143Z Completed post-action step
+2026-10-09T07:48:56.4866211Z Post job cleanup.
+2026-10-09T07:48:56.6314933Z (node:3227) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-09T07:48:56.6316262Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-09T07:48:56.6543326Z Post job cleanup.
+2026-10-09T07:48:56.7492137Z [command]/usr/bin/git version
+2026-10-09T07:48:56.7527182Z git version 2.55.0
+2026-10-09T07:48:56.7567291Z Temporarily overriding HOME='/home/runner/work/_temp/47b0d6ce-c6bb-4916-b735-8cf27dd292cd' before making global git config changes
+2026-10-09T07:48:56.7568843Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-09T07:48:56.7573059Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/SplineRoads/SplineRoads
+2026-10-09T07:48:56.7632328Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-09T07:48:56.7652241Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-09T07:48:56.7962900Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-09T07:48:56.7996136Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-09T07:48:56.8276945Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-09T07:48:56.8327616Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-09T07:48:56.8752551Z Cleaning up orphan processes
+2026-10-09T07:48:56.9089331Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-java@v4, actions/upload-artifact@v4, gradle/actions/setup-gradle@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
