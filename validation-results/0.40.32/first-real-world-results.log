@@ -1,0 +1,9 @@
+Result excerpts from CI37960171545; production Java unchanged in metadata-only successor0bc4f32.
+Full log: https://github.com/ShiraAya/SplineRoads/actions/runs/37960171545
+2026-10-09T16:39:04.7100193Z [36;1mtest "$(grep -c 'LIVE446 REAL_WORLD PASS' run446-console.log)" -eq 3[0m
+2026-10-09T16:39:07.5661700Z Live446ModelValidation: 13871 checks PASS; width bands, open/roofed cuts, original terrain constraints and option roundtrip (not Minecraft/GPU)
+2026-10-09T16:40:34.2478440Z LIVE446 REAL_WORLD PASS allow=false undergroundEnd=true: original terrain, publication/build, local sections, NBT and delete
+2026-10-09T16:40:42.0479584Z LIVE446 REAL_WORLD PASS allow=true undergroundEnd=false: original terrain, publication/build, local sections, NBT and delete
+2026-10-09T16:40:49.2487603Z LIVE446 REAL_WORLD PASS allow=false undergroundEnd=false: original terrain, publication/build, local sections, NBT and delete
+2026-10-09T16:40:56.0295489Z [36;1mgrep -q 'LIVE445 REAL_WORLD PASS' run445-console.log[0m
+2026-10-09T16:43:01.3849191Z LIVE445 REAL_WORLD PASS outer/internal temporary self-host, wide ramp, ADD, ordinary edit, Mojang reload and deletion
