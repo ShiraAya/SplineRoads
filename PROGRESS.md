@@ -1,3 +1,10 @@
+## 2026-10-09 11:07 UTC 0.40.30 checkpoint 6
+
+- Production commit:8b437f043a8b8f9101edfe17e82f55b36d441d53; src/main tree:e9b4a1fd9e6d59652ec721237e7faa1258b42740. Local and remote production trees match.
+- Final candidate CI37920960510: Forge/reobf succeeded; Minecraft tests and32-case matrix still running. Previous candidate e6aedc2 passed both new real-server cases (1831 ordinary and4763 EXTRA perimeter sample checks; actual tunnel rejection→alternate→publication/build/NBT) before its remaining workflow was superseded.
+- Candidate JAR CRC/version/classes checked:5675630 bytes; SHA256 8060369fafd1120498cc905b6ad1cbd17dd7385ffd87eda8f926341f9289b5b0. Not delivered before the final CI gate.
+- Added per-image evidence and original-scene limitations in SR_0_40_30_VALIDATION.md. Figure4 remains open pending original road data (dimension data/splineroads.dat); no such file is among the current attachments.
+
 ## 2026-10-09 10:59 UTC 0.40.30 checkpoint 5
 
 - All local base and 439/440/441/442/443/444/435/438 suites passed. New closure/common-perimeter core:629; actual generated fork/EXTRA model:190 including no internal auxiliary rail.
