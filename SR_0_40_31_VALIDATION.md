@@ -19,6 +19,6 @@
 
 原存档测试读取了实际道路 NBT，使用生产算法和本地适配器；不是把原世界在 Minecraft 客户端或光影环境中打开。服务端专项使用 Minecraft/Forge 的真实世界、事务和 Mojang NBT；它也不等同 GPU 画面验收。没有关闭净空、相邻车道、已有设施或数据保护检查。.29已有计算优化保留，未加入多线程专项。
 
-完整 Forge、全部回归和32组服务端连接矩阵的最终状态见 PROGRESS.md 与 validation-results/0.40.31；当前仍在执行最终门禁。
+最终 CI [37935380376](https://github.com/ShiraAya/SplineRoads/actions/runs/37935380376) 五个任务全部成功：完整 Forge 编译及重混淆 JAR、全部核心/模型回归（新增专项503检查）、11项真实 Minecraft 服务端专项、32/32组服务端连接矩阵。11项分组为 LIVE445 1项、LIVE441 4项、LIVE444 2项、LIVE443 1项、LIVE442 1项、LIVE440 2项。原存档算法结果及当前 CI 摘要保存在 validation-results/0.40.31；历史失败候选记录保留在 PROGRESS.md。
 
-候选安装包来自提交 217b6716ac9d96ef1b2bbd22c59966f170af4ded；生产 src/main 树 c8e6b3cba1fbc35e211598ff4e2110a3bf190ad8。JAR 5679302字节，SHA-256 291635cfc720faebdf057474d04a42aff7d08df7a57bc83e3233200203e42c6c；版本及989个ZIP条目CRC已核对。
+交付安装包来自已验证生产提交 217b6716ac9d96ef1b2bbd22c59966f170af4ded；生产 src/main 树 c8e6b3cba1fbc35e211598ff4e2110a3bf190ad8。JAR 5679302字节，SHA-256 291635cfc720faebdf057474d04a42aff7d08df7a57bc83e3233200203e42c6c；版本及989个ZIP条目CRC已核对。

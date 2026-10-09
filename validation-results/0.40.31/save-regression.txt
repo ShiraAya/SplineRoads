@@ -16,11 +16,15 @@ Downstream ADD divider: 120 painted and 112 unpainted quarter-metre probes, conf
 ADD closure retains the old main-road paved shoulder; original inward notch removed.
 Ordinary screenshot-1 world was not supplied in this save. General saved-alignment and preview pipeline fixed; exact scene unverified.
 
-Local synthetic regression at this checkpoint:
-  Live445ModelValidation: 500 checks; outer and inner TEMPORARY, AUTO and OVER,
+Final synthetic regression (also rerun in CI37935380376):
+  Live445ModelValidation: 503 checks; outer and inner TEMPORARY, AUTO and OVER,
   fixed motor mouths, wide road profile, NBT adapter reload, stable re-preview,
-  ordinary saved alignment retention and changed endpoint invalidation.
+  ordinary saved alignment retention and changed endpoint invalidation;
+  own girder/slab weld allowed, real headroom and lower-loop collision still rejected.
   Live439/440/441/442/443/444/435/438 targeted regressions pass.
   .442 legacy fixture now explicitly constructs old physical width 4 m; widening
   may replan for safety, but fixed mouths, guard joins and collision checks remain tested.
 Full current-source Forge and Minecraft GameTest checks run separately in CI.
+
+Final CI37935380376: Forge/reobfuscated JAR, 11 dedicated Minecraft tests and
+32/32 Minecraft connection matrix cases PASS. See final-ci.json and selected logs.

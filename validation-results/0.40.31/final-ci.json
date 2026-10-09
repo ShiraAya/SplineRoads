@@ -1,0 +1,88 @@
+{
+  "version": "0.40.31-alpha",
+  "run_id": 37935380376,
+  "url": "https://github.com/ShiraAya/SplineRoads/actions/runs/37935380376",
+  "status": "completed",
+  "conclusion": "success",
+  "head_sha": "217b6716ac9d96ef1b2bbd22c59966f170af4ded",
+  "production_src_main_tree": "c8e6b3cba1fbc35e211598ff4e2110a3bf190ad8",
+  "jobs": [
+    {
+      "id": 113835992501,
+      "name": "verify",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 113835992852,
+      "name": "Minecraft matrix row 0",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 113835992902,
+      "name": "Minecraft matrix row 2",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 113835992936,
+      "name": "Minecraft matrix row 3",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 113835993589,
+      "name": "Minecraft matrix row 1",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "forge_compile_and_reobfuscated_jar": "PASS",
+  "targeted_minecraft_tests": {
+    "passed": 11,
+    "groups": [
+      {
+        "suite": "LIVE445",
+        "passed": 1
+      },
+      {
+        "suite": "LIVE441",
+        "passed": 4
+      },
+      {
+        "suite": "LIVE444",
+        "passed": 2
+      },
+      {
+        "suite": "LIVE443",
+        "passed": 1
+      },
+      {
+        "suite": "LIVE442",
+        "passed": 1
+      },
+      {
+        "suite": "LIVE440",
+        "passed": 2
+      }
+    ]
+  },
+  "minecraft_connection_matrix": {
+    "passed": 32,
+    "total": 32,
+    "rows": [
+      8,
+      8,
+      8,
+      8
+    ]
+  },
+  "new_model_checks": 503,
+  "jar_sha256": "291635cfc720faebdf057474d04a42aff7d08df7a57bc83e3233200203e42c6c",
+  "limits": [
+    "Original uploaded-save regression uses production algorithms with local adapters, not an original-world Minecraft client run.",
+    "Screenshot 1 exact world was not supplied.",
+    "No client GPU, shader or vehicle-drive acceptance run."
+  ]
+}
