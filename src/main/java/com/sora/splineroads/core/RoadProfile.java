@@ -588,8 +588,11 @@ public Options(boolean leftTraffic,boolean cycle,boolean cycleRail,boolean curb,
     // New precise lane connectors have one centred driveable strip. Inherit neither
     // ordinary-road verge nor the highway's asymmetric shoulder at a four-block lane port.
     // The persisted marker keeps old saved meshes unchanged until an explicit edit.
-    if(s.style().connectorRamp()||o.lanePoints().link()!=null&&o.lanePoints().link().protectedMerge()&&c.lanes()==1)
-      return new Layout(new Catalog(c.type(),1,false,Median.NONE,false),actualWidth,0,-actualWidth/2,actualWidth/2,0,0,0,trafficSign(o.leftTraffic()),null);
+    if(s.style().connectorRamp()||o.lanePoints().link()!=null&&o.lanePoints().link().protectedMerge()&&c.lanes()==1){
+      var p=o.ends().port();
+      double low=p==null?-actualWidth/2:p.motorMin(),high=p==null?actualWidth/2:p.motorMax();
+      return new Layout(new Catalog(c.type(),1,false,Median.NONE,false),high-low,0,low,high,0,0,0,trafficSign(o.leftTraffic()),null);
+    }
     if(o.lanes().explicit() && o.ends().port()!=null){
       var p=o.ends().port();var clean=s.options(o.ends(RoadTransitions.Ends.NONE));
       var b=layout(clean,actualWidth);

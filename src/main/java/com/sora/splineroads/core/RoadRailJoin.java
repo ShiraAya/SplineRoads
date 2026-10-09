@@ -11,6 +11,7 @@ public final class RoadRailJoin {
   // Keep even the 0.62 m highway footing wholly inside its owning deck.
   // A 0.16 m inset left the base in the adjacent live-lane clearance corridor.
   public static final double INSET=.34;
+  private static final double JOIN_HEIGHT=.025;
   /** Fit a new permanent-cut railing inside its existing shoulder. Do not
    * widen the saved deck: an already connected continuation owns that exact port. */
   public static double inset(Mesh mesh,Sample at,int side){
@@ -46,7 +47,7 @@ public final class RoadRailJoin {
         if(!clip(t,fa,fb,ownsBoundary?-1e-7:1e-7))return null;
       }
       double da=from.y()-height(from),db=to.y()-height(to);
-      if(!clip(t,da,db,-.12)||!clip(t,-da,-db,-.12))return null;
+      if(!clip(t,da,db,-JOIN_HEIGHT)||!clip(t,-da,-db,-JOIN_HEIGHT))return null;
       return t[1]-t[0]>1e-7?new Range(t[0],t[1]):null;
     }
   }
@@ -132,7 +133,7 @@ public final class RoadRailJoin {
   public static boolean sharedRail(Mesh neighbor,V a,V b){
     for(V point:List.of(a,a.add(b).mul(.5),b)){
       var q=RoadQueries.horizontal(neighbor,point);var at=q.sample();
-      if(Math.abs(point.y()-at.at(q.lateral(),0).y())>.015)return false;
+      if(Math.abs(point.y()-at.at(q.lateral(),0).y())>JOIN_HEIGHT)return false;
       int side=q.lateral()<0?-1:1;double edge=at.halfWidth()-inset(neighbor,at,side);
       if(Math.abs(q.lateral())<edge-.015||LaneDeck.outerOpening(neighbor,at.distance(),side))return false;
     }
@@ -235,9 +236,11 @@ public final class RoadRailJoin {
       var at=start?mesh.first():mesh.last();var next=mesh.samples().get(start?1:n-2);
       V delta=at.center().sub(next.center());double run=delta.horizontalLength();if(run<1e-8)continue;
       var layout=RoadProfile.layout(mesh,at);
-      // Motor width only. Shoulders do not authorize opening a neighboring slot.
-      double half=(layout.motorMax()-layout.motorMin())/2;
-      V center=at.at(layout.motorCenter(),0),extension=delta.mul(.86/run);
+      // The fitted endpoint includes only the selected lane and its legitimate
+      // outside shoulder. Clip that whole paved mouth: using motor width leaves
+      // a transverse white/rail stub across its shoulder at an ADD/DETACH seam.
+      double half=at.halfWidth();
+      V center=at.center(),extension=delta.mul(.86/run);
       var samples=List.of(new Sample(center.sub(extension),at.left(),0,half),new Sample(center.add(extension),at.left(),1.72,half));
       extensions.add(new Neighbor(RoadRibbon.mesh(samples,mesh.settings()),true));
     }

@@ -1,5 +1,6 @@
 package com.sora.splineroads.client;
 import com.sora.splineroads.core.RoadLanes;
+import com.sora.splineroads.core.LaneRampAlignment;
 import com.sora.splineroads.core.RoadTransitions;
 
 import com.sora.splineroads.core.RoadGeometry.*;
@@ -687,7 +688,11 @@ public final class RoadScreen extends Screen {
   }
 
   private void setLaneWidth(double value) {
-    roadWidth = laneRoad()&&options.lanePoints().link()!=null&&options.lanePoints().link().protectedMerge()?value:RoadProfile.modern(style)?RoadProfile.width(style,options,value):value;
+    if(laneRoad()||style.connectorRamp()){
+      var sized=LaneRampAlignment.usableWidth(new Settings(Mode.AUTO,style,roadWidth,thickness,tension,arc).options(options),value);
+      roadWidth=sized.width();options=sized.options();return;
+    }
+    roadWidth = RoadProfile.modern(style)?RoadProfile.width(style,options,value):value;
   }
 
   private String typeName() {

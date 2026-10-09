@@ -42,6 +42,7 @@ final class StructurePlanner {
             .map(r -> r.mesh).toList());
     var supportMeshes=built.record.junction()==null?List.of(built.mesh):all.stream().filter(r->Objects.equals(r.record.assembly(),built.record.assembly())).map(r->r.mesh).toList();
     var obstacles=lookup.nearAny(supportMeshes,82,built.record.id());
+    var motorDecks=new IdentityHashMap<Mesh,Mesh>();
     // Road deck columns exclude smooth sidewalks outside the deck. Index their actual
     // slabs independently so lamp arms/posts cannot tunnel through an upper walkway.
     var sidewalkSolids=new RoadSolidOverlap.Index(obstacles.stream().flatMap(r->r.record.structures().stream())
@@ -184,7 +185,12 @@ final class StructurePlanner {
                     boolean joining=RoadInteractions.connected(built.record,other.record)||LaneMerge.linkedTo(built.mesh,other.mesh)||LaneMerge.linkedTo(other.mesh,built.mesh);
                     if(joining&&part.material()==RoadStructures.Material.CONCRETE&&part.height()<=built.record.settings().thickness()+1e-7
                         &&RoadClearance.belowSurface(part,other.mesh,.025))continue;
-                    if(RoadClearance.structureInvades(part,other.mesh,Math.max(4.25,RoadInfrastructure.clearance(other.record.settings()))))return true;
+                    // Rails may occupy the outside shoulder beside a different
+                    // deck height; motor traffic and physical median stay protected.
+                    // Testing the full paved verge erased both sides of a raised
+                    // junction although neither assembly entered a driving lane.
+                    var protectedMesh=railA==null?other.mesh:motorDecks.computeIfAbsent(other.mesh,LaneDeck::motorOnly);
+                    if(RoadClearance.structureInvades(part,protectedMesh,Math.max(4.25,RoadInfrastructure.clearance(other.record.settings()))))return true;
                     continue;
                   }
                   if (part.pier() && RoadStructures.fitsMedian(part, other.mesh,

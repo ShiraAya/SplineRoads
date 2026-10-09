@@ -3,6 +3,14 @@ import com.sora.splineroads.core.RoadGeometry.*;
 import java.util.*;
 /** Solver coordinates are motor-lane axes. Convert them to pavement centers and fit both mouths. */
 public final class LaneRampAlignment {
+  /** .75 m on either side seats both ordinary and highway rail assemblies.
+   * The persisted motor port distinguishes refreshed connectors from old saves. */
+  public static Settings usableWidth(Settings settings,double drive){
+    drive=Math.max(4,drive);var o=settings.options();
+    var port=new RoadTransitions.Port(-drive/2,drive/2,0,List.of(),0,0);
+    return new Settings(settings.mode(),settings.style(),drive+1.5,settings.thickness(),settings.tension(),settings.arcDegrees(),
+        settings.startWidth(),settings.endWidth(),settings.structure(),settings.taperVersion(),settings.rampTurn(),o.ends(o.ends().port(port)));
+  }
   public static Mesh fit(Mesh path,double startLane,double endLane,double transition){
     var profile=RoadProfile.layout(path.settings(),path.settings().width());
     double lane=profile.laneWidth(),margin=path.settings().width()-lane;
@@ -31,9 +39,11 @@ public final class LaneRampAlignment {
     return RoadTransitions.Section.of(new Settings(settings.mode(),settings.style(),width,settings.thickness(),settings.tension(),settings.arcDegrees()).options(settings.options())).port(new RoadTransitions.Port(-mouth.lane()/2-shift,mouth.lane()/2-shift,0,List.of(),0,0));
   }
   public static Mesh fit(Mesh path,Mouth from,Mouth to){
-    var clean=path.settings().options(path.settings().options().ends(RoadTransitions.Ends.NONE));
+    var clean=path.settings().options(path.settings().options().ends(RoadTransitions.Ends.NONE.port(path.settings().options().ends().port())));
     var a=section(clean,from);var b=section(clean,to);
     var settings=RoadTransitions.ends(clean,a,b);Mesh fitted=path;
+    double[] sourceFree=outsideProgress(path,from,true),targetFree=outsideProgress(path,to,false);
+    double shoulder=Math.max(0,(settings.width()-RoadProfile.layout(settings,settings.width()).laneWidth())/2);
     // Widening one shoulder changes physical arc length. Evaluate profile weights
     // on that final distance too, so serialization/reload cannot shift the motor axis.
     for(int pass=0;pass<12;pass++){
@@ -42,6 +52,11 @@ public final class LaneRampAlignment {
         var p=path.samples().get(i);double distance=fitted.samples().get(i).distance();
         double wa=1-Settings.smooth(Math.min(1,distance/span)),wb=1-Settings.smooth(Math.min(1,(fitted.length()-distance)/span));
         double shift=((from.high()-from.low())*wa+(to.high()-to.low())*wb)/2;
+        // Grow a new rail shoulder OUTWARD while the axis still follows an outer
+        // host slot. Symmetric widening of a straight lead invaded its unchanged
+        // inward neighbor immediately, making every fixed-start route impossible.
+        double bias=Math.signum(from.high()-from.low())*(1-sourceFree[i])+Math.signum(to.high()-to.low())*(1-targetFree[i]);
+        shift+=shoulder*(1-wa)*(1-wb)*Math.max(-1,Math.min(1,bias));
         double width=settings.width()+(a.width()-settings.width())*wa+(b.width()-settings.width())*wb;
         out.add(new Sample(p.center().add(p.left().mul(shift)),p.left(),p.distance(),width/2));
       }
@@ -50,6 +65,14 @@ public final class LaneRampAlignment {
       fitted=next;if(movement<1e-9)break;
     }
     return fitted;
+  }
+  private static double[] outsideProgress(Mesh path,Mouth mouth,boolean first){
+    int n=path.samples().size();var end=first?path.first():path.last();double side=Math.signum(mouth.high()-mouth.low()),progress=0;
+    var result=new double[n];
+    for(int i=first?0:n-1;i>=0&&i<n;i+=first?1:-1){
+      progress=Math.max(progress,side*path.samples().get(i).center().sub(end.center()).dot(end.left()));
+      result[i]=side==0?1:Settings.smooth(Math.max(0,Math.min(1,progress/Math.max(1,path.settings().width()))));
+    }return result;
   }
   /** Old saved paths can have correct lane axes and still miss an outside shoulder. */
   public static boolean matches(Mesh mesh,Mouth from,Mouth to){

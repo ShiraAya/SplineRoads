@@ -95,6 +95,7 @@ public final class LaneRamps {
     if(old==null&&edited==null||migrating&&options.infrastructure().gantry()==RoadInfrastructure.Gantry.AUTO)
       options=options.infrastructure(options.infrastructure().gantry(RoadInfrastructure.Gantry.OFF));
     base=new Settings(base.mode(),kind,base.width(),base.thickness(),base.tension(),base.arcDegrees(),base.startWidth(),base.endWidth(),base.structure(),base.taperVersion(),base.rampTurn(),options);
+    base=LaneRampAlignment.usableWidth(base,RoadProfile.layout(base,base.width()).laneWidth());
     base.validate();
     // Rechecking an unchanged connector must first validate its saved alignment.
     // Searching from scratch can choose a different family or reject an old valid
@@ -415,6 +416,18 @@ public final class LaneRamps {
         Mesh protectedDeck=protectedDeck(old,exactSlots);
         for(var c:contacts(mesh,protectedDeck))out.add(new Obstacle(road.id(),c));
       }
+      // EXTRA authorizes only its actual taper + parallel lane. The broad paved
+      // contact can remain connected through a tiny shoulder overlap; it must not
+      // exempt a separate crossing of the selected through lane before/after that
+      // auxiliary approach. This was letting a raised ramp occupy the host lane.
+      boolean extraSource=link.options().sourceExtra()&&sourceHosts.contains(road.id());
+      boolean extraTarget=link.options().targetExtra()&&targetHosts.contains(road.id());
+      if(extraSource||extraTarget){
+        double begin=extraSource?fixedApproach(mesh,all,link,true):-1;
+        double end=extraTarget?mesh.length()-fixedApproach(mesh,all,link,false):mesh.length()+1;
+        for(var c:contacts(mesh,protectedDeck(old,Set.of())))
+          if(!(extraSource&&c.to()<=begin+.01||extraTarget&&c.from()>=end-.01))out.add(new Obstacle(road.id(),c));
+      }
       for(var c:contacts(mesh,old)){
         boolean sourceJoin=sourceHosts.contains(road.id())&&c.to()<=sourceLimit+.01;
         if(sourceJoin&&link.options().separatesLane())sourceJoin=separationThroat(c,road,link,all);
@@ -439,7 +452,16 @@ public final class LaneRamps {
   private static boolean separationThroat(RoadClearance.Contact contact,RoadRecord road,LanePoints.Link link,Map<UUID,RoadRecord> all){
     for(var leg:chain(all,link.from()).legs())if(leg.road().id().equals(road.id())){
       var raw=road.rawMesh();var q=RoadQueries.horizontal(raw,contact.ours());var lane=LanePoints.lane(raw,q.sample().distance(),leg.slot());
-      return leg.coordinate(lane.station())>=-.25&&Math.abs(contact.ours().sub(lane.position()).dot(q.sample().left()))<=lane.width()/2+.55;
+      // The fitted mouth includes the actual outside shoulder (one block in the
+      // saved ordinary-road case), not a fixed .55 m allowance. Neighboring motor
+      // slots are still checked independently by protectedDeck above.
+      var at=q.sample();var layout=RoadProfile.layout(raw,at);
+      double center=lane.position().sub(at.center()).dot(at.left());
+      double low=center-lane.width()/2,high=center+lane.width()/2;
+      if(Math.abs(low-layout.motorMin())<1e-5)low=-at.halfWidth();
+      if(Math.abs(high-layout.motorMax())<1e-5)high=at.halfWidth();
+      double offset=contact.ours().sub(at.center()).dot(at.left());
+      return leg.coordinate(lane.station())>=-.25&&offset>=low-1e-5&&offset<=high+1e-5;
     }return false;
   }
   static LaneRampPaths.Port resolvedArrival(Map<UUID,RoadRecord> all,LanePoints.Link link,UUID id){
@@ -573,6 +595,7 @@ public final class LaneRamps {
     for(var other:all.values()){
       var saved=LaneTopology.metadata(other).link();
       if(saved==null||other.id().equals(id)||other.id().equals(link.from().road())||other.id().equals(link.to().road())
+          ||id.equals(saved.from().road())||id.equals(saved.to().road())
           ||saved.from().equals(link.from())||saved.to().equals(link.to())||!RoadIndex.overlapXZ(mesh,mesh(other),2))continue;
       for(var part:other.structures())if(RoadClearance.structureInvades(part,mesh,4.25))
         throw new IllegalArgumentException("候选路线侵入已建匝道 "+other.id()+" 的设施，不能通过重建旧匝道腾出空间");

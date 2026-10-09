@@ -51,10 +51,22 @@ public final class LaneDeck {
         // Seat the rail and its widest 0.62-block footing inside the closed slot.
         // Its inward inset must not consume any of the neighboring driving lane.
         double shoulder=footings?Math.min(2*RoadRailJoin.INSET,lane.width()*.25):0;
-        if(lowOuter&&(layout.cycleWidth()<.01||!layout.catalog().twoWay()&&layout.outside()>0))lo=-sample.halfWidth();
-        else lo=Math.min(hi,lo+shoulder);
-        if(highOuter&&(layout.cycleWidth()<.01||!layout.catalog().twoWay()&&layout.outside()<0))hi=sample.halfWidth();
-        else hi=Math.max(lo,hi-shoulder);
+        // An added outer lane begins beyond the OLD motor edge. While that lane
+        // is closed, retain the existing shoulder all the way to its mouth. A
+        // generic .68 m footing narrowed a one-metre verge by .32 m, then abruptly
+        // restored it at the arrival. Original/internal reservations still use
+        // their own ledges, never steal a neighboring motor lane.
+        if(footings&&slot>=8){
+          var original=RoadStructures.sample(raw,sample.distance());var originalLayout=RoadProfile.layout(raw,original);
+          if(highOuter)shoulder=Math.max(shoulder,original.halfWidth()-originalLayout.motorMax());
+          if(lowOuter)shoulder=Math.max(shoulder,original.halfWidth()+originalLayout.motorMin());
+        }
+        boolean openLow=lowOuter&&(layout.cycleWidth()<.01||!layout.catalog().twoWay()&&layout.outside()>0);
+        boolean openHigh=highOuter&&(layout.cycleWidth()<.01||!layout.catalog().twoWay()&&layout.outside()<0);
+        if(openLow)lo=-sample.halfWidth();
+        if(openHigh)hi=sample.halfWidth();
+        if(!openLow)lo=Math.min(hi,lo+shoulder);
+        if(!openHigh)hi=Math.max(lo,hi-shoulder);
       }
       holes.add(new Span(lo,hi,false,false));
     }return holes;
