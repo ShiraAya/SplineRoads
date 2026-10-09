@@ -1,0 +1,60 @@
+Result excerpts only; full log: https://github.com/ShiraAya/SplineRoads/actions/runs/37963273310/job/113931176156
+2026-10-09T17:03:45.6746544Z BUILD SUCCESSFUL in 2m 24s
+2026-10-09T17:03:52.5664436Z LanePointSnapValidation: 742 checks passed; reproduced old maximum drift=0.01943854553513143
+2026-10-09T17:03:53.1469094Z LaneInteractionValidation: 254 checks passed
+2026-10-09T17:03:54.7449106Z LaneRampV2Validation: 2836 checks passed
+2026-10-09T17:03:55.3753736Z LaneRampWorkflowValidation: 9190 checks passed
+2026-10-09T17:03:56.9072797Z Ramp39Validation: 16621 checks passed (production core; no Forge/client claims)
+2026-10-09T17:04:00.8372458Z Ramp39ModelValidation: 817 checks passed; real LaneRamps/LaneTopology/LanePointCodec/RoadRecord, test-only NBT/world adapters; NO game/client/world-write claim
+2026-10-09T17:04:07.8012433Z Ramp39CompoundValidation: 3845 checks passed; in-memory production planner/reconcile only, NOT Minecraft construction/rendering
+2026-10-09T17:04:07.9785609Z Ramp39WidgetValidation: 28 checks passed; real screen state with test-only widgets, no Minecraft/GPU/network test
+2026-10-09T17:05:54.8577113Z LIVE441 REAL_WORLD PASS ground=true roomy=true
+2026-10-09T17:06:25.9585066Z LIVE441 REAL_WORLD PASS branch: LEFT/BRANCH/EXTRA/OVER/FLEXIBLE build, parent furniture opening and deletion restoration
+2026-10-09T17:07:08.5579767Z LIVE441 REAL_WORLD PASS ground=false roomy=false
+2026-10-09T17:07:14.1578328Z LIVE441 REAL_WORLD PASS bank: asymmetric GREEN bridge to AUTO converged
+2026-10-09T17:07:37.1592969Z LIVE441 REAL_WORLD PASS ground=true roomy=false
+2026-10-09T17:07:48.0591114Z BUILD SUCCESSFUL in 3m 40s
+2026-10-09T17:07:51.4394552Z Live446ModelValidation: 13871 checks PASS; width bands, open/roofed cuts, original terrain constraints and option roundtrip (not Minecraft/GPU)
+2026-10-09T17:09:13.2966850Z LIVE446 REAL_WORLD PASS allow=false undergroundEnd=true: original terrain, publication/build, local sections, NBT and delete
+2026-10-09T17:09:21.4960447Z LIVE446 REAL_WORLD PASS allow=true undergroundEnd=false: original terrain, publication/build, local sections, NBT and delete
+2026-10-09T17:09:30.5963480Z LIVE446 REAL_WORLD PASS allow=false undergroundEnd=false: original terrain, publication/build, local sections, NBT and delete
+2026-10-09T17:09:37.1964963Z BUILD SUCCESSFUL in 1m 45s
+2026-10-09T17:11:35.2739442Z LIVE445 REAL_WORLD PASS outer/internal temporary self-host, wide ramp, ADD, ordinary edit, Mojang reload and deletion
+2026-10-09T17:11:40.9206409Z BUILD SUCCESSFUL in 2m 3s
+2026-10-09T17:11:43.8442105Z Live439Validation: 1336 checks PASS; mouths, monotone-first profiles, solid contacts and scene diagnostics
+2026-10-09T17:11:45.0545183Z Live439ModelValidation: 1596 checks PASS; ascending/descending mixed-road clearance and NBT adapter round trip
+2026-10-09T17:11:46.2625901Z Live440Validation: 5 checks PASS; full-lane vs auxiliary guides, buried reservation vegetation and lid
+2026-10-09T17:11:46.8874662Z Live440ModelValidation: 10 checks PASS; raw/normalized link, tunnel mouth opening and unrelated collision preservation, mixed below/above reservation
+2026-10-09T17:11:48.8300233Z Live441Validation: 236 checks PASS; live-lane rail clearance, ground closure pavement in VBO/terrain and buried-lid protection
+2026-10-09T17:11:58.0692582Z Live441ModelValidation: 57 checks PASS; whole-lane departure, exact shoulder mouths, parent furniture, stable terrain classification, beam reservation and ancestor markers
+2026-10-09T17:11:59.6686611Z Live442Validation: 1249 checks PASS
+2026-10-09T17:12:03.4758848Z Live442ModelValidation: 108 checks PASS
+2026-10-09T17:12:05.7532244Z Live443Validation 3781 checks PASS
+2026-10-09T17:12:08.1728145Z Live443ModelValidation 402 checks PASS; generated normal fork, merging throat, persistence, repeated preview and grouping equivalence
+2026-10-09T17:12:10.5935999Z Live444Validation 629 checks PASS
+2026-10-09T17:12:18.3220792Z Live444ModelValidation 197 checks PASS
+2026-10-09T17:12:20.4396968Z Live445ModelValidation: 503 checks PASS (production geometry/planner with test adapters, not Minecraft)
+2026-10-09T17:12:22.3735130Z Live435Validation: 1797 checks PASS; production geometry/paint/solids, NO GPU.
+2026-10-09T17:12:49.9195329Z Live435ModelValidation: 3278 checks PASS; production planner and endpoint reservations, NO world writes.
+2026-10-09T17:12:52.5171319Z Live438Validation: 16031 checks PASS; connected cap corners and tight graded-seam rails, production geometry
+2026-10-09T17:12:54.6536478Z Live438ModelValidation: 16 checks PASS; deletion recovery, derived points, stable ADD recheck and explicit turns, world adapters
+2026-10-09T17:14:19.9104535Z LIVE444 REAL_SERVER PASS generated perimeter extra=false guarded_samples=1823
+2026-10-09T17:15:05.4115603Z LIVE444 REAL_SERVER PASS generated perimeter extra=true guarded_samples=5106
+2026-10-09T17:15:26.9138656Z LIVE444 REAL_SERVER PASS late shell rejection, AUTO alternate, full publication/build and Mojang NBT
+2026-10-09T17:15:37.1716903Z BUILD SUCCESSFUL in 2m 42s
+2026-10-09T17:17:28.4473466Z LIVE443 REAL_SERVER PASS exact support planning against an unrasterized candidate and Mojang NBT
+2026-10-09T17:17:34.1107586Z BUILD SUCCESSFUL in 1m 56s
+2026-10-09T17:20:11.6983649Z LIVE442 REAL_WORLD PASS continuation: 2->DETACH->1-lane B->delete->2-to-1 taper->new DETACH build
+2026-10-09T17:20:17.9378822Z BUILD SUCCESSFUL in 2m 43s
+2026-10-09T17:22:19.8996057Z LIVE440 REAL_WORLD PASS underground=true: actual request/compute/publish/build, rectangle, flexible B, monotone, NBT, deletion
+2026-10-09T17:22:42.0999374Z LIVE440 REAL_WORLD PASS underground=false: actual request/compute/publish/build, rectangle, flexible B, monotone, NBT, deletion
+2026-10-09T17:22:49.9496012Z BUILD SUCCESSFUL in 2m 31s
+
+Minecraft required-test totals:
+2026-10-09T17:07:37.1595452Z [17:07:37] [Server thread/INFO] [minecraft/GameTestServer]: All 5 required tests passed :)
+2026-10-09T17:09:30.5972904Z [17:09:30] [Server thread/INFO] [minecraft/GameTestServer]: All 3 required tests passed :)
+2026-10-09T17:11:35.2798037Z [17:11:35] [Server thread/INFO] [minecraft/GameTestServer]: All 1 required tests passed :)
+2026-10-09T17:15:26.9232680Z [17:15:26] [Server thread/INFO] [minecraft/GameTestServer]: All 2 required tests passed :)
+2026-10-09T17:17:28.4495263Z [17:17:28] [Server thread/INFO] [minecraft/GameTestServer]: All 1 required tests passed :)
+2026-10-09T17:20:11.6991531Z [17:20:11] [Server thread/INFO] [minecraft/GameTestServer]: All 1 required tests passed :)
+2026-10-09T17:22:42.1002985Z [17:22:42] [Server thread/INFO] [minecraft/GameTestServer]: All 2 required tests passed :)
