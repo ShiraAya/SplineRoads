@@ -1,3 +1,5 @@
+> 最新 P1：十四图实机反馈（含仅计算速度），见 `docs/issues/0443-live-fourteen-029.md`。Work模式持续推进、阶段保存。
+
 > 最新 P1：十二图实机反馈，见 `docs/issues/0442-live-twelve-followup-028.md`。旧修复重新按截图验证。
 
 > 新增硬约束：用户SR截图/文字反馈默认就是继续修代码的指令，不再只做分析或反问是否要改。修复以新实机反馈为准，最新P1入口见docs/issues/0441-live-seven-followup-027.md（0440修复继续保留）（旧0414记录保留）。

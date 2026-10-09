@@ -7,7 +7,8 @@ public final class Live443Validation {
   static int checks;
   static void check(boolean value,String why){checks++;if(!value)throw new AssertionError(why);}
   static void closures(){
-    var raw=Live435Validation.road(Style.O3_ONE,Structure.GROUND);
+    var settings=Live435Validation.road(Style.O3_ONE,Structure.GROUND).settings();
+    var raw=RoadGeometry.build(new Node(new V(0,20,0),0,0),new Node(new V(0,20,200),0,0),settings);
     for(int slot:new int[]{0,2}){
       var host=Live435Validation.cut(raw,slot,50,150,true);
       check(LaneClosureLandscape.plan(host,Live435Validation.ground(19)).isEmpty(),"exterior closed slot still filled/planted");
@@ -15,6 +16,8 @@ public final class Live443Validation {
       for(var cap:LaneDeck.caps(host)){
         V mid=cap.a().add(cap.b()).mul(.5);
         check(LaneClosureWarnings.paint(host).stream().flatMap(p->p.points().stream()).anyMatch(v->Math.abs(v.z()-mid.z())<.3),"missing transverse closure line");
+        V point=mid.add(cap.b().sub(cap.a()).horizontalUnit().left().mul(.10));
+        check(RoadSurface.build(host,List.of(),List.of()).markings().stream().anyMatch(f->JunctionPaint.inside(f.points(),point)),"transverse boundary paint clipped away from final road surface");
       }
     }
     check(LaneClosureLandscape.plan(Live435Validation.cut(raw,1,50,150,true),Live435Validation.ground(19)).stream().anyMatch(p->p.material()==Material.GREEN),"internal closed lane lost planting");

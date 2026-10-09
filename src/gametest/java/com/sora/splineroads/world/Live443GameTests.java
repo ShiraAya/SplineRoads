@@ -13,7 +13,7 @@ public final class Live443GameTests {
     var d=b.sub(a).horizontalUnit();var start=new Node(a,RoadPlanner.yaw(d),0);var end=new Node(b,start.yaw(),0);
     var s=new Settings(Mode.STRAIGHT,Style.C1_RAMP,4,1,.35,90).structure(Structure.BRIDGE);
     s=s.options(s.options().route(s.options().routing().fit(false)));
-    return new RoadRecord(UUID.randomUUID(),new UUID(443,1),BlockPos.containing(a),BlockPos.containing(b),start,end,s,false,4);
+    return new RoadRecord(UUID.randomUUID(),new UUID(443,1),BlockPos.containing(a.x(),a.y(),a.z()),BlockPos.containing(b.x(),b.y(),b.z()),start,end,s,false,4);
   }
   @GameTest(batch="splineroads_live443",template="empty",templateNamespace="splineroads",timeoutTicks=12000)
   public static void supportsAvoidUnbuiltLowerRoad(GameTestHelper h){

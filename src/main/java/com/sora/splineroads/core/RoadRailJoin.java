@@ -148,14 +148,15 @@ public final class RoadRailJoin {
   }
   /** Exact continuous cut positions, not rounded .5-block visibility samples. */
   public List<Span> exposed(V a,V b){return exposed(grid,a,b);}
-  private List<Span> exposed(Map<Long,List<Face>> surface,V a,V b){
+  private List<Span> exposed(Map<Long,List<Face>> surface,V a,V b){return exposed(surface,a,b,false);}
+  private List<Span> exposed(Map<Long,List<Face>> surface,V a,V b,boolean parallelOnly){
     if(a.sub(b).horizontalLength()<1e-9)return List.of();
     var faces=new LinkedHashSet<Face>();
     for(int x=cell(Math.min(a.x(),b.x())-1e-6);x<=cell(Math.max(a.x(),b.x())+1e-6);x++)
       for(int z=cell(Math.min(a.z(),b.z())-1e-6);z<=cell(Math.max(a.z(),b.z())+1e-6);z++)
         faces.addAll(surface.getOrDefault(key(x,z),List.of()));
     var cuts=new ArrayList<Range>();V tangent=b.sub(a).horizontalUnit();for(var face:faces){
-      if(face.tangent()!=null&&Math.abs(face.tangent().dot(tangent))<.999999)continue;
+      if(parallelOnly&&face.tangent()!=null&&Math.abs(face.tangent().dot(tangent))<.999999)continue;
       var hit=face.intersection(a,b);if(hit!=null)cuts.add(hit);}
     cuts.sort(Comparator.comparingDouble(Range::from));
     var result=new ArrayList<Span>();double at=0;V d=b.sub(a);
@@ -165,6 +166,7 @@ public final class RoadRailJoin {
   }
   public List<Span> exposed(V a,V b,V outside){return exposed(a,b,outside,INSET);}
   public List<Span> exposed(V a,V b,V outside,double inset){
+    if(inset<1e-9)return exposed(material,a,b);
     V mid=a.add(b).mul(.5),direction=outside.sub(mid);
     if(direction.horizontalLength()<1e-8)return exposed(a,b);
     // Clip shared merge seams against actual neighboring pavement at the outer
@@ -175,7 +177,7 @@ public final class RoadRailJoin {
     // boundary. Clipping both independently cuts a gap between their meeting tips.
     // Exact parallel auxiliary seams still need the material test (their inset
     // polygons are disjoint despite the small deliberate paved overlap).
-    var boundary=exposed(material,a.add(shift),b.add(shift));
+    var boundary=exposed(material,a.add(shift),b.add(shift),true);
     var out=new ArrayList<Span>();V d=b.sub(a);double length=d.dot(d);
     for(var first:inside)for(var second:boundary){
       double lo=Math.max(first.a().sub(a).dot(d)/length,second.a().sub(shift).sub(a).dot(d)/length);
