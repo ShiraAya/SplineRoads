@@ -267,10 +267,9 @@ public final class RoadJunction {
         continue;
       var l = RoadProfile.layout(mesh, s);
       var c = l.catalog();
-      if(mesh.reference()!=null) {
+      if(mesh.reference()!=null||!mesh.settings().options().lanePoints().additions().isEmpty()) {
         var raw=LaneSections.reference(mesh);
-        int slots=RoadProfile.layout(raw,RoadStructures.sample(raw,d)).catalog().lanes();
-        for(int slot=0;slot<slots;slot++)if(LaneSections.active(mesh,d,slot)&&!LaneMerge.merging(mesh,d,slot)&&!LaneClosureWarnings.covers(mesh,d,slot)) {
+        for(int slot:LaneAdditions.slots(raw,d))if(LaneSections.active(mesh,d,slot)&&!LaneMerge.merging(mesh,d,slot)&&!LaneClosureWarnings.covers(mesh,d,slot)) {
           var lane=LanePoints.lane(raw,d,slot);
           arrow(out,lane.position(),lane.direction(),s.left().mul(lane.sign()));
         }

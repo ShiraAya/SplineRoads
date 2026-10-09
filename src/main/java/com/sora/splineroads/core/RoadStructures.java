@@ -259,7 +259,7 @@ public final class RoadStructures {
         double ra=.35*RoadInfrastructure.endTaper(mesh,a),rb=.35*RoadInfrastructure.endTaper(mesh,b);
         V first=a.at(side*(a.halfWidth()+(ra-.05)/2),depth),last=b.at(side*(b.halfWidth()+(rb-.05)/2),depth);
         var part=new Part(first,last,Math.max(ra,rb)+.05,depth,false,Material.CONCRETE).frames(a.left().mul((ra+.05)/2),b.left().mul((rb+.05)/2));
-        for(var span:ground.railSpans(a.at(side*a.halfWidth(),0),b.at(side*b.halfWidth(),0),mid.at(side*(mid.halfWidth()+.2),0))){
+        for(var span:ground.railSpans(a.at(side*a.halfWidth(),0),b.at(side*b.halfWidth(),0),mid.at(side*(mid.halfWidth()+.2),0),0)){
           double length=a.center().sub(b.center()).horizontalLength();
           double ta=length<1e-7?0:span.a().sub(a.at(side*a.halfWidth(),0)).horizontalLength()/Math.max(1e-7,a.at(side*a.halfWidth(),0).sub(b.at(side*b.halfWidth(),0)).horizontalLength());
           double tb=length<1e-7?1:span.b().sub(a.at(side*a.halfWidth(),0)).horizontalLength()/Math.max(1e-7,a.at(side*a.halfWidth(),0).sub(b.at(side*b.halfWidth(),0)).horizontalLength());

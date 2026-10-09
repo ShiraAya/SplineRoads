@@ -83,10 +83,21 @@ public final class LaneClosureLandscape {
   private static boolean connectorAddition(Mesh mesh,LaneSections.Cut cut){
     return cut.lane()>=8&&mesh.settings().options().lanePoints().additions().stream().anyMatch(a->a.slot()==cut.lane()&&a.connection().equals(cut.connection()));
   }
+  /** Exterior reservations are open verges, matching elevated rectangular cutouts.
+   * A planter is meaningful only for an internal closed lane with pavement on both sides. */
+  private static boolean exterior(Mesh raw,LaneSections.Cut cut){
+    double station=Math.max(0,Math.min(raw.length(),(cut.begin()+cut.end())/2));
+    var lane=LanePoints.lane(raw,station,cut.lane());var at=RoadStructures.sample(raw,station);
+    double center=lane.position().sub(at.center()).dot(at.left());boolean low=false,high=false;
+    for(var other:LaneSections.live(raw,station).lanes())if(other.index()!=cut.lane()){
+      double x=other.position().sub(at.center()).dot(at.left());low|=x<center-1e-6;high|=x>center+1e-6;
+    }
+    return !low||!high;
+  }
   private record Interval(int lane,double begin,double end){}
   private static List<Interval> closedIntervals(Mesh mesh,Ground ground){
     var raw=LaneSections.reference(mesh);var intervals=new ArrayList<Interval>();
-    for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.temporary()&&cut.rectangular()&&!cut.underpass()&&!connectorAddition(mesh,cut)&&ground.closedLanePlanting(cut.connection())){
+    for(var cut:mesh.settings().options().lanePoints().cuts())if(cut.temporary()&&cut.rectangular()&&!cut.underpass()&&!connectorAddition(mesh,cut)&&!exterior(raw,cut)&&ground.closedLanePlanting(cut.connection())){
       double a=Math.max(raw.first().distance(),Math.min(cut.begin(),cut.end()));
       double b=Math.min(raw.last().distance(),Math.max(cut.begin(),cut.end()));
       if(b>a+1e-7)intervals.add(new Interval(cut.lane(),a,b));

@@ -183,21 +183,9 @@ final class StructurePlanner {
                   }
                   if (part.pier() && RoadStructures.fitsMedian(part, other.mesh,
                       nearby.stream().map(r -> r.mesh).toList())) continue;
-                  // Voxel columns are a broad phase, not proof that a shaft occupies a lane.
-                  if(!RoadSidewalks.overlapsDeck(part,other.mesh))continue;
-                  for (int x = (int) Math.floor(box.minX); x < Math.ceil(box.maxX); x++)
-                    for (int z = (int) Math.floor(box.minZ); z < Math.ceil(box.maxZ); z++) {
-                      var col = other.column(new BlockPos(x, 0, z));
-                      boolean sharedEnd=built.record.a().equals(other.record.a())||built.record.a().equals(other.record.b())
-                          ||built.record.b().equals(other.record.a())||built.record.b().equals(other.record.b());
-                      // The new edge slab may touch the deck of its connected continuation.
-                      // It stays at/below that road's surface and cannot occupy its vehicle clearance.
-                      if(col!=null&&sharedEnd&&part.material()==RoadStructures.Material.CONCRETE&&!part.pier()
-                          &&part.height()<=built.record.settings().thickness()+1e-7&&box.maxY<=col.minTop()+.025)continue;
-                      if (col != null
-                          && box.maxY > col.minTop() - other.record.settings().thickness() + (precise?.02:-.1)
-                          && box.minY < col.maxTop() + Math.max(4.25,com.sora.splineroads.core.RoadInfrastructure.clearance(other.record.settings()))) return true;
-                    }
+                  // New plans have no raster columns yet. Exact prism/deck clipping
+                  // must be authoritative for piers too, including framed ramp shafts.
+                  if(RoadClearance.structureInvades(part,other.mesh,Math.max(4.25,RoadInfrastructure.clearance(other.record.settings()))))return true;
                 }
                 return false;
               }

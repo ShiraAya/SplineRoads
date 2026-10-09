@@ -33,6 +33,13 @@ public final class LaneClosureWarnings {
         }
       }
     }
+    // Every rectangular end has a visible transverse edge, including a ground
+    // opening where elevated guardrails and planting are intentionally absent.
+    for(var cap:LaneDeck.caps(mesh)){
+      V inward=cap.b().sub(cap.a()).horizontalUnit().left().mul(.10);
+      out.add(new RoadJunction.Paint(List.of(cap.a().add(inward.mul(.2)),cap.b().add(inward.mul(.2)),
+          cap.b().add(inward.mul(1.8)),cap.a().add(inward.mul(1.8))),0xEDEEE2));
+    }
     return List.copyOf(out);
   }
   /** Do not invite straight-ahead traffic with an arrow underneath an X warning. */
