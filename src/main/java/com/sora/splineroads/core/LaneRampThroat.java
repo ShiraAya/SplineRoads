@@ -30,7 +30,11 @@ public final class LaneRampThroat {
     if(hosts.isEmpty())return ramp;
     int end=end(ramp,hosts,first);var boundary=ramp.samples().get(end);
     double remaining=first?ramp.length()-boundary.distance():boundary.distance();
-    if(remaining<.01)return ramp;
+    if(remaining<.01){
+      for(var at:ramp.samples()){var target=height(at,hosts);
+        if(target!=null&&Math.abs(target-at.center().y())>.025)throw new IllegalArgumentException("普通分流尚未离开共用路面，不能改变高程");}
+      return ramp;
+    }
     var y=height(boundary,hosts);if(y==null)return ramp;
     double delta=y-boundary.center().y(),ease=Math.min(remaining,Math.max(16,Math.min(96,remaining*.5)));
     var out=new ArrayList<Sample>();

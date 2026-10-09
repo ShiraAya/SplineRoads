@@ -1,0 +1,10 @@
+Oct 09, 2026 5:02:29 PM com.sora.splineroads.world.LaneRamps$Planning close
+INFO: SR route plan total_ms=42721.171 clearance_ms=1358.033 candidates=299 contact_queries=1200 cached_meshes=3
+SCENE443 run=0 ms=42778.327 length=337.371465 samples=640 geometry_hash=-1494407493
+Oct 09, 2026 5:03:03 PM com.sora.splineroads.world.LaneRamps$Planning close
+INFO: SR route plan total_ms=34349.379 clearance_ms=1069.240 candidates=299 contact_queries=1200 cached_meshes=3
+SCENE443 run=1 ms=34350.267 length=337.371465 samples=640 geometry_hash=-1494407493
+Oct 09, 2026 5:03:41 PM com.sora.splineroads.world.LaneRamps$Planning close
+INFO: SR route plan total_ms=37639.731 clearance_ms=1219.862 candidates=299 contact_queries=1200 cached_meshes=3
+SCENE443 run=2 ms=37641.889 length=337.371465 samples=640 geometry_hash=-1494407493
+SCENE443 median_ms=37641.889

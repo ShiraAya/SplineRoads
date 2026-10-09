@@ -31,5 +31,30 @@ public final class Live443ModelValidation {
     check(RoadRecord.load(ramp.save()).mesh().samples().equals(m.samples()),"fork height lost on save/reload");
     check(all.get(source.id()).mesh().samples().equals(source.mesh().samples()),"ordinary fork moved straight host");
   }
-  public static void main(String[] args){fork(false,1);fork(true,-1);System.out.println("Live443ModelValidation "+checks+" checks PASS; generated normal fork, merging throat, persistence and repeated preview");}
+  static void grouping() throws Exception {
+    var type=Class.forName("com.sora.splineroads.world.LaneRamps$Obstacle");
+    var constructor=type.getDeclaredConstructor(UUID.class,RoadClearance.Contact.class,boolean.class);constructor.setAccessible(true);
+    var method=LaneRamps.class.getDeclaredMethod("groupedContacts",List.class);method.setAccessible(true);
+    record Entry(UUID road,RoadClearance.Contact contact,boolean structure,Object value){}
+    var random=new Random(443);
+    for(int trial=0;trial<16;trial++){
+      var input=new ArrayList<Entry>();
+      for(int i=0;i<800;i++){
+        var road=new UUID(0,random.nextInt(4));double from=random.nextInt(250),to=from+random.nextInt(20);boolean structure=random.nextInt(4)==0;
+        var c=new RoadClearance.Contact(from,to,new V(0,0,0),new V(0,0,0),1,4,4);
+        input.add(new Entry(road,c,structure,constructor.newInstance(road,c,structure)));
+      }
+      var expected=new ArrayList<List<Entry>>();
+      for(var e:input.stream().sorted(Comparator.comparing((Entry o)->o.road().toString()).thenComparingDouble(o->o.contact().from())).toList()){
+        var g=expected.isEmpty()?null:expected.get(expected.size()-1);
+        if(g==null||!g.get(0).road().equals(e.road())||g.get(0).structure()!=e.structure()
+            ||e.contact().from()>g.stream().mapToDouble(o->o.contact().to()).max().orElse(0)+2){g=new ArrayList<>();expected.add(g);}
+        g.add(e);
+      }
+      expected.sort(Comparator.comparingDouble(g->g.get(0).contact().from()));
+      var values=expected.stream().map(g->g.stream().map(Entry::value).toList()).toList();
+      check(method.invoke(null,input.stream().map(Entry::value).toList()).equals(values),"running maximum changed grouping or tie order");
+    }
+  }
+  public static void main(String[] args)throws Exception{fork(false,1);fork(true,-1);grouping();System.out.println("Live443ModelValidation "+checks+" checks PASS; generated normal fork, merging throat, persistence, repeated preview and grouping equivalence");}
 }

@@ -1,0 +1,50 @@
+EndpointV2 core PASS: continuity, scope, paint isolation, identity, control interpolation, green taper, sidewalk walls
+LanePointSnapValidation: 742 checks passed; reproduced old maximum drift=0.01943854553513143
+LaneInteractionValidation: 254 checks passed
+LaneRampV2Validation: 2836 checks passed
+LaneRampWorkflowValidation: 9190 checks passed
+Ramp39Validation: 16171 checks passed (production core; no Forge/client claims)
+
+CORE TESTS ONLY: Forge, NBT, world transactions, client rendering and the sign catalog are not validated by this runner.
+  production DETACH + REPLACE: outgoing 441.4 m, incoming 286.4 m, host retains lane 0; deletion restores both lanes
+Ramp39ModelValidation: 817 checks passed; real LaneRamps/LaneTopology/LanePointCodec/RoadRecord, test-only NBT/world adapters; NO game/client/world-write claim
+Oct 09, 2026 5:10:13 PM com.sora.splineroads.world.LaneRamps$Planning close
+INFO: SR route plan total_ms=1307.106 clearance_ms=294.129 candidates=1 contact_queries=10 cached_meshes=8
+Oct 09, 2026 5:10:15 PM com.sora.splineroads.world.LaneRamps$Planning close
+INFO: SR route plan total_ms=1207.882 clearance_ms=267.221 candidates=9 contact_queries=60 cached_meshes=8
+  compound scale=1.00 rotation=0.00 origin=0: 3->2, DETACH, fork, I over A, II over IV, REPLACE, reconcile/reload/delete; ramps 1348.4 / 1160.5 / 1054.3 m
+  compound scale=0.50 rotation=0.00 origin=0: 3->2, DETACH, fork, I over A, II over IV, REPLACE, reconcile/reload/delete; ramps 673.5 / 581.2 / 526.1 m
+  compound scale=0.50 rotation=0.60 origin=100000: 3->2, DETACH, fork, I over A, II over IV, REPLACE, reconcile/reload/delete; ramps 673.5 / 581.2 / 526.1 m
+Ramp39CompoundValidation: 2837 checks passed; in-memory production planner/reconcile only, NOT Minecraft construction/rendering
+Ramp39WidgetValidation: 26 checks passed; real screen state with test-only widgets, no Minecraft/GPU/network test
+
+MODEL TESTS ONLY: NBT map adapters are not Mojang NBT binary encoding; world writes, networking and GPU drawing throw. This is not a Forge/Minecraft test.
+Live439Validation: 1335 checks PASS; mouths, monotone-first profiles, solid contacts and scene diagnostics
+Live439ModelValidation: 1152 checks PASS; ascending/descending mixed-road clearance and NBT adapter round trip
+Live440Validation: 5 checks PASS; full-lane vs auxiliary guides, buried reservation vegetation and lid
+Live440ModelValidation: 8 checks PASS; raw/normalized link, tunnel mouth opening and unrelated collision preservation, mixed below/above reservation
+Live441Validation: 236 checks PASS; live-lane rail clearance, ground closure pavement in VBO/terrain and buried-lid protection
+Oct 09, 2026 5:10:34 PM com.sora.splineroads.world.LaneRamps$Planning close
+INFO: SR route plan total_ms=1099.905 clearance_ms=243.372 candidates=11 contact_queries=48 cached_meshes=5
+Oct 09, 2026 5:10:43 PM com.sora.splineroads.world.LaneRamps$Planning close
+INFO: SR route plan total_ms=8535.561 clearance_ms=1453.586 candidates=221 contact_queries=888 cached_meshes=4
+Oct 09, 2026 5:10:51 PM com.sora.splineroads.world.LaneRamps$Planning close
+INFO: SR route plan total_ms=8048.763 clearance_ms=1674.617 candidates=224 contact_queries=904 cached_meshes=50
+Live441ModelValidation: 57 checks PASS; whole-lane departure, exact shoulder mouths, parent furniture, stable terrain classification, beam reservation and ancestor markers
+Live442Validation: 1249 checks PASS
+Oct 09, 2026 5:11:00 PM com.sora.splineroads.world.LaneRamps$Planning close
+INFO: SR route plan total_ms=1522.681 clearance_ms=271.519 candidates=11 contact_queries=48 cached_meshes=4
+Live442ModelValidation: 644 checks PASS
+Live443Validation 3716 checks PASS
+Planner443Benchmark equivalence=96; exact checks median old_ms=104.678 indexed_ms=38.318 speedup=2.73x
+Live443ModelValidation 374 checks PASS; generated normal fork, merging throat, persistence, repeated preview and grouping equivalence
+Live435Validation: 1797 checks PASS; production geometry/paint/solids, NO GPU.
+Closure418Validation: 128 rectangular lane/sign/style/curve cases, 469265 checks; real deck/paint/solid/classification, NOT Minecraft writes or GPU.
+Rail419MarkingValidation: 76 actual painted-face cases, 813 checks, 104 closed boundaries / 160 live dash gaps; explicit overrides retained. NO GPU/world.
+AUTO435 rise=0.0 ceiling=false PASS
+AUTO435 rise=0.0 ceiling=true PASS
+AUTO435 rise=8.0 ceiling=false PASS
+AUTO435 rise=8.0 ceiling=true PASS
+Live435ModelValidation: 2366 checks PASS; production planner and endpoint reservations, NO world writes.
+Live438Validation: 16031 checks PASS; connected cap corners and tight graded-seam rails, production geometry
+Live438ModelValidation: 16 checks PASS; deletion recovery, derived points, stable ADD recheck and explicit turns, world adapters

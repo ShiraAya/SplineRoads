@@ -323,10 +323,10 @@ public final class LaneRamps {
   /** A declared joining throat follows its existing host elevation before it becomes free.
    * Only the contiguous first/last contact is eligible; later crossings are still obstacles. */
   private static Mesh fitHostContacts(Mesh mesh,Map<UUID,RoadRecord> all,LanePoints.Link link){
-    // New lane connectors already have exact host-sampled auxiliary tapers and port
-    // elevations. A whole-host XZ contact is NOT a joining throat: fitting it to the
-    // host erases an overpass, creates a sag after docking and exempts a transverse
-    // crossing of the opposite carriageway. Preserve legacy saved links only.
+    // Auxiliary tapers and closed-slot connectors keep their independent profile.
+    // Only ordinary BRANCH/FLOW shares the selected lane (or single-lane parent)
+    // until its paved throat separates. A whole multi-lane host would incorrectly
+    // flatten an overpass across unrelated or opposite traffic.
     if(link.protectedMerge()){
       if(link.options().departure()==LanePoints.Departure.BRANCH)mesh=LaneRampThroat.fit(mesh,normalHosts(all,link,true),true);
       if(link.options().arrival()==LanePoints.Arrival.FLOW)mesh=LaneRampThroat.fit(mesh,normalHosts(all,link,false),false);
@@ -497,15 +497,21 @@ public final class LaneRamps {
   static boolean monotone(Mesh m){return verticalEffort(m)<=Math.abs(m.last().center().y()-m.first().center().y())+1e-5;}
   /** Keep several feasible layer assignments. A locally cheaper underpass must not
    * rule out an overpass required by the NEXT ramp. Triangle contacts share a group. */
-  private static List<Mesh> mixedCandidates(Mesh base,double from,double to,List<Obstacle> contacts,Map<UUID,RoadRecord> all,double grade,boolean strict){
-    var groups=new ArrayList<List<Obstacle>>();
+  /** The running maximum is exactly the old group's max(to). Rescanning all
+   * previous triangle contacts for every insertion made this step quadratic. */
+  private static List<List<Obstacle>> groupedContacts(List<Obstacle> contacts){
+    var groups=new ArrayList<List<Obstacle>>();double groupEnd=0;
     for(var obstacle:contacts.stream().sorted(Comparator.comparing((Obstacle o)->o.road().toString()).thenComparingDouble(o->o.contact().from())).toList()){
       List<Obstacle> group=groups.isEmpty()?null:groups.get(groups.size()-1);
       if(group==null||!group.get(0).road().equals(obstacle.road())||group.get(0).structure()!=obstacle.structure()
-          ||obstacle.contact().from()>group.stream().mapToDouble(o->o.contact().to()).max().orElse(0)+2){group=new ArrayList<>();groups.add(group);}
-      group.add(obstacle);
+          ||obstacle.contact().from()>groupEnd+2){group=new ArrayList<>();groups.add(group);groupEnd=Double.NEGATIVE_INFINITY;}
+      group.add(obstacle);groupEnd=Math.max(groupEnd,obstacle.contact().to());
     }
     groups.sort(Comparator.comparingDouble(g->g.get(0).contact().from()));
+    return groups;
+  }
+  private static List<Mesh> mixedCandidates(Mesh base,double from,double to,List<Obstacle> contacts,Map<UUID,RoadRecord> all,double grade,boolean strict){
+    var groups=groupedContacts(contacts);
     record Choice(List<LaneRampCorridor.Bound> bounds,Mesh mesh){}
     var beam=new ArrayList<Choice>();beam.add(new Choice(List.of(),base));
     for(var group:groups){var next=new ArrayList<Choice>();

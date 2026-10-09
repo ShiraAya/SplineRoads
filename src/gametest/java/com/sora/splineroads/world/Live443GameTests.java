@@ -15,7 +15,7 @@ public final class Live443GameTests {
     s=s.options(s.options().route(s.options().routing().fit(false)));
     return new RoadRecord(UUID.randomUUID(),new UUID(443,1),BlockPos.containing(a.x(),a.y(),a.z()),BlockPos.containing(b.x(),b.y(),b.z()),start,end,s,false,4);
   }
-  @GameTest(batch="splineroads_live443",template="empty",templateNamespace="splineroads",timeoutTicks=12000)
+  @GameTest(batch="splineroads_live443",template="empty",templateNamespace="splineroads_live443",timeoutTicks=12000)
   public static void supportsAvoidUnbuiltLowerRoad(GameTestHelper h){
     var level=h.getLevel();int x=224000,z=224000;
     for(int xx=x-48;xx<=x+48;xx++)for(int zz=z-4;zz<=z+104;zz++){var p=new BlockPos(xx,188,zz);level.getChunkAt(p);level.setBlock(p,Blocks.STONE.defaultBlockState(),2);}

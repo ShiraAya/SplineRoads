@@ -47,6 +47,9 @@ public final class Live443Validation {
     for(int i=0;i<=end;i++)check(Math.abs(fitted.samples().get(i).center().y()-20)<1e-7,"normal fork has stacked shared slabs");
     check(fitted.last().center().equals(raw.last().center()),"throat fit moved far endpoint");
     check(fitted.samples().get(end+30).center().y()>20,"height failed to diverge after fork");
+    var stacked=RoadRibbon.mesh(parent.stream().map(p->new Sample(p.center().add(new V(0,p.distance()*.08,0)),p.left(),p.distance(),p.halfWidth())).toList(),settings);
+    boolean denied=false;try{LaneRampThroat.fit(stacked,List.of(host),true);}catch(IllegalArgumentException expected){denied=true;}
+    check(denied,"fully coincident ordinary fork accepted stacked elevation");
   }
   static void collision(){
     var road=Live435Validation.road(Style.C1_RAMP,Structure.BRIDGE);
@@ -67,6 +70,7 @@ public final class Live443Validation {
   }
   static void seams(){
     var raw=Live435Validation.road(Style.C1_RAMP,Structure.BRIDGE);
+    check(RoadRailJoin.mouths(List.of(raw)).exposedMouth(new V(-1.5,20,0),new V(1.5,20,0)).isEmpty(),"transverse mouth was mistaken for a parallel seam");
     var ref=LanePoints.Ref.lane(new UUID(443,2),new UUID(443,3));
     var link=new LanePoints.Link(ref,LanePoints.Ref.lane(new UUID(443,4),new UUID(443,5)),LanePoints.Options.DEFAULT,null);
     var settings=raw.settings().options(raw.settings().options().hideArrows(true).lanePoints(LanePoints.Data.EMPTY.link(link)));var host=RoadRibbon.mesh(raw.samples(),settings);
