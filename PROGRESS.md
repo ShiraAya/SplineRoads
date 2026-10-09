@@ -1,3 +1,11 @@
+## 当前交付结果：0.40.30-alpha（2026-10-09 11:37 UTC）
+
+最终验证提交cc78f7c3b687cb1515486a1955db41795b6398e6，生产src/main树e9b4a1fd9e6d59652ec721237e7faa1258b42740与本地一致。CI37923174403五个任务全部成功：完整Forge/reobf、全部核心/模型回归、10项真实Minecraft专项和32/32组矩阵。父匝道分流/删除恢复、桥型切换、AUTO最终隧道冲突后备选、护栏连续性、删除重建和地下隧道均实际执行通过。证据位于validation-results/0.40.30/final-*.log与final-ci.json。
+
+本轮处理内部多余护栏、共用边界护栏/白线丢失、共面虚线、封闭横线端点与正常口门裁剪、AUTO晚期校验后的高程重试及纵坡平滑；已有.29计算优化保留。图4原路段内凹仍未稳定复现，保持P1打开，需要受影响维度data/splineroads.dat；原世界/GPU未验收，不能宣称13图全部解决。详细逐图表在SR_0_40_30_VALIDATION.md。已有道路需编辑→重新预览→保存。
+
+最终JAR 5675630字节，SHA256 6ed52d3ffdae6c45f1425a9903fd9278172671c6968594f35f4ba8b979995e5e；版本、989条目CRC及新增类已核对。源码ZIP逐文件匹配最终Git树，独立补丁以本轮.29基线a4ce6e52064377f6854b22100c16ac70265d1ce3为起点，打包时强制验证应用后同树。前一候选9/10失败、测试语义修正及阶段状态保留为历史，最终结果以本节为准。
+
 ## 2026-10-09 11:32 UTC 0.40.30 checkpoint 8
 
 - Corrected parent-branch real-server group passed all4 cases on CI37923174403 / cc78f7c3b687cb1515486a1955db41795b6398e6, including deletion and restoration. New444 real-server group also passed both cases. Full Forge, core/model regressions and matrix rows1/2 passed; remaining gates are running.

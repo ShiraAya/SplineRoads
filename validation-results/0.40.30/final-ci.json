@@ -1,0 +1,528 @@
+{
+  "run_id": 37923174403,
+  "url": "https://github.com/ShiraAya/SplineRoads/actions/runs/37923174403",
+  "status": "completed",
+  "conclusion": "success",
+  "head_sha": "cc78f7c3b687cb1515486a1955db41795b6398e6",
+  "production_src_main_tree": "e9b4a1fd9e6d59652ec721237e7faa1258b42740",
+  "created_at": "2026-10-09T11:21:02Z",
+  "updated_at": "2026-10-09T11:37:19Z",
+  "jobs": [
+    {
+      "id": 113795754267,
+      "name": "verify",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-09T11:21:05Z",
+      "completed_at": "2026-10-09T11:37:18Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-09T11:21:06Z",
+          "completed_at": "2026-10-09T11:21:09Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-09T11:21:09Z",
+          "completed_at": "2026-10-09T11:21:11Z"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-09T11:21:11Z",
+          "completed_at": "2026-10-09T11:21:11Z"
+        },
+        {
+          "name": "Run gradle/actions/setup-gradle@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-09T11:21:11Z",
+          "completed_at": "2026-10-09T11:21:12Z"
+        },
+        {
+          "name": "Full Forge build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-09T11:21:12Z",
+          "completed_at": "2026-10-09T11:23:40Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-09T11:23:40Z",
+          "completed_at": "2026-10-09T11:23:42Z"
+        },
+        {
+          "name": "Core and model regression",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-09T11:23:42Z",
+          "completed_at": "2026-10-09T11:24:03Z"
+        },
+        {
+          "name": "New screenshot regression",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-10-09T11:24:03Z",
+          "completed_at": "2026-10-09T11:25:14Z"
+        },
+        {
+          "name": "Seven-image bridge, ground, branch and stability regression",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-10-09T11:25:14Z",
+          "completed_at": "2026-10-09T11:28:18Z"
+        },
+        {
+          "name": "Thirteen-image actual structure planning and candidate fallback",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-10-09T11:28:18Z",
+          "completed_at": "2026-10-09T11:31:00Z"
+        },
+        {
+          "name": "Exact support planning on the Minecraft server",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-09T11:31:00Z",
+          "completed_at": "2026-10-09T11:32:31Z"
+        },
+        {
+          "name": "Real detach, continuation, deletion and rebuild sequence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-09T11:32:31Z",
+          "completed_at": "2026-10-09T11:35:07Z"
+        },
+        {
+          "name": "Real request publication, underground and tunnel regression",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-09T11:35:07Z",
+          "completed_at": "2026-10-09T11:37:12Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-10-09T11:37:12Z",
+          "completed_at": "2026-10-09T11:37:14Z"
+        },
+        {
+          "name": "Post Run gradle/actions/setup-gradle@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 26,
+          "started_at": "2026-10-09T11:37:14Z",
+          "completed_at": "2026-10-09T11:37:15Z"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 27,
+          "started_at": "2026-10-09T11:37:15Z",
+          "completed_at": "2026-10-09T11:37:15Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 28,
+          "started_at": "2026-10-09T11:37:15Z",
+          "completed_at": "2026-10-09T11:37:15Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 29,
+          "started_at": "2026-10-09T11:37:15Z",
+          "completed_at": "2026-10-09T11:37:15Z"
+        }
+      ]
+    },
+    {
+      "id": 113795754592,
+      "name": "Minecraft matrix row 0",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-09T11:21:05Z",
+      "completed_at": "2026-10-09T11:32:47Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-09T11:21:06Z",
+          "completed_at": "2026-10-09T11:21:08Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-09T11:21:08Z",
+          "completed_at": "2026-10-09T11:21:10Z"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-09T11:21:10Z",
+          "completed_at": "2026-10-09T11:21:10Z"
+        },
+        {
+          "name": "Run gradle/actions/setup-gradle@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-09T11:21:10Z",
+          "completed_at": "2026-10-09T11:21:12Z"
+        },
+        {
+          "name": "Real Minecraft preview build save delete matrix",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-09T11:21:12Z",
+          "completed_at": "2026-10-09T11:32:43Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-09T11:32:43Z",
+          "completed_at": "2026-10-09T11:32:44Z"
+        },
+        {
+          "name": "Post Run gradle/actions/setup-gradle@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-10-09T11:32:44Z",
+          "completed_at": "2026-10-09T11:32:44Z"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-09T11:32:44Z",
+          "completed_at": "2026-10-09T11:32:45Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-09T11:32:45Z",
+          "completed_at": "2026-10-09T11:32:45Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-09T11:32:45Z",
+          "completed_at": "2026-10-09T11:32:45Z"
+        }
+      ]
+    },
+    {
+      "id": 113795754600,
+      "name": "Minecraft matrix row 1",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-09T11:21:05Z",
+      "completed_at": "2026-10-09T11:28:39Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-09T11:21:05Z",
+          "completed_at": "2026-10-09T11:21:09Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-09T11:21:09Z",
+          "completed_at": "2026-10-09T11:21:11Z"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-09T11:21:11Z",
+          "completed_at": "2026-10-09T11:21:11Z"
+        },
+        {
+          "name": "Run gradle/actions/setup-gradle@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-09T11:21:11Z",
+          "completed_at": "2026-10-09T11:21:11Z"
+        },
+        {
+          "name": "Real Minecraft preview build save delete matrix",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-09T11:21:11Z",
+          "completed_at": "2026-10-09T11:28:34Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-09T11:28:34Z",
+          "completed_at": "2026-10-09T11:28:35Z"
+        },
+        {
+          "name": "Post Run gradle/actions/setup-gradle@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-10-09T11:28:35Z",
+          "completed_at": "2026-10-09T11:28:35Z"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-09T11:28:35Z",
+          "completed_at": "2026-10-09T11:28:35Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-09T11:28:35Z",
+          "completed_at": "2026-10-09T11:28:36Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-09T11:28:36Z",
+          "completed_at": "2026-10-09T11:28:36Z"
+        }
+      ]
+    },
+    {
+      "id": 113795754625,
+      "name": "Minecraft matrix row 2",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-09T11:21:05Z",
+      "completed_at": "2026-10-09T11:32:09Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-09T11:21:05Z",
+          "completed_at": "2026-10-09T11:21:07Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-09T11:21:07Z",
+          "completed_at": "2026-10-09T11:21:08Z"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-09T11:21:08Z",
+          "completed_at": "2026-10-09T11:21:09Z"
+        },
+        {
+          "name": "Run gradle/actions/setup-gradle@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-09T11:21:09Z",
+          "completed_at": "2026-10-09T11:21:10Z"
+        },
+        {
+          "name": "Real Minecraft preview build save delete matrix",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-09T11:21:10Z",
+          "completed_at": "2026-10-09T11:32:06Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-09T11:32:06Z",
+          "completed_at": "2026-10-09T11:32:07Z"
+        },
+        {
+          "name": "Post Run gradle/actions/setup-gradle@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-10-09T11:32:07Z",
+          "completed_at": "2026-10-09T11:32:07Z"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-09T11:32:07Z",
+          "completed_at": "2026-10-09T11:32:07Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-09T11:32:07Z",
+          "completed_at": "2026-10-09T11:32:08Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-09T11:32:08Z",
+          "completed_at": "2026-10-09T11:32:08Z"
+        }
+      ]
+    },
+    {
+      "id": 113795754781,
+      "name": "Minecraft matrix row 3",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-09T11:21:05Z",
+      "completed_at": "2026-10-09T11:32:28Z",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-09T11:21:06Z",
+          "completed_at": "2026-10-09T11:21:08Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-09T11:21:08Z",
+          "completed_at": "2026-10-09T11:21:09Z"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-09T11:21:09Z",
+          "completed_at": "2026-10-09T11:21:10Z"
+        },
+        {
+          "name": "Run gradle/actions/setup-gradle@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-09T11:21:10Z",
+          "completed_at": "2026-10-09T11:21:10Z"
+        },
+        {
+          "name": "Real Minecraft preview build save delete matrix",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-09T11:21:10Z",
+          "completed_at": "2026-10-09T11:32:23Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-09T11:32:23Z",
+          "completed_at": "2026-10-09T11:32:24Z"
+        },
+        {
+          "name": "Post Run gradle/actions/setup-gradle@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-10-09T11:32:24Z",
+          "completed_at": "2026-10-09T11:32:24Z"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-09T11:32:24Z",
+          "completed_at": "2026-10-09T11:32:24Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-09T11:32:24Z",
+          "completed_at": "2026-10-09T11:32:25Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-09T11:32:25Z",
+          "completed_at": "2026-10-09T11:32:25Z"
+        }
+      ]
+    }
+  ],
+  "jar_artifact_id": 11613061244,
+  "jar_sha256": "6ed52d3ffdae6c45f1425a9903fd9278172671c6968594f35f4ba8b979995e5e"
+}

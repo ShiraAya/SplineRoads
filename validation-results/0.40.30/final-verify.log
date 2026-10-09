@@ -1,0 +1,1599 @@
+﻿2026-10-09T11:21:06.4529723Z Current runner version: '2.337.0'
+2026-10-09T11:21:06.4556581Z ##[group]Runner Image Provisioner
+2026-10-09T11:21:06.4557642Z Hosted Compute Agent
+2026-10-09T11:21:06.4558289Z Version: 20261002.596
+2026-10-09T11:21:06.4559004Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+2026-10-09T11:21:06.4559755Z Build Date: 2026-10-02T22:28:27Z
+2026-10-09T11:21:06.4560440Z Worker ID: {5d74b389-14e3-4449-8aab-9068a65b1a20}
+2026-10-09T11:21:06.4561207Z Region: westus
+2026-10-09T11:21:06.4561751Z Cloud: Azure
+2026-10-09T11:21:06.4562302Z ##[endgroup]
+2026-10-09T11:21:06.4564155Z ##[group]Operating System
+2026-10-09T11:21:06.4564853Z Ubuntu
+2026-10-09T11:21:06.4565833Z 24.04.5
+2026-10-09T11:21:06.4566925Z LTS
+2026-10-09T11:21:06.4567491Z ##[endgroup]
+2026-10-09T11:21:06.4568148Z ##[group]Runner Image
+2026-10-09T11:21:06.4568837Z Image: ubuntu-24.04
+2026-10-09T11:21:06.4569440Z Version: 20261004.327.1
+2026-10-09T11:21:06.4570810Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-09T11:21:06.4572456Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+2026-10-09T11:21:06.4573448Z ##[endgroup]
+2026-10-09T11:21:06.4574627Z ##[group]GITHUB_TOKEN Permissions
+2026-10-09T11:21:06.4577145Z Contents: read
+2026-10-09T11:21:06.4577882Z Metadata: read
+2026-10-09T11:21:06.4578484Z ##[endgroup]
+2026-10-09T11:21:06.4580785Z Secret source: Actions
+2026-10-09T11:21:06.4581956Z Cache mode: write
+2026-10-09T11:21:06.4582726Z Prepare workflow directory
+2026-10-09T11:21:06.4941785Z Prepare all required actions
+2026-10-09T11:21:06.4992902Z Getting action download info
+2026-10-09T11:21:06.8913734Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-09T11:21:06.9883743Z Download action repository 'actions/setup-java@v4' (SHA:cf277c60eb25467037889841efdb72551f06f6c3)
+2026-10-09T11:21:07.5864695Z Download action repository 'gradle/actions@v4' (SHA:ed408507eac070d1f99cc633dbcf757c94c7933a)
+2026-10-09T11:21:09.1023217Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-09T11:21:09.3287799Z Complete job name: verify
+2026-10-09T11:21:09.4168217Z ##[group]Run actions/checkout@v4
+2026-10-09T11:21:09.4242355Z with:
+2026-10-09T11:21:09.4242908Z   persist-credentials: false
+2026-10-09T11:21:09.4243335Z   repository: ShiraAya/SplineRoads
+2026-10-09T11:21:09.4246934Z   token: ***
+2026-10-09T11:21:09.4247433Z   ssh-strict: true
+2026-10-09T11:21:09.4247887Z   ssh-user: git
+2026-10-09T11:21:09.4248321Z   clean: true
+2026-10-09T11:21:09.4248867Z   sparse-checkout-cone-mode: true
+2026-10-09T11:21:09.4249476Z   fetch-depth: 1
+2026-10-09T11:21:09.4249983Z   fetch-tags: false
+2026-10-09T11:21:09.4250458Z   show-progress: true
+2026-10-09T11:21:09.4250984Z   lfs: false
+2026-10-09T11:21:09.4251471Z   submodules: false
+2026-10-09T11:21:09.4252012Z   set-safe-directory: true
+2026-10-09T11:21:09.4252626Z   allow-unsafe-pr-checkout: false
+2026-10-09T11:21:09.4253865Z ##[endgroup]
+2026-10-09T11:21:09.5428309Z Syncing repository: ShiraAya/SplineRoads
+2026-10-09T11:21:09.5430628Z ##[group]Getting Git version info
+2026-10-09T11:21:09.5431503Z Working directory is '/home/runner/work/SplineRoads/SplineRoads'
+2026-10-09T11:21:09.5432719Z [command]/usr/bin/git version
+2026-10-09T11:21:09.5470849Z git version 2.55.0
+2026-10-09T11:21:09.5508590Z ##[endgroup]
+2026-10-09T11:21:09.5559355Z Temporarily overriding HOME='/home/runner/work/_temp/08a33471-44bb-4198-b810-9bbf64c71836' before making global git config changes
+2026-10-09T11:21:09.5582932Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-09T11:21:09.5584624Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/SplineRoads/SplineRoads
+2026-10-09T11:21:09.5646373Z Deleting the contents of '/home/runner/work/SplineRoads/SplineRoads'
+2026-10-09T11:21:09.5663311Z ##[group]Initializing the repository
+2026-10-09T11:21:09.5667460Z [command]/usr/bin/git init /home/runner/work/SplineRoads/SplineRoads
+2026-10-09T11:21:09.5820349Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-09T11:21:09.5822326Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-09T11:21:09.5829757Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-09T11:21:09.5831218Z hint: call:
+2026-10-09T11:21:09.5832219Z hint:
+2026-10-09T11:21:09.5833363Z hint: 	git config --global init.defaultBranch <name>
+2026-10-09T11:21:09.5834610Z hint:
+2026-10-09T11:21:09.5835770Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-09T11:21:09.5837660Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-09T11:21:09.5839050Z hint:
+2026-10-09T11:21:09.5840001Z hint: 	git branch -m <name>
+2026-10-09T11:21:09.5841281Z hint:
+2026-10-09T11:21:09.5842608Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-09T11:21:09.5844816Z Initialized empty Git repository in /home/runner/work/SplineRoads/SplineRoads/.git/
+2026-10-09T11:21:09.5848556Z [command]/usr/bin/git remote add origin https://github.com/ShiraAya/SplineRoads
+2026-10-09T11:21:09.5919565Z ##[endgroup]
+2026-10-09T11:21:09.5921107Z ##[group]Disabling automatic garbage collection
+2026-10-09T11:21:09.5929141Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-09T11:21:09.5980503Z ##[endgroup]
+2026-10-09T11:21:09.5981912Z ##[group]Setting up auth
+2026-10-09T11:21:09.5984939Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-09T11:21:09.6035784Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-09T11:21:09.6464235Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-09T11:21:09.6501754Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-09T11:21:09.6740544Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-09T11:21:09.6780173Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-09T11:21:09.7020513Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-09T11:21:09.7062670Z ##[endgroup]
+2026-10-09T11:21:09.7063573Z ##[group]Fetching the repository
+2026-10-09T11:21:09.7073049Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +cc78f7c3b687cb1515486a1955db41795b6398e6:refs/remotes/origin/work/sr-04030-thirteen
+2026-10-09T11:21:10.8097169Z From https://github.com/ShiraAya/SplineRoads
+2026-10-09T11:21:10.8098293Z  * [new ref]         cc78f7c3b687cb1515486a1955db41795b6398e6 -> origin/work/sr-04030-thirteen
+2026-10-09T11:21:10.8103553Z ##[endgroup]
+2026-10-09T11:21:10.8104350Z ##[group]Determining the checkout info
+2026-10-09T11:21:10.8107200Z ##[endgroup]
+2026-10-09T11:21:10.8113819Z [command]/usr/bin/git sparse-checkout disable
+2026-10-09T11:21:10.8174114Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-09T11:21:10.8209413Z ##[group]Checking out the ref
+2026-10-09T11:21:10.8214534Z [command]/usr/bin/git checkout --progress --force -B work/sr-04030-thirteen refs/remotes/origin/work/sr-04030-thirteen
+2026-10-09T11:21:11.0522064Z Switched to a new branch 'work/sr-04030-thirteen'
+2026-10-09T11:21:11.0529969Z branch 'work/sr-04030-thirteen' set up to track 'origin/work/sr-04030-thirteen'.
+2026-10-09T11:21:11.0541755Z ##[endgroup]
+2026-10-09T11:21:11.0590356Z [command]/usr/bin/git log -1 --format=%H
+2026-10-09T11:21:11.0619633Z cc78f7c3b687cb1515486a1955db41795b6398e6
+2026-10-09T11:21:11.0629311Z ##[group]Removing auth
+2026-10-09T11:21:11.0633201Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-09T11:21:11.0671511Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-09T11:21:11.0905798Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-09T11:21:11.0939066Z http.https://github.com/.extraheader
+2026-10-09T11:21:11.0947306Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-09T11:21:11.0983988Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-09T11:21:11.1215604Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-09T11:21:11.1250138Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-09T11:21:11.1489451Z ##[endgroup]
+2026-10-09T11:21:11.1766757Z ##[group]Run actions/setup-java@v4
+2026-10-09T11:21:11.1767102Z with:
+2026-10-09T11:21:11.1767322Z   distribution: temurin
+2026-10-09T11:21:11.1767553Z   java-version: 17
+2026-10-09T11:21:11.1767770Z   java-package: jdk
+2026-10-09T11:21:11.1768011Z   check-latest: false
+2026-10-09T11:21:11.1768272Z   server-id: github
+2026-10-09T11:21:11.1768496Z   server-username: GITHUB_ACTOR
+2026-10-09T11:21:11.1768768Z   server-password: GITHUB_TOKEN
+2026-10-09T11:21:11.1769030Z   overwrite-settings: true
+2026-10-09T11:21:11.1769272Z   job-status: success
+2026-10-09T11:21:11.1772177Z   token: ***
+2026-10-09T11:21:11.1772402Z ##[endgroup]
+2026-10-09T11:21:11.3550949Z ##[warning]setup-java v4 is deprecated and will no longer receive updates. Please migrate to actions/setup-java@v5.
+2026-10-09T11:21:11.3559151Z ##[group]Installed distributions
+2026-10-09T11:21:11.3605153Z Resolved Java 17.0.20+1 from tool-cache
+2026-10-09T11:21:11.3605731Z Setting Java 17.0.20+1 as the default
+2026-10-09T11:21:11.3617295Z (node:2370) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-09T11:21:11.3618553Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-09T11:21:11.3620803Z Creating toolchains.xml for JDK version 17 from temurin
+2026-10-09T11:21:11.3698205Z Writing to /home/runner/.m2/toolchains.xml
+2026-10-09T11:21:11.3698772Z
+2026-10-09T11:21:11.3698947Z Java configuration:
+2026-10-09T11:21:11.3699361Z   Distribution: temurin
+2026-10-09T11:21:11.3699741Z   Version: 17.0.20+1
+2026-10-09T11:21:11.3700285Z   Path: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:21:11.3700781Z
+2026-10-09T11:21:11.3701316Z ##[endgroup]
+2026-10-09T11:21:11.3721622Z Creating settings.xml with server-id: github
+2026-10-09T11:21:11.3745032Z Writing to /home/runner/.m2/settings.xml
+2026-10-09T11:21:11.4090671Z ##[group]Run gradle/actions/setup-gradle@v4
+2026-10-09T11:21:11.4091268Z with:
+2026-10-09T11:21:11.4091616Z   cache-disabled: false
+2026-10-09T11:21:11.4091874Z   cache-read-only: true
+2026-10-09T11:21:11.4092119Z   cache-write-only: false
+2026-10-09T11:21:11.4092614Z   cache-overwrite-existing: false
+2026-10-09T11:21:11.4092903Z   cache-cleanup: on-success
+2026-10-09T11:21:11.4093220Z   gradle-home-cache-includes: caches
+notifications
+
+2026-10-09T11:21:11.4093647Z   add-job-summary: always
+2026-10-09T11:21:11.4094064Z   add-job-summary-as-pr-comment: never
+2026-10-09T11:21:11.4094361Z   dependency-graph: disabled
+2026-10-09T11:21:11.4094680Z   dependency-graph-report-dir: dependency-graph-reports
+2026-10-09T11:21:11.4095367Z   dependency-graph-continue-on-failure: true
+2026-10-09T11:21:11.4095932Z   build-scan-publish: false
+2026-10-09T11:21:11.4096636Z   validate-wrappers: true
+2026-10-09T11:21:11.4096962Z   allow-snapshot-wrappers: false
+2026-10-09T11:21:11.4097544Z   gradle-home-cache-strict-match: false
+2026-10-09T11:21:11.4097847Z   workflow-job-context: null
+2026-10-09T11:21:11.4100911Z   github-token: ***
+2026-10-09T11:21:11.4101147Z env:
+2026-10-09T11:21:11.4101474Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:21:11.4101996Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:21:11.4102393Z ##[endgroup]
+2026-10-09T11:21:11.9163209Z Merged default JDK locations into /home/runner/.m2/toolchains.xml
+2026-10-09T11:21:11.9167015Z ##[group]Restore Gradle state from cache
+2026-10-09T11:21:12.1821022Z Gradle User Home cache not found. Will initialize empty.
+2026-10-09T11:21:12.1821909Z ##[endgroup]
+2026-10-09T11:21:12.2343766Z ##[group]All Gradle Wrapper jars are valid
+2026-10-09T11:21:12.2344946Z ✓ Found known Gradle Wrapper JAR files:
+2026-10-09T11:21:12.2345875Z   cb0da6751c2b753a16ac168bb354870ebb1e162e9083f116729cec9c781156b8 gradle/wrapper/gradle-wrapper.jar
+2026-10-09T11:21:12.2347353Z ##[endgroup]
+2026-10-09T11:21:12.2510948Z ##[group]Run bash gradlew --no-daemon --max-workers=2 compileJava compileGameTestJava jar
+2026-10-09T11:21:12.2511675Z bash gradlew --no-daemon --max-workers=2 compileJava compileGameTestJava jar
+2026-10-09T11:21:12.2794047Z shell: /usr/bin/bash -e {0}
+2026-10-09T11:21:12.2794375Z env:
+2026-10-09T11:21:12.2794754Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:21:12.2795383Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:21:12.2795909Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
+2026-10-09T11:21:12.2796483Z   GRADLE_USER_HOME: /home/runner/.gradle
+2026-10-09T11:21:12.2796837Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+2026-10-09T11:21:12.2797200Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+2026-10-09T11:21:12.2797742Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+2026-10-09T11:21:12.2798424Z   DEVELOCITY_INJECTION_CUSTOM_VALUE: gradle-actions
+2026-10-09T11:21:12.2798825Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+2026-10-09T11:21:12.2799149Z ##[endgroup]
+2026-10-09T11:21:12.4367973Z Downloading https://services.gradle.org/distributions/gradle-8.8-bin.zip
+2026-10-09T11:21:14.3589946Z .............10%.............20%.............30%.............40%.............50%.............60%..............70%.............80%.............90%.............100%
+2026-10-09T11:21:15.6555738Z
+2026-10-09T11:21:15.6557129Z Welcome to Gradle 8.8!
+2026-10-09T11:21:15.6557754Z
+2026-10-09T11:21:15.6560586Z Here are the highlights of this release:
+2026-10-09T11:21:15.6587216Z  - Running Gradle on Java 22
+2026-10-09T11:21:15.6606937Z  - Configurable Gradle daemon JVM
+2026-10-09T11:21:15.6607711Z  - Improved IDE performance for large projects
+2026-10-09T11:21:15.6613745Z
+2026-10-09T11:21:15.6651453Z For more details see https://docs.gradle.org/8.8/release-notes.html
+2026-10-09T11:21:15.6681110Z
+2026-10-09T11:21:15.7556363Z To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.8/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+2026-10-09T11:21:16.7549404Z Daemon will be stopped at the end of the build
+2026-10-09T11:22:22.2552551Z
+2026-10-09T11:22:22.2573970Z > Task :compileJava
+2026-10-09T11:22:22.2574767Z Setting up MCP environment
+2026-10-09T11:22:22.2575592Z Initializing steps
+2026-10-09T11:22:22.3554022Z Executing steps
+2026-10-09T11:22:22.3566556Z  > Running 'downloadManifest'
+2026-10-09T11:22:22.3567377Z  > Running 'downloadJson'
+2026-10-09T11:22:22.3568292Z  > Running 'downloadClient'
+2026-10-09T11:22:22.4547377Z  > Running 'downloadServer'
+2026-10-09T11:22:22.5547650Z  > Running 'extractServer'
+2026-10-09T11:22:22.9546693Z  > Running 'downloadClientMappings'
+2026-10-09T11:22:23.0577781Z  > Running 'mergeMappings'
+2026-10-09T11:22:24.9547553Z  > Running 'stripClient'
+2026-10-09T11:22:27.0547729Z  > Running 'stripServer'
+2026-10-09T11:22:28.5547527Z  > Running 'merge'
+2026-10-09T11:22:31.5547399Z  > Running 'listLibraries'
+2026-10-09T11:22:43.7567383Z  > Running 'rename'
+2026-10-09T11:22:50.6548203Z Stopping at requested step: /home/runner/.gradle/caches/forge_gradle/mcp_repo/de/oceanlabs/mcp/mcp_config/1.20.1-20230612.114412/joined/rename/output.jar
+2026-10-09T11:23:01.4553668Z [11:23:01] [main/INFO]: Writing debug log file accesstransform.log
+2026-10-09T11:23:01.4567055Z [11:23:01] [main/INFO]: Access Transformer processor running version 8.2.14
+2026-10-09T11:23:01.4569587Z [11:23:01] [main/INFO]: Command line arguments [--inJar, /home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20/forge-1.20.1-47.4.20-injected.jar, --outJar, /home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar, --logFile, accesstransform.log, --atFile, /home/runner/work/SplineRoads/SplineRoads/build/_atJar_4/parent_at.cfg]
+2026-10-09T11:23:01.4571776Z [11:23:01] [main/INFO]: Reading from /home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20/forge-1.20.1-47.4.20-injected.jar
+2026-10-09T11:23:01.4572975Z [11:23:01] [main/INFO]: Writing to /home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar
+2026-10-09T11:23:01.4573978Z [11:23:01] [main/INFO]: Transformer file /home/runner/work/SplineRoads/SplineRoads/build/_atJar_4/parent_at.cfg
+2026-10-09T11:23:01.4575067Z [11:23:01] [main/WARN]: Found existing output jar /home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar, overwriting
+2026-10-09T11:23:05.1548609Z [11:23:05] [main/INFO]: JAR transformation complete /home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar
+2026-10-09T11:23:05.2547212Z Creating SRG -> MCP TSRG
+2026-10-09T11:23:17.9548706Z /home/runner/work/SplineRoads/SplineRoads/src/main/java/com/sora/splineroads/SplineRoads.java:93: warning: [removal] get() in FMLJavaModLoadingContext has been deprecated and marked for removal
+2026-10-09T11:23:17.9550832Z     IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+2026-10-09T11:23:17.9551462Z                                             ^
+2026-10-09T11:23:17.9552604Z /home/runner/work/SplineRoads/SplineRoads/src/main/java/com/sora/splineroads/SplineRoads.java:98: warning: [removal] get() in ModLoadingContext has been deprecated and marked for removal
+2026-10-09T11:23:17.9553830Z     net.minecraftforge.fml.ModLoadingContext.get().registerConfig(
+2026-10-09T11:23:17.9554333Z                                             ^
+2026-10-09T11:23:23.7547645Z Note: Some input files use or override a deprecated API.
+2026-10-09T11:23:23.7548487Z Note: Recompile with -Xlint:deprecation for details.
+2026-10-09T11:23:23.7549007Z 2 warnings
+2026-10-09T11:23:32.0547261Z
+2026-10-09T11:23:32.0549133Z > Task :processResources
+2026-10-09T11:23:32.0550639Z > Task :classes
+2026-10-09T11:23:33.9546973Z
+2026-10-09T11:23:33.9547952Z > Task :compileGameTestJava
+2026-10-09T11:23:33.9550026Z /home/runner/work/SplineRoads/SplineRoads/src/gametest/java/com/sora/splineroads/world/Command35GameTests.java:31: warning: [removal] ResourceLocation(String,String) in ResourceLocation has been deprecated and marked for removal
+2026-10-09T11:23:33.9552693Z    Block log=net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(new net.minecraft.resources.ResourceLocation("minecraft",species+"_log"));
+2026-10-09T11:23:33.9559796Z                                                                        ^
+2026-10-09T11:23:33.9561809Z /home/runner/work/SplineRoads/SplineRoads/src/gametest/java/com/sora/splineroads/world/Command35GameTests.java:32: warning: [removal] ResourceLocation(String,String) in ResourceLocation has been deprecated and marked for removal
+2026-10-09T11:23:33.9565000Z    Block leaf=net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(new net.minecraft.resources.ResourceLocation("minecraft",species+"_leaves"));
+2026-10-09T11:23:33.9566537Z                                                                         ^
+2026-10-09T11:23:33.9568361Z /home/runner/work/SplineRoads/SplineRoads/src/gametest/java/com/sora/splineroads/world/Command35GameTests.java:33: warning: [removal] ResourceLocation(String,String) in ResourceLocation has been deprecated and marked for removal
+2026-10-09T11:23:33.9571121Z    Block stripped=net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(new net.minecraft.resources.ResourceLocation("minecraft","stripped_"+species+"_wood"));
+2026-10-09T11:23:33.9572649Z                                                                             ^
+2026-10-09T11:23:33.9573387Z Note: Some input files use or override a deprecated API.
+2026-10-09T11:23:33.9574387Z Note: Recompile with -Xlint:deprecation for details.
+2026-10-09T11:23:33.9574949Z 3 warnings
+2026-10-09T11:23:34.5547075Z
+2026-10-09T11:23:34.5548498Z > Task :jar
+2026-10-09T11:23:34.5558008Z > Task :downloadMcpConfig
+2026-10-09T11:23:35.5547875Z > Task :extractSrg
+2026-10-09T11:23:36.7547720Z > Task :createMcpToSrg
+2026-10-09T11:23:39.9617349Z > Task :reobfJar
+2026-10-09T11:23:39.9629785Z gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1791544880574.json
+2026-10-09T11:23:39.9656717Z
+2026-10-09T11:23:39.9665506Z BUILD SUCCESSFUL in 2m 27s
+2026-10-09T11:23:39.9666503Z 8 actionable tasks: 8 executed
+2026-10-09T11:23:40.2975720Z ##[group]Run actions/upload-artifact@v4
+2026-10-09T11:23:40.2976420Z with:
+2026-10-09T11:23:40.2977787Z   name: sr444-build-cc78f7c3b687cb1515486a1955db41795b6398e6
+2026-10-09T11:23:40.2978403Z   path: build/libs/*.jar
+2026-10-09T11:23:40.2978797Z   if-no-files-found: warn
+2026-10-09T11:23:40.2979171Z   compression-level: 6
+2026-10-09T11:23:40.2979550Z   overwrite: false
+2026-10-09T11:23:40.2979920Z   include-hidden-files: false
+2026-10-09T11:23:40.2980325Z env:
+2026-10-09T11:23:40.2980825Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:23:40.2981706Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:23:40.2982462Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
+2026-10-09T11:23:40.2982999Z   GRADLE_USER_HOME: /home/runner/.gradle
+2026-10-09T11:23:40.2983492Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+2026-10-09T11:23:40.2984015Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+2026-10-09T11:23:40.2984844Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+2026-10-09T11:23:40.2985706Z   DEVELOCITY_INJECTION_CUSTOM_VALUE: gradle-actions
+2026-10-09T11:23:40.2986493Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+2026-10-09T11:23:40.2986967Z ##[endgroup]
+2026-10-09T11:23:40.4703900Z (node:2926) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-09T11:23:40.4704719Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-09T11:23:40.4760030Z With the provided path, there will be 1 file uploaded
+2026-10-09T11:23:40.4766891Z Artifact name is valid!
+2026-10-09T11:23:40.4767983Z Root directory input is valid!
+2026-10-09T11:23:40.8735519Z Beginning upload of artifact content to blob storage
+2026-10-09T11:23:41.0648150Z (node:2926) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-09T11:23:41.8730148Z Uploaded bytes 5002375
+2026-10-09T11:23:41.9469474Z Finished uploading artifact content to blob storage!
+2026-10-09T11:23:41.9470819Z SHA256 digest of uploaded artifact zip is a30728142f7110408b395530ea45d1e0cb2ce9eda09e1bafd76c913de0668246
+2026-10-09T11:23:41.9472507Z Finalizing artifact upload
+2026-10-09T11:23:42.2338361Z Artifact sr444-build-cc78f7c3b687cb1515486a1955db41795b6398e6.zip successfully finalized. Artifact ID 11613061244
+2026-10-09T11:23:42.2340674Z Artifact sr444-build-cc78f7c3b687cb1515486a1955db41795b6398e6 has been successfully uploaded! Final size is 5002375 bytes. Artifact ID is 11613061244
+2026-10-09T11:23:42.2347976Z Artifact download URL: https://github.com/ShiraAya/SplineRoads/actions/runs/37923174403/artifacts/11613061244
+2026-10-09T11:23:42.2475630Z ##[group]Run bash tools/test_ramp39_model.sh
+2026-10-09T11:23:42.2476014Z bash tools/test_ramp39_model.sh
+2026-10-09T11:23:42.2539818Z shell: /usr/bin/bash -e {0}
+2026-10-09T11:23:42.2540082Z env:
+2026-10-09T11:23:42.2540405Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:23:42.2540934Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:23:42.2541384Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
+2026-10-09T11:23:42.2541733Z   GRADLE_USER_HOME: /home/runner/.gradle
+2026-10-09T11:23:42.2542036Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+2026-10-09T11:23:42.2542347Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+2026-10-09T11:23:42.2542817Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+2026-10-09T11:23:42.2543320Z   DEVELOCITY_INJECTION_CUSTOM_VALUE: gradle-actions
+2026-10-09T11:23:42.2543657Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+2026-10-09T11:23:42.2543970Z ##[endgroup]
+2026-10-09T11:23:47.6302320Z EndpointV2 core PASS: continuity, scope, paint isolation, identity, control interpolation, green taper, sidewalk walls
+2026-10-09T11:23:47.9156605Z LanePointSnapValidation: 742 checks passed; reproduced old maximum drift=0.01943854553513143
+2026-10-09T11:23:48.5329526Z LaneInteractionValidation: 254 checks passed
+2026-10-09T11:23:50.1505790Z LaneRampV2Validation: 2836 checks passed
+2026-10-09T11:23:50.8591330Z LaneRampWorkflowValidation: 9190 checks passed
+2026-10-09T11:23:52.4761278Z Ramp39Validation: 16621 checks passed (production core; no Forge/client claims)
+2026-10-09T11:23:52.4944311Z
+2026-10-09T11:23:52.4945286Z CORE TESTS ONLY: Forge, NBT, world transactions, client rendering and the sign catalog are not validated by this runner.
+2026-10-09T11:23:56.6376928Z   production DETACH + REPLACE: outgoing 441.4 m, incoming 286.4 m, host retains lane 0; deletion restores both lanes
+2026-10-09T11:23:56.6431770Z Ramp39ModelValidation: 817 checks passed; real LaneRamps/LaneTopology/LanePointCodec/RoadRecord, test-only NBT/world adapters; NO game/client/world-write claim
+2026-10-09T11:23:57.9307966Z Oct 09, 2026 11:23:57 AM com.sora.splineroads.world.LaneRamps$Planning close
+2026-10-09T11:23:57.9309529Z INFO: SR route plan total_ms=1008.161 clearance_ms=219.867 candidates=1 contact_queries=10 cached_meshes=8
+2026-10-09T11:24:01.0658017Z   compound scale=1.00 rotation=0.00 origin=0: 3->2, DETACH, fork, I over A, II over IV, REPLACE, reconcile/reload/delete; ramps 1348.4 / 1162.4 / 1054.3 m
+2026-10-09T11:24:02.3239635Z   compound scale=0.50 rotation=0.00 origin=0: 3->2, DETACH, fork, I over A, II over IV, REPLACE, reconcile/reload/delete; ramps 673.5 / 582.2 / 526.1 m
+2026-10-09T11:24:03.5419988Z   compound scale=0.50 rotation=0.60 origin=100000: 3->2, DETACH, fork, I over A, II over IV, REPLACE, reconcile/reload/delete; ramps 673.5 / 582.2 / 526.1 m
+2026-10-09T11:24:03.5432547Z Ramp39CompoundValidation: 2851 checks passed; in-memory production planner/reconcile only, NOT Minecraft construction/rendering
+2026-10-09T11:24:03.7389174Z Ramp39WidgetValidation: 26 checks passed; real screen state with test-only widgets, no Minecraft/GPU/network test
+2026-10-09T11:24:03.7439434Z
+2026-10-09T11:24:03.7440189Z MODEL TESTS ONLY: NBT map adapters are not Mojang NBT binary encoding; world writes, networking and GPU drawing throw. This is not a Forge/Minecraft test.
+2026-10-09T11:24:03.7484297Z ##[group]Run bash tools/check_sr439.sh
+2026-10-09T11:24:03.7484828Z bash tools/check_sr439.sh
+2026-10-09T11:24:03.7485112Z bash tools/check_sr440.sh
+2026-10-09T11:24:03.7485366Z bash tools/check_sr441.sh
+2026-10-09T11:24:03.7485616Z bash tools/check_sr442.sh
+2026-10-09T11:24:03.7485862Z bash tools/check_sr443.sh
+2026-10-09T11:24:03.7486112Z bash tools/check_sr444.sh
+2026-10-09T11:24:03.7486703Z bash tools/check_sr435.sh
+2026-10-09T11:24:03.7486957Z bash tools/check_sr438.sh
+2026-10-09T11:24:03.7550387Z shell: /usr/bin/bash -e {0}
+2026-10-09T11:24:03.7550650Z env:
+2026-10-09T11:24:03.7550972Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:24:03.7551488Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:24:03.7551917Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
+2026-10-09T11:24:03.7552270Z   GRADLE_USER_HOME: /home/runner/.gradle
+2026-10-09T11:24:03.7552565Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+2026-10-09T11:24:03.7552873Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+2026-10-09T11:24:03.7553327Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+2026-10-09T11:24:03.7553810Z   DEVELOCITY_INJECTION_CUSTOM_VALUE: gradle-actions
+2026-10-09T11:24:03.7554129Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+2026-10-09T11:24:03.7554401Z ##[endgroup]
+2026-10-09T11:24:06.4278264Z Live439Validation: 1336 checks PASS; mouths, monotone-first profiles, solid contacts and scene diagnostics
+2026-10-09T11:24:07.7762291Z Live439ModelValidation: 1152 checks PASS; ascending/descending mixed-road clearance and NBT adapter round trip
+2026-10-09T11:24:09.1024013Z Live440Validation: 5 checks PASS; full-lane vs auxiliary guides, buried reservation vegetation and lid
+2026-10-09T11:24:09.6752762Z Live440ModelValidation: 8 checks PASS; raw/normalized link, tunnel mouth opening and unrelated collision preservation, mixed below/above reservation
+2026-10-09T11:24:11.7153747Z Live441Validation: 236 checks PASS; live-lane rail clearance, ground closure pavement in VBO/terrain and buried-lid protection
+2026-10-09T11:24:17.1004306Z Oct 09, 2026 11:24:17 AM com.sora.splineroads.world.LaneRamps$Planning close
+2026-10-09T11:24:17.1005534Z INFO: SR route plan total_ms=3986.238 clearance_ms=738.802 candidates=221 contact_queries=888 cached_meshes=4
+2026-10-09T11:24:20.1492785Z Oct 09, 2026 11:24:20 AM com.sora.splineroads.world.LaneRamps$Planning close
+2026-10-09T11:24:20.1494255Z INFO: SR route plan total_ms=2975.740 clearance_ms=640.349 candidates=224 contact_queries=900 cached_meshes=49
+2026-10-09T11:24:20.2604129Z Live441ModelValidation: 57 checks PASS; whole-lane departure, exact shoulder mouths, parent furniture, stable terrain classification, beam reservation and ancestor markers
+2026-10-09T11:24:21.9880984Z Live442Validation: 1249 checks PASS
+2026-10-09T11:24:25.9891224Z Live442ModelValidation: 644 checks PASS
+2026-10-09T11:24:28.2820793Z Live443Validation 3813 checks PASS
+2026-10-09T11:24:29.9967429Z Planner443Benchmark equivalence=96; exact checks median old_ms=77.303 indexed_ms=27.431 speedup=2.82x
+2026-10-09T11:24:30.6608341Z Live443ModelValidation 374 checks PASS; generated normal fork, merging throat, persistence, repeated preview and grouping equivalence
+2026-10-09T11:24:33.5583141Z LIVE444 max adjacent grade change=0.0037708118942347824
+2026-10-09T11:24:33.5585106Z Live444Validation 629 checks PASS
+2026-10-09T11:24:37.9490827Z Oct 09, 2026 11:24:37 AM com.sora.splineroads.world.LaneRamps$Planning close
+2026-10-09T11:24:37.9492477Z INFO: SR route plan total_ms=3226.733 clearance_ms=529.174 candidates=106 contact_queries=428 cached_meshes=3
+2026-10-09T11:24:40.6183722Z Live444ModelValidation 193 checks PASS
+2026-10-09T11:24:42.6521733Z Live435Validation: 1797 checks PASS; production geometry/paint/solids, NO GPU.
+2026-10-09T11:24:48.4303928Z Closure418Validation: 128 rectangular lane/sign/style/curve cases, 469265 checks; real deck/paint/solid/classification, NOT Minecraft writes or GPU.
+2026-10-09T11:25:08.2379666Z Rail419MarkingValidation: 76 actual painted-face cases, 813 checks, 104 closed boundaries / 160 live dash gaps; explicit overrides retained. NO GPU/world.
+2026-10-09T11:25:09.4822679Z AUTO435 rise=0.0 ceiling=false PASS
+2026-10-09T11:25:09.6403642Z AUTO435 rise=0.0 ceiling=true PASS
+2026-10-09T11:25:09.6903056Z AUTO435 rise=8.0 ceiling=false PASS
+2026-10-09T11:25:09.7191587Z AUTO435 rise=8.0 ceiling=true PASS
+2026-10-09T11:25:09.7206719Z Live435ModelValidation: 2366 checks PASS; production planner and endpoint reservations, NO world writes.
+2026-10-09T11:25:11.9804258Z Live438Validation: 16031 checks PASS; connected cap corners and tight graded-seam rails, production geometry
+2026-10-09T11:25:14.1400910Z Live438ModelValidation: 16 checks PASS; deletion recovery, derived points, stable ADD recheck and explicit turns, world adapters
+2026-10-09T11:25:14.1639551Z ##[group]Run set -o pipefail
+2026-10-09T11:25:14.1639890Z set -o pipefail
+2026-10-09T11:25:14.1640703Z bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run441 -ProadTestNamespaces=splineroads_live441 -ProadTestHeap=3G | tee run441-console.log
+2026-10-09T11:25:14.1641657Z grep -q 'LIVE441 REAL_WORLD PASS ground=false' run441-console.log
+2026-10-09T11:25:14.1642145Z grep -q 'LIVE441 REAL_WORLD PASS ground=true' run441-console.log
+2026-10-09T11:25:14.1642614Z grep -q 'LIVE441 REAL_WORLD PASS branch:' run441-console.log
+2026-10-09T11:25:14.1643054Z grep -q 'LIVE441 REAL_WORLD PASS bank:' run441-console.log
+2026-10-09T11:25:14.1706724Z shell: /usr/bin/bash -e {0}
+2026-10-09T11:25:14.1706985Z env:
+2026-10-09T11:25:14.1707320Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:25:14.1707876Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:25:14.1708311Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
+2026-10-09T11:25:14.1708624Z   GRADLE_USER_HOME: /home/runner/.gradle
+2026-10-09T11:25:14.1708933Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+2026-10-09T11:25:14.1709234Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+2026-10-09T11:25:14.1709678Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+2026-10-09T11:25:14.1710163Z   DEVELOCITY_INJECTION_CUSTOM_VALUE: gradle-actions
+2026-10-09T11:25:14.1710493Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+2026-10-09T11:25:14.1710762Z ##[endgroup]
+2026-10-09T11:25:14.8479163Z To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.8/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+2026-10-09T11:25:15.7463956Z Daemon will be stopped at the end of the build
+2026-10-09T11:25:21.8485818Z > Task :compileJava UP-TO-DATE
+2026-10-09T11:25:21.9465978Z > Task :processResources UP-TO-DATE
+2026-10-09T11:25:21.9470371Z > Task :classes UP-TO-DATE
+2026-10-09T11:25:22.0477415Z > Task :compileGameTestJava UP-TO-DATE
+2026-10-09T11:25:22.1460110Z > Task :processGameTestResources
+2026-10-09T11:25:22.1468797Z > Task :gameTestClasses
+2026-10-09T11:25:22.1469755Z > Task :downloadMcpConfig
+2026-10-09T11:25:22.1470426Z > Task :extractSrg UP-TO-DATE
+2026-10-09T11:25:24.1460081Z > Task :createSrgToMcp
+2026-10-09T11:25:24.5459784Z > Task :downloadMCMeta
+2026-10-09T11:25:24.5460767Z > Task :extractNatives
+2026-10-09T11:25:24.5467608Z > Task :makeSrcDirs
+2026-10-09T11:25:24.5468200Z > Task :prepareRuns
+2026-10-09T11:25:24.5468943Z > Task :prepareRunGameTestServer
+2026-10-09T11:25:24.5469765Z > Task :prepareRunGameTestServerCompile
+2026-10-09T11:25:27.5465600Z
+2026-10-09T11:25:27.5469955Z > Task :runGameTestServer
+2026-10-09T11:25:27.5470989Z 2026-10-09 11:25:27,445 main WARN Advanced terminal features are not available in this environment
+2026-10-09T11:25:27.6468451Z [11:25:27] [main/INFO] [cp.mo.mo.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgegametestserveruserdev, --gameDir, ., --fml.forgeVersion, 47.4.20, --fml.mcVersion, 1.20.1, --fml.forgeGroup, net.minecraftforge, --fml.mcpVersion, 20230612.114412]
+2026-10-09T11:25:27.6482310Z [11:25:27] [main/INFO] [cp.mo.mo.Launcher/MODLAUNCHER]: ModLauncher 10.0.9+10.0.9+main.dcd20f30 starting: java version 17.0.20.1 by Eclipse Adoptium; OS Linux arch amd64 version 6.17.0-1022-azure
+2026-10-09T11:25:27.7464026Z [11:25:27] [main/WARN] [ne.mi.fm.lo.FMLConfig/CORE]: Configuration file /home/runner/work/SplineRoads/SplineRoads/run441/config/fml.toml is not correct. Correcting
+2026-10-09T11:25:27.7468242Z [11:25:27] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowSkipGLVersions] was corrected from null to []
+2026-10-09T11:25:27.7487735Z [11:25:27] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowLogHelpMessage] was corrected from null to true
+2026-10-09T11:25:27.7490099Z [11:25:27] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowSquir] was corrected from null to false
+2026-10-09T11:25:27.7491903Z [11:25:27] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowShowCPU] was corrected from null to false
+2026-10-09T11:25:27.7516578Z [11:25:27] [main/INFO] [ne.mi.fm.lo.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgegametestserveruserdev
+2026-10-09T11:25:27.7519749Z [11:25:27] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.5 Source=union:/home/runner/.gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.5/9d1c0c3a304ae6697ecd477218fa61b850bf57fc/mixin-0.8.5.jar%23116!/ Service=ModLauncher Env=SERVER
+2026-10-09T11:25:28.0460763Z [11:25:28] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/javafmllanguage/1.20.1-47.4.20/c354b21002937b393c4f86163a98dccdf1d51e72/javafmllanguage-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T11:25:28.0484465Z [11:25:28] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/lowcodelanguage/1.20.1-47.4.20/865d75f8c18329ddb31db5856701ab86609108b5/lowcodelanguage-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T11:25:28.0508483Z [11:25:28] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/mclanguage/1.20.1-47.4.20/af599930362212ae937e392709f49047e6abbbf/mclanguage-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T11:25:28.0518506Z [11:25:28] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/fmlcore/1.20.1-47.4.20/e8cc697c69f3911e76caa2f005d9486597cd7448/fmlcore-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T11:25:28.1462036Z [11:25:28] [main/INFO] [ne.mi.fm.lo.mo.JarInJarDependencyLocator/]: No dependencies to load found. Skipping!
+2026-10-09T11:25:29.4491100Z [11:25:29] [main/INFO] [cp.mo.mo.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgegametestserveruserdev' with arguments [--gameDir, .]
+2026-10-09T11:25:34.9464294Z [11:25:34] [modloading-worker-0/INFO] [ne.mi.co.ForgeMod/FORGEMOD]: Forge mod loading, version 47.4.20, for MC 1.20.1 with MCP 20230612.114412
+2026-10-09T11:25:34.9477910Z [11:25:34] [modloading-worker-0/INFO] [ne.mi.co.MinecraftForge/FORGE]: MinecraftForge v47.4.20 Initialized
+2026-10-09T11:25:35.5464745Z [11:25:35] [Forge Version Check/INFO] [ne.mi.fm.VersionChecker/]: [forge] Starting version check at https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json
+2026-10-09T11:25:36.0467898Z [11:25:35] [Forge Version Check/INFO] [ne.mi.fm.VersionChecker/]: [forge] Found status: OUTDATED Current: 47.4.20 Target: 47.4.26
+2026-10-09T11:25:36.3479092Z [11:25:36] [main/ERROR] [minecraft/Settings]: Failed to load properties from file: server.properties
+2026-10-09T11:25:36.3508215Z java.nio.file.NoSuchFileException: server.properties
+2026-10-09T11:25:36.3509637Z 	at sun.nio.fs.UnixException.translateToIOException(UnixException.java:92) ~[?:?] {}
+2026-10-09T11:25:36.3511350Z 	at sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:106) ~[?:?] {}
+2026-10-09T11:25:36.3512622Z 	at sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111) ~[?:?] {}
+2026-10-09T11:25:36.3513964Z 	at sun.nio.fs.UnixFileSystemProvider.newByteChannel(UnixFileSystemProvider.java:218) ~[?:?] {}
+2026-10-09T11:25:36.3515173Z 	at java.nio.file.Files.newByteChannel(Files.java:380) ~[?:?] {}
+2026-10-09T11:25:36.3516085Z 	at java.nio.file.Files.newByteChannel(Files.java:432) ~[?:?] {}
+2026-10-09T11:25:36.3517594Z 	at java.nio.file.spi.FileSystemProvider.newInputStream(FileSystemProvider.java:422) ~[?:?] {}
+2026-10-09T11:25:36.3518727Z 	at java.nio.file.Files.newInputStream(Files.java:160) ~[?:?] {}
+2026-10-09T11:25:36.3522508Z 	at net.minecraft.server.dedicated.Settings.loadFromFile(Settings.java:36) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:25:36.3528830Z 	at net.minecraft.server.dedicated.DedicatedServerProperties.fromFile(DedicatedServerProperties.java:137) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:25:36.3531510Z 	at net.minecraft.server.dedicated.DedicatedServerSettings.<init>(DedicatedServerSettings.java:12) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:25:36.3533553Z 	at net.minecraft.server.Main.main(Main.java:126) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:25:36.3535371Z 	at net.minecraftforge.gametest.GameTestMain.main(GameTestMain.java:16) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:25:36.3537398Z 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?] {}
+2026-10-09T11:25:36.3538841Z 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?] {}
+2026-10-09T11:25:36.3540481Z 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?] {}
+2026-10-09T11:25:36.3541841Z 	at java.lang.reflect.Method.invoke(Method.java:569) ~[?:?] {}
+2026-10-09T11:25:36.3543678Z 	at net.minecraftforge.fml.loading.targets.ForgeGametestUserdevLaunchHandler.devService(ForgeGametestUserdevLaunchHandler.java:16) ~[fmlloader-1.20.1-47.4.20.jar:?] {}
+2026-10-09T11:25:36.3546438Z 	at net.minecraftforge.fml.loading.targets.CommonDevLaunchHandler.lambda$makeService$7(CommonDevLaunchHandler.java:135) ~[fmlloader-1.20.1-47.4.20.jar:?] {}
+2026-10-09T11:25:36.3548676Z 	at cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:30) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:25:36.3550635Z 	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:53) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:25:36.3552357Z 	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:71) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:25:36.3553852Z 	at cpw.mods.modlauncher.Launcher.run(Launcher.java:108) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:25:36.3555138Z 	at cpw.mods.modlauncher.Launcher.main(Launcher.java:78) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:25:36.3556938Z 	at cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:26) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:25:36.3558818Z 	at cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:23) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:25:36.3560681Z 	at cpw.mods.bootstraplauncher.BootstrapLauncher.main(BootstrapLauncher.java:141) ~[bootstraplauncher-1.1.2.jar:?] {}
+2026-10-09T11:25:36.4464175Z [11:25:36] [main/INFO] [mojang/YggdrasilAuthenticationService]: Environment: authHost='https://authserver.mojang.com', accountsHost='https://api.mojang.com', sessionHost='https://sessionserver.mojang.com', servicesHost='https://api.minecraftservices.com', name='PROD'
+2026-10-09T11:25:36.4469452Z [11:25:36] [main/WARN] [minecraft/VanillaPackResourcesBuilder]: Assets URL 'union:/home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar%23181!/assets/.mcassetsroot' uses unexpected schema
+2026-10-09T11:25:36.4474653Z [11:25:36] [main/WARN] [minecraft/VanillaPackResourcesBuilder]: Assets URL 'union:/home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar%23181!/data/.mcassetsroot' uses unexpected schema
+2026-10-09T11:25:38.4462023Z [11:25:38] [main/INFO] [minecraft/RecipeManager]: Loaded 7 recipes
+2026-10-09T11:25:38.5461980Z [11:25:38] [main/INFO] [minecraft/AdvancementList]: Loaded 1271 advancements
+2026-10-09T11:25:38.9474404Z [11:25:38] [main/INFO] [ne.mi.ga.ForgeGameTestHooks/]: Enabled Gametest Namespaces: [splineroads_live441]
+2026-10-09T11:25:39.1466519Z [11:25:39] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Configuration file ./world/serverconfig/forge-server.toml is not correct. Correcting
+2026-10-09T11:25:39.1480870Z [11:25:39] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server was corrected from null to its default, SimpleCommentedConfig:{}.
+2026-10-09T11:25:39.1483464Z [11:25:39] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.removeErroringBlockEntities was corrected from null to its default, false.
+2026-10-09T11:25:39.1486102Z [11:25:39] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.removeErroringEntities was corrected from null to its default, false.
+2026-10-09T11:25:39.1488687Z [11:25:39] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.fullBoundingBoxLadders was corrected from null to its default, false.
+2026-10-09T11:25:39.1491099Z [11:25:39] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.zombieBaseSummonChance was corrected from null to its default, 0.1.
+2026-10-09T11:25:39.1493497Z [11:25:39] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.zombieBabyChance was corrected from null to its default, 0.05.
+2026-10-09T11:25:39.1496050Z [11:25:39] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.permissionHandler was corrected from null to its default, forge:default_handler.
+2026-10-09T11:25:39.1498680Z [11:25:39] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.advertiseDedicatedServerToLan was corrected from null to its default, true.
+2026-10-09T11:25:39.1501043Z [11:25:39] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.useItemWithDurationZero was corrected from null to its default, false.
+2026-10-09T11:25:47.7478063Z [11:25:47] [Server thread/INFO] [minecraft/MinecraftServer]: Preparing start region for dimension minecraft:overworld
+2026-10-09T11:25:48.6509150Z [11:25:48] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:48.6510567Z [11:25:48] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:48.7464102Z [11:25:48] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:49.2487676Z [11:25:49] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:49.7467578Z [11:25:49] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:50.2477589Z [11:25:50] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:50.7459509Z [11:25:50] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:51.2479842Z [11:25:51] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:51.7491692Z [11:25:51] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:52.2469039Z [11:25:52] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:52.7462262Z [11:25:52] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:53.2471888Z [11:25:53] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:53.7461013Z [11:25:53] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:54.2475168Z [11:25:54] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:54.7461175Z [11:25:54] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:55.2461329Z [11:25:55] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:55.7459024Z [11:25:55] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:56.2470468Z [11:25:56] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:56.7466460Z [11:25:56] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:57.2461710Z [11:25:57] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:57.7461490Z [11:25:57] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:58.2462571Z [11:25:58] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:58.7461861Z [11:25:58] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:59.2462976Z [11:25:59] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:25:59.7468174Z [11:25:59] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:00.2461969Z [11:26:00] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:00.7461355Z [11:26:00] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:01.2461041Z [11:26:01] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:01.7461055Z [11:26:01] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:02.2462001Z [11:26:02] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:02.7458980Z [11:26:02] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:03.2470221Z [11:26:03] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:03.7473975Z [11:26:03] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:04.2458496Z [11:26:04] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:04.7458256Z [11:26:04] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:05.2458417Z [11:26:05] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:05.7458463Z [11:26:05] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:06.2464938Z [11:26:06] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:06.7461376Z [11:26:06] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:07.2467024Z [11:26:07] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:07.7470106Z [11:26:07] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:08.2468257Z [11:26:08] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:08.7460689Z [11:26:08] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:09.2463937Z [11:26:09] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:09.7459166Z [11:26:09] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:10.2458396Z [11:26:10] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:10.7461800Z [11:26:10] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:11.2459704Z [11:26:11] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:11.7461793Z [11:26:11] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:12.2459880Z [11:26:12] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:12.7460187Z [11:26:12] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:13.2458662Z [11:26:13] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:13.7458811Z [11:26:13] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:14.2461039Z [11:26:14] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:14.7461004Z [11:26:14] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:15.2458983Z [11:26:15] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:15.7461747Z [11:26:15] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:16.2460993Z [11:26:16] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:16.7458532Z [11:26:16] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:17.2458655Z [11:26:17] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:17.7458548Z [11:26:17] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:18.2458709Z [11:26:18] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:18.7457928Z [11:26:18] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:19.2458156Z [11:26:19] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:19.7469926Z [11:26:19] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:20.2457703Z [11:26:20] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:20.7459694Z [11:26:20] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:21.2460629Z [11:26:21] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:21.7458311Z [11:26:21] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:22.2459485Z [11:26:22] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:22.7467590Z [11:26:22] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:23.2475339Z [11:26:23] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:26:24.2462091Z [11:26:24] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 8%
+2026-10-09T11:26:24.2465221Z [11:26:24] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 8%
+2026-10-09T11:26:24.7474515Z [11:26:24] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 89%
+2026-10-09T11:26:26.1471520Z [11:26:26] [Server thread/INFO] [minecraft/LoggerChunkProgressListener]: Time elapsed: 38409 ms
+2026-10-09T11:26:26.1472411Z [11:26:26] [Server thread/INFO] [minecraft/GameTestServer]: Started game test server
+2026-10-09T11:26:26.1473161Z [11:26:26] [Server thread/INFO] [ne.mi.se.pe.PermissionAPI/]: Successfully initialized permission handler forge:default_handler
+2026-10-09T11:26:27.9479078Z [11:26:27] [Server thread/INFO] [minecraft/GameTestBatchRunner]: Running test batch 'splineroads_live441:1' (4 tests)...
+2026-10-09T11:26:28.2462285Z [11:26:28] [Server thread/INFO] [minecraft/GameTestServer]: 4 tests are now running!
+2026-10-09T11:26:28.2476410Z [11:26:28] [Server thread/WARN] [minecraft/MinecraftServer]: Can't keep up! Is the server overloaded? Running 2044ms or 40 ticks behind
+2026-10-09T11:26:58.2462912Z Oct 09, 2026 11:26:58 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:26:58.2467005Z INFO: SR edit: 260 ms, roads=0, requested=1, phases(ms)={normalize_transitions=10.99598, affected_structures=0.419609, attached_points=1.418469, topology=13.003177, caps_and_dependencies=2.760945, terrain_chunk_access=0.643591, furniture_phase=4.621144, structure_candidate_index=0.599729, structure_plan=125.339595, dependent_replanning=0.994311, caps_shell_and_joint_validation=4.765537, edit_raster=39.569252, sidewalks=2.186354, local_collision=5.094636, validation_commit_sync=47.332309}
+2026-10-09T11:26:58.2470826Z Oct 09, 2026 11:26:58 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:26:58.2471882Z INFO: SR connect: 298 ms, roads=0, requested=1, phases(ms)={}
+2026-10-09T11:26:59.4457821Z Oct 09, 2026 11:26:59 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:26:59.4461939Z INFO: SR edit: 744 ms, roads=3, requested=1, phases(ms)={normalize_transitions=0.104817, affected_structures=1.048072, attached_points=0.034895, topology=93.143757, caps_and_dependencies=0.069751, terrain_chunk_access=3.290341, furniture_phase=1.267626, structure_candidate_index=0.016531, structure_plan=326.232129, dependent_replanning=35.453538, caps_shell_and_joint_validation=13.832677, edit_raster=130.961664, sidewalks=0.155563, local_collision=20.198425, validation_commit_sync=118.213236}
+2026-10-09T11:26:59.7461136Z LIVE441 CHILD_PLAN_PASS
+2026-10-09T11:27:00.6457625Z Oct 09, 2026 11:27:00 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:27:00.6465013Z INFO: SR edit: 926 ms, roads=4, requested=1, phases(ms)={normalize_transitions=0.117221, affected_structures=13.374245, attached_points=1.244722, topology=57.727177, caps_and_dependencies=0.035006, terrain_chunk_access=0.991105, furniture_phase=0.359897, structure_candidate_index=0.006081, structure_plan=356.173435, dependent_replanning=25.992046, caps_shell_and_joint_validation=23.429384, edit_raster=175.089263, sidewalks=0.235043, local_collision=124.114581, validation_commit_sync=147.187474}
+2026-10-09T11:27:01.3457510Z Oct 09, 2026 11:27:01 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:27:01.3466821Z LIVE441 REAL_WORLD PASS branch: LEFT/BRANCH/EXTRA/OVER/FLEXIBLE build, parent furniture opening and deletion restoration
+2026-10-09T11:27:01.3469385Z INFO: SR edit: 622 ms, roads=5, requested=0, phases(ms)={normalize_transitions=0.202761, affected_structures=1.812551, attached_points=0.003416, topology=9.288637, caps_and_dependencies=0.032151, terrain_chunk_access=1.636589, furniture_phase=0.021791, structure_candidate_index=0.003637, structure_plan=223.800367, dependent_replanning=0.01104, caps_shell_and_joint_validation=5.787991, edit_raster=177.720734, sidewalks=0.157757, local_collision=62.732466, validation_commit_sync=138.807536}
+2026-10-09T11:27:24.2459490Z Oct 09, 2026 11:27:24 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:27:24.2464690Z INFO: SR edit: 337 ms, roads=4, requested=1, phases(ms)={normalize_transitions=0.152307, affected_structures=0.046657, attached_points=0.024747, topology=5.145883, caps_and_dependencies=2.367164, terrain_chunk_access=0.482669, furniture_phase=0.410692, structure_candidate_index=0.006362, structure_plan=54.478422, dependent_replanning=2.332689, caps_shell_and_joint_validation=0.668819, edit_raster=30.503838, sidewalks=0.229482, local_collision=38.55587, validation_commit_sync=201.568908}
+2026-10-09T11:27:24.2468854Z Oct 09, 2026 11:27:24 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:27:24.2469630Z INFO: SR connect: 349 ms, roads=4, requested=1, phases(ms)={}
+2026-10-09T11:27:28.9458336Z Oct 09, 2026 11:27:28 AM com.sora.splineroads.world.LaneRamps$Planning close
+2026-10-09T11:27:28.9465366Z INFO: SR route plan total_ms=4417.917 clearance_ms=874.576 candidates=221 contact_queries=888 cached_meshes=8
+2026-10-09T11:27:28.9466756Z LIVE441 PLAN_PASS ground=false
+2026-10-09T11:27:30.3457981Z Oct 09, 2026 11:27:30 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:27:30.3461707Z INFO: SR edit: 1,417 ms, roads=6, requested=1, phases(ms)={normalize_transitions=0.07411, affected_structures=0.589679, attached_points=0.112061, topology=71.565614, caps_and_dependencies=0.067968, terrain_chunk_access=1.12127, furniture_phase=0.217048, structure_candidate_index=0.032161, structure_plan=368.974354, dependent_replanning=533.727446, caps_shell_and_joint_validation=38.604957, edit_raster=203.129939, sidewalks=0.186652, local_collision=18.311393, validation_commit_sync=179.478248}
+2026-10-09T11:27:30.3464720Z LIVE441 BUILD_PASS ground=false
+2026-10-09T11:27:33.9458050Z Oct 09, 2026 11:27:33 AM com.sora.splineroads.world.LaneRamps$Planning close
+2026-10-09T11:27:33.9470956Z INFO: SR route plan total_ms=3566.099 clearance_ms=850.900 candidates=221 contact_queries=888 cached_meshes=53
+2026-10-09T11:27:35.2462553Z Oct 09, 2026 11:27:35 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:27:35.2463340Z LIVE441 RAMP_OVERPASS_PASS
+2026-10-09T11:27:35.2467018Z INFO: SR edit: 1,295 ms, roads=7, requested=1, phases(ms)={normalize_transitions=0.117792, affected_structures=1.492598, attached_points=0.103655, topology=51.212208, caps_and_dependencies=0.053571, terrain_chunk_access=1.351764, furniture_phase=0.035887, structure_candidate_index=0.004499, structure_plan=343.431343, dependent_replanning=399.334689, caps_shell_and_joint_validation=6.655242, edit_raster=303.566667, sidewalks=0.176181, local_collision=17.780646, validation_commit_sync=169.485044}
+2026-10-09T11:27:38.2457675Z Oct 09, 2026 11:27:38 AM com.sora.splineroads.world.LaneRamps$Planning close
+2026-10-09T11:27:38.2458514Z INFO: SR route plan total_ms=3084.692 clearance_ms=706.806 candidates=221 contact_queries=888 cached_meshes=53
+2026-10-09T11:27:39.3457586Z Oct 09, 2026 11:27:39 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:27:39.3461347Z LIVE441 RAMP_AUTO_PASS
+2026-10-09T11:27:39.3465138Z INFO: SR edit: 1,043 ms, roads=7, requested=1, phases(ms)={normalize_transitions=0.223501, affected_structures=2.287905, attached_points=0.107763, topology=50.007295, caps_and_dependencies=0.230043, terrain_chunk_access=1.123795, furniture_phase=0.102212, structure_candidate_index=0.028674, structure_plan=215.927775, dependent_replanning=295.786532, caps_shell_and_joint_validation=6.353014, edit_raster=316.822234, sidewalks=0.261883, local_collision=18.660032, validation_commit_sync=134.557072}
+2026-10-09T11:27:39.3468744Z LIVE441 HOST_SWITCH logical=true handles=true
+2026-10-09T11:27:40.6457477Z Oct 09, 2026 11:27:40 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:27:40.6461120Z INFO: SR edit: 1,346 ms, roads=7, requested=1, phases(ms)={normalize_transitions=0.115887, affected_structures=0.101231, attached_points=0.057518, topology=38.837339, caps_and_dependencies=0.951801, terrain_chunk_access=1.369006, furniture_phase=0.369425, structure_candidate_index=0.004809, structure_plan=185.289995, dependent_replanning=596.987763, caps_shell_and_joint_validation=5.724561, edit_raster=338.670205, sidewalks=0.201139, local_collision=22.324667, validation_commit_sync=155.126136}
+2026-10-09T11:27:40.7458631Z Oct 09, 2026 11:27:40 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:27:40.7462438Z INFO: SR connect: 1,366 ms, roads=7, requested=1, phases(ms)={}
+2026-10-09T11:27:40.7463103Z LIVE441 SWITCH_PASS
+2026-10-09T11:27:40.8457469Z Oct 09, 2026 11:27:40 AM com.sora.splineroads.core.RoadTimings reportLoad
+2026-10-09T11:27:40.8458218Z LIVE441 REAL_WORLD PASS ground=false
+2026-10-09T11:27:40.8459079Z INFO: SR load: 108 ms, roads=7
+2026-10-09T11:27:45.2458582Z LIVE441 REAL_WORLD PASS bank: asymmetric GREEN bridge to AUTO converged
+2026-10-09T11:28:07.1457193Z LIVE441 PLAN_PASS ground=true
+2026-10-09T11:28:07.4474135Z LIVE441 BUILD_PASS ground=true
+2026-10-09T11:28:07.4480134Z Oct 09, 2026 11:28:07 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:28:07.4484837Z INFO: SR edit: 250 ms, roads=10, requested=1, phases(ms)={normalize_transitions=0.097283, affected_structures=1.4033, attached_points=0.03699, topology=25.711218, caps_and_dependencies=0.055244, terrain_chunk_access=0.46234, furniture_phase=0.119445, structure_candidate_index=0.004107, structure_plan=129.036215, dependent_replanning=11.381545, caps_shell_and_joint_validation=1.139554, edit_raster=27.491017, sidewalks=0.52058, local_collision=6.141055, validation_commit_sync=46.427448}
+2026-10-09T11:28:07.6466454Z Oct 09, 2026 11:28:07 AM com.sora.splineroads.core.RoadTimings reportLoad
+2026-10-09T11:28:07.6477183Z INFO: SR load: 118 ms, roads=11
+2026-10-09T11:28:07.6477761Z LIVE441 REAL_WORLD PASS ground=true
+2026-10-09T11:28:07.6487161Z [11:28:07] [Server thread/INFO] [minecraft/GameTestServer]: [++++]
+2026-10-09T11:28:07.6488410Z [11:28:07] [Server thread/INFO] [minecraft/GameTestServer]: ========= 4 GAME TESTS COMPLETE ======================
+2026-10-09T11:28:07.6489745Z [11:28:07] [Server thread/INFO] [minecraft/GameTestServer]: All 4 required tests passed :)
+2026-10-09T11:28:07.6490940Z [11:28:07] [Server thread/INFO] [minecraft/GameTestServer]: ====================================================
+2026-10-09T11:28:07.6492051Z [11:28:07] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server
+2026-10-09T11:28:07.6492945Z [11:28:07] [Server thread/INFO] [minecraft/MinecraftServer]: Saving players
+2026-10-09T11:28:07.6493789Z [11:28:07] [Server thread/INFO] [minecraft/MinecraftServer]: Saving worlds
+2026-10-09T11:28:12.2461552Z [11:28:12] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:overworld
+2026-10-09T11:28:16.9461661Z [11:28:16] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_end
+2026-10-09T11:28:16.9483657Z [11:28:16] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_nether
+2026-10-09T11:28:16.9486741Z [11:28:16] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (world): All chunks are saved
+2026-10-09T11:28:16.9487697Z [11:28:16] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+2026-10-09T11:28:16.9488904Z [11:28:16] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+2026-10-09T11:28:16.9489795Z [11:28:16] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved
+2026-10-09T11:28:17.4457685Z [11:28:17] [Server thread/INFO] [minecraft/GameTestServer]: Game test server shutting down
+2026-10-09T11:28:17.8028069Z gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_4-1791545117405.json
+2026-10-09T11:28:17.8046823Z
+2026-10-09T11:28:17.8069324Z Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+2026-10-09T11:28:17.8070082Z
+2026-10-09T11:28:17.8070930Z You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+2026-10-09T11:28:17.8071932Z
+2026-10-09T11:28:17.8072850Z For more on this, please refer to https://docs.gradle.org/8.8/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+2026-10-09T11:28:17.8074299Z
+2026-10-09T11:28:17.8074464Z BUILD SUCCESSFUL in 3m 3s
+2026-10-09T11:28:17.8074921Z 11 actionable tasks: 7 executed, 4 up-to-date
+2026-10-09T11:28:18.1352113Z ##[group]Run set -o pipefail
+2026-10-09T11:28:18.1352625Z set -o pipefail
+2026-10-09T11:28:18.1354070Z bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run444 -ProadTestNamespaces=splineroads_live444 -ProadTestHeap=3G | tee run444-console.log
+2026-10-09T11:28:18.1355713Z grep -q 'LIVE444 REAL_SERVER PASS' run444-console.log
+2026-10-09T11:28:18.1437480Z shell: /usr/bin/bash -e {0}
+2026-10-09T11:28:18.1437903Z env:
+2026-10-09T11:28:18.1438429Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:28:18.1439295Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:28:18.1440078Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
+2026-10-09T11:28:18.1440629Z   GRADLE_USER_HOME: /home/runner/.gradle
+2026-10-09T11:28:18.1441144Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+2026-10-09T11:28:18.1441669Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+2026-10-09T11:28:18.1442527Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+2026-10-09T11:28:18.1443405Z   DEVELOCITY_INJECTION_CUSTOM_VALUE: gradle-actions
+2026-10-09T11:28:18.1443981Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+2026-10-09T11:28:18.1444458Z ##[endgroup]
+2026-10-09T11:28:18.7818574Z To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.8/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+2026-10-09T11:28:19.7768105Z Daemon will be stopped at the end of the build
+2026-10-09T11:28:25.3774676Z > Task :compileJava UP-TO-DATE
+2026-10-09T11:28:25.4754608Z > Task :processResources UP-TO-DATE
+2026-10-09T11:28:25.4757203Z > Task :classes UP-TO-DATE
+2026-10-09T11:28:25.4758237Z > Task :compileGameTestJava UP-TO-DATE
+2026-10-09T11:28:25.5754645Z > Task :processGameTestResources UP-TO-DATE
+2026-10-09T11:28:25.5777258Z > Task :gameTestClasses UP-TO-DATE
+2026-10-09T11:28:25.5778161Z > Task :downloadMcpConfig
+2026-10-09T11:28:25.5778861Z > Task :extractSrg UP-TO-DATE
+2026-10-09T11:28:25.5779547Z > Task :createSrgToMcp UP-TO-DATE
+2026-10-09T11:28:25.5780266Z > Task :downloadMCMeta UP-TO-DATE
+2026-10-09T11:28:25.5780982Z > Task :extractNatives UP-TO-DATE
+2026-10-09T11:28:25.5781646Z > Task :makeSrcDirs
+2026-10-09T11:28:25.5782256Z > Task :prepareRuns
+2026-10-09T11:28:25.5782939Z > Task :prepareRunGameTestServer
+2026-10-09T11:28:25.5783762Z > Task :prepareRunGameTestServerCompile UP-TO-DATE
+2026-10-09T11:28:27.5748107Z
+2026-10-09T11:28:27.5752912Z > Task :runGameTestServer
+2026-10-09T11:28:27.5754188Z 2026-10-09 11:28:27,390 main WARN Advanced terminal features are not available in this environment
+2026-10-09T11:28:27.5757043Z [11:28:27] [main/INFO] [cp.mo.mo.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgegametestserveruserdev, --gameDir, ., --fml.forgeVersion, 47.4.20, --fml.mcVersion, 1.20.1, --fml.forgeGroup, net.minecraftforge, --fml.mcpVersion, 20230612.114412]
+2026-10-09T11:28:27.5760269Z [11:28:27] [main/INFO] [cp.mo.mo.Launcher/MODLAUNCHER]: ModLauncher 10.0.9+10.0.9+main.dcd20f30 starting: java version 17.0.20.1 by Eclipse Adoptium; OS Linux arch amd64 version 6.17.0-1022-azure
+2026-10-09T11:28:27.6751201Z [11:28:27] [main/WARN] [ne.mi.fm.lo.FMLConfig/CORE]: Configuration file /home/runner/work/SplineRoads/SplineRoads/run444/config/fml.toml is not correct. Correcting
+2026-10-09T11:28:27.6782210Z [11:28:27] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowSkipGLVersions] was corrected from null to []
+2026-10-09T11:28:27.6791829Z [11:28:27] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowLogHelpMessage] was corrected from null to true
+2026-10-09T11:28:27.6793016Z [11:28:27] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowSquir] was corrected from null to false
+2026-10-09T11:28:27.6800710Z [11:28:27] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowShowCPU] was corrected from null to false
+2026-10-09T11:28:27.6802524Z [11:28:27] [main/INFO] [ne.mi.fm.lo.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgegametestserveruserdev
+2026-10-09T11:28:27.6805233Z [11:28:27] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.5 Source=union:/home/runner/.gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.5/9d1c0c3a304ae6697ecd477218fa61b850bf57fc/mixin-0.8.5.jar%23116!/ Service=ModLauncher Env=SERVER
+2026-10-09T11:28:27.9752237Z [11:28:27] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/javafmllanguage/1.20.1-47.4.20/c354b21002937b393c4f86163a98dccdf1d51e72/javafmllanguage-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T11:28:27.9780955Z [11:28:27] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/lowcodelanguage/1.20.1-47.4.20/865d75f8c18329ddb31db5856701ab86609108b5/lowcodelanguage-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T11:28:27.9784846Z [11:28:27] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/mclanguage/1.20.1-47.4.20/af599930362212ae937e392709f49047e6abbbf/mclanguage-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T11:28:27.9788501Z [11:28:27] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/fmlcore/1.20.1-47.4.20/e8cc697c69f3911e76caa2f005d9486597cd7448/fmlcore-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T11:28:28.0750488Z [11:28:27] [main/INFO] [ne.mi.fm.lo.mo.JarInJarDependencyLocator/]: No dependencies to load found. Skipping!
+2026-10-09T11:28:29.3750922Z [11:28:29] [main/INFO] [cp.mo.mo.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgegametestserveruserdev' with arguments [--gameDir, .]
+2026-10-09T11:28:34.3751651Z [11:28:34] [modloading-worker-0/INFO] [ne.mi.co.ForgeMod/FORGEMOD]: Forge mod loading, version 47.4.20, for MC 1.20.1 with MCP 20230612.114412
+2026-10-09T11:28:34.3757260Z [11:28:34] [modloading-worker-0/INFO] [ne.mi.co.MinecraftForge/FORGE]: MinecraftForge v47.4.20 Initialized
+2026-10-09T11:28:34.7749061Z [11:28:34] [Forge Version Check/INFO] [ne.mi.fm.VersionChecker/]: [forge] Starting version check at https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json
+2026-10-09T11:28:35.0751191Z [11:28:35] [Forge Version Check/INFO] [ne.mi.fm.VersionChecker/]: [forge] Found status: OUTDATED Current: 47.4.20 Target: 47.4.26
+2026-10-09T11:28:35.9768944Z [11:28:35] [main/ERROR] [minecraft/Settings]: Failed to load properties from file: server.properties
+2026-10-09T11:28:35.9833465Z java.nio.file.NoSuchFileException: server.properties
+2026-10-09T11:28:35.9834960Z 	at sun.nio.fs.UnixException.translateToIOException(UnixException.java:92) ~[?:?] {}
+2026-10-09T11:28:35.9863717Z 	at sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:106) ~[?:?] {}
+2026-10-09T11:28:35.9864504Z 	at sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111) ~[?:?] {}
+2026-10-09T11:28:35.9865320Z 	at sun.nio.fs.UnixFileSystemProvider.newByteChannel(UnixFileSystemProvider.java:218) ~[?:?] {}
+2026-10-09T11:28:35.9865997Z 	at java.nio.file.Files.newByteChannel(Files.java:380) ~[?:?] {}
+2026-10-09T11:28:35.9867016Z 	at java.nio.file.Files.newByteChannel(Files.java:432) ~[?:?] {}
+2026-10-09T11:28:35.9867962Z 	at java.nio.file.spi.FileSystemProvider.newInputStream(FileSystemProvider.java:422) ~[?:?] {}
+2026-10-09T11:28:35.9868809Z 	at java.nio.file.Files.newInputStream(Files.java:160) ~[?:?] {}
+2026-10-09T11:28:35.9869837Z 	at net.minecraft.server.dedicated.Settings.loadFromFile(Settings.java:36) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:28:35.9871845Z 	at net.minecraft.server.dedicated.DedicatedServerProperties.fromFile(DedicatedServerProperties.java:137) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:28:35.9873442Z 	at net.minecraft.server.dedicated.DedicatedServerSettings.<init>(DedicatedServerSettings.java:12) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:28:35.9874702Z 	at net.minecraft.server.Main.main(Main.java:126) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:28:35.9875855Z 	at net.minecraftforge.gametest.GameTestMain.main(GameTestMain.java:16) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:28:35.9877320Z 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?] {}
+2026-10-09T11:28:35.9878576Z 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?] {}
+2026-10-09T11:28:35.9879572Z 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?] {}
+2026-10-09T11:28:35.9880216Z 	at java.lang.reflect.Method.invoke(Method.java:569) ~[?:?] {}
+2026-10-09T11:28:35.9881507Z 	at net.minecraftforge.fml.loading.targets.ForgeGametestUserdevLaunchHandler.devService(ForgeGametestUserdevLaunchHandler.java:16) ~[fmlloader-1.20.1-47.4.20.jar:?] {}
+2026-10-09T11:28:35.9883970Z 	at net.minecraftforge.fml.loading.targets.CommonDevLaunchHandler.lambda$makeService$7(CommonDevLaunchHandler.java:135) ~[fmlloader-1.20.1-47.4.20.jar:?] {}
+2026-10-09T11:28:35.9885663Z 	at cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:30) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:28:35.9887385Z 	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:53) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:28:35.9889003Z 	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:71) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:28:35.9890441Z 	at cpw.mods.modlauncher.Launcher.run(Launcher.java:108) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:28:35.9891588Z 	at cpw.mods.modlauncher.Launcher.main(Launcher.java:78) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:28:35.9893036Z 	at cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:26) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:28:35.9894810Z 	at cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:23) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:28:35.9896766Z 	at cpw.mods.bootstraplauncher.BootstrapLauncher.main(BootstrapLauncher.java:141) ~[bootstraplauncher-1.1.2.jar:?] {}
+2026-10-09T11:28:35.9899469Z [11:28:35] [main/INFO] [mojang/YggdrasilAuthenticationService]: Environment: authHost='https://authserver.mojang.com', accountsHost='https://api.mojang.com', sessionHost='https://sessionserver.mojang.com', servicesHost='https://api.minecraftservices.com', name='PROD'
+2026-10-09T11:28:35.9903144Z [11:28:35] [main/WARN] [minecraft/VanillaPackResourcesBuilder]: Assets URL 'union:/home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar%23181!/assets/.mcassetsroot' uses unexpected schema
+2026-10-09T11:28:35.9907175Z [11:28:35] [main/WARN] [minecraft/VanillaPackResourcesBuilder]: Assets URL 'union:/home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar%23181!/data/.mcassetsroot' uses unexpected schema
+2026-10-09T11:28:37.5751885Z [11:28:37] [main/INFO] [minecraft/RecipeManager]: Loaded 7 recipes
+2026-10-09T11:28:37.6751036Z [11:28:37] [main/INFO] [minecraft/AdvancementList]: Loaded 1271 advancements
+2026-10-09T11:28:38.3747735Z [11:28:38] [main/INFO] [ne.mi.ga.ForgeGameTestHooks/]: Enabled Gametest Namespaces: [splineroads_live444]
+2026-10-09T11:28:38.4752263Z [11:28:38] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Configuration file ./world/serverconfig/forge-server.toml is not correct. Correcting
+2026-10-09T11:28:38.4766312Z [11:28:38] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server was corrected from null to its default, SimpleCommentedConfig:{}.
+2026-10-09T11:28:38.4768771Z [11:28:38] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.removeErroringBlockEntities was corrected from null to its default, false.
+2026-10-09T11:28:38.4771814Z [11:28:38] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.removeErroringEntities was corrected from null to its default, false.
+2026-10-09T11:28:38.4773960Z [11:28:38] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.fullBoundingBoxLadders was corrected from null to its default, false.
+2026-10-09T11:28:38.4776645Z [11:28:38] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.zombieBaseSummonChance was corrected from null to its default, 0.1.
+2026-10-09T11:28:38.4778652Z [11:28:38] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.zombieBabyChance was corrected from null to its default, 0.05.
+2026-10-09T11:28:38.4780685Z [11:28:38] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.permissionHandler was corrected from null to its default, forge:default_handler.
+2026-10-09T11:28:38.4782855Z [11:28:38] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.advertiseDedicatedServerToLan was corrected from null to its default, true.
+2026-10-09T11:28:38.4784929Z [11:28:38] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.useItemWithDurationZero was corrected from null to its default, false.
+2026-10-09T11:28:47.8751243Z [11:28:47] [Server thread/INFO] [minecraft/MinecraftServer]: Preparing start region for dimension minecraft:overworld
+2026-10-09T11:28:48.7770210Z [11:28:48] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:48.7820190Z [11:28:48] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:48.8777490Z [11:28:48] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:49.4755714Z [11:28:49] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:49.9747412Z [11:28:49] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:50.3752200Z [11:28:50] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:50.8759312Z [11:28:50] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:51.3747023Z [11:28:51] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:51.8750545Z [11:28:51] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:52.3748805Z [11:28:52] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:52.8752309Z [11:28:52] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:53.4751802Z [11:28:53] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:53.8749950Z [11:28:53] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:54.4747753Z [11:28:54] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:54.8754471Z [11:28:54] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:55.3750164Z [11:28:55] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:55.8749095Z [11:28:55] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:56.3749341Z [11:28:56] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:56.8747916Z [11:28:56] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:57.3745986Z [11:28:57] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:57.8748745Z [11:28:57] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:58.3749761Z [11:28:58] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:58.9748969Z [11:28:58] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:59.3750266Z [11:28:59] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:28:59.8746522Z [11:28:59] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:00.3746642Z [11:29:00] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:00.8746478Z [11:29:00] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:01.4747177Z [11:29:01] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:01.8757251Z [11:29:01] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:02.3746756Z [11:29:02] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:02.8757636Z [11:29:02] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:03.4747735Z [11:29:03] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:03.9748028Z [11:29:03] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:04.3746367Z [11:29:04] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:04.8750085Z [11:29:04] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:05.3752142Z [11:29:05] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:05.8749898Z [11:29:05] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:06.3756430Z [11:29:06] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:06.8746922Z [11:29:06] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:07.4750246Z [11:29:07] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:07.9749058Z [11:29:07] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:08.3746806Z [11:29:08] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:08.8747020Z [11:29:08] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:09.4747309Z [11:29:09] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:09.8750918Z [11:29:09] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:10.4747241Z [11:29:10] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:10.9747125Z [11:29:10] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:11.3752088Z [11:29:11] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:11.8751441Z [11:29:11] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:12.3780048Z [11:29:12] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:12.8772722Z [11:29:12] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:13.3747707Z [11:29:13] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:13.8747402Z [11:29:13] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:14.3747844Z [11:29:14] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:14.8747148Z [11:29:14] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:15.3746708Z [11:29:15] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:15.8757747Z [11:29:15] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:16.3747458Z [11:29:16] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:16.8747532Z [11:29:16] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:17.3749045Z [11:29:17] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:17.8745874Z [11:29:17] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:18.3746725Z [11:29:18] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:18.8749552Z [11:29:18] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:19.4747266Z [11:29:19] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:19.8746791Z [11:29:19] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:20.3747591Z [11:29:20] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:20.8747078Z [11:29:20] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:29:21.6758161Z [11:29:21] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 12%
+2026-10-09T11:29:22.3764294Z [11:29:22] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 36%
+2026-10-09T11:29:22.3784260Z [11:29:22] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 36%
+2026-10-09T11:29:24.8748128Z [11:29:24] [Server thread/INFO] [minecraft/LoggerChunkProgressListener]: Time elapsed: 37023 ms
+2026-10-09T11:29:24.9749872Z [11:29:24] [Server thread/INFO] [minecraft/GameTestServer]: Started game test server
+2026-10-09T11:29:24.9751840Z [11:29:24] [Server thread/INFO] [ne.mi.se.pe.PermissionAPI/]: Successfully initialized permission handler forge:default_handler
+2026-10-09T11:29:25.9748092Z [11:29:25] [Server thread/INFO] [minecraft/GameTestBatchRunner]: Running test batch 'splineroads_live444:1' (2 tests)...
+2026-10-09T11:29:26.1751331Z [11:29:26] [Server thread/INFO] [minecraft/GameTestServer]: 2 tests are now running!
+2026-10-09T11:29:45.9747323Z LIVE444 REAL_SERVER PASS generated perimeter extra=false guarded_samples=1831
+2026-10-09T11:30:28.2747844Z LIVE444 REAL_SERVER PASS generated perimeter extra=true guarded_samples=4763
+2026-10-09T11:30:48.4748206Z Oct 09, 2026 11:30:48 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:30:48.4751827Z INFO: SR edit: 516 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.044734, affected_structures=0.412416, attached_points=0.020348, topology=16.338966, caps_and_dependencies=0.064432, terrain_chunk_access=2.011254, furniture_phase=0.243248, structure_candidate_index=0.00539, structure_plan=127.855952, dependent_replanning=1.323851, caps_shell_and_joint_validation=14.636091, edit_raster=270.263748, sidewalks=0.098846, local_collision=16.839457}
+2026-10-09T11:30:48.9761103Z Oct 09, 2026 11:30:48 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:30:48.9762584Z LIVE444 REAL_SERVER PASS late shell rejection, AUTO alternate, full publication/build and Mojang NBT
+2026-10-09T11:30:48.9790036Z INFO: SR edit: 465 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.067016, affected_structures=0.493308, attached_points=0.02133, topology=12.907759, caps_and_dependencies=0.041188, terrain_chunk_access=0.528775, furniture_phase=0.018455, structure_candidate_index=0.003236, structure_plan=158.792436, dependent_replanning=1.327588, caps_shell_and_joint_validation=8.745857, edit_raster=181.527597, sidewalks=0.092404, local_collision=16.245108, validation_commit_sync=83.565416}
+2026-10-09T11:30:48.9793592Z [11:30:48] [Server thread/INFO] [minecraft/GameTestServer]: [++]
+2026-10-09T11:30:48.9821431Z [11:30:48] [Server thread/INFO] [minecraft/GameTestServer]: ========= 2 GAME TESTS COMPLETE ======================
+2026-10-09T11:30:48.9856430Z [11:30:48] [Server thread/INFO] [minecraft/GameTestServer]: All 2 required tests passed :)
+2026-10-09T11:30:48.9858488Z [11:30:48] [Server thread/INFO] [minecraft/GameTestServer]: ====================================================
+2026-10-09T11:30:48.9865273Z [11:30:48] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server
+2026-10-09T11:30:48.9866642Z [11:30:48] [Server thread/INFO] [minecraft/MinecraftServer]: Saving players
+2026-10-09T11:30:48.9867899Z [11:30:48] [Server thread/INFO] [minecraft/MinecraftServer]: Saving worlds
+2026-10-09T11:30:53.6756437Z [11:30:53] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:overworld
+2026-10-09T11:30:58.8747615Z [11:30:58] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_end
+2026-10-09T11:30:58.8750266Z [11:30:58] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_nether
+2026-10-09T11:30:58.8751791Z [11:30:58] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (world): All chunks are saved
+2026-10-09T11:30:58.8753359Z [11:30:58] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+2026-10-09T11:30:58.8754824Z [11:30:58] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+2026-10-09T11:30:58.8756412Z [11:30:58] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved
+2026-10-09T11:30:59.2746049Z [11:30:59] [Server thread/INFO] [minecraft/GameTestServer]: Game test server shutting down
+2026-10-09T11:30:59.6789799Z gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_5-1791545301298.json
+2026-10-09T11:30:59.6795960Z
+2026-10-09T11:30:59.6797274Z Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+2026-10-09T11:30:59.6798389Z
+2026-10-09T11:30:59.6799424Z You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+2026-10-09T11:30:59.6800723Z
+2026-10-09T11:30:59.6801912Z For more on this, please refer to https://docs.gradle.org/8.8/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+2026-10-09T11:30:59.6804377Z
+2026-10-09T11:30:59.6804826Z BUILD SUCCESSFUL in 2m 41s
+2026-10-09T11:30:59.6805743Z 11 actionable tasks: 3 executed, 8 up-to-date
+2026-10-09T11:31:00.0091227Z ##[group]Run set -o pipefail
+2026-10-09T11:31:00.0091766Z set -o pipefail
+2026-10-09T11:31:00.0092710Z bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run443 -ProadTestNamespaces=splineroads_live443 -ProadTestHeap=3G | tee run443-console.log
+2026-10-09T11:31:00.0093732Z grep -q 'LIVE443 REAL_SERVER PASS' run443-console.log
+2026-10-09T11:31:00.0160286Z shell: /usr/bin/bash -e {0}
+2026-10-09T11:31:00.0160706Z env:
+2026-10-09T11:31:00.0161263Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:31:00.0162023Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:31:00.0162615Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
+2026-10-09T11:31:00.0163163Z   GRADLE_USER_HOME: /home/runner/.gradle
+2026-10-09T11:31:00.0163591Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+2026-10-09T11:31:00.0164098Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+2026-10-09T11:31:00.0164843Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+2026-10-09T11:31:00.0165539Z   DEVELOCITY_INJECTION_CUSTOM_VALUE: gradle-actions
+2026-10-09T11:31:00.0166380Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+2026-10-09T11:31:00.0166911Z ##[endgroup]
+2026-10-09T11:31:00.6733010Z To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.8/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+2026-10-09T11:31:01.6717887Z Daemon will be stopped at the end of the build
+2026-10-09T11:31:07.1735488Z > Task :compileJava UP-TO-DATE
+2026-10-09T11:31:07.2690361Z > Task :processResources UP-TO-DATE
+2026-10-09T11:31:07.2691399Z > Task :classes UP-TO-DATE
+2026-10-09T11:31:07.3713626Z > Task :compileGameTestJava UP-TO-DATE
+2026-10-09T11:31:07.3714868Z > Task :processGameTestResources UP-TO-DATE
+2026-10-09T11:31:07.3715480Z > Task :gameTestClasses UP-TO-DATE
+2026-10-09T11:31:07.3716073Z > Task :downloadMcpConfig
+2026-10-09T11:31:07.3717107Z > Task :extractSrg UP-TO-DATE
+2026-10-09T11:31:07.4688593Z > Task :createSrgToMcp UP-TO-DATE
+2026-10-09T11:31:07.4689444Z > Task :downloadMCMeta UP-TO-DATE
+2026-10-09T11:31:07.4690406Z > Task :extractNatives UP-TO-DATE
+2026-10-09T11:31:07.4691125Z > Task :makeSrcDirs
+2026-10-09T11:31:07.4694701Z > Task :prepareRuns
+2026-10-09T11:31:07.4698448Z > Task :prepareRunGameTestServer
+2026-10-09T11:31:07.4701287Z > Task :prepareRunGameTestServerCompile UP-TO-DATE
+2026-10-09T11:31:09.4684171Z
+2026-10-09T11:31:09.4685625Z > Task :runGameTestServer
+2026-10-09T11:31:09.4690045Z 2026-10-09 11:31:09,275 main WARN Advanced terminal features are not available in this environment
+2026-10-09T11:31:09.4692919Z [11:31:09] [main/INFO] [cp.mo.mo.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgegametestserveruserdev, --gameDir, ., --fml.forgeVersion, 47.4.20, --fml.mcVersion, 1.20.1, --fml.forgeGroup, net.minecraftforge, --fml.mcpVersion, 20230612.114412]
+2026-10-09T11:31:09.4696677Z [11:31:09] [main/INFO] [cp.mo.mo.Launcher/MODLAUNCHER]: ModLauncher 10.0.9+10.0.9+main.dcd20f30 starting: java version 17.0.20.1 by Eclipse Adoptium; OS Linux arch amd64 version 6.17.0-1022-azure
+2026-10-09T11:31:09.5694031Z [11:31:09] [main/WARN] [ne.mi.fm.lo.FMLConfig/CORE]: Configuration file /home/runner/work/SplineRoads/SplineRoads/run443/config/fml.toml is not correct. Correcting
+2026-10-09T11:31:09.5735706Z [11:31:09] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowSkipGLVersions] was corrected from null to []
+2026-10-09T11:31:09.5747797Z [11:31:09] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowLogHelpMessage] was corrected from null to true
+2026-10-09T11:31:09.5749422Z [11:31:09] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowSquir] was corrected from null to false
+2026-10-09T11:31:09.5751512Z [11:31:09] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowShowCPU] was corrected from null to false
+2026-10-09T11:31:09.5753779Z [11:31:09] [main/INFO] [ne.mi.fm.lo.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgegametestserveruserdev
+2026-10-09T11:31:09.5757125Z [11:31:09] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.5 Source=union:/home/runner/.gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.5/9d1c0c3a304ae6697ecd477218fa61b850bf57fc/mixin-0.8.5.jar%23116!/ Service=ModLauncher Env=SERVER
+2026-10-09T11:31:09.8689026Z [11:31:09] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/javafmllanguage/1.20.1-47.4.20/c354b21002937b393c4f86163a98dccdf1d51e72/javafmllanguage-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T11:31:09.9704354Z [11:31:09] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/lowcodelanguage/1.20.1-47.4.20/865d75f8c18329ddb31db5856701ab86609108b5/lowcodelanguage-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T11:31:09.9708296Z [11:31:09] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/mclanguage/1.20.1-47.4.20/af599930362212ae937e392709f49047e6abbbf/mclanguage-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T11:31:09.9711846Z [11:31:09] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/fmlcore/1.20.1-47.4.20/e8cc697c69f3911e76caa2f005d9486597cd7448/fmlcore-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T11:31:09.9714279Z [11:31:09] [main/INFO] [ne.mi.fm.lo.mo.JarInJarDependencyLocator/]: No dependencies to load found. Skipping!
+2026-10-09T11:31:11.4688204Z [11:31:11] [main/INFO] [cp.mo.mo.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgegametestserveruserdev' with arguments [--gameDir, .]
+2026-10-09T11:31:16.1692406Z [11:31:16] [modloading-worker-0/INFO] [ne.mi.co.ForgeMod/FORGEMOD]: Forge mod loading, version 47.4.20, for MC 1.20.1 with MCP 20230612.114412
+2026-10-09T11:31:16.1696455Z [11:31:16] [modloading-worker-0/INFO] [ne.mi.co.MinecraftForge/FORGE]: MinecraftForge v47.4.20 Initialized
+2026-10-09T11:31:16.6701941Z [11:31:16] [Forge Version Check/INFO] [ne.mi.fm.VersionChecker/]: [forge] Starting version check at https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json
+2026-10-09T11:31:16.9687486Z [11:31:16] [Forge Version Check/INFO] [ne.mi.fm.VersionChecker/]: [forge] Found status: OUTDATED Current: 47.4.20 Target: 47.4.26
+2026-10-09T11:31:17.4690848Z [11:31:17] [main/ERROR] [minecraft/Settings]: Failed to load properties from file: server.properties
+2026-10-09T11:31:17.4692024Z java.nio.file.NoSuchFileException: server.properties
+2026-10-09T11:31:17.4693303Z 	at sun.nio.fs.UnixException.translateToIOException(UnixException.java:92) ~[?:?] {}
+2026-10-09T11:31:17.4694822Z 	at sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:106) ~[?:?] {}
+2026-10-09T11:31:17.4696444Z 	at sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111) ~[?:?] {}
+2026-10-09T11:31:17.4700108Z 	at sun.nio.fs.UnixFileSystemProvider.newByteChannel(UnixFileSystemProvider.java:218) ~[?:?] {}
+2026-10-09T11:31:17.4701390Z 	at java.nio.file.Files.newByteChannel(Files.java:380) ~[?:?] {}
+2026-10-09T11:31:17.4702469Z 	at java.nio.file.Files.newByteChannel(Files.java:432) ~[?:?] {}
+2026-10-09T11:31:17.4703727Z 	at java.nio.file.spi.FileSystemProvider.newInputStream(FileSystemProvider.java:422) ~[?:?] {}
+2026-10-09T11:31:17.4705009Z 	at java.nio.file.Files.newInputStream(Files.java:160) ~[?:?] {}
+2026-10-09T11:31:17.4706854Z 	at net.minecraft.server.dedicated.Settings.loadFromFile(Settings.java:36) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:31:17.4710198Z 	at net.minecraft.server.dedicated.DedicatedServerProperties.fromFile(DedicatedServerProperties.java:137) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:31:17.4738025Z 	at net.minecraft.server.dedicated.DedicatedServerSettings.<init>(DedicatedServerSettings.java:12) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:31:17.4740287Z 	at net.minecraft.server.Main.main(Main.java:126) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:31:17.4742599Z 	at net.minecraftforge.gametest.GameTestMain.main(GameTestMain.java:16) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:31:17.4744358Z 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?] {}
+2026-10-09T11:31:17.4745839Z 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?] {}
+2026-10-09T11:31:17.4747871Z 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?] {}
+2026-10-09T11:31:17.4749250Z 	at java.lang.reflect.Method.invoke(Method.java:569) ~[?:?] {}
+2026-10-09T11:31:17.4751151Z 	at net.minecraftforge.fml.loading.targets.ForgeGametestUserdevLaunchHandler.devService(ForgeGametestUserdevLaunchHandler.java:16) ~[fmlloader-1.20.1-47.4.20.jar:?] {}
+2026-10-09T11:31:17.4754036Z 	at net.minecraftforge.fml.loading.targets.CommonDevLaunchHandler.lambda$makeService$7(CommonDevLaunchHandler.java:135) ~[fmlloader-1.20.1-47.4.20.jar:?] {}
+2026-10-09T11:31:17.4756111Z 	at cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:30) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:31:17.4758471Z 	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:53) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:31:17.4760273Z 	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:71) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:31:17.4765713Z 	at cpw.mods.modlauncher.Launcher.run(Launcher.java:108) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:31:17.4767346Z 	at cpw.mods.modlauncher.Launcher.main(Launcher.java:78) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:31:17.4769181Z 	at cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:26) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:31:17.4770964Z 	at cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:23) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:31:17.4772791Z 	at cpw.mods.bootstraplauncher.BootstrapLauncher.main(BootstrapLauncher.java:141) ~[bootstraplauncher-1.1.2.jar:?] {}
+2026-10-09T11:31:17.5695827Z [11:31:17] [main/INFO] [mojang/YggdrasilAuthenticationService]: Environment: authHost='https://authserver.mojang.com', accountsHost='https://api.mojang.com', sessionHost='https://sessionserver.mojang.com', servicesHost='https://api.minecraftservices.com', name='PROD'
+2026-10-09T11:31:17.5701105Z [11:31:17] [main/WARN] [minecraft/VanillaPackResourcesBuilder]: Assets URL 'union:/home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar%23181!/assets/.mcassetsroot' uses unexpected schema
+2026-10-09T11:31:17.5705003Z [11:31:17] [main/WARN] [minecraft/VanillaPackResourcesBuilder]: Assets URL 'union:/home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar%23181!/data/.mcassetsroot' uses unexpected schema
+2026-10-09T11:31:19.0688243Z [11:31:18] [main/INFO] [minecraft/RecipeManager]: Loaded 7 recipes
+2026-10-09T11:31:19.1688892Z [11:31:19] [main/INFO] [minecraft/AdvancementList]: Loaded 1271 advancements
+2026-10-09T11:31:19.5686050Z [11:31:19] [main/INFO] [ne.mi.ga.ForgeGameTestHooks/]: Enabled Gametest Namespaces: [splineroads_live443]
+2026-10-09T11:31:19.6693895Z [11:31:19] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Configuration file ./world/serverconfig/forge-server.toml is not correct. Correcting
+2026-10-09T11:31:19.6697205Z [11:31:19] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server was corrected from null to its default, SimpleCommentedConfig:{}.
+2026-10-09T11:31:19.6712468Z [11:31:19] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.removeErroringBlockEntities was corrected from null to its default, false.
+2026-10-09T11:31:19.6715322Z [11:31:19] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.removeErroringEntities was corrected from null to its default, false.
+2026-10-09T11:31:19.6718511Z [11:31:19] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.fullBoundingBoxLadders was corrected from null to its default, false.
+2026-10-09T11:31:19.6721132Z [11:31:19] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.zombieBaseSummonChance was corrected from null to its default, 0.1.
+2026-10-09T11:31:19.6723756Z [11:31:19] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.zombieBabyChance was corrected from null to its default, 0.05.
+2026-10-09T11:31:19.6726667Z [11:31:19] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.permissionHandler was corrected from null to its default, forge:default_handler.
+2026-10-09T11:31:19.6729650Z [11:31:19] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.advertiseDedicatedServerToLan was corrected from null to its default, true.
+2026-10-09T11:31:19.6732597Z [11:31:19] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.useItemWithDurationZero was corrected from null to its default, false.
+2026-10-09T11:31:27.9690997Z [11:31:27] [Server thread/INFO] [minecraft/MinecraftServer]: Preparing start region for dimension minecraft:overworld
+2026-10-09T11:31:29.0707774Z [11:31:28] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:29.0709586Z [11:31:28] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:29.0737171Z [11:31:28] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:29.4690169Z [11:31:29] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:29.9688489Z [11:31:29] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:30.4690849Z [11:31:30] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:31.0727175Z [11:31:30] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:31.4687791Z [11:31:31] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:32.0717595Z [11:31:31] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:32.4688184Z [11:31:32] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:32.9685854Z [11:31:32] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:33.5688575Z [11:31:33] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:33.9688280Z [11:31:33] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:34.5689133Z [11:31:34] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:35.0694313Z [11:31:34] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:35.5692643Z [11:31:35] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:35.9686895Z [11:31:35] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:36.4686930Z [11:31:36] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:36.9692812Z [11:31:36] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:37.4684338Z [11:31:37] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:38.0688633Z [11:31:37] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:38.4692555Z [11:31:38] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:38.9687694Z [11:31:38] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:39.4687325Z [11:31:39] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:39.9694018Z [11:31:39] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:40.5684200Z [11:31:40] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:40.9696671Z [11:31:40] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:41.4687853Z [11:31:41] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:41.9687645Z [11:31:41] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:42.4688609Z [11:31:42] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:43.7693143Z [11:31:43] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:43.7737141Z [11:31:43] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:43.9719285Z [11:31:43] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:44.4688817Z [11:31:44] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:44.9694249Z [11:31:44] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:45.4684549Z [11:31:45] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:45.9697780Z [11:31:45] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:46.4698532Z [11:31:46] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:47.0688537Z [11:31:46] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:47.4683970Z [11:31:47] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:48.0710784Z [11:31:47] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:48.4735797Z [11:31:48] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:48.9684412Z [11:31:48] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:49.4688958Z [11:31:49] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:50.0687409Z [11:31:49] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:50.4688090Z [11:31:50] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:50.9687409Z [11:31:50] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:51.4684427Z [11:31:51] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:51.9708449Z [11:31:51] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:52.4684181Z [11:31:52] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:52.9689468Z [11:31:52] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:53.4688460Z [11:31:53] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:54.0684789Z [11:31:53] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:54.4686372Z [11:31:54] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:54.9684185Z [11:31:54] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:55.4687330Z [11:31:55] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:55.9683986Z [11:31:55] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:56.4684594Z [11:31:56] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:56.9685485Z [11:31:56] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:57.4684481Z [11:31:57] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:57.9684101Z [11:31:57] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:58.4684673Z [11:31:58] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:58.9686723Z [11:31:58] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:59.4685528Z [11:31:59] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:31:59.9687195Z [11:31:59] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:32:00.4684805Z [11:32:00] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:32:00.9705263Z [11:32:00] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:32:01.4695429Z [11:32:01] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:32:01.9685082Z [11:32:01] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:32:02.4685092Z [11:32:02] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:32:03.0684253Z [11:32:02] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:32:03.4684070Z [11:32:03] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:32:03.9688124Z [11:32:03] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:32:04.4687811Z [11:32:04] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:32:04.9686698Z [11:32:04] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:32:05.4686365Z [11:32:05] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:32:05.9687754Z [11:32:05] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:32:06.4685238Z [11:32:06] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:32:07.0691588Z [11:32:07] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:32:07.4688646Z [11:32:07] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:32:08.7686653Z [11:32:08] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 8%
+2026-10-09T11:32:08.7688411Z [11:32:08] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 8%
+2026-10-09T11:32:08.9712752Z [11:32:08] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 90%
+2026-10-09T11:32:10.6697629Z [11:32:10] [Server thread/INFO] [minecraft/LoggerChunkProgressListener]: Time elapsed: 42656 ms
+2026-10-09T11:32:10.6698879Z [11:32:10] [Server thread/INFO] [minecraft/GameTestServer]: Started game test server
+2026-10-09T11:32:10.6700355Z [11:32:10] [Server thread/INFO] [ne.mi.se.pe.PermissionAPI/]: Successfully initialized permission handler forge:default_handler
+2026-10-09T11:32:11.5685721Z [11:32:11] [Server thread/INFO] [minecraft/GameTestBatchRunner]: Running test batch 'splineroads_live443:1' (1 tests)...
+2026-10-09T11:32:11.7684202Z [11:32:11] [Server thread/INFO] [minecraft/GameTestServer]: 1 tests are now running!
+2026-10-09T11:32:26.2693618Z LIVE443 REAL_SERVER PASS exact support planning against an unrasterized candidate and Mojang NBT
+2026-10-09T11:32:26.2699079Z [11:32:26] [Server thread/INFO] [minecraft/GameTestServer]: [+]
+2026-10-09T11:32:26.2700471Z [11:32:26] [Server thread/INFO] [minecraft/GameTestServer]: ========= 1 GAME TESTS COMPLETE ======================
+2026-10-09T11:32:26.2702865Z [11:32:26] [Server thread/INFO] [minecraft/GameTestServer]: All 1 required tests passed :)
+2026-10-09T11:32:26.2704514Z [11:32:26] [Server thread/INFO] [minecraft/GameTestServer]: ====================================================
+2026-10-09T11:32:26.2707332Z [11:32:26] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server
+2026-10-09T11:32:26.2708522Z [11:32:26] [Server thread/INFO] [minecraft/MinecraftServer]: Saving players
+2026-10-09T11:32:26.2709721Z [11:32:26] [Server thread/INFO] [minecraft/MinecraftServer]: Saving worlds
+2026-10-09T11:32:29.0691258Z [11:32:29] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:overworld
+2026-10-09T11:32:30.7697034Z [11:32:30] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_nether
+2026-10-09T11:32:30.7699040Z [11:32:30] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_end
+2026-10-09T11:32:30.7701064Z [11:32:30] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (world): All chunks are saved
+2026-10-09T11:32:30.7703057Z [11:32:30] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+2026-10-09T11:32:30.7715055Z [11:32:30] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+2026-10-09T11:32:30.7727296Z [11:32:30] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved
+2026-10-09T11:32:31.1685101Z [11:32:31] [Server thread/INFO] [minecraft/GameTestServer]: Game test server shutting down
+2026-10-09T11:32:31.5644319Z gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_6-1791545463077.json
+2026-10-09T11:32:31.5645610Z
+2026-10-09T11:32:31.5646643Z Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+2026-10-09T11:32:31.5647612Z
+2026-10-09T11:32:31.5648549Z You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+2026-10-09T11:32:31.5659900Z
+2026-10-09T11:32:31.5663906Z For more on this, please refer to https://docs.gradle.org/8.8/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+2026-10-09T11:32:31.5665261Z
+2026-10-09T11:32:31.5665570Z BUILD SUCCESSFUL in 1m 31s
+2026-10-09T11:32:31.5666837Z 11 actionable tasks: 3 executed, 8 up-to-date
+2026-10-09T11:32:31.8949848Z ##[group]Run set -o pipefail
+2026-10-09T11:32:31.8950170Z set -o pipefail
+2026-10-09T11:32:31.8950951Z bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run442 -ProadTestNamespaces=splineroads_live442 -ProadTestHeap=3G | tee run442-console.log
+2026-10-09T11:32:31.8951872Z grep -q 'LIVE442 REAL_WORLD PASS continuation:' run442-console.log
+2026-10-09T11:32:31.9017385Z shell: /usr/bin/bash -e {0}
+2026-10-09T11:32:31.9017646Z env:
+2026-10-09T11:32:31.9017961Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:32:31.9018471Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:32:31.9018906Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
+2026-10-09T11:32:31.9019415Z   GRADLE_USER_HOME: /home/runner/.gradle
+2026-10-09T11:32:31.9019719Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+2026-10-09T11:32:31.9020056Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+2026-10-09T11:32:31.9020510Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+2026-10-09T11:32:31.9021052Z   DEVELOCITY_INJECTION_CUSTOM_VALUE: gradle-actions
+2026-10-09T11:32:31.9021406Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+2026-10-09T11:32:31.9021695Z ##[endgroup]
+2026-10-09T11:32:32.5377597Z To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.8/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+2026-10-09T11:32:33.4379887Z Daemon will be stopped at the end of the build
+2026-10-09T11:32:39.1408104Z > Task :compileJava UP-TO-DATE
+2026-10-09T11:32:39.3366446Z > Task :processResources UP-TO-DATE
+2026-10-09T11:32:39.3367476Z > Task :classes UP-TO-DATE
+2026-10-09T11:32:39.3384673Z > Task :compileGameTestJava UP-TO-DATE
+2026-10-09T11:32:39.4368739Z > Task :processGameTestResources UP-TO-DATE
+2026-10-09T11:32:39.4387766Z > Task :gameTestClasses UP-TO-DATE
+2026-10-09T11:32:39.4394642Z > Task :downloadMcpConfig
+2026-10-09T11:32:39.4395263Z > Task :extractSrg UP-TO-DATE
+2026-10-09T11:32:39.4395908Z > Task :createSrgToMcp UP-TO-DATE
+2026-10-09T11:32:39.4396886Z > Task :downloadMCMeta UP-TO-DATE
+2026-10-09T11:32:39.4397565Z > Task :extractNatives UP-TO-DATE
+2026-10-09T11:32:39.4398208Z > Task :makeSrcDirs
+2026-10-09T11:32:39.4398768Z > Task :prepareRuns
+2026-10-09T11:32:39.4399383Z > Task :prepareRunGameTestServer
+2026-10-09T11:32:39.4400197Z > Task :prepareRunGameTestServerCompile UP-TO-DATE
+2026-10-09T11:32:41.4366772Z
+2026-10-09T11:32:41.4398618Z > Task :runGameTestServer
+2026-10-09T11:32:41.4405487Z 2026-10-09 11:32:41,211 main WARN Advanced terminal features are not available in this environment
+2026-10-09T11:32:41.4408203Z [11:32:41] [main/INFO] [cp.mo.mo.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgegametestserveruserdev, --gameDir, ., --fml.forgeVersion, 47.4.20, --fml.mcVersion, 1.20.1, --fml.forgeGroup, net.minecraftforge, --fml.mcpVersion, 20230612.114412]
+2026-10-09T11:32:41.4411239Z [11:32:41] [main/INFO] [cp.mo.mo.Launcher/MODLAUNCHER]: ModLauncher 10.0.9+10.0.9+main.dcd20f30 starting: java version 17.0.20.1 by Eclipse Adoptium; OS Linux arch amd64 version 6.17.0-1022-azure
+2026-10-09T11:32:41.4413486Z [11:32:41] [main/WARN] [ne.mi.fm.lo.FMLConfig/CORE]: Configuration file /home/runner/work/SplineRoads/SplineRoads/run442/config/fml.toml is not correct. Correcting
+2026-10-09T11:32:41.4415157Z [11:32:41] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowSkipGLVersions] was corrected from null to []
+2026-10-09T11:32:41.4416957Z [11:32:41] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowLogHelpMessage] was corrected from null to true
+2026-10-09T11:32:41.4418483Z [11:32:41] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowSquir] was corrected from null to false
+2026-10-09T11:32:41.4420342Z [11:32:41] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowShowCPU] was corrected from null to false
+2026-10-09T11:32:41.5368097Z [11:32:41] [main/INFO] [ne.mi.fm.lo.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgegametestserveruserdev
+2026-10-09T11:32:41.5371317Z [11:32:41] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.5 Source=union:/home/runner/.gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.5/9d1c0c3a304ae6697ecd477218fa61b850bf57fc/mixin-0.8.5.jar%23116!/ Service=ModLauncher Env=SERVER
+2026-10-09T11:32:41.8373575Z [11:32:41] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/javafmllanguage/1.20.1-47.4.20/c354b21002937b393c4f86163a98dccdf1d51e72/javafmllanguage-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T11:32:41.8378349Z [11:32:41] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/lowcodelanguage/1.20.1-47.4.20/865d75f8c18329ddb31db5856701ab86609108b5/lowcodelanguage-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T11:32:41.8382220Z [11:32:41] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/mclanguage/1.20.1-47.4.20/af599930362212ae937e392709f49047e6abbbf/mclanguage-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T11:32:41.8385793Z [11:32:41] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/fmlcore/1.20.1-47.4.20/e8cc697c69f3911e76caa2f005d9486597cd7448/fmlcore-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T11:32:41.9364362Z [11:32:41] [main/INFO] [ne.mi.fm.lo.mo.JarInJarDependencyLocator/]: No dependencies to load found. Skipping!
+2026-10-09T11:32:43.3364003Z [11:32:43] [main/INFO] [cp.mo.mo.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgegametestserveruserdev' with arguments [--gameDir, .]
+2026-10-09T11:32:48.2371341Z [11:32:48] [modloading-worker-0/INFO] [ne.mi.co.ForgeMod/FORGEMOD]: Forge mod loading, version 47.4.20, for MC 1.20.1 with MCP 20230612.114412
+2026-10-09T11:32:48.2397656Z [11:32:48] [modloading-worker-0/INFO] [ne.mi.co.MinecraftForge/FORGE]: MinecraftForge v47.4.20 Initialized
+2026-10-09T11:32:48.6364959Z [11:32:48] [Forge Version Check/INFO] [ne.mi.fm.VersionChecker/]: [forge] Starting version check at https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json
+2026-10-09T11:32:48.9364008Z [11:32:48] [Forge Version Check/INFO] [ne.mi.fm.VersionChecker/]: [forge] Found status: OUTDATED Current: 47.4.20 Target: 47.4.26
+2026-10-09T11:32:49.7371043Z [11:32:49] [main/ERROR] [minecraft/Settings]: Failed to load properties from file: server.properties
+2026-10-09T11:32:49.7387332Z java.nio.file.NoSuchFileException: server.properties
+2026-10-09T11:32:49.7427248Z 	at sun.nio.fs.UnixException.translateToIOException(UnixException.java:92) ~[?:?] {}
+2026-10-09T11:32:49.7447180Z 	at sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:106) ~[?:?] {}
+2026-10-09T11:32:49.7457131Z 	at sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111) ~[?:?] {}
+2026-10-09T11:32:49.7477442Z 	at sun.nio.fs.UnixFileSystemProvider.newByteChannel(UnixFileSystemProvider.java:218) ~[?:?] {}
+2026-10-09T11:32:49.7478487Z 	at java.nio.file.Files.newByteChannel(Files.java:380) ~[?:?] {}
+2026-10-09T11:32:49.7479257Z 	at java.nio.file.Files.newByteChannel(Files.java:432) ~[?:?] {}
+2026-10-09T11:32:49.7480237Z 	at java.nio.file.spi.FileSystemProvider.newInputStream(FileSystemProvider.java:422) ~[?:?] {}
+2026-10-09T11:32:49.7481275Z 	at java.nio.file.Files.newInputStream(Files.java:160) ~[?:?] {}
+2026-10-09T11:32:49.7482461Z 	at net.minecraft.server.dedicated.Settings.loadFromFile(Settings.java:36) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:32:49.7484667Z 	at net.minecraft.server.dedicated.DedicatedServerProperties.fromFile(DedicatedServerProperties.java:137) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:32:49.7487163Z 	at net.minecraft.server.dedicated.DedicatedServerSettings.<init>(DedicatedServerSettings.java:12) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:32:49.7488164Z 	at net.minecraft.server.Main.main(Main.java:126) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:32:49.7489168Z 	at net.minecraftforge.gametest.GameTestMain.main(GameTestMain.java:16) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:32:49.7489999Z 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?] {}
+2026-10-09T11:32:49.7490687Z 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?] {}
+2026-10-09T11:32:49.7491745Z 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?] {}
+2026-10-09T11:32:49.7492382Z 	at java.lang.reflect.Method.invoke(Method.java:569) ~[?:?] {}
+2026-10-09T11:32:49.7493389Z 	at net.minecraftforge.fml.loading.targets.ForgeGametestUserdevLaunchHandler.devService(ForgeGametestUserdevLaunchHandler.java:16) ~[fmlloader-1.20.1-47.4.20.jar:?] {}
+2026-10-09T11:32:49.7494651Z 	at net.minecraftforge.fml.loading.targets.CommonDevLaunchHandler.lambda$makeService$7(CommonDevLaunchHandler.java:135) ~[fmlloader-1.20.1-47.4.20.jar:?] {}
+2026-10-09T11:32:49.7495728Z 	at cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:30) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:32:49.7496912Z 	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:53) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:32:49.7497731Z 	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:71) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:32:49.7498446Z 	at cpw.mods.modlauncher.Launcher.run(Launcher.java:108) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:32:49.7499128Z 	at cpw.mods.modlauncher.Launcher.main(Launcher.java:78) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:32:49.7499890Z 	at cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:26) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:32:49.7500787Z 	at cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:23) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:32:49.7502036Z 	at cpw.mods.bootstraplauncher.BootstrapLauncher.main(BootstrapLauncher.java:141) ~[bootstraplauncher-1.1.2.jar:?] {}
+2026-10-09T11:32:49.7503476Z [11:32:49] [main/INFO] [mojang/YggdrasilAuthenticationService]: Environment: authHost='https://authserver.mojang.com', accountsHost='https://api.mojang.com', sessionHost='https://sessionserver.mojang.com', servicesHost='https://api.minecraftservices.com', name='PROD'
+2026-10-09T11:32:49.7505408Z [11:32:49] [main/WARN] [minecraft/VanillaPackResourcesBuilder]: Assets URL 'union:/home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar%23181!/assets/.mcassetsroot' uses unexpected schema
+2026-10-09T11:32:49.7508581Z [11:32:49] [main/WARN] [minecraft/VanillaPackResourcesBuilder]: Assets URL 'union:/home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar%23181!/data/.mcassetsroot' uses unexpected schema
+2026-10-09T11:32:51.2364916Z [11:32:51] [main/INFO] [minecraft/RecipeManager]: Loaded 7 recipes
+2026-10-09T11:32:51.3364182Z [11:32:51] [main/INFO] [minecraft/AdvancementList]: Loaded 1271 advancements
+2026-10-09T11:32:51.7364674Z [11:32:51] [main/INFO] [ne.mi.ga.ForgeGameTestHooks/]: Enabled Gametest Namespaces: [splineroads_live442]
+2026-10-09T11:32:51.8375084Z [11:32:51] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Configuration file ./world/serverconfig/forge-server.toml is not correct. Correcting
+2026-10-09T11:32:51.8392133Z [11:32:51] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server was corrected from null to its default, SimpleCommentedConfig:{}.
+2026-10-09T11:32:51.8397972Z [11:32:51] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.removeErroringBlockEntities was corrected from null to its default, false.
+2026-10-09T11:32:51.8400333Z [11:32:51] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.removeErroringEntities was corrected from null to its default, false.
+2026-10-09T11:32:51.8402683Z [11:32:51] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.fullBoundingBoxLadders was corrected from null to its default, false.
+2026-10-09T11:32:51.8405040Z [11:32:51] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.zombieBaseSummonChance was corrected from null to its default, 0.1.
+2026-10-09T11:32:51.8407994Z [11:32:51] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.zombieBabyChance was corrected from null to its default, 0.05.
+2026-10-09T11:32:51.8410370Z [11:32:51] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.permissionHandler was corrected from null to its default, forge:default_handler.
+2026-10-09T11:32:51.8412815Z [11:32:51] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.advertiseDedicatedServerToLan was corrected from null to its default, true.
+2026-10-09T11:32:51.8415191Z [11:32:51] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.useItemWithDurationZero was corrected from null to its default, false.
+2026-10-09T11:33:01.4364420Z [11:33:01] [Server thread/INFO] [minecraft/MinecraftServer]: Preparing start region for dimension minecraft:overworld
+2026-10-09T11:33:02.5377509Z [11:33:02] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:33:02.5396193Z [11:33:02] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:33:02.6389242Z [11:33:02] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:33:02.9377671Z [11:33:02] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:33:03.4366931Z [11:33:03] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:33:03.9389610Z [11:33:03] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:33:04.4366833Z [11:33:04] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:33:04.9365836Z [11:33:04] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:33:05.4368901Z [11:33:05] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:33:05.9365612Z [11:33:05] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:33:06.4362588Z [11:33:06] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:33:06.9366029Z [11:33:06] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:33:07.4372855Z [11:33:07] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:33:07.9366887Z [11:33:07] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:33:08.4367968Z [11:33:08] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:33:08.9370518Z [11:33:08] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:33:09.4367441Z [11:33:09] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:33:09.9365428Z [11:33:09] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:33:10.4406081Z [11:33:10] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:33:10.9365741Z [11:33:10] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 9%
+2026-10-09T11:33:11.4378794Z [11:33:11] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 13%
+2026-10-09T11:33:11.9365085Z [11:33:11] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 15%
+2026-10-09T11:33:12.4366359Z [11:33:12] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 15%
+2026-10-09T11:33:12.9365386Z [11:33:12] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 16%
+2026-10-09T11:33:13.4362578Z [11:33:13] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 17%
+2026-10-09T11:33:13.9363463Z [11:33:13] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 17%
+2026-10-09T11:33:14.4363072Z [11:33:14] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 17%
+2026-10-09T11:33:14.9362909Z [11:33:14] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 17%
+2026-10-09T11:33:15.4362850Z [11:33:15] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 17%
+2026-10-09T11:33:15.9366097Z [11:33:15] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 17%
+2026-10-09T11:33:16.4375103Z [11:33:16] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 17%
+2026-10-09T11:33:16.9362327Z [11:33:16] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 17%
+2026-10-09T11:33:17.4365983Z [11:33:17] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 17%
+2026-10-09T11:33:17.9368834Z [11:33:17] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 17%
+2026-10-09T11:33:18.4366907Z [11:33:18] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 17%
+2026-10-09T11:33:18.9363023Z [11:33:18] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 17%
+2026-10-09T11:33:19.4370797Z [11:33:19] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 17%
+2026-10-09T11:33:19.9384974Z [11:33:19] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 17%
+2026-10-09T11:33:20.4365167Z [11:33:20] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 17%
+2026-10-09T11:33:20.9367385Z [11:33:20] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 17%
+2026-10-09T11:33:21.4365619Z [11:33:21] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 17%
+2026-10-09T11:33:21.9362935Z [11:33:21] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 17%
+2026-10-09T11:33:22.4377865Z [11:33:22] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 17%
+2026-10-09T11:33:22.9363015Z [11:33:22] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 17%
+2026-10-09T11:33:23.4367854Z [11:33:23] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 17%
+2026-10-09T11:33:23.9377753Z [11:33:23] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 19%
+2026-10-09T11:33:24.4377560Z [11:33:24] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 55%
+2026-10-09T11:33:24.9365952Z [11:33:24] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 56%
+2026-10-09T11:33:25.4364985Z [11:33:25] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 58%
+2026-10-09T11:33:25.9382654Z [11:33:25] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 60%
+2026-10-09T11:33:26.4365949Z [11:33:26] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 62%
+2026-10-09T11:33:26.9392863Z [11:33:26] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 63%
+2026-10-09T11:33:27.4362761Z [11:33:27] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 65%
+2026-10-09T11:33:27.9362885Z [11:33:27] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 67%
+2026-10-09T11:33:28.4362821Z [11:33:28] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 69%
+2026-10-09T11:33:28.9362389Z [11:33:28] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 70%
+2026-10-09T11:33:29.4362277Z [11:33:29] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 71%
+2026-10-09T11:33:29.9367050Z [11:33:29] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 73%
+2026-10-09T11:33:30.4364870Z [11:33:30] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 75%
+2026-10-09T11:33:30.9361987Z [11:33:30] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 77%
+2026-10-09T11:33:31.4364851Z [11:33:31] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 79%
+2026-10-09T11:33:31.9366023Z [11:33:31] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 81%
+2026-10-09T11:33:32.4397806Z [11:33:32] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 83%
+2026-10-09T11:33:32.9365703Z [11:33:32] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 83%
+2026-10-09T11:33:33.4365377Z [11:33:33] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 83%
+2026-10-09T11:33:33.9365525Z [11:33:33] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 83%
+2026-10-09T11:33:34.4366606Z [11:33:34] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 83%
+2026-10-09T11:33:34.9366678Z [11:33:34] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 83%
+2026-10-09T11:33:35.4365312Z [11:33:35] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 83%
+2026-10-09T11:33:35.9366076Z [11:33:35] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 83%
+2026-10-09T11:33:36.4365115Z [11:33:36] [Worker-Main-6/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 83%
+2026-10-09T11:33:36.9374237Z [11:33:36] [Server thread/INFO] [minecraft/LoggerChunkProgressListener]: Time elapsed: 35499 ms
+2026-10-09T11:33:36.9391890Z [11:33:36] [Server thread/INFO] [minecraft/GameTestServer]: Started game test server
+2026-10-09T11:33:36.9393921Z [11:33:36] [Server thread/INFO] [ne.mi.se.pe.PermissionAPI/]: Successfully initialized permission handler forge:default_handler
+2026-10-09T11:33:59.4362808Z [11:33:59] [Server thread/INFO] [minecraft/GameTestBatchRunner]: Running test batch 'splineroads_live442:1' (1 tests)...
+2026-10-09T11:33:59.5365750Z [11:33:59] [Server thread/INFO] [minecraft/GameTestServer]: 1 tests are now running!
+2026-10-09T11:33:59.5367405Z [11:33:59] [Server thread/WARN] [minecraft/MinecraftServer]: Can't keep up! Is the server overloaded? Running 22578ms or 451 ticks behind
+2026-10-09T11:34:30.0362453Z Oct 09, 2026 11:34:29 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:34:30.0372009Z INFO: SR edit: 637 ms, roads=0, requested=1, phases(ms)={normalize_transitions=11.761956, affected_structures=0.428938, attached_points=1.525491, topology=22.000334, caps_and_dependencies=9.221686, terrain_chunk_access=1.656617, furniture_phase=8.306323, structure_candidate_index=0.702893, structure_plan=184.488488, dependent_replanning=1.658682, caps_shell_and_joint_validation=5.619275, edit_raster=105.246675, sidewalks=5.013148, local_collision=65.852034, validation_commit_sync=213.264773}
+2026-10-09T11:34:30.0376028Z Oct 09, 2026 11:34:30 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:34:30.0377439Z INFO: SR connect: 691 ms, roads=0, requested=1, phases(ms)={}
+2026-10-09T11:34:30.6363021Z Oct 09, 2026 11:34:30 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:34:30.6369251Z INFO: SR edit: 540 ms, roads=1, requested=1, phases(ms)={normalize_transitions=0.129904, affected_structures=0.344769, attached_points=0.033884, topology=12.193628, caps_and_dependencies=9.186108, terrain_chunk_access=1.800499, furniture_phase=1.402349, structure_candidate_index=0.006272, structure_plan=118.35797, dependent_replanning=0.460347, caps_shell_and_joint_validation=1.949378, edit_raster=101.282177, sidewalks=0.437043, local_collision=45.211478, validation_commit_sync=247.387425}
+2026-10-09T11:34:30.6373864Z Oct 09, 2026 11:34:30 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:34:30.6375436Z INFO: SR connect: 560 ms, roads=1, requested=1, phases(ms)={}
+2026-10-09T11:34:35.7362338Z Oct 09, 2026 11:34:35 AM com.sora.splineroads.world.LaneRamps$Planning close
+2026-10-09T11:34:35.7363825Z INFO: SR route plan total_ms=5118.138 clearance_ms=980.422 candidates=231 contact_queries=928 cached_meshes=4
+2026-10-09T11:34:39.5361826Z Oct 09, 2026 11:34:39 AM com.sora.splineroads.world.LaneRamps$Planning close
+2026-10-09T11:34:39.5363338Z INFO: SR route plan total_ms=3809.214 clearance_ms=927.739 candidates=231 contact_queries=928 cached_meshes=27
+2026-10-09T11:34:41.7388893Z Oct 09, 2026 11:34:41 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:34:41.7409842Z INFO: SR edit: 2,130 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.070693, affected_structures=3.529884, attached_points=0.78149, topology=82.222742, caps_and_dependencies=0.076224, terrain_chunk_access=1.297632, furniture_phase=0.215486, structure_candidate_index=0.017362, structure_plan=544.6225, dependent_replanning=492.540774, caps_shell_and_joint_validation=16.60973, edit_raster=543.694784, sidewalks=0.187223, local_collision=78.217393, validation_commit_sync=365.562882}
+2026-10-09T11:34:41.7413249Z LIVE442 DETACH_BUILD_PASS
+2026-10-09T11:34:44.6362020Z Oct 09, 2026 11:34:44 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:34:44.6365952Z INFO: SR edit: 2,817 ms, roads=3, requested=2, phases(ms)={normalize_transitions=2.802885, affected_structures=8.627947, attached_points=0.090681, topology=795.524582, caps_and_dependencies=15.061165, terrain_chunk_access=1.533316, furniture_phase=0.315053, structure_candidate_index=0.005901, structure_plan=484.580639, dependent_replanning=710.48426, caps_shell_and_joint_validation=14.101649, edit_raster=503.686076, sidewalks=0.198685, local_collision=28.556723, validation_commit_sync=251.74546}
+2026-10-09T11:34:44.6369699Z Oct 09, 2026 11:34:44 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:34:44.6370532Z INFO: SR connect: 2,932 ms, roads=3, requested=1, phases(ms)={}
+2026-10-09T11:34:44.6371183Z LIVE442 CONTINUATION_BUILD_PASS
+2026-10-09T11:34:45.7366805Z Oct 09, 2026 11:34:45 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:34:45.7367516Z LIVE442 DELETE_PASS
+2026-10-09T11:34:45.7373845Z INFO: SR edit: 1,086 ms, roads=4, requested=0, phases(ms)={normalize_transitions=0.079359, affected_structures=1.536802, attached_points=0.002525, topology=70.026388, caps_and_dependencies=0.060534, terrain_chunk_access=1.366241, furniture_phase=0.032532, structure_candidate_index=0.003837, structure_plan=145.437961, dependent_replanning=0.008897, caps_shell_and_joint_validation=0.457711, edit_raster=355.026383, sidewalks=0.102112, local_collision=96.185839, validation_commit_sync=415.524369}
+2026-10-09T11:34:57.4361711Z Oct 09, 2026 11:34:57 AM com.sora.splineroads.world.LaneRamps$Planning close
+2026-10-09T11:34:57.4363271Z INFO: SR route plan total_ms=11587.170 clearance_ms=2897.225 candidates=231 contact_queries=1160 cached_meshes=28
+2026-10-09T11:35:00.0362952Z Oct 09, 2026 11:34:59 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:35:00.0364124Z LIVE442 REBUILD_PASS
+2026-10-09T11:35:00.0368034Z INFO: SR edit: 2,600 ms, roads=3, requested=1, phases(ms)={normalize_transitions=0.109646, affected_structures=1.225226, attached_points=0.07461, topology=492.176696, caps_and_dependencies=0.056737, terrain_chunk_access=1.180732, furniture_phase=0.15935, structure_candidate_index=0.003246, structure_plan=386.222092, dependent_replanning=859.524778, caps_shell_and_joint_validation=23.211224, edit_raster=376.810029, sidewalks=0.125216, local_collision=100.969527, validation_commit_sync=357.95376}
+2026-10-09T11:35:00.1399183Z LIVE442 REAL_WORLD PASS continuation: 2->DETACH->1-lane B->delete->2-to-1 taper->new DETACH build
+2026-10-09T11:35:00.1426823Z [11:35:00] [Server thread/INFO] [minecraft/GameTestServer]: [+]
+2026-10-09T11:35:00.1456947Z [11:35:00] [Server thread/INFO] [minecraft/GameTestServer]: ========= 1 GAME TESTS COMPLETE ======================
+2026-10-09T11:35:00.1458732Z [11:35:00] [Server thread/INFO] [minecraft/GameTestServer]: All 1 required tests passed :)
+2026-10-09T11:35:00.1486883Z [11:35:00] [Server thread/INFO] [minecraft/GameTestServer]: ====================================================
+2026-10-09T11:35:00.1495864Z [11:35:00] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server
+2026-10-09T11:35:00.1526929Z [11:35:00] [Server thread/INFO] [minecraft/MinecraftServer]: Saving players
+2026-10-09T11:35:00.1546688Z [11:35:00] [Server thread/INFO] [minecraft/MinecraftServer]: Saving worlds
+2026-10-09T11:35:03.6370279Z [11:35:03] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:overworld
+2026-10-09T11:35:06.3363304Z [11:35:06] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_end
+2026-10-09T11:35:06.3365209Z [11:35:06] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_nether
+2026-10-09T11:35:06.4362521Z [11:35:06] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (world): All chunks are saved
+2026-10-09T11:35:06.4365954Z [11:35:06] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+2026-10-09T11:35:06.4371347Z [11:35:06] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+2026-10-09T11:35:06.4373014Z [11:35:06] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved
+2026-10-09T11:35:06.8362339Z [11:35:06] [Server thread/INFO] [minecraft/GameTestServer]: Game test server shutting down
+2026-10-09T11:35:07.1367882Z gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_7-1791545555028.json
+2026-10-09T11:35:07.1370231Z
+2026-10-09T11:35:07.1370961Z Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+2026-10-09T11:35:07.1371956Z
+2026-10-09T11:35:07.1372963Z You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+2026-10-09T11:35:07.1373689Z
+2026-10-09T11:35:07.1374328Z For more on this, please refer to https://docs.gradle.org/8.8/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+2026-10-09T11:35:07.1375571Z
+2026-10-09T11:35:07.1375927Z BUILD SUCCESSFUL in 2m 35s
+2026-10-09T11:35:07.1376938Z 11 actionable tasks: 3 executed, 8 up-to-date
+2026-10-09T11:35:07.4977955Z ##[group]Run set -o pipefail
+2026-10-09T11:35:07.4978361Z set -o pipefail
+2026-10-09T11:35:07.4979211Z bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run440terrain -ProadTestNamespaces=splineroads_live440 -ProadTestHeap=3G | tee run440terrain-console.log
+2026-10-09T11:35:07.4980171Z grep -q 'LIVE440 REAL_WORLD PASS' run440terrain-console.log
+2026-10-09T11:35:07.5061481Z shell: /usr/bin/bash -e {0}
+2026-10-09T11:35:07.5061858Z env:
+2026-10-09T11:35:07.5062336Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:35:07.5063226Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:35:07.5063975Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
+2026-10-09T11:35:07.5064513Z   GRADLE_USER_HOME: /home/runner/.gradle
+2026-10-09T11:35:07.5065025Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+2026-10-09T11:35:07.5065586Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+2026-10-09T11:35:07.5066584Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+2026-10-09T11:35:07.5067441Z   DEVELOCITY_INJECTION_CUSTOM_VALUE: gradle-actions
+2026-10-09T11:35:07.5067994Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+2026-10-09T11:35:07.5068467Z ##[endgroup]
+2026-10-09T11:35:08.1932875Z To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.8/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+2026-10-09T11:35:09.0917399Z Daemon will be stopped at the end of the build
+2026-10-09T11:35:14.4944757Z > Task :compileJava UP-TO-DATE
+2026-10-09T11:35:14.5919111Z > Task :processResources UP-TO-DATE
+2026-10-09T11:35:14.5919831Z > Task :classes UP-TO-DATE
+2026-10-09T11:35:14.6938928Z > Task :compileGameTestJava UP-TO-DATE
+2026-10-09T11:35:14.6940248Z > Task :processGameTestResources UP-TO-DATE
+2026-10-09T11:35:14.6941166Z > Task :gameTestClasses UP-TO-DATE
+2026-10-09T11:35:14.7920610Z > Task :downloadMcpConfig
+2026-10-09T11:35:14.7946957Z > Task :extractSrg UP-TO-DATE
+2026-10-09T11:35:14.7959451Z > Task :createSrgToMcp UP-TO-DATE
+2026-10-09T11:35:14.7960092Z > Task :downloadMCMeta UP-TO-DATE
+2026-10-09T11:35:14.7960667Z > Task :extractNatives UP-TO-DATE
+2026-10-09T11:35:14.7961147Z > Task :makeSrcDirs
+2026-10-09T11:35:14.7961762Z > Task :prepareRuns
+2026-10-09T11:35:14.7969212Z > Task :prepareRunGameTestServer
+2026-10-09T11:35:14.7970308Z > Task :prepareRunGameTestServerCompile UP-TO-DATE
+2026-10-09T11:35:16.7931716Z
+2026-10-09T11:35:16.7937124Z > Task :runGameTestServer
+2026-10-09T11:35:16.7945595Z 2026-10-09 11:35:16,687 main WARN Advanced terminal features are not available in this environment
+2026-10-09T11:35:16.8920090Z [11:35:16] [main/INFO] [cp.mo.mo.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgegametestserveruserdev, --gameDir, ., --fml.forgeVersion, 47.4.20, --fml.mcVersion, 1.20.1, --fml.forgeGroup, net.minecraftforge, --fml.mcpVersion, 20230612.114412]
+2026-10-09T11:35:16.8928767Z [11:35:16] [main/INFO] [cp.mo.mo.Launcher/MODLAUNCHER]: ModLauncher 10.0.9+10.0.9+main.dcd20f30 starting: java version 17.0.20.1 by Eclipse Adoptium; OS Linux arch amd64 version 6.17.0-1022-azure
+2026-10-09T11:35:16.8931746Z [11:35:16] [main/WARN] [ne.mi.fm.lo.FMLConfig/CORE]: Configuration file /home/runner/work/SplineRoads/SplineRoads/run440terrain/config/fml.toml is not correct. Correcting
+2026-10-09T11:35:16.8934105Z [11:35:16] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowSkipGLVersions] was corrected from null to []
+2026-10-09T11:35:16.9938795Z [11:35:16] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowLogHelpMessage] was corrected from null to true
+2026-10-09T11:35:16.9940873Z [11:35:16] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowSquir] was corrected from null to false
+2026-10-09T11:35:16.9943200Z [11:35:16] [main/INFO] [ne.mi.fm.lo.FMLConfig/CORE]: Incorrect key [earlyWindowShowCPU] was corrected from null to false
+2026-10-09T11:35:16.9945119Z [11:35:16] [main/INFO] [ne.mi.fm.lo.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgegametestserveruserdev
+2026-10-09T11:35:16.9948339Z [11:35:16] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.5 Source=union:/home/runner/.gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.5/9d1c0c3a304ae6697ecd477218fa61b850bf57fc/mixin-0.8.5.jar%23116!/ Service=ModLauncher Env=SERVER
+2026-10-09T11:35:17.2918711Z [11:35:17] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/javafmllanguage/1.20.1-47.4.20/c354b21002937b393c4f86163a98dccdf1d51e72/javafmllanguage-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T11:35:17.2928761Z [11:35:17] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/lowcodelanguage/1.20.1-47.4.20/865d75f8c18329ddb31db5856701ab86609108b5/lowcodelanguage-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T11:35:17.2932688Z [11:35:17] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/mclanguage/1.20.1-47.4.20/af599930362212ae937e392709f49047e6abbbf/mclanguage-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T11:35:17.2936910Z [11:35:17] [main/WARN] [ne.mi.fm.lo.mo.ModFileParser/LOADING]: Mod file /home/runner/.gradle/caches/modules-2/files-2.1/net.minecraftforge/fmlcore/1.20.1-47.4.20/e8cc697c69f3911e76caa2f005d9486597cd7448/fmlcore-1.20.1-47.4.20.jar is missing mods.toml file
+2026-10-09T11:35:17.3918436Z [11:35:17] [main/INFO] [ne.mi.fm.lo.mo.JarInJarDependencyLocator/]: No dependencies to load found. Skipping!
+2026-10-09T11:35:18.8918253Z [11:35:18] [main/INFO] [cp.mo.mo.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgegametestserveruserdev' with arguments [--gameDir, .]
+2026-10-09T11:35:23.6947002Z [11:35:23] [modloading-worker-0/INFO] [ne.mi.co.ForgeMod/FORGEMOD]: Forge mod loading, version 47.4.20, for MC 1.20.1 with MCP 20230612.114412
+2026-10-09T11:35:23.7918528Z [11:35:23] [modloading-worker-0/INFO] [ne.mi.co.MinecraftForge/FORGE]: MinecraftForge v47.4.20 Initialized
+2026-10-09T11:35:24.0917249Z [11:35:24] [Forge Version Check/INFO] [ne.mi.fm.VersionChecker/]: [forge] Starting version check at https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json
+2026-10-09T11:35:24.3919314Z [11:35:24] [Forge Version Check/INFO] [ne.mi.fm.VersionChecker/]: [forge] Found status: OUTDATED Current: 47.4.20 Target: 47.4.26
+2026-10-09T11:35:24.9957970Z [11:35:24] [main/ERROR] [minecraft/Settings]: Failed to load properties from file: server.properties
+2026-10-09T11:35:24.9959800Z java.nio.file.NoSuchFileException: server.properties
+2026-10-09T11:35:24.9961066Z 	at sun.nio.fs.UnixException.translateToIOException(UnixException.java:92) ~[?:?] {}
+2026-10-09T11:35:24.9987153Z 	at sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:106) ~[?:?] {}
+2026-10-09T11:35:25.0017268Z 	at sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111) ~[?:?] {}
+2026-10-09T11:35:25.0042705Z 	at sun.nio.fs.UnixFileSystemProvider.newByteChannel(UnixFileSystemProvider.java:218) ~[?:?] {}
+2026-10-09T11:35:25.0057032Z 	at java.nio.file.Files.newByteChannel(Files.java:380) ~[?:?] {}
+2026-10-09T11:35:25.0077447Z 	at java.nio.file.Files.newByteChannel(Files.java:432) ~[?:?] {}
+2026-10-09T11:35:25.0078828Z 	at java.nio.file.spi.FileSystemProvider.newInputStream(FileSystemProvider.java:422) ~[?:?] {}
+2026-10-09T11:35:25.0080134Z 	at java.nio.file.Files.newInputStream(Files.java:160) ~[?:?] {}
+2026-10-09T11:35:25.0081720Z 	at net.minecraft.server.dedicated.Settings.loadFromFile(Settings.java:36) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:35:25.0084629Z 	at net.minecraft.server.dedicated.DedicatedServerProperties.fromFile(DedicatedServerProperties.java:137) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:35:25.0087798Z 	at net.minecraft.server.dedicated.DedicatedServerSettings.<init>(DedicatedServerSettings.java:12) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:35:25.0089889Z 	at net.minecraft.server.Main.main(Main.java:126) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:35:25.0091750Z 	at net.minecraftforge.gametest.GameTestMain.main(GameTestMain.java:16) ~[forge-1.20.1-47.4.20_mapped_official_1.20.1.jar:?] {re:classloading}
+2026-10-09T11:35:25.0093561Z 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?] {}
+2026-10-09T11:35:25.0095148Z 	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?] {}
+2026-10-09T11:35:25.0097159Z 	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?] {}
+2026-10-09T11:35:25.0098602Z 	at java.lang.reflect.Method.invoke(Method.java:569) ~[?:?] {}
+2026-10-09T11:35:25.0100639Z 	at net.minecraftforge.fml.loading.targets.ForgeGametestUserdevLaunchHandler.devService(ForgeGametestUserdevLaunchHandler.java:16) ~[fmlloader-1.20.1-47.4.20.jar:?] {}
+2026-10-09T11:35:25.0103510Z 	at net.minecraftforge.fml.loading.targets.CommonDevLaunchHandler.lambda$makeService$7(CommonDevLaunchHandler.java:135) ~[fmlloader-1.20.1-47.4.20.jar:?] {}
+2026-10-09T11:35:25.0106582Z 	at cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:30) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:35:25.0108677Z 	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:53) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:35:25.0110641Z 	at cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:71) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:35:25.0112313Z 	at cpw.mods.modlauncher.Launcher.run(Launcher.java:108) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:35:25.0113699Z 	at cpw.mods.modlauncher.Launcher.main(Launcher.java:78) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:35:25.0115304Z 	at cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:26) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:35:25.0117809Z 	at cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:23) ~[modlauncher-10.0.9.jar:?] {}
+2026-10-09T11:35:25.0125227Z 	at cpw.mods.bootstraplauncher.BootstrapLauncher.main(BootstrapLauncher.java:141) ~[bootstraplauncher-1.1.2.jar:?] {}
+2026-10-09T11:35:25.0128533Z [11:35:24] [main/INFO] [mojang/YggdrasilAuthenticationService]: Environment: authHost='https://authserver.mojang.com', accountsHost='https://api.mojang.com', sessionHost='https://sessionserver.mojang.com', servicesHost='https://api.minecraftservices.com', name='PROD'
+2026-10-09T11:35:25.0924663Z [11:35:25] [main/WARN] [minecraft/VanillaPackResourcesBuilder]: Assets URL 'union:/home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar%23181!/assets/.mcassetsroot' uses unexpected schema
+2026-10-09T11:35:25.0929142Z [11:35:25] [main/WARN] [minecraft/VanillaPackResourcesBuilder]: Assets URL 'union:/home/runner/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.20.1-47.4.20_mapped_official_1.20.1/forge-1.20.1-47.4.20_mapped_official_1.20.1.jar%23181!/data/.mcassetsroot' uses unexpected schema
+2026-10-09T11:35:26.5937623Z [11:35:26] [main/INFO] [minecraft/RecipeManager]: Loaded 7 recipes
+2026-10-09T11:35:26.6921118Z [11:35:26] [main/INFO] [minecraft/AdvancementList]: Loaded 1271 advancements
+2026-10-09T11:35:27.0935979Z [11:35:27] [main/INFO] [ne.mi.ga.ForgeGameTestHooks/]: Enabled Gametest Namespaces: [splineroads_live440]
+2026-10-09T11:35:27.1920115Z [11:35:27] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Configuration file ./world/serverconfig/forge-server.toml is not correct. Correcting
+2026-10-09T11:35:27.1943790Z [11:35:27] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server was corrected from null to its default, SimpleCommentedConfig:{}.
+2026-10-09T11:35:27.1949933Z [11:35:27] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.removeErroringBlockEntities was corrected from null to its default, false.
+2026-10-09T11:35:27.1952305Z [11:35:27] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.removeErroringEntities was corrected from null to its default, false.
+2026-10-09T11:35:27.1955370Z [11:35:27] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.fullBoundingBoxLadders was corrected from null to its default, false.
+2026-10-09T11:35:27.1957750Z [11:35:27] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.zombieBaseSummonChance was corrected from null to its default, 0.1.
+2026-10-09T11:35:27.1960690Z [11:35:27] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.zombieBabyChance was corrected from null to its default, 0.05.
+2026-10-09T11:35:27.1962952Z [11:35:27] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.permissionHandler was corrected from null to its default, forge:default_handler.
+2026-10-09T11:35:27.1966123Z [11:35:27] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.advertiseDedicatedServerToLan was corrected from null to its default, true.
+2026-10-09T11:35:27.1968802Z [11:35:27] [Server thread/WARN] [ne.mi.co.ForgeConfigSpec/CORE]: Incorrect key server.useItemWithDurationZero was corrected from null to its default, false.
+2026-10-09T11:35:35.8917053Z [11:35:35] [Server thread/INFO] [minecraft/MinecraftServer]: Preparing start region for dimension minecraft:overworld
+2026-10-09T11:35:36.7919008Z [11:35:36] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:36.7922856Z [11:35:36] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:37.0940697Z [11:35:37] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:37.3924873Z [11:35:37] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:37.8947715Z [11:35:37] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:38.3927641Z [11:35:38] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:38.8927576Z [11:35:38] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:39.3921055Z [11:35:39] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:39.8921220Z [11:35:39] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:40.3919435Z [11:35:40] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:40.8919800Z [11:35:40] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:41.3947797Z [11:35:41] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:41.8920052Z [11:35:41] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:42.3919303Z [11:35:42] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:42.8937895Z [11:35:42] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:43.3923117Z [11:35:43] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:43.8919867Z [11:35:43] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:44.7920392Z [11:35:44] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:44.8920239Z [11:35:44] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:45.3920963Z [11:35:45] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:45.8932714Z [11:35:45] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:46.3931467Z [11:35:46] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:46.8917463Z [11:35:46] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:47.3919236Z [11:35:47] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:47.8920480Z [11:35:47] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:48.3919260Z [11:35:48] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:48.8919296Z [11:35:48] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:49.3926554Z [11:35:49] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:49.8925307Z [11:35:49] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:50.3919929Z [11:35:50] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:50.8918593Z [11:35:50] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:51.3917041Z [11:35:51] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:51.8916282Z [11:35:51] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:52.3916110Z [11:35:52] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:52.8915695Z [11:35:52] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:53.3916053Z [11:35:53] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:53.8928776Z [11:35:53] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:54.3933553Z [11:35:54] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:54.8920377Z [11:35:54] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:55.3918938Z [11:35:55] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:55.8917104Z [11:35:55] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:56.3915911Z [11:35:56] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:56.8921302Z [11:35:56] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:57.3917214Z [11:35:57] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:57.8915746Z [11:35:57] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:58.3921060Z [11:35:58] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:58.8917045Z [11:35:58] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:59.3940547Z [11:35:59] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:35:59.8916469Z [11:35:59] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:36:00.3927068Z [11:36:00] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:36:00.8918563Z [11:36:00] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:36:01.4916979Z [11:36:01] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:36:01.8920869Z [11:36:01] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:36:02.3918599Z [11:36:02] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:36:02.8919929Z [11:36:02] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:36:03.3915405Z [11:36:03] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:36:03.8917484Z [11:36:03] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:36:04.3918899Z [11:36:04] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:36:04.8929395Z [11:36:04] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:36:05.3918090Z [11:36:05] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:36:05.9937635Z [11:36:05] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 0%
+2026-10-09T11:36:06.3927297Z [11:36:06] [Worker-Main-1/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 2%
+2026-10-09T11:36:07.4947687Z [11:36:07] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 31%
+2026-10-09T11:36:07.4949229Z [11:36:07] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 31%
+2026-10-09T11:36:07.8923192Z [11:36:07] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 78%
+2026-10-09T11:36:08.3920301Z [11:36:08] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 79%
+2026-10-09T11:36:08.8918504Z [11:36:08] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 81%
+2026-10-09T11:36:09.3921548Z [11:36:09] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 82%
+2026-10-09T11:36:09.8919829Z [11:36:09] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 83%
+2026-10-09T11:36:10.3919034Z [11:36:10] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 84%
+2026-10-09T11:36:10.8916560Z [11:36:10] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 85%
+2026-10-09T11:36:11.3916714Z [11:36:11] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 87%
+2026-10-09T11:36:11.8915792Z [11:36:11] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 88%
+2026-10-09T11:36:12.3918971Z [11:36:12] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 90%
+2026-10-09T11:36:12.8918801Z [11:36:12] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 92%
+2026-10-09T11:36:13.3915670Z [11:36:13] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 94%
+2026-10-09T11:36:13.8918765Z [11:36:13] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 96%
+2026-10-09T11:36:14.3918824Z [11:36:14] [Worker-Main-5/INFO] [minecraft/LoggerChunkProgressListener]: Preparing spawn area: 98%
+2026-10-09T11:36:15.1931426Z [11:36:15] [Server thread/INFO] [minecraft/LoggerChunkProgressListener]: Time elapsed: 39302 ms
+2026-10-09T11:36:15.1936174Z [11:36:15] [Server thread/INFO] [minecraft/GameTestServer]: Started game test server
+2026-10-09T11:36:15.1938397Z [11:36:15] [Server thread/INFO] [ne.mi.se.pe.PermissionAPI/]: Successfully initialized permission handler forge:default_handler
+2026-10-09T11:36:16.1915333Z [11:36:16] [Server thread/INFO] [minecraft/GameTestBatchRunner]: Running test batch 'splineroads_live440:1' (2 tests)...
+2026-10-09T11:36:16.3916714Z [11:36:16] [Server thread/INFO] [minecraft/GameTestServer]: 2 tests are now running!
+2026-10-09T11:36:40.3918002Z Oct 09, 2026 11:36:40 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:36:40.3966664Z INFO: SR edit: 254 ms, roads=0, requested=1, phases(ms)={normalize_transitions=10.546526, affected_structures=0.351442, attached_points=1.204035, topology=12.137881, caps_and_dependencies=2.786814, terrain_chunk_access=0.61141, furniture_phase=4.09182, structure_candidate_index=0.481927, structure_plan=109.896899, dependent_replanning=0.881438, caps_shell_and_joint_validation=4.370354, edit_raster=44.256831, sidewalks=3.000165, local_collision=5.386887, validation_commit_sync=54.361405}
+2026-10-09T11:36:40.4916263Z Oct 09, 2026 11:36:40 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:36:40.4934448Z INFO: SR connect: 292 ms, roads=0, requested=1, phases(ms)={}
+2026-10-09T11:36:41.9915508Z Oct 09, 2026 11:36:41 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:36:41.9920064Z INFO: SR edit: 1,162 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.094528, affected_structures=0.819091, attached_points=0.030478, topology=116.682027, caps_and_dependencies=0.055624, terrain_chunk_access=2.869299, furniture_phase=0.79156, structure_candidate_index=0.005491, structure_plan=328.928257, dependent_replanning=396.593058, caps_shell_and_joint_validation=26.406774, edit_raster=171.44074, sidewalks=0.089759, local_collision=24.731521}
+2026-10-09T11:36:42.7933926Z Oct 09, 2026 11:36:42 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:36:42.7937832Z INFO: SR edit: 826 ms, roads=2, requested=1, phases(ms)={normalize_transitions=0.080782, affected_structures=0.703604, attached_points=0.026229, topology=39.837319, caps_and_dependencies=0.03188, terrain_chunk_access=1.840774, furniture_phase=0.020328, structure_candidate_index=0.002846, structure_plan=218.055983, dependent_replanning=303.667313, caps_shell_and_joint_validation=10.700397, edit_raster=102.371891, sidewalks=0.10599, local_collision=22.444337, validation_commit_sync=126.200603}
+2026-10-09T11:36:43.2917676Z LIVE440 REAL_WORLD PASS underground=true: actual request/compute/publish/build, rectangle, flexible B, monotone, NBT, deletion
+2026-10-09T11:37:02.7916075Z Oct 09, 2026 11:37:02 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:37:02.7919979Z INFO: SR edit: 820 ms, roads=4, requested=1, phases(ms)={normalize_transitions=0.090219, affected_structures=0.45713, attached_points=1.192033, topology=27.452502, caps_and_dependencies=0.069581, terrain_chunk_access=0.987307, furniture_phase=0.226917, structure_candidate_index=0.00524, structure_plan=196.368708, dependent_replanning=228.982521, caps_shell_and_joint_validation=8.901044, edit_raster=265.248812, sidewalks=0.158959, local_collision=17.194806}
+2026-10-09T11:37:03.5915948Z Oct 09, 2026 11:37:03 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:37:03.5919952Z INFO: SR edit: 746 ms, roads=4, requested=1, phases(ms)={normalize_transitions=0.070914, affected_structures=0.46827, attached_points=0.085301, topology=26.766552, caps_and_dependencies=0.047068, terrain_chunk_access=0.551377, furniture_phase=0.019437, structure_candidate_index=0.002645, structure_plan=156.682153, dependent_replanning=257.549887, caps_shell_and_joint_validation=9.827738, edit_raster=202.283345, sidewalks=0.140374, local_collision=14.667231, validation_commit_sync=76.527219}
+2026-10-09T11:37:04.5915196Z Oct 09, 2026 11:37:04 AM com.sora.splineroads.core.RoadTimings close
+2026-10-09T11:37:04.5949647Z INFO: SR edit: 1,001 ms, roads=5, requested=1, phases(ms)={normalize_transitions=0.092915, affected_structures=0.963933, attached_points=0.066595, topology=17.948154, caps_and_dependencies=0.050605, terrain_chunk_access=0.573909, furniture_phase=0.018545, structure_candidate_index=0.002685, structure_plan=98.765663, dependent_replanning=139.299573, caps_shell_and_joint_validation=7.743226, edit_raster=380.481986, sidewalks=0.12761, local_collision=37.25037, validation_commit_sync=316.226682}
+2026-10-09T11:37:05.1928075Z LIVE440 REAL_WORLD PASS underground=false: actual request/compute/publish/build, rectangle, flexible B, monotone, NBT, deletion
+2026-10-09T11:37:05.1943683Z [11:37:05] [Server thread/INFO] [minecraft/GameTestServer]: [++]
+2026-10-09T11:37:05.1967142Z [11:37:05] [Server thread/INFO] [minecraft/GameTestServer]: ========= 2 GAME TESTS COMPLETE ======================
+2026-10-09T11:37:05.1995448Z [11:37:05] [Server thread/INFO] [minecraft/GameTestServer]: All 2 required tests passed :)
+2026-10-09T11:37:05.2027245Z [11:37:05] [Server thread/INFO] [minecraft/GameTestServer]: ====================================================
+2026-10-09T11:37:05.2049912Z [11:37:05] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server
+2026-10-09T11:37:05.2079403Z [11:37:05] [Server thread/INFO] [minecraft/MinecraftServer]: Saving players
+2026-10-09T11:37:05.2081120Z [11:37:05] [Server thread/INFO] [minecraft/MinecraftServer]: Saving worlds
+2026-10-09T11:37:08.4922502Z [11:37:08] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:overworld
+2026-10-09T11:37:11.6918224Z [11:37:11] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_end
+2026-10-09T11:37:11.6920416Z [11:37:11] [Server thread/INFO] [minecraft/MinecraftServer]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_nether
+2026-10-09T11:37:11.6922837Z [11:37:11] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (world): All chunks are saved
+2026-10-09T11:37:11.6924756Z [11:37:11] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+2026-10-09T11:37:11.6926418Z [11:37:11] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+2026-10-09T11:37:11.6928528Z [11:37:11] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved
+2026-10-09T11:37:12.0917525Z [11:37:11] [Server thread/INFO] [minecraft/GameTestServer]: Game test server shutting down
+2026-10-09T11:37:12.3918886Z gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_8-1791545710559.json
+2026-10-09T11:37:12.3921215Z
+2026-10-09T11:37:12.3922020Z Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+2026-10-09T11:37:12.3922985Z
+2026-10-09T11:37:12.3923937Z You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+2026-10-09T11:37:12.3925108Z
+2026-10-09T11:37:12.3926397Z For more on this, please refer to https://docs.gradle.org/8.8/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+2026-10-09T11:37:12.3927682Z
+2026-10-09T11:37:12.3928036Z BUILD SUCCESSFUL in 2m 4s
+2026-10-09T11:37:12.3928693Z 11 actionable tasks: 3 executed, 8 up-to-date
+2026-10-09T11:37:12.7474634Z ##[group]Run actions/upload-artifact@v4
+2026-10-09T11:37:12.7474946Z with:
+2026-10-09T11:37:12.7475230Z   name: sr444-verified-cc78f7c3b687cb1515486a1955db41795b6398e6
+2026-10-09T11:37:12.7476826Z   path: build/libs/*.jar
+build/ramp39-core/logs/
+build/ramp39-model/logs/
+run440/logs/latest.log
+run440terrain/logs/latest.log
+run440terrain-console.log
+run441/logs/latest.log
+run441-console.log
+run442/logs/latest.log
+run442-console.log
+run443/logs/latest.log
+run443-console.log
+run444/logs/latest.log
+run444-console.log
+
+2026-10-09T11:37:12.7478081Z   if-no-files-found: warn
+2026-10-09T11:37:12.7478319Z   compression-level: 6
+2026-10-09T11:37:12.7478541Z   overwrite: false
+2026-10-09T11:37:12.7478762Z   include-hidden-files: false
+2026-10-09T11:37:12.7479005Z env:
+2026-10-09T11:37:12.7479310Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:37:12.7479807Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-1/x64
+2026-10-09T11:37:12.7480262Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
+2026-10-09T11:37:12.7480574Z   GRADLE_USER_HOME: /home/runner/.gradle
+2026-10-09T11:37:12.7480866Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+2026-10-09T11:37:12.7481169Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+2026-10-09T11:37:12.7481607Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+2026-10-09T11:37:12.7482086Z   DEVELOCITY_INJECTION_CUSTOM_VALUE: gradle-actions
+2026-10-09T11:37:12.7482409Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+2026-10-09T11:37:12.7482679Z ##[endgroup]
+2026-10-09T11:37:12.9194584Z (node:5345) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-09T11:37:12.9195407Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-09T11:37:12.9383472Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-09T11:37:12.9389154Z The least common ancestor is /home/runner/work/SplineRoads/SplineRoads. This will be the root directory of the artifact
+2026-10-09T11:37:12.9389799Z With the provided path, there will be 39 files uploaded
+2026-10-09T11:37:12.9394504Z Artifact name is valid!
+2026-10-09T11:37:12.9395897Z Root directory input is valid!
+2026-10-09T11:37:13.3120364Z Beginning upload of artifact content to blob storage
+2026-10-09T11:37:13.5356499Z (node:5345) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-09T11:37:14.3792733Z Uploaded bytes 5047912
+2026-10-09T11:37:14.4514122Z Finished uploading artifact content to blob storage!
+2026-10-09T11:37:14.4515187Z SHA256 digest of uploaded artifact zip is 2c63e28c5fdd4fdc24c73d79c50086f258c4b50686d05fb3cfbb3e9952c797a2
+2026-10-09T11:37:14.4517774Z Finalizing artifact upload
+2026-10-09T11:37:14.7243942Z Artifact sr444-verified-cc78f7c3b687cb1515486a1955db41795b6398e6.zip successfully finalized. Artifact ID 11614035986
+2026-10-09T11:37:14.7245712Z Artifact sr444-verified-cc78f7c3b687cb1515486a1955db41795b6398e6 has been successfully uploaded! Final size is 5047912 bytes. Artifact ID is 11614035986
+2026-10-09T11:37:14.7247530Z Artifact download URL: https://github.com/ShiraAya/SplineRoads/actions/runs/37923174403/artifacts/11614035986
+2026-10-09T11:37:14.7531715Z Post job cleanup.
+2026-10-09T11:37:14.9889593Z In post-action step
+2026-10-09T11:37:14.9903352Z Cache is read-only: will not save state for use in subsequent builds.
+2026-10-09T11:37:14.9910330Z Generating Job Summary
+2026-10-09T11:37:14.9946524Z Completed post-action step
+2026-10-09T11:37:15.0196935Z Post job cleanup.
+2026-10-09T11:37:15.1560977Z (node:5369) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-09T11:37:15.1562345Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-09T11:37:15.1770881Z Post job cleanup.
+2026-10-09T11:37:15.2712763Z [command]/usr/bin/git version
+2026-10-09T11:37:15.2758471Z git version 2.55.0
+2026-10-09T11:37:15.2803800Z Temporarily overriding HOME='/home/runner/work/_temp/af5be333-edcf-4069-b6ee-2414b1c015e5' before making global git config changes
+2026-10-09T11:37:15.2804797Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-09T11:37:15.2811353Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/SplineRoads/SplineRoads
+2026-10-09T11:37:15.2857990Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-09T11:37:15.2902523Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-09T11:37:15.3164138Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-09T11:37:15.3202417Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-09T11:37:15.3475152Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-09T11:37:15.3510796Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-09T11:37:15.3930089Z Cleaning up orphan processes
+2026-10-09T11:37:15.4352658Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-java@v4, actions/upload-artifact@v4, gradle/actions/setup-gradle@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
