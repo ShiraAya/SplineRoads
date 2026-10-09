@@ -84,6 +84,13 @@
       "result_lines": [
         "Live435Validation: 1797 checks PASS; production geometry/paint/solids, NO GPU."
       ]
+    },
+    {
+      "name": "new446g.log",
+      "sha256": "ab84069a1d859758d238026a9783981c62859c47b0e977b611c85f2d58f76a07",
+      "result_lines": [
+        "Live446ModelValidation: 13871 checks PASS; width bands, open/roofed cuts, original terrain constraints and option roundtrip (not Minecraft/GPU)"
+      ]
     }
   ]
 }
