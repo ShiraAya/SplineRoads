@@ -129,6 +129,7 @@ public final class LaneRamps {
     var offsets=new LinkedHashSet<Double>();if(Math.abs(link.targetOffset())<=targetReach(link.options()))offsets.add(link.targetOffset());offsets.add(0d);
     if(link.to().road()!=null&&link.options().landing()!=LanePoints.Landing.EXACT){double reach=targetReach(link.options());for(double step=8;step<reach;step+=8){offsets.add(step);offsets.add(-step);}offsets.add(reach);offsets.add(-reach);}
     var stagedOffsets=new HashMap<Double,Map<UUID,RoadRecord>>();
+    var candidateMemo=new CandidateMemo();
     var errors=new EnumMap<LanePoints.Path,String>(LanePoints.Path.class);String error="所选范围内没有可用汇入口";LaneRampPaths.Port target=null;
     // A locally shifted short turn must be tried before committing to a long
     // loop. Previously a valid loop in pass one hid a much shorter lead/tail
@@ -166,7 +167,7 @@ public final class LaneRamps {
       target=b;
       var md=(old==null?LanePoints.Data.EMPTY:LaneTopology.metadata(old)).link(actual).openings(List.of());
       var settings=base.options(base.options().lanePoints(md));
-      for(var candidate:routeCandidates(a,b,settings,link.options(),source,p,targetPosition==null?null:targetPosition.road(),targetPosition==null?null:targetPosition.point(),0,maxGrade,errors,stage))try{
+      for(var candidate:routeCandidates(a,b,settings,link.options(),source,p,targetPosition==null?null:targetPosition.road(),targetPosition==null?null:targetPosition.point(),0,maxGrade,errors,stage,candidateMemo,offset))try{
         RoadPlanningBudget.check();
         if(CURRENT.get()!=null)CURRENT.get().routeCount++;
         var sourceMouth=actual.options().sourceExtra()?new LaneRampAlignment.Mouth(lane.width(),0,0):LaneRampAlignment.mouth(currentSource.mesh(),LanePoints.lane(currentSource.mesh(),p));
@@ -198,7 +199,26 @@ public final class LaneRamps {
   /** Generate expensive fallback ribbons only when the preceding candidate actually failed.
    * RC1 eagerly built the entire source-lead x target-tail cross product even when
    * the first direct candidate was valid. No route or safety check is removed. */
-  private static Iterable<LaneRampPaths.Candidate> routeCandidates(LaneRampPaths.Port a,LaneRampPaths.Port b,Settings settings,LanePoints.Options options,RoadRecord source,LanePoints.Point point,RoadRecord target,LanePoints.Point targetPoint,double targetOffset,double maxGrade,Map<LanePoints.Path,String> errors,int stage){
+  private record CandidateKey(double offset,double lead,double tail,LanePoints.Path kind,boolean automatic,boolean smooth,boolean constrained){}
+  /** Horizontal search is identical across vertical passes. Replay the same lazy
+   * groups, including rejections, within this one immutable planning request.
+   * Bounded by samples and entries; never retain roads after the request. */
+  private static final class CandidateMemo {
+    private record Entry(List<LaneRampPaths.Candidate> candidates,String error,int weight){}
+    private final LinkedHashMap<CandidateKey,Entry> entries=new LinkedHashMap<>(64,.75f,true);
+    private int weight;
+    List<LaneRampPaths.Candidate> get(CandidateKey key,java.util.function.Supplier<List<LaneRampPaths.Candidate>> build){
+      var value=entries.get(key);
+      if(value==null){
+        try{var made=List.copyOf(build.get());value=new Entry(made,null,Math.max(1,made.stream().mapToInt(c->c.mesh().samples().size()).sum()));}
+        catch(IllegalArgumentException e){value=new Entry(List.of(),e.getMessage(),1);}
+        if(value.weight()<=300_000){entries.put(key,value);weight+=value.weight();var it=entries.values().iterator();
+          while(weight>300_000||entries.size()>256){weight-=it.next().weight();it.remove();}}
+      }
+      if(value.error()!=null)throw new IllegalArgumentException(value.error());return value.candidates();
+    }
+  }
+  private static Iterable<LaneRampPaths.Candidate> routeCandidates(LaneRampPaths.Port a,LaneRampPaths.Port b,Settings settings,LanePoints.Options options,RoadRecord source,LanePoints.Point point,RoadRecord target,LanePoints.Point targetPoint,double targetOffset,double maxGrade,Map<LanePoints.Path,String> errors,int stage,CandidateMemo memo,double landingOffset){
     if(stage==2&&options.path()!=LanePoints.Path.AUTO)return List.of();
     double[] leads=options.separatesLane()?new double[]{0,32,64,96,128}:new double[]{0};
     boolean tail=target!=null&&(options.arrival()==LanePoints.Arrival.MERGE||options.arrival()==LanePoints.Arrival.FLOW||options.arrival()==LanePoints.Arrival.ADD);
@@ -213,7 +233,7 @@ public final class LaneRamps {
           double lead=leads[li],endLength=tails[ti];var kind=kinds.get(ki++);if(ki==kinds.size()){ki=0;if(++li==leads.length){li=0;ti++;}}
           if(stage==0&&(lead!=0||endLength!=0)||stage==1&&lead==0&&endLength==0)continue;
           var specific=new LanePoints.Options(kind,options.departure(),options.arrival(),options.radius(),options.transition(),options.elevation(),options.landing(),options.gradeOverride());
-          try{ready=routeGroup(a,b,settings,specific,source,point,target,targetPoint,targetOffset,maxGrade,lead,endLength,options.path()==LanePoints.Path.AUTO&&kind==LanePoints.Path.LEFT_LOOP,kind==LanePoints.Path.RIGHT||options.path()==LanePoints.Path.LEFT,options.path()!=LanePoints.Path.AUTO).iterator();}
+          try{var key=new CandidateKey(landingOffset,lead,endLength,kind,options.path()==LanePoints.Path.AUTO&&kind==LanePoints.Path.LEFT_LOOP,kind==LanePoints.Path.RIGHT||options.path()==LanePoints.Path.LEFT,options.path()!=LanePoints.Path.AUTO);ready=memo.get(key,()->routeGroup(a,b,settings,specific,source,point,target,targetPoint,targetOffset,maxGrade,lead,endLength,key.automatic(),key.smooth(),key.constrained())).iterator();}
           catch(IllegalArgumentException failure){errors.putIfAbsent(kind,failure.getMessage());ready=Collections.emptyIterator();}
         }
         return ready.hasNext();
@@ -339,6 +359,12 @@ public final class LaneRamps {
         var lane=LanePoints.lane(host,at.distance(),leg.slot());
         points.add(new Sample(lane.position(),at.left(),at.distance(),lane.width()/2));
       }out.add(RoadRibbon.mesh(points,new Settings(Mode.CURVE,Style.C1_RAMP,4,host.settings().thickness(),.35,90)));}
+    }
+    for(var road:all.values()){
+      var other=LaneTopology.metadata(road).link();if(other==null)continue;
+      boolean sibling=first?other.from().equals(link.from())&&!other.to().equals(link.to())&&other.options().departure()==LanePoints.Departure.BRANCH
+          :other.to().equals(link.to())&&!other.from().equals(link.from())&&other.options().arrival()==LanePoints.Arrival.FLOW;
+      if(sibling)out.add(mesh(road));
     }
     return List.copyOf(out);
   }

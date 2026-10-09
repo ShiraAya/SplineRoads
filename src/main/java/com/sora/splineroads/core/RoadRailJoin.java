@@ -29,7 +29,7 @@ public final class RoadRailJoin {
   /** Higher-priority neighbour owns coincident boundaries; strict interiors always win. */
   public record Neighbor(Mesh mesh,boolean ownsBoundary) {}
   private record Range(double from,double to) {}
-  private record Face(V a,V b,V c,boolean ownsBoundary) {
+  private record Face(V a,V b,V c,boolean ownsBoundary,V tangent) {
     double cross(V p,V q,V r){return (q.x()-p.x())*(r.z()-p.z())-(q.z()-p.z())*(r.x()-p.x());}
     double height(V p){
       double det=cross(a,b,c);
@@ -66,12 +66,10 @@ public final class RoadRailJoin {
     return profile(highway,raised);
   }
   private static int profile(boolean highway,boolean raised){return (highway?2:0)+(raised?1:0);}
-  private final List<Mesh> neighbors;
   private final Map<Long,List<Face>> grid=new HashMap<>();
   private final Map<Long,List<Face>> material=new HashMap<>();
   private final Map<Long,List<Edge>> edges=new HashMap<>();
   public RoadRailJoin(List<Neighbor> neighbors){
-    this.neighbors=neighbors.stream().map(Neighbor::mesh).toList();
     for(var neighbor:neighbors){var mesh=neighbor.mesh();
       for(int i=1;i<mesh.samples().size();i++){
         var a=mesh.samples().get(i-1);var b=mesh.samples().get(i);
@@ -79,8 +77,8 @@ public final class RoadRailJoin {
           // The rail is inset but the supporting pavement is not. A .15-block
           // welded overlap used by an auxiliary lane used to disappear after both
           // faces were inset .16, leaving a barrier across an otherwise open merge.
-          add(material,strip.al(),strip.ar(),strip.br(),true);
-          add(material,strip.al(),strip.br(),strip.bl(),true);
+          add(material,strip.al(),strip.ar(),strip.br(),true,b.center().sub(a.center()).horizontalUnit());
+          add(material,strip.al(),strip.br(),strip.bl(),true,b.center().sub(a.center()).horizontalUnit());
           // Only exposed band boundaries get an inset. Zero-size slots split a
           // continuous face too, but those split lines must not become false gutters.
           double highA=strip.al().distance(a.at(a.halfWidth(),0))<1e-6?inset(mesh,a,1):INSET,highB=strip.bl().distance(b.at(b.halfWidth(),0))<1e-6?inset(mesh,b,1):INSET;
@@ -106,9 +104,12 @@ public final class RoadRailJoin {
   }
   private void add(V a,V b,V c,boolean owner){add(grid,a,b,c,owner);}
   private void add(Map<Long,List<Face>> target,V a,V b,V c,boolean owner){
+    add(target,a,b,c,owner,null);
+  }
+  private void add(Map<Long,List<Face>> target,V a,V b,V c,boolean owner,V tangent){
     double area=(b.x()-a.x())*(c.z()-a.z())-(b.z()-a.z())*(c.x()-a.x());
     if(Math.abs(area)<1e-10)return;if(area<0){V swap=b;b=c;c=swap;}
-    var face=new Face(a,b,c,owner);
+    var face=new Face(a,b,c,owner,tangent);
     for(int x=cell(Math.min(a.x(),Math.min(b.x(),c.x()))-1e-6);x<=cell(Math.max(a.x(),Math.max(b.x(),c.x()))+1e-6);x++)
       for(int z=cell(Math.min(a.z(),Math.min(b.z(),c.z()))-1e-6);z<=cell(Math.max(a.z(),Math.max(b.z(),c.z()))+1e-6);z++)
         target.computeIfAbsent(key(x,z),k->new ArrayList<>()).add(face);
@@ -153,7 +154,9 @@ public final class RoadRailJoin {
     for(int x=cell(Math.min(a.x(),b.x())-1e-6);x<=cell(Math.max(a.x(),b.x())+1e-6);x++)
       for(int z=cell(Math.min(a.z(),b.z())-1e-6);z<=cell(Math.max(a.z(),b.z())+1e-6);z++)
         faces.addAll(surface.getOrDefault(key(x,z),List.of()));
-    var cuts=new ArrayList<Range>();for(var face:faces){var hit=face.intersection(a,b);if(hit!=null)cuts.add(hit);}
+    var cuts=new ArrayList<Range>();V tangent=b.sub(a).horizontalUnit();for(var face:faces){
+      if(face.tangent()!=null&&Math.abs(face.tangent().dot(tangent))<.999999)continue;
+      var hit=face.intersection(a,b);if(hit!=null)cuts.add(hit);}
     cuts.sort(Comparator.comparingDouble(Range::from));
     var result=new ArrayList<Span>();double at=0;V d=b.sub(a);
     double epsilon=1e-5/d.horizontalLength(); // Reject only sub-numerical cracks between adjacent triangle faces.
@@ -172,11 +175,6 @@ public final class RoadRailJoin {
     // boundary. Clipping both independently cuts a gap between their meeting tips.
     // Exact parallel auxiliary seams still need the material test (their inset
     // polygons are disjoint despite the small deliberate paved overlap).
-    V tangent=b.sub(a).horizontalUnit();
-    for(var host:neighbors){var q=RoadQueries.horizontal(host,mid);
-      if(q.horizontalDistance()<q.sample().halfWidth()+inset+.05&&Math.abs(q.sample().center().y()-mid.y())<.12
-          &&Math.abs(q.tangent().horizontalUnit().dot(tangent))<.9999)return inside;
-    }
     var boundary=exposed(material,a.add(shift),b.add(shift));
     var out=new ArrayList<Span>();V d=b.sub(a);double length=d.dot(d);
     for(var first:inside)for(var second:boundary){

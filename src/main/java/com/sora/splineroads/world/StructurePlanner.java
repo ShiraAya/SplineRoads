@@ -183,8 +183,8 @@ final class StructurePlanner {
                   }
                   if (part.pier() && RoadStructures.fitsMedian(part, other.mesh,
                       nearby.stream().map(r -> r.mesh).toList())) continue;
-                  // New plans have no raster columns yet. Exact prism/deck clipping
-                  // must be authoritative for piers too, including framed ramp shafts.
+                  // Use the actual shaft prism and the live deck bands, including
+                  // framed/tilted supports, instead of the voxel-column envelope.
                   if(RoadClearance.structureInvades(part,other.mesh,Math.max(4.25,RoadInfrastructure.clearance(other.record.settings()))))return true;
                 }
                 return false;

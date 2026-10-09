@@ -38,6 +38,11 @@ jobs:
           bash tools/check_sr443.sh
           bash tools/check_sr435.sh
           bash tools/check_sr438.sh
+      - name: Exact support planning on the Minecraft server
+        run: |
+          set -o pipefail
+          bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run443 -ProadTestNamespaces=splineroads_live443 -ProadTestHeap=3G | tee run443-console.log
+          grep -q 'LIVE443 REAL_SERVER PASS' run443-console.log
       - name: Real detach, continuation, deletion and rebuild sequence
         run: |
           set -o pipefail
@@ -71,6 +76,8 @@ jobs:
             run441-console.log
             run442/logs/latest.log
             run442-console.log
+            run443/logs/latest.log
+            run443-console.log
 
   matrix:
     name: Minecraft matrix row ${{ matrix.row }}

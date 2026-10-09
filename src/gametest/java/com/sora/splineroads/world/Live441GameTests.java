@@ -81,7 +81,8 @@ public final class Live441GameTests {
    System.out.println("LIVE441 SWITCH_PASS");}
   else {
    var host=data.index.roads.get(target.id()).record;
-   h.assertTrue(host.structures().stream().anyMatch(LaneClosureLandscape::paved),"ground arrival left former planter unpaved");
+   h.assertTrue(host.structures().stream().noneMatch(p->p.material()==RoadStructures.Material.GREEN||p.material()==RoadStructures.Material.SOIL),"exterior ground arrival kept a planter");
+   h.assertTrue(!LaneClosureWarnings.paint(host.mesh()).isEmpty(),"ground closure has no boundary warning");
    h.assertTrue(host.structures().stream().filter(LaneClosureLandscape::paved).allMatch(p->p.a().y()+p.height()<=surfaceY+.025&&p.b().y()+p.height()<=surfaceY+.025),"pavement fill rises above road");
   }
   var planning=new ArrayList<RoadIndex.Built>(data.index.roads.values());var ids=List.of(source.id(),target.id(),ramp.id());

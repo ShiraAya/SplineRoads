@@ -33,7 +33,8 @@ public final class Live441Validation {
   check(LaneClosureLandscape.plan(host,Live435Validation.ground(19.8)).stream().anyMatch(p->p.material()==Material.GREEN),"unobstructed ground planting disappeared");
  }
  static void girderClearance(){
-  var s=new Settings(Mode.STRAIGHT,Style.C1_RAMP,4,1,.4,90);
+  // Keep the historical plain-deck test separate from a connector fascia.
+  var s=new Settings(Mode.STRAIGHT,Style.O1_ONE,4,1,.4,90);
   var ground=RoadRibbon.mesh(List.of(new Sample(new V(-20,0,0),new V(0,0,1),0,2),new Sample(new V(20,0,0),new V(0,0,1),40,2)),s);
   var upper=RoadRibbon.mesh(List.of(new Sample(new V(0,5.2,-20),new V(-1,0,0),0,2),new Sample(new V(0,5.2,20),new V(-1,0,0),40,2)),s);
   check(RoadClearance.contacts(upper,ground).stream().noneMatch(RoadClearance.Contact::blocked),"plain slab fixture is not clear");

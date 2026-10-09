@@ -21,7 +21,7 @@ public final class Live440Validation {
   }
  }
  static void planting(){
-  var raw=Live435Validation.road(Style.O3_ONE,Structure.GROUND);var host=Live435Validation.cut(raw,2,40,180,false);
+  var raw=Live435Validation.road(Style.O3_ONE,Structure.GROUND);var host=Live435Validation.cut(raw,1,40,180,false);
   Ground yes=new Ground(){public double top(double x,double z,double y){return 19;}public boolean blocked(Part p){return false;}public boolean joined(V p){return false;}};
   check(LaneClosureLandscape.plan(host,yes).stream().anyMatch(p->p.material()==Material.GREEN),"ground closure fixture has no planting");
   Ground no=new Ground(){public double top(double x,double z,double y){return 19;}public boolean blocked(Part p){return false;}public boolean joined(V p){return false;}public boolean closedLanePlanting(UUID c){return false;}};

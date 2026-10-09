@@ -51,5 +51,48 @@ public final class Live443Validation {
     check(RoadClearance.structureInvades(p,road,4.25),"pier crossing lower live ramp accepted");
     check(!RoadClearance.structureInvades(new Part(new V(12,0,100),new V(12,0,100),1.5,40,true,Material.CONCRETE),road,4.25),"unrelated support rejected");
   }
-  public static void main(String[]args){closures();arrows();sharedHeight();collision();System.out.println("Live443Validation "+checks+" checks PASS");}
+  static void fascia(){
+    var lower=Live435Validation.road(Style.C1_RAMP,Structure.BRIDGE);
+    var points=new ArrayList<Sample>();for(int i=0;i<=160;i++)points.add(new Sample(new V(-40+i*.5,25.3,100),new V(0,0,-1),i*.5,2));
+    var upper=RoadRibbon.mesh(points,lower.settings());
+    check(RoadClearance.contacts(upper,lower).stream().noneMatch(RoadClearance.Contact::blocked),"safe fascia crossing rejected");
+    var tight=RoadRibbon.mesh(points.stream().map(p->new Sample(p.center().add(new V(0,-.1,0)),p.left(),p.distance(),p.halfWidth())).toList(),lower.settings());
+    check(RoadClearance.contacts(tight,lower).stream().anyMatch(RoadClearance.Contact::blocked),"planner still accepts 4.2 while fascia requires 4.25");
+    Ground g=new Ground(){public double top(double x,double z,double y){return 0;}public boolean joined(V p){return false;}public boolean blocked(Part p){return RoadClearance.structureInvades(p,lower,4.25);}};
+    var slabs=RoadStructures.edgeSlabs(upper,g);
+    for(int side:new int[]{-1,1})check(slabs.stream().anyMatch(p->p.a().x()<=0&&p.b().x()>=0&&side*(p.a().z()-100)>2),"fascia missing directly over lower road");
+  }
+  static void seams(){
+    var raw=Live435Validation.road(Style.C1_RAMP,Structure.BRIDGE);
+    var ref=LanePoints.Ref.lane(new UUID(443,2),new UUID(443,3));
+    var link=new LanePoints.Link(ref,LanePoints.Ref.lane(new UUID(443,4),new UUID(443,5)),LanePoints.Options.DEFAULT,null);
+    var settings=raw.settings().options(raw.settings().options().hideArrows(true).lanePoints(LanePoints.Data.EMPTY.link(link)));var host=RoadRibbon.mesh(raw.samples(),settings);
+    for(int mirror:new int[]{-1,1}){
+      var points=new ArrayList<Sample>();
+      for(int i=0;i<=200;i++){double d=i*.5;V tangent=new V(mirror*.01*d,0,1).horizontalUnit();points.add(new Sample(new V(mirror*.005*d*d,20,50+d),tangent.left(),d,2));}
+      var ramp=RoadRibbon.mesh(points,settings);
+      var parts=new ArrayList<List<Part>>();
+      for(var mesh:List.of(host,ramp)){
+        var other=mesh==host?ramp:host;var joins=new RoadRailJoin(List.of(new RoadRailJoin.Neighbor(other,true)));
+        Ground g=new Ground(){public double top(double x,double z,double y){return 0;}public boolean joined(V p){return false;}public boolean blocked(Part p){return false;}
+          public List<RoadRailJoin.Span> railSpans(V a,V b,V outside,double inset){return joins.exposed(a,b,outside,inset);}
+          public List<RoadRailJoin.Span> railSpans(V a,V b,V outside){return joins.exposed(a,b,outside);}
+          public V railJoint(V p,V d,boolean highway,boolean raised){return joins.joint(p,d,highway,raised);}
+        };
+        parts.add(RoadStructures.plan(mesh,g).stream().filter(p->!p.pier()&&p.material()==Material.CONCRETE&&Math.abs(p.a().y()-20)<1e-6&&Math.abs(p.height()-.45)<1e-6).toList());
+        for(var paint:RoadSurface.build(mesh,List.of(),List.of(other)).markings()){
+          V center=paint.points().stream().reduce(new V(0,0,0),V::add).mul(1d/paint.points().size());
+          check(!RoadQueries.contains(other,center,-.001,.025),"inset edge paint remains over joining pavement host="+(mesh==host)+" center="+center+" points="+paint.points());
+        }
+      }
+      var main=parts.get(0).stream().filter(p->p.a().z()>60&&p.b().z()<140&&mirror*p.a().x()>0).toList();
+      check(!main.isEmpty(),"straight host edge vanished");
+      for(var p:main)check(Math.abs(mirror*p.a().x()-(host.first().halfWidth()-RoadRailJoin.INSET))<1e-7&&Math.abs(mirror*p.b().x()-(host.first().halfWidth()-RoadRailJoin.INSET))<1e-7,"straight host rail indents at fork: "+p+" expected="+(host.first().halfWidth()-RoadRailJoin.INSET));
+      var branch=parts.get(1).stream().filter(p->p.a().z()>60&&p.b().z()<100&&mirror*p.a().x()<5).toList();
+      double nearest=100;
+      for(var a:main)for(var b:branch)for(var p:List.of(a.a(),a.b()))for(var q:List.of(b.a(),b.b()))nearest=Math.min(nearest,p.distance(q));
+      check(nearest<.01,"fork rail tips do not meet: "+nearest);
+    }
+  }
+  public static void main(String[]args){closures();arrows();sharedHeight();collision();fascia();seams();System.out.println("Live443Validation "+checks+" checks PASS");}
 }

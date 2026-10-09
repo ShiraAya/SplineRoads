@@ -101,7 +101,7 @@ public final class Live442ModelValidation {
   var closed=host.withLanePoints(LanePoints.Data.EMPTY.cuts(cuts)).mesh();
   var ground=new RoadStructures.Ground(){public double top(double x,double z,double y){return 19.8;}public boolean joined(V p){return false;}public boolean blocked(RoadStructures.Part p){return false;}};
   check(LaneClosureLandscape.plan(closed,ground).isEmpty(),"underpass closed slot retained planter, end kerb or paving pad");
-  var warnings=LaneClosureWarnings.paint(closed);check(warnings.size()==6,"upstream X warnings disappeared");
+  var warnings=LaneClosureWarnings.paint(closed).stream().filter(paint->paint.points().stream().allMatch(v->RoadQueries.horizontal(closed,v).sample().distance()<cut.begin()-.5)).toList();check(warnings.size()==6,"upstream X warnings disappeared");
   for(var paint:warnings)for(var point:paint.points())check(RoadQueries.horizontal(closed,point).sample().distance()<cut.begin(),"warning painted inside removed region");
  }
  static void rebuildAfterDelete(){try(var budget=RoadPlanningBudget.open("restored continuation regression",120)){

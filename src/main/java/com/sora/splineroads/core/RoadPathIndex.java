@@ -16,7 +16,10 @@ public final class RoadPathIndex {
   });}
   public static RoadBoundsIndex.Bounds segment(V a,V b){return new RoadBoundsIndex.Bounds(
       Math.min(a.x(),b.x()),Math.min(a.z(),b.z()),Math.max(a.x(),b.x()),Math.max(a.z(),b.z()));}
-  public static RoadBoundsIndex points(Mesh mesh){
+  private static final WeakIdentityCache<Mesh,RoadBoundsIndex> POINTS=
+      new WeakIdentityCache<>(64,200_000,RoadBoundsIndex::bucketCount);
+  public static RoadBoundsIndex points(Mesh mesh){return POINTS.get(mesh,RoadPathIndex::pointIndex);}
+  private static RoadBoundsIndex pointIndex(Mesh mesh){
     var bounds=new ArrayList<RoadBoundsIndex.Bounds>();
     for(int i=0;i<mesh.samples().size();i+=3){var p=mesh.samples().get(i).center();bounds.add(segment(p,p));}
     return new RoadBoundsIndex(bounds,16);
