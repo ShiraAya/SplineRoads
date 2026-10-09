@@ -38,6 +38,7 @@ public final class Live444Validation {
   static Ground ground(Mesh other,boolean owner){
     var join=new RoadRailJoin(List.of(new RoadRailJoin.Neighbor(other,owner)));
     return new Ground(){public double top(double x,double z,double y){return 0;}public boolean joined(V p){return false;}
+      public boolean unionRails(){return true;}
       public boolean blocked(Part p){return RoadClearance.structureInvades(p,other,4.25);}
       public boolean railBlocked(Part p,V a,V b){return !RoadRailJoin.sharedRail(other,a,b)&&blocked(p);}
       public List<RoadRailJoin.Span> railSpans(V a,V b,V outside){return join.exposed(a,b,outside);}

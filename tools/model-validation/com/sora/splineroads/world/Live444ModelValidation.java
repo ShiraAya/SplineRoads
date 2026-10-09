@@ -8,8 +8,9 @@ public final class Live444ModelValidation {
  static void check(boolean ok,String why){checks++;if(!ok)throw new AssertionError(why);}
  static Ground ground(RoadRecord road,List<RoadRecord> all){
   var others=all.stream().filter(r->!r.id().equals(road.id())).toList();
-  var join=new RoadRailJoin(others.stream().map(r->new RoadRailJoin.Neighbor(r.mesh(),RoadSurface.higherPriority(r.id(),r.mesh(),road.id(),road.mesh()))).toList());
+  var join=new RoadRailJoin(road.mesh(),others.stream().map(r->new RoadRailJoin.Neighbor(r.mesh(),RoadSurface.higherPriority(r.id(),r.mesh(),road.id(),road.mesh()))).toList());
   return new Ground(){public double top(double x,double z,double y){return 0;}public boolean joined(V p){return false;}
+   public boolean unionRails(){return true;}
    public boolean blocked(Part p){return others.stream().anyMatch(r->RoadClearance.structureInvades(p,r.mesh(),4.25));}
    public boolean railBlocked(Part p,V a,V b){return others.stream().anyMatch(r->!RoadRailJoin.sharedRail(r.mesh(),a,b)&&RoadClearance.structureInvades(p,r.mesh(),4.25));}
    public List<RoadRailJoin.Span> railSpans(V a,V b,V outside,double inset){return join.exposed(a,b,outside,inset);}
@@ -29,9 +30,21 @@ public final class Live444ModelValidation {
   var options=new LanePoints.Options(LanePoints.Path.AUTO,extra&&mirror>0?LanePoints.Departure.EXTRA:LanePoints.Departure.BRANCH,extra?(mirror>0?LanePoints.Arrival.MERGE:LanePoints.Arrival.EXTRA):LanePoints.Arrival.FLOW,24,32,LanePoints.Elevation.AUTO,LanePoints.Landing.EXACT);
   var ramp=LaneRamps.generate(null,all,new UUID(444,mirror+2+(extra?10:0)),source.owner(),new LanePoints.Link(a,b,options,null));all.put(ramp.id(),ramp);LaneCrossSections.reconcile(all);
   var records=List.copyOf(all.values());var parts=new ArrayList<Part>();for(var r:records)parts.addAll(RoadStructures.plan(r.mesh(),ground(r,records)));
+  if(extra){
+   var host=all.get(mirror>0?source.id():target.id());var mesh=host.mesh();boolean departing=mirror>0;double anchor=departing?200:250;int seamChecks=0;
+   for(double step=2;step<62;step+=.5){
+    double station=anchor+(departing?step:-step);var at=RoadStructures.sample(mesh,station);int side=RoadProfile.layout(mesh,at).outside();
+    V edge=at.at(side*(at.halfWidth()+.005),0);var q=RoadQueries.horizontal(ramp.mesh(),edge);
+    if(!RoadQueries.contains(ramp.mesh(),edge,0,.025)||side*q.sample().center().sub(at.center()).dot(at.left())<=at.halfWidth())continue;
+    V axis=at.at(side*(at.halfWidth()-RoadRailJoin.inset(mesh,at,side)),0);
+    check(parts.stream().noneMatch(t->t.material()==Material.CONCRETE&&Math.abs(t.height()-.45)<1e-8&&JunctionPaint.inside(t.base(),axis)),"rail remains inside auxiliary taper seam at="+axis);seamChecks++;
+   }
+   check(seamChecks>20,"auxiliary seam fixture has no substantial shared edge");
+  }
   int missing=0,visible=0;
   for(var r:records){var m=r.mesh();var g=ground(r,records);
    for(double d=2;d<m.length()-2;d+=1)for(int side:new int[]{-1,1}){
+    if(LaneDeck.outerOpening(m,d,side))continue;
     var at=RoadStructures.sample(m,d);double inset=RoadRailJoin.inset(m,at,side);V p=at.at(side*(at.halfWidth()-inset),0),delta=at.left().left().mul(-.02);
     if(g.railSpans(p.sub(delta),p.add(delta),p.add(at.left().mul(side)),inset).stream().noneMatch(span->span.a().sub(p).dot(delta)<=1e-9&&span.b().sub(p).dot(delta)>=-1e-9))continue;
     visible++;

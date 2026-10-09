@@ -29,7 +29,7 @@ public final class RoadRailJoin {
   /** Higher-priority neighbour owns coincident boundaries; strict interiors always win. */
   public record Neighbor(Mesh mesh,boolean ownsBoundary) {}
   private record Range(double from,double to) {}
-  private record Face(V a,V b,V c,boolean ownsBoundary,V tangent) {
+  private record Face(V a,V b,V c,boolean ownsBoundary,V tangent,Range auxiliary) {
     double cross(V p,V q,V r){return (q.x()-p.x())*(r.z()-p.z())-(q.z()-p.z())*(r.x()-p.x());}
     double height(V p){
       double det=cross(a,b,c);
@@ -69,19 +69,40 @@ public final class RoadRailJoin {
   private final Map<Long,List<Face>> grid=new HashMap<>();
   private final Map<Long,List<Face>> material=new HashMap<>();
   private final Map<Long,List<Edge>> edges=new HashMap<>();
-  public RoadRailJoin(List<Neighbor> neighbors){this(neighbors,false);}
-  public static RoadRailJoin paint(List<Neighbor> neighbors){return new RoadRailJoin(neighbors,true);}
+  private final Mesh current;
+  public RoadRailJoin(List<Neighbor> neighbors){this(null,neighbors,false);}
+  public RoadRailJoin(Mesh current,List<Neighbor> neighbors){this(current,neighbors,false);}
+  public static RoadRailJoin paint(Mesh current,List<Neighbor> neighbors){return new RoadRailJoin(current,neighbors,true);}
+  private static Range auxiliary(Mesh ramp,Mesh host){
+    if(ramp==null||host==null)return null;var link=ramp.settings().options().lanePoints().link();if(link==null)return null;
+    for(boolean source:new boolean[]{true,false}){
+      if(source?!link.options().sourceExtra():!link.options().targetExtra())continue;
+      var ref=source?link.from():link.to();
+      for(var point:host.settings().options().lanePoints().points())if(point.id().equals(ref.point())){
+        var lane=LanePoints.lane(host,point);double station=lane.station()+(source?0:lane.sign()*link.targetOffset());
+        try{var samples=LaneRampApproach.build(host,point.lane(),station,source,ramp.settings(),link.options().transition());
+          double length=0;for(int i=1;i<samples.size();i++)length+=samples.get(i).center().distance(samples.get(i-1).center());
+          return source?new Range(0,length):new Range(ramp.length()-length,ramp.length());
+        }catch(IllegalArgumentException ignored){/* A continuation may own the rest of the port; ordinary clipping still applies. */}
+      }
+    }
+    return null;
+  }
   private static double inset(Mesh mesh,Sample at,int side,boolean paint){return paint?Math.abs(side*at.halfWidth()-RoadSurface.edgeOffset(mesh,at,side)):inset(mesh,at,side);}
-  private RoadRailJoin(List<Neighbor> neighbors,boolean paint){
+  private RoadRailJoin(Mesh current,List<Neighbor> neighbors,boolean paint){
+    this.current=current;
     for(var neighbor:neighbors){var mesh=neighbor.mesh();
+      var ourAuxiliary=auxiliary(current,mesh);var theirAuxiliary=auxiliary(mesh,current);
       for(int i=1;i<mesh.samples().size();i++){
         var a=mesh.samples().get(i-1);var b=mesh.samples().get(i);
         for(var strip:LaneDeck.strips(mesh,a,b)) {
           // The rail is inset but the supporting pavement is not. A .15-block
           // welded overlap used by an auxiliary lane used to disappear after both
           // faces were inset .16, leaving a barrier across an otherwise open merge.
-          add(material,strip.al(),strip.ar(),strip.br(),true,b.center().sub(a.center()).horizontalUnit());
-          add(material,strip.al(),strip.br(),strip.bl(),true,b.center().sub(a.center()).horizontalUnit());
+          double station=(a.distance()+b.distance())/2;
+          V tangent=theirAuxiliary!=null&&station>=theirAuxiliary.from()&&station<=theirAuxiliary.to()?null:b.center().sub(a.center()).horizontalUnit();
+          add(material,strip.al(),strip.ar(),strip.br(),true,tangent,ourAuxiliary);
+          add(material,strip.al(),strip.br(),strip.bl(),true,tangent,ourAuxiliary);
           // Only exposed band boundaries get an inset. Zero-size slots split a
           // continuous face too, but those split lines must not become false gutters.
           double highA=strip.al().distance(a.at(a.halfWidth(),0))<1e-6?inset(mesh,a,1,paint):INSET,highB=strip.bl().distance(b.at(b.halfWidth(),0))<1e-6?inset(mesh,b,1,paint):INSET;
@@ -111,7 +132,7 @@ public final class RoadRailJoin {
   public static boolean sharedRail(Mesh neighbor,V a,V b){
     for(V point:List.of(a,a.add(b).mul(.5),b)){
       var q=RoadQueries.horizontal(neighbor,point);var at=q.sample();
-      if(Math.abs(point.y()-at.center().y())>.015)return false;
+      if(Math.abs(point.y()-at.at(q.lateral(),0).y())>.015)return false;
       int side=q.lateral()<0?-1:1;double edge=at.halfWidth()-inset(neighbor,at,side);
       if(Math.abs(q.lateral())<edge-.015||LaneDeck.outerOpening(neighbor,at.distance(),side))return false;
     }
@@ -119,12 +140,12 @@ public final class RoadRailJoin {
   }
   private void add(V a,V b,V c,boolean owner){add(grid,a,b,c,owner);}
   private void add(Map<Long,List<Face>> target,V a,V b,V c,boolean owner){
-    add(target,a,b,c,owner,null);
+    add(target,a,b,c,owner,null,null);
   }
-  private void add(Map<Long,List<Face>> target,V a,V b,V c,boolean owner,V tangent){
+  private void add(Map<Long,List<Face>> target,V a,V b,V c,boolean owner,V tangent,Range auxiliary){
     double area=(b.x()-a.x())*(c.z()-a.z())-(b.z()-a.z())*(c.x()-a.x());
     if(Math.abs(area)<1e-10)return;if(area<0){V swap=b;b=c;c=swap;}
-    var face=new Face(a,b,c,owner,tangent);
+    var face=new Face(a,b,c,owner,tangent,auxiliary);
     for(int x=cell(Math.min(a.x(),Math.min(b.x(),c.x()))-1e-6);x<=cell(Math.max(a.x(),Math.max(b.x(),c.x()))+1e-6);x++)
       for(int z=cell(Math.min(a.z(),Math.min(b.z(),c.z()))-1e-6);z<=cell(Math.max(a.z(),Math.max(b.z(),c.z()))+1e-6);z++)
         target.computeIfAbsent(key(x,z),k->new ArrayList<>()).add(face);
@@ -170,8 +191,11 @@ public final class RoadRailJoin {
     for(int x=cell(Math.min(a.x(),b.x())-1e-6);x<=cell(Math.max(a.x(),b.x())+1e-6);x++)
       for(int z=cell(Math.min(a.z(),b.z())-1e-6);z<=cell(Math.max(a.z(),b.z())+1e-6);z++)
         faces.addAll(surface.getOrDefault(key(x,z),List.of()));
-    var cuts=new ArrayList<Range>();V tangent=b.sub(a).horizontalUnit();for(var face:faces){
-      if(parallelOnly&&face.tangent()!=null&&Math.abs(face.tangent().dot(tangent))<.999999)continue;
+    var cuts=new ArrayList<Range>();V tangent=b.sub(a).horizontalUnit();
+    double station=current==null?Double.NaN:RoadQueries.horizontal(current,a.add(b).mul(.5)).sample().distance();
+    for(var face:faces){
+      boolean auxiliary=face.auxiliary()!=null&&station>=face.auxiliary().from()&&station<=face.auxiliary().to();
+      if(parallelOnly&&!auxiliary&&face.tangent()!=null&&Math.abs(face.tangent().dot(tangent))<.999999)continue;
       var hit=face.intersection(a,b);if(hit!=null)cuts.add(hit);}
     cuts.sort(Comparator.comparingDouble(Range::from));
     var result=new ArrayList<Span>();double at=0;V d=b.sub(a);

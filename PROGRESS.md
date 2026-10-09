@@ -1,3 +1,10 @@
+## 2026-10-09 10:53 UTC 0.40.30 WIP checkpoint 4
+
+- Full Forge compile, game-test compile and reobfuscated JAR succeeded on CI commit 95ecfcf. That run stopped at a fixture assertion which counted deliberately removed outer-lane boundaries as exposed road; corrected fixture uses LaneDeck.outerOpening. No failed artifact is delivered.
+- New model generated left/right ordinary forks plus valid EXTRA departure/arrival scenes now pass exposed boundary coverage. Actual auxiliary approach geometry is rebuilt to remove internal taper rails without reopening the normal fork nose gap.
+- Scope the additional rail clearance pass to lane-connector union planning, preserving legacy interchange behavior.
+- Current whole regression and real-server validation are in progress. Screenshot 4 is not yet reproduced in the exact original save; generated straight hosts remain geometrically straight.
+
 ## 2026-10-09 10:44 UTC 0.40.30 WIP checkpoint 3
 
 - Core closure/shared perimeter tests pass (629 checks). Constrained cubic grade fitting reduces the isolated profile maximum adjacent grade change to 0.00377 without changing samples, clearance or grade limit.

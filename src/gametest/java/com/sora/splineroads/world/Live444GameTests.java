@@ -40,8 +40,9 @@ public final class Live444GameTests {
    for(var r:built)parts.addAll(StructurePlanner.plan(h.getLevel(),r,built,Map.of(),new HashMap<>()).structures());
    int checked=0;
    for(var r:built){var m=r.mesh;var others=built.stream().filter(o->o!=r).toList();
-    var join=new RoadRailJoin(others.stream().map(o->new RoadRailJoin.Neighbor(o.mesh,RoadSurface.higherPriority(o.record.id(),o.mesh,r.record.id(),m))).toList());
+    var join=new RoadRailJoin(m,others.stream().map(o->new RoadRailJoin.Neighbor(o.mesh,RoadSurface.higherPriority(o.record.id(),o.mesh,r.record.id(),m))).toList());
     for(double d=2;d<m.length()-2;d+=1)for(int side:new int[]{-1,1}){
+     if(LaneDeck.outerOpening(m,d,side))continue;
      var at=RoadStructures.sample(m,d);double inset=RoadRailJoin.inset(m,at,side);V p=at.at(side*(at.halfWidth()-inset),0),delta=at.left().left().mul(-.02);
      if(join.exposed(p.sub(delta),p.add(delta),p.add(at.left().mul(side)),inset).stream().noneMatch(span->span.a().sub(p).dot(delta)<=1e-9&&span.b().sub(p).dot(delta)>=-1e-9))continue;
      h.assertTrue(parts.stream().anyMatch(t->t.material()==Material.CONCRETE&&Math.abs(t.height()-.45)<1e-8&&JunctionPaint.inside(t.base(),p)),"actual exposed perimeter has no rail extra="+extra+" at="+p);checked++;

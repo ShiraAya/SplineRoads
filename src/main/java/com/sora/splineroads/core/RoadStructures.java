@@ -185,6 +185,7 @@ public final class RoadStructures {
 
     default List<RoadRailJoin.Span> capRailSpans(V a,V b,V outside){return railSpans(a,b,outside);}
     default boolean railBlocked(Part part,V a,V b){return blocked(part);}
+    default boolean unionRails(){return false;}
 
     /** Leave the node's editing target clear of raised median furniture. */
     default boolean marker(V point) {
@@ -412,7 +413,8 @@ public final class RoadStructures {
         }
         // A raised rail and its footing form one assembly. Removing only the
         // blocked footing leaves steel/posts suspended above a joining deck.
-        for(var piece:clearBarrier(assembly,ground,r.a,r.b))add(out,piece);
+        boolean check=ground.unionRails()||LaneDeck.hasOpenings(mesh)||mesh.settings().options().lanePoints().link()!=null||!mesh.settings().options().lanePoints().openings().isEmpty();
+        for(var piece:check?clearBarrier(assembly,ground,r.a,r.b):assembly)add(out,piece);
       }
       else {var part=new Part(r.a,r.b,.24,1.05,false);if(!ground.blocked(part))add(out,part);}
     }

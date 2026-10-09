@@ -33,7 +33,7 @@ final class StructurePlanner {
     // interchange/Y-fork semantics remain unchanged. UUID/depth gives one owner when
     // the rail centrelines coincide; no capsule or distance-only opening can erase them.
     boolean laneEdges=LaneTopology.metadata(built.record).link()!=null||nearby.stream().anyMatch(r->LaneTopology.metadata(r.record).link()!=null);
-    var railJoin=laneEdges?new RoadRailJoin(nearby.stream().map(r->new RoadRailJoin.Neighbor(r.mesh,
+    var railJoin=laneEdges?new RoadRailJoin(built.mesh,nearby.stream().map(r->new RoadRailJoin.Neighbor(r.mesh,
         RoadSurface.higherPriority(r.record.id(),r.mesh,built.record.id(),built.mesh))).toList()):null;
     var capMouths=RoadRailJoin.mouths(nearby.stream().filter(r->LaneMerge.linkedTo(built.mesh,r.mesh)||LaneMerge.linkedTo(r.mesh,built.mesh)||LaneTopology.metadata(built.record).cuts().stream().anyMatch(c->c.connection().equals(r.record.id()))).map(r->r.mesh).toList());
     var approaches = built.record.assembly() == null ? List.<RoadSignals.Approach>of()
@@ -143,6 +143,7 @@ final class StructurePlanner {
                 return blocked(part,null,null);
               }
               public boolean railBlocked(RoadStructures.Part part,V a,V b){return blocked(part,a,b);}
+              public boolean unionRails(){return laneEdges;}
               private boolean blocked(RoadStructures.Part part,V railA,V railB){
                 if(pierSpacing.tooClose(part))return true;
                 if(!RoadSidewalks.smoothPart(part)&&sidewalkSolids.intersects(part))return true;

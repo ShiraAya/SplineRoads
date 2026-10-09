@@ -165,7 +165,7 @@ public final class RoadSurface {
   }
   public static Geometry build(Mesh mesh, List<Mesh> higherPriority, List<Mesh> neighbors) {
     Grid owners = new Grid(higherPriority), joined = new Grid(neighbors);
-    var edgeJoin=RoadRailJoin.paint(neighbors.stream().map(n->new RoadRailJoin.Neighbor(n,higherPriority.contains(n))).toList());
+    var edgeJoin=RoadRailJoin.paint(mesh,neighbors.stream().map(n->new RoadRailJoin.Neighbor(n,higherPriority.contains(n))).toList());
     // Preserve the main road's dividers. Only subordinate branch markings are suppressed.
     List<Mesh> dividerCuts = new ArrayList<>(higherPriority);
     var crossings = RoadJunction.intersections(mesh, neighbors);
