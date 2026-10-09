@@ -1,3 +1,5 @@
+> 最新 P1：十三图0.40.29反馈，见 `docs/issues/0444-live-thirteen-030.md`。共用段护栏、横线、AUTO晚期失败、纵坡折角重新打开。
+
 > 最新 P1：十四图实机反馈（含仅计算速度），见 `docs/issues/0443-live-fourteen-029.md`。Work模式持续推进、阶段保存。
 
 > 最新 P1：十二图实机反馈，见 `docs/issues/0442-live-twelve-followup-028.md`。旧修复重新按截图验证。
