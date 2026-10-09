@@ -589,6 +589,9 @@ public final class RoadSurface {
     double normal=side*Math.max(.08,sample.halfWidth()-.3);
     var link=mesh.settings().options().lanePoints().link();if(link==null)return normal;
     var layout=RoadProfile.layout(mesh,sample);
+    // A connector has a persisted four-block motor band plus separate rail shoulders.
+    // Mark that band, so the outer lane cannot visually absorb both shoulders.
+    if(mesh.settings().style().connectorRamp())return layout.outer(side);
     if(layout.catalog().type()!=RoadProfile.Type.ORDINARY||layout.cycleWidth()>.01||layout.curbWidth()>.01)return normal;
     double span=Math.min(mesh.length()/2,Math.max(16,link.options().transition()));
     double distance=Math.min(sample.distance(),mesh.length()-sample.distance());

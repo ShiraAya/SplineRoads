@@ -163,6 +163,9 @@ public final class RoadStructures {
     /** Highest solid terrain below the deck; NaN means no valid foundation in range. */
     double top(double x, double z, double deckY);
 
+    /** Original land surface above a buried road; separate from its bearing below. */
+    default double surface(double x,double z,double roadY){double above=top(x,z,roadY+MAX_DROP);return Double.isFinite(above)?above:top(x,z,roadY);}
+
     /** True when a proposed volume would occupy another road's driving corridor. */
     boolean blocked(Part part);
 

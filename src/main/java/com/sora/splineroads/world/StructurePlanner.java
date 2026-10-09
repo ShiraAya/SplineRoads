@@ -51,6 +51,9 @@ final class StructurePlanner {
     // are not reliable geometric identity. Check their actual local shaft positions.
     var pierSpacing=new RoadPierSpacing(obstacles.stream().flatMap(r->r.record.structures().stream()).toList());
     var terrainReference=built.record.terrainClassificationMesh();
+    var terrain=RoadTerrain.read(level,retained,originals,terrainCache);
+    var link=LaneTopology.metadata(built.record).link();
+    if(link!=null)LaneRampTerrain.validate(built.mesh,link.options(),terrain);
     var ground = new RoadStructures.Ground() {
               public Mesh terrainReference(Mesh mesh){return terrainReference;}
               public boolean closedLanePlanting(UUID connection){
@@ -66,51 +69,8 @@ final class StructurePlanner {
                 return false;
               }
 
-              public double top(double x, double z, double deckY) {
-                BlockPos key = BlockPos.containing(x, deckY, z);
-                if(!RoadWorkChunks.terrainAvailable(level,key))return Double.NaN;
-                var surfaces =
-                    terrainCache.computeIfAbsent(
-                        key,
-                        k -> {
-                          List<AABB> out = new ArrayList<>();
-                          int bottom =
-                              Math.max(
-                                  level.getMinBuildHeight(),
-                                  key.getY() - (int) RoadStructures.MAX_DROP);
-                          for (int y = key.getY(); y >= bottom; y--) {
-                            BlockPos p = new BlockPos(key.getX(), y, key.getZ());
-                            if (!level.hasChunkAt(p)) break;
-                            BlockState state = level.getBlockState(p);
-                            state = RoadFoundation.source(p.asLong(),state,
-                                RoadBlocks.isCollider(state)||state.is(SplineRoads.TUNNEL_AIR.get()),
-                                state.isAir(),originals,retained,
-                                net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
-                            if (state.is(net.minecraft.tags.BlockTags.LEAVES)
-                                || state.is(net.minecraft.tags.BlockTags.LOGS)
-                                || state.is(SplineRoads.NODE.get())
-                                || !state.getFluidState().isEmpty()) continue;
-                            var shape=state.getCollisionShape(level,p);
-                            for (var box : shape.toAabbs())
-                              out.add(box.move(p));
-                            // A full cube hides all lower surfaces in this column for every x/z
-                            // query.
-                            if (y < key.getY()
-                                && net.minecraft.world.level.block.Block.isShapeFullBlock(
-                                    shape)) break;
-                          }
-                          out.sort(Comparator.comparingDouble((AABB box) -> box.maxY).reversed());
-                          return out;
-                        });
-                for (var box : surfaces)
-                  if (x >= box.minX - 1e-7
-                      && x <= box.maxX + 1e-7
-                      && z >= box.minZ - 1e-7
-                      && z <= box.maxZ + 1e-7
-                      // A block beginning at the probe plane is overhead, not a foundation.
-                      && box.minY < deckY - 1e-7) return Math.min(box.maxY,deckY);
-                return Double.NaN;
-              }
+              public double top(double x,double z,double deckY){return terrain.top(x,z,deckY);}
+              public double surface(double x,double z,double roadY){return terrain.surface(x,z,roadY);}
 
               public V railJoint(V p,V direction){return railJoin==null?null:railJoin.joint(p,direction);}
               public boolean railPost(V p){return railJoin==null||railJoin.ownsPost(p);}

@@ -11,7 +11,7 @@ public final class Live443Validation {
     var raw=RoadGeometry.build(new Node(new V(0,20,0),0,0),new Node(new V(0,20,200),0,0),settings);
     for(int slot:new int[]{0,2}){
       var host=Live435Validation.cut(raw,slot,50,150,true);
-      check(LaneClosureLandscape.plan(host,Live435Validation.ground(19)).isEmpty(),"exterior closed slot still filled/planted");
+      check(LaneClosureLandscape.plan(host,Live435Validation.ground(19)).stream().anyMatch(p->p.material()==Material.GREEN),"spacious exterior closed slot lost planting (0446)");
       check(!LaneClosureWarnings.paint(host).isEmpty(),"ground cut has no boundary paint");
       for(var cap:LaneDeck.caps(host)){
         V mid=cap.a().add(cap.b()).mul(.5);

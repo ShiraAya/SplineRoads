@@ -26,7 +26,8 @@ public final class LanePoints {
   public enum Arrival { MERGE("并入现有车道"), REPLACE("旧版空位恢复"), EXTRA("额外扩入"), FLOW("普通汇流（主路不断行）"), ADD("最外侧补入（增加一车道）"); public final String label; Arrival(String label){this.label=label;} }
   public enum Elevation { AUTO("自动避让"), OVER("上跨既有道路"), UNDER("下穿既有道路"), KEEP("保持原高程"); public final String label; Elevation(String label){this.label=label;} }
   public enum Landing { FLEXIBLE("同车道弹性落点"), EXACT("精确锁定 B"); public final String label; Landing(String label){this.label=label;} }
-  public record Options(Path path,Departure departure,Arrival arrival,double radius,double transition,Elevation elevation,Landing landing,boolean gradeOverride) {
+  public record Options(Path path,Departure departure,Arrival arrival,double radius,double transition,Elevation elevation,Landing landing,boolean gradeOverride,boolean allowTunnel) {
+    public Options(Path path,Departure departure,Arrival arrival,double radius,double transition,Elevation elevation,Landing landing,boolean gradeOverride){this(path,departure,arrival,radius,transition,elevation,landing,gradeOverride,false);}
     public Options(Path path,Departure departure,Arrival arrival,double radius,double transition,Elevation elevation,Landing landing){this(path,departure,arrival,radius,transition,elevation,landing,false);}
     // Existing saves and ordinary branching keep their original meaning. DETACH is explicit.
     public static final Options DEFAULT=new Options(Path.AUTO,Departure.BRANCH,Arrival.MERGE,24,32,Elevation.AUTO,Landing.FLEXIBLE);
@@ -35,7 +36,7 @@ public final class LanePoints {
     public boolean sourceExtra(){return departure==Departure.EXTRA;}
     public boolean separatesLane(){return departure==Departure.DETACH||departure==Departure.TEMPORARY;}
     public boolean targetExtra(){return arrival==Arrival.EXTRA;}
-    public Options withoutApproaches(){return new Options(path,Departure.BRANCH,Arrival.MERGE,radius,transition,elevation,landing,gradeOverride);}
+    public Options withoutApproaches(){return new Options(path,Departure.BRANCH,Arrival.MERGE,radius,transition,elevation,landing,gradeOverride,allowTunnel);}
   }
   /** Target offset is measured along the selected lane's driving direction, never another lane. */
   public record Link(Ref from,Ref to,Options options,V junctionMouth,double targetOffset,boolean protectedMerge,boolean rectangularClosure) {
@@ -107,7 +108,7 @@ public final class LanePoints {
     return (twoWay?(chosen.sign()>0?"正向":"反向")+" ":"单向 ")+
         (present?ordinal+" / "+same.size()+" 车道"+(LaneSections.edge(mesh,station,index)?"（边缘）":""):"预留空位 "+(index+1));
   }
-  public static boolean supported(Settings s){var type=RoadProfile.catalog(s.style()).type();if(type!=RoadProfile.Type.ORDINARY&&type!=RoadProfile.Type.HIGHWAY&&!s.style().connectorRamp())return false;if(s.structure()==Structure.TUNNEL)return false;if(s.structure()!=Structure.BRIDGE)return true;return switch(s.options().infrastructure().bridge()){case STANDARD,BEAM,OVERPASS->true;default->false;};}
+  public static boolean supported(Settings s){var type=RoadProfile.catalog(s.style()).type();if(type!=RoadProfile.Type.ORDINARY&&type!=RoadProfile.Type.HIGHWAY&&!s.style().connectorRamp())return false;if(s.structure()!=Structure.BRIDGE)return true;return switch(s.options().infrastructure().bridge()){case STANDARD,BEAM,OVERPASS->true;default->false;};}
   public static boolean opening(Mesh mesh,V location){
     for(var opening:mesh.settings().options().lanePoints().openings())for(int i=1;i<opening.centerline().size();i++){
       V a=opening.centerline().get(i-1),b=opening.centerline().get(i),d=b.sub(a);double length=d.x()*d.x()+d.z()*d.z();if(length<1e-9)continue;double t=Math.max(0,Math.min(1,(location.x()-a.x())*d.x()/length+(location.z()-a.z())*d.z()/length));V p=a.add(d.mul(t));

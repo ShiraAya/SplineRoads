@@ -18,6 +18,9 @@ public final class LaneRampCorridor {
     return solveMixed(base,freeFrom,freeTo,constraints,grade,false);
   }
   public static Mesh solveMixed(Mesh base,double freeFrom,double freeTo,List<Bound> constraints,double grade,boolean monotoneOnly){
+    return solveMixed(base,freeFrom,freeTo,constraints,grade,monotoneOnly,null);
+  }
+  public static Mesh solveMixed(Mesh base,double freeFrom,double freeTo,List<Bound> constraints,double grade,boolean monotoneOnly,double[] terrainFloors){
     LaneRampGrade.checked(grade);int n=base.samples().size();
     double[] x=new double[n],lo=new double[n],hi=new double[n],y=new double[n];
     for(int i=0;i<n;i++){
@@ -26,7 +29,7 @@ public final class LaneRampCorridor {
       // An old height bump is not an obstacle. Only real crossing windows and
       // fixed ports bound the new profile; otherwise a spurious crest above B
       // makes a genuinely feasible monotone route appear impossible.
-      lo[i]=Double.NEGATIVE_INFINITY;hi[i]=Double.POSITIVE_INFINITY;
+      lo[i]=terrainFloors==null?Double.NEGATIVE_INFINITY:terrainFloors[i];hi[i]=Double.POSITIVE_INFINITY;
     }
     // Zero-lift contacts still constrain already-clear decks: relaxing a prior
     // crest must not erase a real over/under relationship elsewhere on the route.
@@ -54,7 +57,7 @@ public final class LaneRampCorridor {
         for(var c:starts.getOrDefault(i,List.of()))(c.over()?above:below).add(c);
         while(!above.isEmpty()&&above.peek().last()<i)above.remove();
         while(!below.isEmpty()&&below.peek().last()<i)below.remove();
-        if(!above.isEmpty())lo[i]=y[i]+above.peek().amount();
+        if(!above.isEmpty())lo[i]=Math.max(lo[i],y[i]+above.peek().amount());
         if(!below.isEmpty())hi[i]=y[i]-below.peek().amount();
       }
     }

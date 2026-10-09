@@ -39,6 +39,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 public final class RoadData extends SavedData {
   public final RoadIndex index = new RoadIndex();
   private ServerLevel owningLevel;
+  RoadStructures.Ground terrainGround(){return owningLevel==null?null:RoadTerrain.read(owningLevel,terrainFill,terrainOriginal,new HashMap<>());}
   boolean withinHeight(com.sora.splineroads.core.RoadGeometry.Mesh mesh){return owningLevel==null||mesh.min().y()-mesh.settings().thickness()>=owningLevel.getMinBuildHeight()&&mesh.max().y()+4<owningLevel.getMaxBuildHeight();}
   private Set<UUID> confirmedLaneDeletes=Set.of();
   void removeWithDependents(ServerLevel level,ServerPlayer player,UUID id,Set<UUID> dependents){for(var v:dependents)if(player!=null)requireOwner(player,index.roads.get(v).record.owner());confirmedLaneDeletes=Set.copyOf(dependents);try{remove(level,player,id);}finally{confirmedLaneDeletes=Set.of();}}

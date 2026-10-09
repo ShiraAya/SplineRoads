@@ -23,7 +23,7 @@ public final class Live440GameTests {
   int by=underground?200:208;
   var target=data.connect(level,player,ownedMarker(h,player,cx+90,by,cz+200),ownedMarker(h,player,cx+90,by,cz+360),settings,null);
   var from=Build429GameTests.point(data,source,40,0);var to=Build429GameTests.point(data,target,60,0);
-  var options=new LanePoints.Options(LanePoints.Path.AUTO,LanePoints.Departure.TEMPORARY,LanePoints.Arrival.MERGE,24,32,LanePoints.Elevation.AUTO,LanePoints.Landing.FLEXIBLE);
+  var options=new LanePoints.Options(LanePoints.Path.AUTO,LanePoints.Departure.TEMPORARY,LanePoints.Arrival.MERGE,24,32,LanePoints.Elevation.AUTO,LanePoints.Landing.FLEXIBLE,false,underground);
   var tool=new ItemStack(SplineRoads.RAMP_CONNECTOR.get());player.setItemInHand(InteractionHand.MAIN_HAND,tool);
   var command=new CompoundTag();command.put("From",LanePointCodec.ref(from));command.put("To",LanePointCodec.ref(to));command.put("Options",LanePointCodec.options(options));command.putLong("Request",440);
   tool.getOrCreateTag().put("LaneFrom",command.getCompound("From").copy());tool.getOrCreateTag().put("LaneTo",command.getCompound("To").copy());tool.getOrCreateTag().putString("LaneDimension",level.dimension().location().toString());
@@ -44,7 +44,7 @@ public final class Live440GameTests {
    h.assertTrue(!RoadAutoTunnels.regions(built.structures()).isEmpty(),"buried connector lost automatic tunnel lining");
    for(var host:List.of(source,target))h.assertTrue(data.index.roads.get(host.id()).record.structures().stream().noneMatch(p->p.material()==RoadStructures.Material.GREEN||p.material()==RoadStructures.Material.SOIL),"underground ramp reservation generated greenery");
   }else h.assertTrue(resolved.targetOffset()==16,"flexible fixture did not retain changed B");
-  if(!underground){var edit=new CompoundTag();edit.putUUID("Id",built.id());edit.putInt("Signature",built.header().hashCode());edit.put("Settings",RoadRecord.writeSettings(built.settings().structure(Structure.TUNNEL)));LaneRamps.editRoad(level,player,edit);built=data.index.roads.get(before.id()).record;h.assertTrue(built.settings().structure()==Structure.TUNNEL,"actual tunnel edit rejected");}
+  if(!underground){var edit=new CompoundTag();edit.putUUID("Id",built.id());edit.putInt("Signature",built.header().hashCode());edit.put("Settings",RoadRecord.writeSettings(built.settings().structure(Structure.TUNNEL)));LaneRamps.editRoad(level,player,edit);built=data.index.roads.get(before.id()).record;h.assertTrue(built.settings().structure()==Structure.AUTO&&RoadAutoTunnels.regions(built.structures()).isEmpty(),"above-ground connector edit fabricated a full-length tunnel (0446)");}
   var reload=RoadData.load(data.save(new CompoundTag()));h.assertTrue(reload.index.roads.get(before.id()).record.save().equals(built.save()),"NBT changed published road");
   var cells=new HashSet<>(data.index.roads.get(before.id()).cells.keySet());data.remove(level,player,before.id());
   for(long p:cells)if(!data.index.occupied(p))h.assertTrue(!RoadBlocks.isCollider(level.getBlockState(BlockPos.of(p))),"orphan collider after delete");
