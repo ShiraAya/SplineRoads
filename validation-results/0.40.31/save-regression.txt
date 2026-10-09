@@ -1,0 +1,26 @@
+0.40.31 actual uploaded-save algorithm regression, 2026-10-09
+Input ZIP SHA-256: 05e9d11913dd83149485db8f00fe55d8ca0967fcb0e43a7971f50aeeca8f4d4e
+Archive CRC verified; actual NBT road data decoded locally; 5 roads.
+Original save, owner/player IDs, original record IDs and world files were not uploaded.
+This is production geometry/planning with test adapters; not a Minecraft client or original-world GPU run.
+
+Original failing EXTRA -> TEMPORARY same fixed endpoints: reproduced before fix;
+new 5.5 pavement / 4 motor-width generation succeeds, approximately 0.41 s in a standalone local run.
+Three connected ramps reconfigured in dependency order: all succeed at 5.5 base pavement width.
+Exposed perimeter sampled every 0.5 m on three ramps and elevated main road:
+  missing guard coverage: 0, 0, 0, 0.
+Closed rail polygons include their boundary (1e-6 m numerical tolerance);
+seven previous ray-casting negatives were exactly on adjoining steel-piece endpoints (distance <= 2e-17 m).
+Six actual ramp mouths: 0 transverse marking faces crossing the opening.
+Downstream ADD divider: 120 painted and 112 unpainted quarter-metre probes, confirming dashed coverage.
+ADD closure retains the old main-road paved shoulder; original inward notch removed.
+Ordinary screenshot-1 world was not supplied in this save. General saved-alignment and preview pipeline fixed; exact scene unverified.
+
+Local synthetic regression at this checkpoint:
+  Live445ModelValidation: 500 checks; outer and inner TEMPORARY, AUTO and OVER,
+  fixed motor mouths, wide road profile, NBT adapter reload, stable re-preview,
+  ordinary saved alignment retention and changed endpoint invalidation.
+  Live439/440/441/442/443/444/435/438 targeted regressions pass.
+  .442 legacy fixture now explicitly constructs old physical width 4 m; widening
+  may replan for safety, but fixed mouths, guard joins and collision checks remain tested.
+Full current-source Forge and Minecraft GameTest checks run separately in CI.
