@@ -637,6 +637,15 @@ public final class LaneRamps {
         road=road.withLanePoints(data.link(new LanePoints.Link(selected.from(),selected.to(),link.options(),selected.junctionMouth(),selected.targetOffset(),selected.protectedMerge(),selected.rectangularClosure())));}
       return new PreviewRoute(road,generated.path());
     }}
+    public <T> T resolve(java.util.function.Function<PreviewRoute,T> validate){
+      CandidateRejected rejection=null;
+      for(int attempt=0;alternative(attempt);attempt++){
+        PreviewRoute route;
+        try{route=compute(attempt);}catch(IllegalArgumentException e){if(rejection==null)throw e;continue;}
+        try{return validate.apply(route);}catch(CandidateRejected e){rejection=e;}
+      }
+      throw rejection;
+    }
   }
   /** A geometrically valid candidate can still conflict after terrain-dependent lining is added. */
   public static final class CandidateRejected extends IllegalArgumentException {
@@ -659,13 +668,7 @@ public final class LaneRamps {
     return new PreviewWork(all,seeds,id,t.hasUUID("Id")?all.get(id).owner():player.getUUID(),new LanePoints.Link(from,to,options,mouth,previousOffset),direction,data.index.revision(),player.serverLevel().getMinBuildHeight(),player.serverLevel().getMaxBuildHeight());
   }
   public static CompoundTag preview(ServerPlayer player,ItemStack tool,CompoundTag t){
-    var work=preparePreview(player,tool,t);CandidateRejected rejection=null;
-    for(int attempt=0;work.alternative(attempt);attempt++){
-      PreviewRoute route;
-      try{route=work.compute(attempt);}catch(IllegalArgumentException e){if(rejection==null)throw e;continue;}
-      try{return finishPreview(player,tool,t,work,route);}catch(CandidateRejected e){rejection=e;}
-    }
-    throw rejection;
+    var work=preparePreview(player,tool,t);return work.resolve(route->finishPreview(player,tool,t,work,route));
   }
   /** Main-thread validation/publish. Reject stale work before touching any live state. */
   public static CompoundTag finishPreview(ServerPlayer player,ItemStack tool,CompoundTag t,PreviewWork work,PreviewRoute generated){

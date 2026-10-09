@@ -89,7 +89,9 @@ public final class Live443Validation {
         parts.add(RoadStructures.plan(mesh,g).stream().filter(p->!p.pier()&&p.material()==Material.CONCRETE&&Math.abs(p.a().y()-20)<1e-6&&Math.abs(p.height()-.45)<1e-6).toList());
         for(var paint:RoadSurface.build(mesh,List.of(),List.of(other)).markings()){
           V center=paint.points().stream().reduce(new V(0,0,0),V::add).mul(1d/paint.points().size());
-          check(!RoadQueries.contains(other,center,-.001,.025),"inset edge paint remains over joining pavement host="+(mesh==host)+" center="+center+" points="+paint.points());
+          // The shared exterior stripe belongs on the union's inset perimeter;
+          // raw pavement includes that shoulder and cannot be used as a paint veto.
+          check(!RoadQueries.contains(other,center,-.301,.025),"edge paint remains inside joining traffic area host="+(mesh==host)+" center="+center+" points="+paint.points());
         }
       }
       var main=parts.get(0).stream().filter(p->p.a().z()>60&&p.b().z()<140&&mirror*p.a().x()>0).toList();

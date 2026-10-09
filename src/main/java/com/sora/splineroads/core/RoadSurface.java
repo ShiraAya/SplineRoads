@@ -171,12 +171,20 @@ public final class RoadSurface {
     var crossings = RoadJunction.intersections(mesh, neighbors);
     dividerCuts.addAll(crossings);
     Grid dividers = new Grid(dividerCuts);
-    // Only real linked connector throats hide default host lane paint. An unrelated
-    // parallel road (or an overpass) must not erase markings by proximity alone.
-    var overlapCuts=new ArrayList<Mesh>(dividerCuts);
     // Host dividers remain authoritative at an auxiliary merge. Boundary paint
     // has its own union clipping; a linked ramp alone cannot erase live lane dashes.
-    Grid defaultDividers=new Grid(overlapCuts);
+    Grid defaultDividers=new Grid(dividerCuts);
+    for(var neighbor:neighbors)if(LaneMerge.linkedTo(neighbor,mesh)||LaneMerge.linkedTo(mesh,neighbor)){
+      for(int i=1;i<neighbor.samples().size();i++){
+        var a=neighbor.samples().get(i-1);var b=neighbor.samples().get(i);
+        double da=a.center().y()-RoadQueries.horizontal(mesh,a.center()).sample().center().y();
+        double db=b.center().y()-RoadQueries.horizontal(mesh,b.center()).sample().center().y();
+        if(Math.abs(da)<.06&&Math.abs(db)<.06)continue;
+        for(var strip:LaneDeck.strips(neighbor,a,b)){
+          defaultDividers.add(List.of(strip.al(),strip.ar(),strip.br()));defaultDividers.add(List.of(strip.al(),strip.br(),strip.bl()));
+        }
+      }
+    }
 
     for (var cut : RoadJunction.terminalCuts(mesh)){dividers.add(cut);defaultDividers.add(cut);}
     var approaches = RoadSignals.approaches(mesh, neighbors);

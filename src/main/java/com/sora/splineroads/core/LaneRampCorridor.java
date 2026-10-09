@@ -95,9 +95,10 @@ public final class LaneRampCorridor {
       if(low>high+1e-7)throw failure(base,freeFrom,freeTo,grade,i,"坡线连续解不可达");
       y[i]=clamp(desired[i],low,high);
     }
+    y=roundProfile(x,y,lo,hi,grade,monotone);
     // Relax curvature while staying inside both the physical corridor and
     // neighbouring grade/direction limits; feasibility is already established.
-    for(int stride:new int[]{16,8,4,2,1})for(int pass=0;pass<(stride==1?320:48);pass++)for(int k=1;k<n-1;k++){
+    for(int stride:new int[]{1})for(int pass=0;pass<36;pass++)for(int k=1;k<n-1;k++){
       int i=(pass&1)==0?k:n-1-k;double dl=x[i]-x[i-1],dr=x[i+1]-x[i];
       if(dl<1e-9||dr<1e-9)continue;
       double low=Math.max(lo[i],Math.max(y[i-1]-grade*dl,y[i+1]-grade*dr));
@@ -108,7 +109,7 @@ public final class LaneRampCorridor {
       if(low>high+1e-6)continue;
       // Minimise changes of grade, not squared grade itself. A simple neighbour
       // average converges to a taut polyline and preserves a kink at every binding
-      // crest. Wider stencils spread the vertical curve over metres, then refine.
+      // crest. Cubic fitting spreads the curve over metres; local relaxation refines it.
       double numerator=0,denominator=0;
       for(int term=-1;term<=1;term++){
         int center=i+term*stride;
@@ -136,6 +137,39 @@ public final class LaneRampCorridor {
     var samples=mesh.samples();int lo=0,hi=samples.size();
     while(lo<hi){int mid=(lo+hi)>>>1;if(samples.get(mid).distance()<from)lo=mid+1;else hi=mid;}
     return lo==samples.size()?lo:Math.max(0,lo-1);
+  }
+  /** Shape-preserving cubic vertical curves between the feasible profile's bends.
+   * A span is accepted only when every original sample retains its clearance and
+   * grade; tight corridors keep their feasible profile for constrained relaxation. */
+  private static double[] roundProfile(double[] x,double[] y,double[] lo,double[] hi,double grade,int monotone){
+    int n=x.length;var knots=new ArrayList<Integer>();knots.add(0);
+    for(int i=1;i<n-1;i++){
+      double a=x[i]-x[i-1],b=x[i+1]-x[i];
+      if(a<1e-9||b<1e-9||Math.abs((y[i]-y[i-1])/a-(y[i+1]-y[i])/b)>1e-7)knots.add(i);
+    }
+    knots.add(n-1);double[] slopes=new double[knots.size()],result=y.clone();
+    for(int k=1;k<knots.size()-1;k++){
+      int a=knots.get(k-1),b=knots.get(k),c=knots.get(k+1);
+      double dl=x[b]-x[a],dr=x[c]-x[b];if(dl<1e-9||dr<1e-9)continue;
+      double left=(y[b]-y[a])/dl,right=(y[c]-y[b])/dr;
+      if(left*right>0)slopes[k]=(3*(dl+dr))/((2*dr+dl)/left+(dr+2*dl)/right);
+    }
+    slopes[0]=(y[1]-y[0])/Math.max(1e-9,x[1]-x[0]);
+    slopes[slopes.length-1]=(y[n-1]-y[n-2])/Math.max(1e-9,x[n-1]-x[n-2]);
+    for(int k=0;k<knots.size()-1;k++){
+      int a=knots.get(k),b=knots.get(k+1);double length=x[b]-x[a];if(length<1e-9)continue;
+      boolean valid=true;double previous=y[a];
+      for(int i=a+1;i<=b;i++){
+        double t=(x[i]-x[a])/length,t2=t*t,t3=t2*t;
+        double value=(2*t3-3*t2+1)*y[a]+(t3-2*t2+t)*length*slopes[k]+(-2*t3+3*t2)*y[b]+(t3-t2)*length*slopes[k+1];
+        result[i]=value;
+        if(value<lo[i]-1e-8||value>hi[i]+1e-8||LaneRampGrade.exceeds(value-previous,x[i]-x[i-1],grade)
+            ||monotone!=2&&(monotone==0?Math.abs(value-previous)>1e-8:monotone*(value-previous)<-1e-8))valid=false;
+        previous=value;
+      }
+      if(!valid)System.arraycopy(y,a+1,result,a+1,b-a);
+    }
+    return result;
   }
   static int lastBoundSample(Mesh mesh,double to){
     var samples=mesh.samples();int lo=0,hi=samples.size();

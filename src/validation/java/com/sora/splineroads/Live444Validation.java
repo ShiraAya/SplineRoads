@@ -62,14 +62,14 @@ public final class Live444Validation {
     var points=new ArrayList<Sample>();for(int i=0;i<=400;i++)points.add(new Sample(new V(0,20,i*.5),new V(-1,0,0),i*.5,2));
     var base=RoadRibbon.mesh(points,new Settings(Mode.CURVE,Style.C1_RAMP,4,1,.35,90));
     var solved=LaneRampCorridor.solve(base,0,200,List.of(new LaneRampHeights.Constraint(80,120,8)),true,.2);
-    double previous=0,worst=0;
+    double previous=0,worst=0,worstAt=0;
     for(int i=1;i<solved.samples().size();i++){
       var a=solved.samples().get(i-1);var b=solved.samples().get(i);double grade=(b.center().y()-a.center().y())/.5;
-      if(i>1)worst=Math.max(worst,Math.abs(grade-previous));previous=grade;
+      if(i>1&&Math.abs(grade-previous)>worst){worst=Math.abs(grade-previous);worstAt=b.distance();}previous=grade;
       check(Math.abs(grade)<=.200001,"smoothing exceeded grade");
       if(b.distance()>=80&&b.distance()<=120)check(b.center().y()>=28-1e-6,"smoothing erased obstacle clearance");
     }
-    check(worst<.02,"vertical grade kink remains "+worst);
+    check(worst<.02,"vertical grade kink remains "+worst+" at "+worstAt);
     System.out.println("LIVE444 max adjacent grade change="+worst);
   }
   public static void main(String[] args){caps();common();vertical();System.out.println("Live444Validation "+checks+" checks PASS");}

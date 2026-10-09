@@ -105,16 +105,15 @@ public final class RoadRailJoin {
       }
     }
   }
-  /** A single owned rail may occupy the very same perimeter of two coplanar
-   * decks. This does not authorize a rail inside a live lane or across a mouth. */
+  /** An exposed union rail may share the perimeter shoulder of coplanar decks.
+   * Clipping chooses its owner first. Clearance must not then erase that owner
+   * merely because its footing also touches the other deck's outer shoulder. */
   public static boolean sharedRail(Mesh neighbor,V a,V b){
     for(V point:List.of(a,a.add(b).mul(.5),b)){
       var q=RoadQueries.horizontal(neighbor,point);var at=q.sample();
       if(Math.abs(point.y()-at.center().y())>.015)return false;
-      V forward=at.left().left().mul(-1);double along=point.sub(at.center()).dot(forward);
-      if(at.distance()<1e-5&&along<-.015||at.distance()>neighbor.length()-1e-5&&along>.015)return false;
-      int side=q.lateral()<0?-1:1;double edge=side*(at.halfWidth()-inset(neighbor,at,side));
-      if(Math.abs(q.lateral()-edge)>.015||LaneDeck.outerOpening(neighbor,at.distance(),side))return false;
+      int side=q.lateral()<0?-1:1;double edge=at.halfWidth()-inset(neighbor,at,side);
+      if(Math.abs(q.lateral())<edge-.015||LaneDeck.outerOpening(neighbor,at.distance(),side))return false;
     }
     return true;
   }

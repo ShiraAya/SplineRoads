@@ -1,3 +1,11 @@
+## 2026-10-09 10:44 UTC 0.40.30 WIP checkpoint 3
+
+- Core closure/shared perimeter tests pass (629 checks). Constrained cubic grade fitting reduces the isolated profile maximum adjacent grade change to 0.00377 without changing samples, clearance or grade limit.
+- SR439/440/441/442 core/model regressions passed; SR443 paint assertion corrected to permit owned paint on the union shoulder instead of deleting all shared exterior paint.
+- Actual generated fork model found 29 missing rail samples caused by whole-deck clearance; perimeter-shoulder recognition removed these gaps. EXTRA fixtures are being made geometrically valid under nonselected lane protection.
+- AUTO retry now has synchronous and async paths; real server tests added for structure planning and a deterministic real shell rejection followed by full transaction retry. Full Forge/server build pending.
+- Candidate version is 0.40.30-alpha, not a released JAR.
+
 ## 2026-10-09 0.40.30 WIP checkpoint 2
 
 - First production-core run passes all base suites; new closure endpoint/live-mouth and coincident perimeter checks pass.
