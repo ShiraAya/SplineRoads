@@ -35,8 +35,13 @@ public final class RoadGantry {
     }
     return new Station(slot,d,s,e,kind);
   }
+  private static boolean unsupported(Mesh mesh,Station station){
+    for(double delta:new double[]{-.6,0,.6})for(int side:new int[]{-1,1})
+      if(LaneDeck.outerOpening(mesh,Math.max(0,Math.min(mesh.length(),station.distance()+delta)),side))return true;
+    return false;
+  }
   private static boolean enabled(Mesh m,Ground ground,Station st){
-    if(st.kind()==Gantry.OFF)return false;var s=st.sample();
+    if(st.kind()==Gantry.OFF||unsupported(m,st))return false;var s=st.sample();
     if(st.kind()==Gantry.AUTO&&m.settings().options().infrastructure().signs().stream().noneMatch(a->a.mount()==RoadSigns.Mount.GANTRY&&a.station()==st.slot())&&!RoadProfile.highway(m.settings().style())&&m.settings().structure()!=Structure.BRIDGE){
       if(!Double.isFinite(ground.top(s.center().x(),s.center().z(),s.center().y()))||!RoadStructures.elevated(m,s,ground))return false;
     }
@@ -62,7 +67,7 @@ public final class RoadGantry {
   private static void post(List<Part> out,V a,double width,double height,Material mat){if(height>.001)out.add(new Part(a,a,width,height,true,mat));}
   public static double lowerBeamY(Station st){double y=st.sample().center().y()+st.edit().clearance()+1.5;return st.kind()==Gantry.FRAME?Math.ceil(y):y;}
   public static List<Part> parts(Mesh mesh,Station st,Ground ground){
-    if(st.kind()==Gantry.OFF)return List.of();
+    if(st.kind()==Gantry.OFF||unsupported(mesh,st))return List.of();
     var s=st.sample();var profile=RoadProfile.catalog(mesh.settings().style());var parts=new ArrayList<Part>();
     boolean equipment=st.kind()==Gantry.FRAME;
     double edge=s.halfWidth()+1.3,clear=st.edit().clearance(),lower=clear+1.5;

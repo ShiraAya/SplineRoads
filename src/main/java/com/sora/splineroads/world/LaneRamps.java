@@ -56,6 +56,17 @@ public final class LaneRamps {
     var o=a.options();var n=b.options();
     return a.equals(new LanePoints.Link(b.from(),b.to(),new LanePoints.Options(n.path(),o.departure(),n.arrival(),n.radius(),n.transition(),n.elevation(),n.landing(),n.gradeOverride()),b.junctionMouth(),b.targetOffset(),b.protectedMerge(),b.rectangularClosure()));
   }
+  private static LaneRampAlignment.Mouth[] contactMouths(Map<UUID,RoadRecord> all,LanePoints.Link link,UUID id){
+    var source=host(all,link.from());var point=LaneTopology.point(source,link.from().point());var lane=LanePoints.lane(source.mesh(),point);
+    var from=link.options().sourceExtra()?new LaneRampAlignment.Mouth(lane.width(),0,0):LaneRampAlignment.mouth(source.mesh(),lane);
+    var to=new LaneRampAlignment.Mouth(lane.width(),0,0);
+    if(link.to().road()!=null){
+      var position=chain(all,link.to()).at(link.targetOffset());var target=position.road().mesh();var targetLane=LanePoints.lane(target,position.point());
+      if(link.options().arrival()==LanePoints.Arrival.ADD){var added=LaneAdditions.owned(target,id);targetLane=LanePoints.lane(target,added.station(),added.slot());}
+      to=link.options().targetExtra()?new LaneRampAlignment.Mouth(targetLane.width(),0,0):LaneRampAlignment.mouth(target,targetLane);
+    }
+    return new LaneRampAlignment.Mouth[]{from,to};
+  }
   private record Generated(RoadRecord road,LanePoints.Path path) {}
   static RoadRecord generate(RoadData data,Map<UUID,RoadRecord> all,UUID id,UUID owner,LanePoints.Link link){
     return generateChoice(data,all,id,owner,link,null).road();
@@ -92,6 +103,13 @@ public final class LaneRamps {
         &&base.thickness()==old.settings().thickness()&&base.style()==old.settings().style()
         &&(link.options().elevation()!=LanePoints.Elevation.AUTO||monotone(old.mesh())))try{
       var kept=old.settings(base);var candidate=kept.mesh();var context=LaneCrossSections.staged(all,id,link,candidate);
+      var mouths=contactMouths(context,link,id);
+      if(!LaneRampAlignment.matches(candidate,mouths[0],mouths[1])){
+        candidate=LaneRampAlignment.refit(candidate,mouths[0],mouths[1]);
+        var start=RoadRibbon.start(candidate);var end=RoadRibbon.end(candidate);
+        kept=new RoadRecord(id,owner,RampJunctions.at(start.position()),RampJunctions.at(end.position()),start,end,candidate.settings(),false,4).alignment(null,candidate).furniturePhase(old.furniturePhase());
+        context=LaneCrossSections.staged(all,id,link,candidate);
+      }
       var from=port(host(context,link.from()),LaneTopology.point(host(context,link.from()),link.from().point()));
       var to=link.to().road()==null?null:resolvedArrival(context,link,id);
       if(LaneRampAlignment.axis(candidate,true).distance(from.position())<1e-5

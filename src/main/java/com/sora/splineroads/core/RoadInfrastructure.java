@@ -230,6 +230,17 @@ public final class RoadInfrastructure {
     for(double shift:new double[]{0,-4,4,-8,8,-12,12}){
       if(station+shift<1||station+shift>mesh.length()-1)continue;
       Sample s=sample(mesh,station+shift);var parts=new ArrayList<Part>();
+      var bands=RoadSupports.bearing(mesh,station+shift,1.5);
+      boolean cut=bands.size()!=1||bands.get(0).center().distance(s.center())>1e-6||Math.abs(bands.get(0).halfWidth()-s.halfWidth())>1e-6;
+      if(LaneDeck.hasOpenings(mesh)&&cut){
+        // A portal cap belongs below a continuous deck. Across a reserved slot
+        // support each surviving strip independently, with no outboard beam stub.
+        for(var band:bands){
+          var strip=RoadSupports.standard(band,mesh.settings().thickness()+Math.max(0,depth-.8),ground);
+          if(strip.stream().noneMatch(ground::blocked))parts.addAll(strip);
+        }
+        if(!parts.isEmpty()){out.addAll(parts);return;}continue;
+      }
       double offset=portal?s.halfWidth()+1.4:s.halfWidth()*.62;
       double top=s.center().y()-mesh.settings().thickness()-depth;
       boolean valid=true;
@@ -244,7 +255,10 @@ public final class RoadInfrastructure {
     }
     if(mesh.settings().style().ramp())return;
     Sample portalSample=sample(mesh,station);
-    var relocated=RoadSupports.portal(portalSample,mesh.settings().thickness(),depth,
+    // The fallback portal must not reintroduce the transverse beam just removed.
+    var bearing=RoadSupports.bearing(mesh,station,1.5);
+    boolean gap=LaneDeck.hasOpenings(mesh)&&(bearing.size()!=1||bearing.get(0).center().distance(portalSample.center())>1e-6||Math.abs(bearing.get(0).halfWidth()-portalSample.halfWidth())>1e-6);
+    var relocated=gap?List.<Part>of():RoadSupports.portal(portalSample,mesh.settings().thickness(),depth,
         portal?portalSample.halfWidth()+1.4:portalSample.halfWidth()*.62,portal?1.8:2.2,ground);
     if(!relocated.isEmpty()){out.addAll(relocated);return;}
     // A support may land on the approach terrain, but not silently vanish over deep water.

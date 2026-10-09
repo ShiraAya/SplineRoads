@@ -1,7 +1,7 @@
-name: SR441 live feedback verification
+name: SR442 twelve-image verification
 on:
   push:
-    branches: [work/sr-04027-live-feedback]
+    branches: [work/sr-04028-live-feedback]
     paths: ['src/**', 'tools/**', 'build.gradle', '.github/workflows/sr440-live-feedback.yml']
 permissions:
   contents: read
@@ -34,8 +34,14 @@ jobs:
           bash tools/check_sr439.sh
           bash tools/check_sr440.sh
           bash tools/check_sr441.sh
+          bash tools/check_sr442.sh
           bash tools/check_sr435.sh
           bash tools/check_sr438.sh
+      - name: Real detach, continuation, deletion and rebuild sequence
+        run: |
+          set -o pipefail
+          bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run442 -ProadTestNamespaces=splineroads_live442 -ProadTestHeap=3G | tee run442-console.log
+          grep -q 'LIVE442 REAL_WORLD PASS continuation:' run442-console.log
       - name: Real request publication, underground and tunnel regression
         run: |
           set -o pipefail
@@ -62,6 +68,8 @@ jobs:
             run440terrain-console.log
             run441/logs/latest.log
             run441-console.log
+            run442/logs/latest.log
+            run442-console.log
 
   matrix:
     name: Minecraft matrix row ${{ matrix.row }}

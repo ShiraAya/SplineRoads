@@ -56,6 +56,7 @@ public final class RoadSupports {
     return bands.stream().filter(b->b.high()-b.low()>=2.4).map(b->new Sample(at.at((b.low()+b.high())/2,0),at.left(),station,(b.high()-b.low())/2)).toList();
   }
   public static List<Part> clearStandard(Mesh mesh,double station,Ground ground){
+    if(!LaneDeck.hasOpenings(mesh))return clearStandard(RoadStructures.sample(mesh,station),mesh.settings().thickness(),ground);
     var out=new ArrayList<Part>();
     for(var sample:bearing(mesh,station,1.125))out.addAll(clearStandard(sample,mesh.settings().thickness(),ground));
     return List.copyOf(out);

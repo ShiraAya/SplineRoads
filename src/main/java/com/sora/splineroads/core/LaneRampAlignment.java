@@ -33,15 +33,38 @@ public final class LaneRampAlignment {
   public static Mesh fit(Mesh path,Mouth from,Mouth to){
     var clean=path.settings().options(path.settings().options().ends(RoadTransitions.Ends.NONE));
     var a=section(clean,from);var b=section(clean,to);
-    var settings=RoadTransitions.ends(clean,a,b);double span=RoadTransitions.span(settings,path.length());
-    var out=new ArrayList<Sample>();
-    for(var p:path.samples()){
-      double wa=1-Settings.smooth(Math.min(1,p.distance()/span)),wb=1-Settings.smooth(Math.min(1,(path.length()-p.distance())/span));
-      double shift=((from.high()-from.low())*wa+(to.high()-to.low())*wb)/2;
-      double width=settings.width()+(a.width()-settings.width())*wa+(b.width()-settings.width())*wb;
-      out.add(new Sample(p.center().add(p.left().mul(shift)),p.left(),p.distance(),width/2));
+    var settings=RoadTransitions.ends(clean,a,b);Mesh fitted=path;
+    // Widening one shoulder changes physical arc length. Evaluate profile weights
+    // on that final distance too, so serialization/reload cannot shift the motor axis.
+    for(int pass=0;pass<12;pass++){
+      double span=RoadTransitions.span(settings,fitted.length());var out=new ArrayList<Sample>();
+      for(int i=0;i<path.samples().size();i++){
+        var p=path.samples().get(i);double distance=fitted.samples().get(i).distance();
+        double wa=1-Settings.smooth(Math.min(1,distance/span)),wb=1-Settings.smooth(Math.min(1,(fitted.length()-distance)/span));
+        double shift=((from.high()-from.low())*wa+(to.high()-to.low())*wb)/2;
+        double width=settings.width()+(a.width()-settings.width())*wa+(b.width()-settings.width())*wb;
+        out.add(new Sample(p.center().add(p.left().mul(shift)),p.left(),p.distance(),width/2));
+      }
+      var next=RoadRibbon.mesh(out,settings);double movement=0;
+      for(int i=0;i<out.size();i++)movement=Math.max(movement,next.samples().get(i).center().distance(fitted.samples().get(i).center()));
+      fitted=next;if(movement<1e-9)break;
     }
-    return RoadRibbon.mesh(out,settings);
+    return fitted;
+  }
+  /** Old saved paths can have correct lane axes and still miss an outside shoulder. */
+  public static boolean matches(Mesh mesh,Mouth from,Mouth to){
+    for(boolean first:new boolean[]{true,false}){
+      var s=first?mesh.first():mesh.last();var mouth=first?from:to;
+      var lane=LanePoints.lane(mesh,first?0:mesh.length(),0);
+      V center=lane.position().add(s.left().mul((mouth.high()-mouth.low())/2));
+      if(Math.abs(lane.width()-mouth.lane())>1e-6||center.distance(s.center())>1e-6
+          ||Math.abs(s.halfWidth()*2-mouth.lane()-mouth.low()-mouth.high())>1e-6)return false;
+    }return true;
+  }
+  public static Mesh refit(Mesh mesh,Mouth from,Mouth to){
+    var axis=new ArrayList<Sample>();
+    for(var s:mesh.samples())axis.add(new Sample(LanePoints.lane(mesh,s.distance(),0).position(),s.left(),s.distance(),s.halfWidth()));
+    return fit(RoadRibbon.mesh(axis,mesh.settings()),from,to);
   }
   public static V axis(Mesh mesh,boolean first){return LanePoints.lane(mesh,first?0:mesh.length(),0).position();}
   private LaneRampAlignment(){}

@@ -124,7 +124,15 @@ public final class LaneRoadChain {
           for(var part:parts)if(RoadClearance.structureInvades(part,downstream,RoadClearance.REQUIRED))
             throw new IllegalArgumentException("汇入后实际通行车道被结构占用，不能恢复");
         }
-        begin-=1+(rectangular?0:transition);
+        // Place the physical cutoff eight blocks ahead of the first unsafe
+        // contact. The X warnings follow this boundary on intact approach pavement.
+        double required=begin-1;
+        begin-=rectangular?9:1+transition;
+        if(rectangular)for(var leg:legs)for(var cut:LaneTopology.metadata(leg.road()).cuts())if(!cut.connection().equals(connection)&&cut.lane()==leg.slot()){
+          double boundary=Math.max(leg.coordinate(cut.begin()),leg.coordinate(cut.end()));
+          // Optional warning advance cannot consume an existing legal reservation.
+          if(boundary<=required&&boundary>begin)begin=boundary;
+        }
       }else{
         end=0;for(var c:contacts)if(c.blocked()&&c.to()+low>=-.01)end=Math.max(end,c.to()+low);
         end+=1+(rectangular?0:transition);
