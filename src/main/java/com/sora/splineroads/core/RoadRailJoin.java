@@ -69,7 +69,10 @@ public final class RoadRailJoin {
   private final Map<Long,List<Face>> grid=new HashMap<>();
   private final Map<Long,List<Face>> material=new HashMap<>();
   private final Map<Long,List<Edge>> edges=new HashMap<>();
-  public RoadRailJoin(List<Neighbor> neighbors){
+  public RoadRailJoin(List<Neighbor> neighbors){this(neighbors,false);}
+  public static RoadRailJoin paint(List<Neighbor> neighbors){return new RoadRailJoin(neighbors,true);}
+  private static double inset(Mesh mesh,Sample at,int side,boolean paint){return paint?Math.abs(side*at.halfWidth()-RoadSurface.edgeOffset(mesh,at,side)):inset(mesh,at,side);}
+  private RoadRailJoin(List<Neighbor> neighbors,boolean paint){
     for(var neighbor:neighbors){var mesh=neighbor.mesh();
       for(int i=1;i<mesh.samples().size();i++){
         var a=mesh.samples().get(i-1);var b=mesh.samples().get(i);
@@ -81,8 +84,8 @@ public final class RoadRailJoin {
           add(material,strip.al(),strip.br(),strip.bl(),true,b.center().sub(a.center()).horizontalUnit());
           // Only exposed band boundaries get an inset. Zero-size slots split a
           // continuous face too, but those split lines must not become false gutters.
-          double highA=strip.al().distance(a.at(a.halfWidth(),0))<1e-6?inset(mesh,a,1):INSET,highB=strip.bl().distance(b.at(b.halfWidth(),0))<1e-6?inset(mesh,b,1):INSET;
-          double lowA=strip.ar().distance(a.at(-a.halfWidth(),0))<1e-6?inset(mesh,a,-1):INSET,lowB=strip.br().distance(b.at(-b.halfWidth(),0))<1e-6?inset(mesh,b,-1):INSET;
+          double highA=strip.al().distance(a.at(a.halfWidth(),0))<1e-6?inset(mesh,a,1,paint):INSET,highB=strip.bl().distance(b.at(b.halfWidth(),0))<1e-6?inset(mesh,b,1,paint):INSET;
+          double lowA=strip.ar().distance(a.at(-a.halfWidth(),0))<1e-6?inset(mesh,a,-1,paint):INSET,lowB=strip.br().distance(b.at(-b.halfWidth(),0))<1e-6?inset(mesh,b,-1,paint):INSET;
           V al=strip.al().sub(a.left().mul(strip.highWall()?highA:0));
           V ar=strip.ar().add(a.left().mul(strip.lowWall()?lowA:0));
           V bl=strip.bl().sub(b.left().mul(strip.highWall()?highB:0));
@@ -90,7 +93,7 @@ public final class RoadRailJoin {
           if(al.sub(ar).dot(a.left())<0||bl.sub(br).dot(b.left())<0)continue;
           var sample=RoadStructures.sample(mesh,(a.distance()+b.distance())/2);
           int high=profile(mesh,sample,1),low=profile(mesh,sample,-1);
-          boolean boundaryOwner=neighbor.ownsBoundary()&&(high!=NONE||low!=NONE);
+          boolean boundaryOwner=neighbor.ownsBoundary()&&(paint||high!=NONE||low!=NONE);
           add(al,ar,br,boundaryOwner);add(al,br,bl,boundaryOwner);
           // Hole edges still clip real material, but no invented rail/post may be
           // mitered to a hole boundary which the outer-rail planner never emits.
@@ -101,6 +104,19 @@ public final class RoadRailJoin {
         }
       }
     }
+  }
+  /** A single owned rail may occupy the very same perimeter of two coplanar
+   * decks. This does not authorize a rail inside a live lane or across a mouth. */
+  public static boolean sharedRail(Mesh neighbor,V a,V b){
+    for(V point:List.of(a,a.add(b).mul(.5),b)){
+      var q=RoadQueries.horizontal(neighbor,point);var at=q.sample();
+      if(Math.abs(point.y()-at.center().y())>.015)return false;
+      V forward=at.left().left().mul(-1);double along=point.sub(at.center()).dot(forward);
+      if(at.distance()<1e-5&&along<-.015||at.distance()>neighbor.length()-1e-5&&along>.015)return false;
+      int side=q.lateral()<0?-1:1;double edge=side*(at.halfWidth()-inset(neighbor,at,side));
+      if(Math.abs(q.lateral()-edge)>.015||LaneDeck.outerOpening(neighbor,at.distance(),side))return false;
+    }
+    return true;
   }
   private void add(V a,V b,V c,boolean owner){add(grid,a,b,c,owner);}
   private void add(Map<Long,List<Face>> target,V a,V b,V c,boolean owner){

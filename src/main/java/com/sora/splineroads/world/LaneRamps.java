@@ -625,9 +625,22 @@ public final class LaneRamps {
       this.all=Collections.unmodifiableMap(new LinkedHashMap<>(all));this.seeds=Collections.unmodifiableMap(new IdentityHashMap<>(seeds));
       this.id=id;this.owner=owner;this.link=link;this.junctionDirection=direction;this.revision=revision;this.minHeight=minHeight;this.maxHeight=maxHeight;
     }
-    public PreviewRoute compute(){try(var scope=new Planning(seeds,junctionDirection,minHeight,maxHeight)){
-      var generated=generateChoice(null,all,id,owner,link,null);return new PreviewRoute(generated.road(),generated.path());
+    public boolean alternative(int attempt){return attempt==0||link.options().elevation()==LanePoints.Elevation.AUTO&&attempt<=2;}
+    public PreviewRoute compute(){return compute(0);}
+    public PreviewRoute compute(int attempt){try(var scope=new Planning(seeds,junctionDirection,minHeight,maxHeight)){
+      if(!alternative(attempt))throw new IllegalArgumentException("没有更多高程候选");
+      var trial=link;
+      if(attempt>0){var o=link.options();var options=new LanePoints.Options(o.path(),o.departure(),o.arrival(),o.radius(),o.transition(),attempt==1?LanePoints.Elevation.OVER:LanePoints.Elevation.UNDER,o.landing(),o.gradeOverride());
+        trial=new LanePoints.Link(link.from(),link.to(),options,link.junctionMouth(),link.targetOffset(),link.protectedMerge(),link.rectangularClosure());}
+      var generated=generateChoice(null,all,id,owner,trial,null);var road=generated.road();
+      if(attempt>0){var data=LaneTopology.metadata(road);var selected=data.link();
+        road=road.withLanePoints(data.link(new LanePoints.Link(selected.from(),selected.to(),link.options(),selected.junctionMouth(),selected.targetOffset(),selected.protectedMerge(),selected.rectangularClosure())));}
+      return new PreviewRoute(road,generated.path());
     }}
+  }
+  /** A geometrically valid candidate can still conflict after terrain-dependent lining is added. */
+  public static final class CandidateRejected extends IllegalArgumentException {
+    public CandidateRejected(String message){super(message);}
   }
   public record PreviewRoute(RoadRecord road,LanePoints.Path path){}
   /** Include actual roads even when outside the client's normal subscription radius. */
@@ -646,7 +659,13 @@ public final class LaneRamps {
     return new PreviewWork(all,seeds,id,t.hasUUID("Id")?all.get(id).owner():player.getUUID(),new LanePoints.Link(from,to,options,mouth,previousOffset),direction,data.index.revision(),player.serverLevel().getMinBuildHeight(),player.serverLevel().getMaxBuildHeight());
   }
   public static CompoundTag preview(ServerPlayer player,ItemStack tool,CompoundTag t){
-    var work=preparePreview(player,tool,t);return finishPreview(player,tool,t,work,work.compute());
+    var work=preparePreview(player,tool,t);CandidateRejected rejection=null;
+    for(int attempt=0;work.alternative(attempt);attempt++){
+      PreviewRoute route;
+      try{route=work.compute(attempt);}catch(IllegalArgumentException e){if(rejection==null)throw e;continue;}
+      try{return finishPreview(player,tool,t,work,route);}catch(CandidateRejected e){rejection=e;}
+    }
+    throw rejection;
   }
   /** Main-thread validation/publish. Reject stale work before touching any live state. */
   public static CompoundTag finishPreview(ServerPlayer player,ItemStack tool,CompoundTag t,PreviewWork work,PreviewRoute generated){

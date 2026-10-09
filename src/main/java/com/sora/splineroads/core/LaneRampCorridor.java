@@ -97,7 +97,7 @@ public final class LaneRampCorridor {
     }
     // Relax curvature while staying inside both the physical corridor and
     // neighbouring grade/direction limits; feasibility is already established.
-    for(int pass=0;pass<36;pass++)for(int k=1;k<n-1;k++){
+    for(int stride:new int[]{16,8,4,2,1})for(int pass=0;pass<(stride==1?320:48);pass++)for(int k=1;k<n-1;k++){
       int i=(pass&1)==0?k:n-1-k;double dl=x[i]-x[i-1],dr=x[i+1]-x[i];
       if(dl<1e-9||dr<1e-9)continue;
       double low=Math.max(lo[i],Math.max(y[i-1]-grade*dl,y[i+1]-grade*dr));
@@ -106,8 +106,20 @@ public final class LaneRampCorridor {
       else if(monotone==-1){low=Math.max(low,y[i+1]);high=Math.min(high,y[i-1]);}
       else if(monotone==0){low=Math.max(low,y[0]);high=Math.min(high,y[0]);}
       if(low>high+1e-6)continue;
-      double target=(y[i-1]*dr+y[i+1]*dl)/(dl+dr);
-      y[i]=clamp(.55*y[i]+.45*target,low,high);
+      // Minimise changes of grade, not squared grade itself. A simple neighbour
+      // average converges to a taut polyline and preserves a kink at every binding
+      // crest. Wider stencils spread the vertical curve over metres, then refine.
+      double numerator=0,denominator=0;
+      for(int term=-1;term<=1;term++){
+        int center=i+term*stride;
+        int a=center-stride,b=center,c=center+stride;if(a<0||c>=n)continue;
+        double left=x[b]-x[a],right=x[c]-x[b];if(left<1e-9||right<1e-9)continue;
+        double ca=1/left,cb=-1/left-1/right,cc=1/right;
+        double own=i==a?ca:i==b?cb:cc;
+        double other=ca*y[a]+cb*y[b]+cc*y[c]-own*y[i];
+        double weight=2/(left+right);numerator+=own*other*weight;denominator+=own*own*weight;
+      }
+      if(denominator>1e-12)y[i]=clamp(.25*y[i]-.75*numerator/denominator,low,high);
     }
     var result=new ArrayList<Sample>();
     for(int i=0;i<n;i++){

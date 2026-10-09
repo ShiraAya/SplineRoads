@@ -1,3 +1,11 @@
+## 2026-10-09 0.40.30 WIP checkpoint 2
+
+- First production-core run passes all base suites; new closure endpoint/live-mouth and coincident perimeter checks pass.
+- Added narrowly scoped shared-rail clearance recognition and ownership-aware perimeter paint; testing realistic EXTRA and fork structures is still pending.
+- Added AUTO alternate-elevation retry after terrain tunnel-shell rejection, preserving original options and async cancellation/stale publication checks; not yet Forge validated.
+- Curvature minimization is in progress: initial profile retains a measured grade kink of 0.04613; this is not accepted as a final result.
+- No new version/JAR delivered at this checkpoint.
+
 ## SR444 第一检查点（2026-10-09 10:28 UTC）
 
 十三张新图已从本地读到，入口0444；新分支work/sr-04030-thirteen从远端2500a9f创建。矩形端横线已开始改成连接实际边线，并按真实相连口门剪除。定位到护栏边界裁剪之后仍按重合邻路整幅通行体积二次剔除，以及AUTO在最终隧道外壳事务失败后没有继续搜索替代路线。纵坡短距离松弛保留折点仍需修正。当前WIP，未完成本轮回归或构建，不交付候选JAR。

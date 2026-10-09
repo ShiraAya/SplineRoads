@@ -184,6 +184,7 @@ public final class RoadStructures {
     default List<RoadRailJoin.Span> railSpans(V a,V b,V outside,double inset){return railSpans(a,b,outside);}
 
     default List<RoadRailJoin.Span> capRailSpans(V a,V b,V outside){return railSpans(a,b,outside);}
+    default boolean railBlocked(Part part,V a,V b){return blocked(part);}
 
     /** Leave the node's editing target clear of raised median furniture. */
     default boolean marker(V point) {
@@ -367,7 +368,7 @@ public final class RoadStructures {
           V a=span.a().add(span.b().sub(span.a()).mul(j/(double)steps));
           V b=span.a().add(span.b().sub(span.a()).mul((j+1)/(double)steps));
           var pieces=new ArrayList<Part>();barrier(pieces,a,b,highway,true,j*.5);
-          out.addAll(clearBarrier(pieces,ground));
+          out.addAll(clearBarrier(pieces,ground,a,b));
         }
       }
     }
@@ -411,9 +412,7 @@ public final class RoadStructures {
         }
         // A raised rail and its footing form one assembly. Removing only the
         // blocked footing leaves steel/posts suspended above a joining deck.
-        if(mesh.settings().options().lanePoints().link()==null&&mesh.settings().options().lanePoints().openings().isEmpty())
-          for(var piece:assembly)add(out,piece);
-        else for(var piece:clearBarrier(assembly,ground))add(out,piece);
+        for(var piece:clearBarrier(assembly,ground,r.a,r.b))add(out,piece);
       }
       else {var part=new Part(r.a,r.b,.24,1.05,false);if(!ground.blocked(part))add(out,part);}
     }
@@ -422,18 +421,18 @@ public final class RoadStructures {
   /** Fit the concrete bearing to a tight seam before discarding the whole rail.
    * Keep bar/post axes and height fixed, with a footing wider than the supported
    * steel. Every fitted part still passes the same exact clearance predicate. */
-  private static List<Part> clearBarrier(List<Part> pieces,Ground ground){
-    if(pieces.stream().noneMatch(ground::blocked))return pieces;
+  private static List<Part> clearBarrier(List<Part> pieces,Ground ground,V a,V b){
+    if(pieces.stream().noneMatch(p->ground.railBlocked(p,a,b)))return pieces;
     var fitted=new ArrayList<Part>();
     for(var p:pieces){
-      if(!ground.blocked(p)){fitted.add(p);continue;}
+      if(!ground.railBlocked(p,a,b)){fitted.add(p);continue;}
       boolean urban=p.material()==Material.CONCRETE&&Math.abs(p.width()-.42)<1e-7&&Math.abs(p.height()-.45)<1e-7;
       boolean highway=p.material()==Material.CONCRETE&&Math.abs(p.width()-.62)<1e-7&&Math.abs(p.height()-.8)<1e-7;
       if(!urban&&!highway)return List.of();
       Part clear=null;double minimum=urban?.18:.40;
       for(double width=p.width()-.02;width>=minimum-1e-7;width-=.02){
         double scale=width/p.width();var candidate=new Part(p.a(),p.b(),width,p.height(),false,p.material(),p.frameA()==null?null:p.frameA().mul(scale),p.frameB()==null?null:p.frameB().mul(scale),p.model());
-        if(!ground.blocked(candidate)){clear=candidate;break;}
+        if(!ground.railBlocked(candidate,a,b)){clear=candidate;break;}
       }
       if(clear==null)return List.of();fitted.add(clear);
     }

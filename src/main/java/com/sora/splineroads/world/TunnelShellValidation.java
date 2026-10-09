@@ -21,7 +21,7 @@ final class TunnelShellValidation {
         for(var part:tube.record.structures()){
           if(part.material()!=RoadStructures.Material.TUNNEL)continue;
           if(unchangedTravel&&saved.contains(part))continue;
-          if(RoadInteractions.invades(part,other.mesh))throw new IllegalArgumentException(
+          if(RoadInteractions.invades(part,other.mesh))throw new LaneRamps.CandidateRejected(
               "隧道墙顶侵入另一条道路的通行空间：隧道 "+tube.record.id()+"，道路 "+other.record.id()+
               String.format(Locale.ROOT,"，结构位置 %.2f %.2f %.2f；请调整高度或走线",part.a().x(),part.a().y(),part.a().z()));
         }

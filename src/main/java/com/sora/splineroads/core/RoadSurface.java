@@ -165,6 +165,7 @@ public final class RoadSurface {
   }
   public static Geometry build(Mesh mesh, List<Mesh> higherPriority, List<Mesh> neighbors) {
     Grid owners = new Grid(higherPriority), joined = new Grid(neighbors);
+    var edgeJoin=RoadRailJoin.paint(neighbors.stream().map(n->new RoadRailJoin.Neighbor(n,higherPriority.contains(n))).toList());
     // Preserve the main road's dividers. Only subordinate branch markings are suppressed.
     List<Mesh> dividerCuts = new ArrayList<>(higherPriority);
     var crossings = RoadJunction.intersections(mesh, neighbors);
@@ -173,7 +174,8 @@ public final class RoadSurface {
     // Only real linked connector throats hide default host lane paint. An unrelated
     // parallel road (or an overpass) must not erase markings by proximity alone.
     var overlapCuts=new ArrayList<Mesh>(dividerCuts);
-    for(var neighbor:neighbors)if(LaneMerge.linkedTo(mesh,neighbor))overlapCuts.add(neighbor);
+    // Host dividers remain authoritative at an auxiliary merge. Boundary paint
+    // has its own union clipping; a linked ramp alone cannot erase live lane dashes.
     Grid defaultDividers=new Grid(overlapCuts);
 
     for (var cut : RoadJunction.terminalCuts(mesh)){dividers.add(cut);defaultDividers.add(cut);}
@@ -198,7 +200,7 @@ public final class RoadSurface {
                 && edgeLayout.curbWidth() > 0
                 && (edgeLayout.catalog().twoWay() || edgeLayout.outside() == side);
         double edgeA=edgeOffset(mesh,a,side),edgeB=edgeOffset(mesh,b,side);
-        if (!curb && !LaneDeck.outerOpening(mesh,(a.distance()+b.distance())/2,side) && !overrideLine(markings,mesh,a,b,"edge:"+side,mesh.settings().options().lanePoints().link()==null?side*(a.halfWidth()-.2):edgeA,mesh.settings().options().lanePoints().link()==null?side*(b.halfWidth()-.2):edgeB,joined)) boundaryStripe(markings,a,b,side,joined,edgeZones,edgeA,edgeB);
+        if (!curb && !LaneDeck.outerOpening(mesh,(a.distance()+b.distance())/2,side) && !overrideLine(markings,mesh,a,b,"edge:"+side,mesh.settings().options().lanePoints().link()==null?side*(a.halfWidth()-.2):edgeA,mesh.settings().options().lanePoints().link()==null?side*(b.halfWidth()-.2):edgeB,joined)) boundaryStripe(markings,a,b,side,edgeJoin,edgeZones,edgeA,edgeB);
       }
       Style style = mesh.settings().style();
       if (RoadProfile.modern(style)) {
@@ -590,13 +592,18 @@ public final class RoadSurface {
       Sample a,
       Sample b,
       int side,
-      Grid neighbors,
+      RoadRailJoin neighbors,
       List<RoadJunction.EdgeZone> zones,double oa,double ob) {
     V a0 = a.at(oa - .06, 0),
         a1 = a.at(oa + .06, 0),
         b0 = b.at(ob - .06, 0),
         b1 = b.at(ob + .06, 0);
-    var ranges = exposed(a.at(side * a.halfWidth(), 0), b.at(side * b.halfWidth(), 0), neighbors);
+    V first=a.at(oa,0),last=b.at(ob,0),delta=last.sub(first);
+    double inset=(Math.abs(side*a.halfWidth()-oa)+Math.abs(side*b.halfWidth()-ob))/2;
+    List<double[]> ranges=new ArrayList<>();double length=delta.dot(delta);
+    if(length<1e-12)return;
+    V outside=first.add(last).mul(.5).add(a.left().add(b.left()).horizontalUnit().mul(side*.4));
+    for(var span:neighbors.exposed(first,last,outside,inset))ranges.add(new double[]{span.a().sub(first).dot(delta)/length,span.b().sub(first).dot(delta)/length});
     for (var zone : zones) {
       if (zone.side() != side) continue;
       double lo = Math.max(0, (zone.from() - a.distance()) / (b.distance() - a.distance())),
@@ -613,10 +620,7 @@ public final class RoadSurface {
       if (r[1] <= r[0] + 1e-9) continue;
       var polygon=List.of(a0.add(b0.sub(a0).mul(r[0])),a1.add(b1.sub(a1).mul(r[0])),
           a1.add(b1.sub(a1).mul(r[1])),a0.add(b0.sub(a0).mul(r[1])));
-      // The inset paint can already be inside the joining road while its outer
-      // deck boundary is exposed. Clip the actual stripe too, preventing doubled
-      // solid lines and partial stripes over the host divider at shallow noses.
-      for(var piece:visible(polygon,neighbors,.06))out.add(new Face(piece,0xEDEEE2));
+      out.add(new Face(polygon,0xEDEEE2));
     }
   }
 

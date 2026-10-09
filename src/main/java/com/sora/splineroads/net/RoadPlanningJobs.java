@@ -24,26 +24,41 @@ public final class RoadPlanningJobs {
   public static void begin(ServerPlayer player,ItemStack tool,CompoundTag command){
     var work=LaneRamps.preparePreview(player,tool,command);var server=player.getServer();
     if(server==null)throw new IllegalArgumentException("服务器已关闭");
-    UUID owner=player.getUUID();var dimension=player.level().dimension();var t=command.copy();cancel(owner);
+    UUID owner=player.getUUID();var dimension=player.level().dimension().location().toString();var t=command.copy();cancel(owner);
     var job=new Job(t.getLong("Request"));ACTIVE.put(owner,job);
+    submit(player,tool,t,work,job,dimension,0,null);
+  }
+  private static void submit(ServerPlayer player,ItemStack tool,CompoundTag t,LaneRamps.PreviewWork work,Job job,String dimension,int attempt,LaneRamps.CandidateRejected rejection){
+    var server=player.getServer();UUID owner=player.getUUID();
     job.task=new FutureTask<>(()->{
       LaneRamps.PreviewRoute route=null;RuntimeException error=null;
-      try(var budget=RoadPlanningBudget.cancellable("匝道路线/净空搜索",job.cancelled::get)){route=work.compute();}
+      try(var budget=RoadPlanningBudget.cancellable("匝道路线/净空搜索",job.cancelled::get)){route=work.compute(attempt);}
       catch(RuntimeException e){error=e;}
       finally{RoadQueries.clearThreadCache();}
       var result=route;var failure=error;
       server.execute(()->{
         if(ACTIVE.get(owner)!=job||job.cancelled.get())return;
-        ACTIVE.remove(owner);
-        if(server.getPlayerList().getPlayer(owner)!=player)return;
+        if(server.getPlayerList().getPlayer(owner)!=player){cancel(owner);return;}
         try {
-          if(!player.level().dimension().equals(dimension)||player.getMainHandItem()!=tool&&player.getOffhandItem()!=tool)
+          if(!player.level().dimension().location().toString().equals(dimension)||player.getMainHandItem()!=tool&&player.getOffhandItem()!=tool)
             throw new IllegalArgumentException("维度或所持工具已改变，旧计算已丢弃");
-          if(failure!=null)throw failure;
-          try(var budget=RoadPlanningBudget.cancellable("预览事务校验")){
-            RoadNetwork.open(player,LaneRamps.finishPreview(player,tool,t,work,result));
+          if(failure!=null){
+            if(rejection!=null&&failure instanceof IllegalArgumentException){
+              if(work.alternative(attempt+1)){submit(player,tool,t,work,job,dimension,attempt+1,rejection);return;}
+              throw rejection;
+            }
+            throw failure;
           }
-        }catch(RuntimeException e){failed(player,t,e);}
+          try(var budget=RoadPlanningBudget.cancellable("预览事务校验")){
+            CompoundTag reply;
+            try{reply=LaneRamps.finishPreview(player,tool,t,work,result);}
+            catch(LaneRamps.CandidateRejected e){
+              if(work.alternative(attempt+1)){submit(player,tool,t,work,job,dimension,attempt+1,e);return;}
+              throw e;
+            }
+            ACTIVE.remove(owner);RoadNetwork.open(player,reply);
+          }
+        }catch(RuntimeException e){ACTIVE.remove(owner);failed(player,t,e);}
       });return null;
     });
     try{

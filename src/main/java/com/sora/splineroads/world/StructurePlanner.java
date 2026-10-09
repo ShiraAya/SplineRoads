@@ -140,6 +140,10 @@ final class StructurePlanner {
                 return RoadStructures.Ground.super.blockedReason(part);
               }
               public boolean blocked(RoadStructures.Part part) {
+                return blocked(part,null,null);
+              }
+              public boolean railBlocked(RoadStructures.Part part,V a,V b){return blocked(part,a,b);}
+              private boolean blocked(RoadStructures.Part part,V railA,V railB){
                 if(pierSpacing.tooClose(part))return true;
                 if(!RoadSidewalks.smoothPart(part)&&sidewalkSolids.intersects(part))return true;
                 if(LaneTopology.metadata(built.record).link()!=null&&RoadInteractions.selfSupportBlocked(part,built.mesh))return true;
@@ -163,6 +167,7 @@ final class StructurePlanner {
                       base.stream().mapToDouble(V::x).max().orElseThrow(),base.stream().mapToDouble(V::y).max().orElseThrow()+part.height(),base.stream().mapToDouble(V::z).max().orElseThrow());
                 }
                 for (var other : obstacles) {
+                  if(railA!=null&&RoadRailJoin.sharedRail(other.mesh,railA,railB))continue;
                   if(box.maxX<other.mesh.min().x()-2||box.minX>other.mesh.max().x()+2||box.maxZ<other.mesh.min().z()-2||box.minZ>other.mesh.max().z()+2)continue;
                   if (box.maxY < other.mesh.min().y() - .05 || box.minY > other.mesh.max().y() + Math.max(4.25,com.sora.splineroads.core.RoadInfrastructure.clearance(other.record.settings())))
                     continue;
