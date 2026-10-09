@@ -1,3 +1,9 @@
+## 2026-10-09 11:20 UTC 0.40.30 checkpoint 7
+
+- CI37920960510 completed: full Forge, all local suites, 32/32 matrix and 9/10 real-server cases passed; the parent-branch case failed its old full-deck furniture assertion. Candidate not delivered.
+- The reported .42 m footing occupies the same outside strip as an ordinary C1 rail (axis inset .34, half-width .21). The old assertion incorrectly forbids the common exterior rail requested in figure7. Updated test checks the full solid at .25 m spacing, only allowing known rail parts wholly in the outer .55 m strip and proper rail height; an explicit centre barrier must still be rejected. The branch build/deletion/restoration assertions remain.
+- Production src/main remains e9b4a1fd9e6d59652ec721237e7faa1258b42740. New CI will run the corrected parent case early and retain all existing gates. Figure4 remains open pending original road data.
+
 ## 2026-10-09 11:07 UTC 0.40.30 checkpoint 6
 
 - Production commit:8b437f043a8b8f9101edfe17e82f55b36d441d53; src/main tree:e9b4a1fd9e6d59652ec721237e7faa1258b42740. Local and remote production trees match.

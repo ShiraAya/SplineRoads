@@ -29,6 +29,11 @@ public final class Live441GameTests {
   System.out.println("LIVE441 CHILD_PLAN_PASS");LaneRamps.build(data,level,null,child);
   h.assertTrue(data.index.roads.get(parent.id()).record.alignment().equals(oldAlignment),"branch rerouted saved parent");
   var built=data.index.roads.get(child.id()).record;
+  // A rail occupying the outer .55 m is the normal C1 boundary assembly.
+  // The old full-deck assertion also rejected this now-required common rail.
+  var at=built.mesh().first();
+  var obstructing=new RoadStructures.Part(at.center(),at.center().add(at.left().left().mul(-1)),.42,.45,false,RoadStructures.Material.CONCRETE);
+  h.assertTrue(blocksDrive(obstructing,built.mesh(),parentSlab),"branch test must still reject a concrete barrier in the lane centre");
   for(var part:data.index.roads.get(parent.id()).record.structures())h.assertTrue(!blocksDrive(part,built.mesh(),parentSlab),"saved parent furniture still blocks new branch: "+part);
   data.remove(level,null,child.id());
   h.assertTrue(!data.index.roads.containsKey(child.id()),"branch deletion failed");
@@ -52,7 +57,28 @@ public final class Live441GameTests {
  }
  private static boolean blocksDrive(RoadStructures.Part part,Mesh mesh,double slab){
   boolean floor=!part.pier()&&part.material()==RoadStructures.Material.CONCRETE&&part.height()<=slab+1e-7&&RoadClearance.belowSurface(part,mesh,.025);
-  return !floor&&RoadClearance.structureInvades(part,mesh,4.25);
+  return !floor&&!perimeterRail(part,mesh)&&RoadClearance.structureInvades(part,mesh,4.25);
+ }
+ /** Independent check of the complete solid, not the planner's sharedRail predicate.
+  * The ordinary rail is inset .34 with a .21 half-width footing. Only that outer
+  * strip may be occupied; cross-mouth rails, interior rails and piers still fail. */
+ private static boolean perimeterRail(RoadStructures.Part part,Mesh mesh){
+  if(part.pier()||part.width()>.420001)return false;
+  boolean concrete=part.material()==RoadStructures.Material.CONCRETE&&Math.abs(part.height()-.45)<1e-7;
+  boolean steel=part.material()==RoadStructures.Material.STEEL&&Math.abs(part.height()-.12)<1e-7;
+  boolean post=part.material()==RoadStructures.Material.DARK_STEEL&&part.width()<=.160001&&part.height()<=.750001;
+  if(!concrete&&!steel&&!post)return false;
+  var corners=part.base();int count=Math.max(1,(int)Math.ceil(part.a().distance(part.b())/.25));
+  int side=0;
+  for(int i=0;i<=count;i++)for(int edge=0;edge<2;edge++){
+   V p=corners.get(edge).add(corners.get(3-edge).sub(corners.get(edge)).mul(i/(double)count));
+   var q=RoadQueries.horizontal(mesh,p);var at=q.sample();int current=q.lateral()<0?-1:1;
+   if(side!=0&&side!=current)return false;side=current;
+   if(Math.abs(q.lateral())<at.halfWidth()-.55001)return false;
+   double y=p.y()-at.at(q.lateral(),0).y();
+   if(y<-.025||y+part.height()>1.180001)return false;
+  }
+  return true;
  }
  private static void scenario(GameTestHelper h,boolean ground,int cx){
   var level=h.getLevel();var data=RoadData.get(level);int cz=cx;

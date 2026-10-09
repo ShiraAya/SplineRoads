@@ -39,6 +39,14 @@ jobs:
           bash tools/check_sr444.sh
           bash tools/check_sr435.sh
           bash tools/check_sr438.sh
+      - name: Seven-image bridge, ground, branch and stability regression
+        run: |
+          set -o pipefail
+          bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run441 -ProadTestNamespaces=splineroads_live441 -ProadTestHeap=3G | tee run441-console.log
+          grep -q 'LIVE441 REAL_WORLD PASS ground=false' run441-console.log
+          grep -q 'LIVE441 REAL_WORLD PASS ground=true' run441-console.log
+          grep -q 'LIVE441 REAL_WORLD PASS branch:' run441-console.log
+          grep -q 'LIVE441 REAL_WORLD PASS bank:' run441-console.log
       - name: Thirteen-image actual structure planning and candidate fallback
         run: |
           set -o pipefail
@@ -59,14 +67,6 @@ jobs:
           set -o pipefail
           bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run440terrain -ProadTestNamespaces=splineroads_live440 -ProadTestHeap=3G | tee run440terrain-console.log
           grep -q 'LIVE440 REAL_WORLD PASS' run440terrain-console.log
-      - name: Seven-image bridge, ground, branch and stability regression
-        run: |
-          set -o pipefail
-          bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run441 -ProadTestNamespaces=splineroads_live441 -ProadTestHeap=3G | tee run441-console.log
-          grep -q 'LIVE441 REAL_WORLD PASS ground=false' run441-console.log
-          grep -q 'LIVE441 REAL_WORLD PASS ground=true' run441-console.log
-          grep -q 'LIVE441 REAL_WORLD PASS branch:' run441-console.log
-          grep -q 'LIVE441 REAL_WORLD PASS bank:' run441-console.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
