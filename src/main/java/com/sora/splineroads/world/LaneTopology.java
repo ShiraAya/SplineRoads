@@ -211,9 +211,9 @@ public final class LaneTopology {
   /** Deletion releases the saved reservations. It is not a new route proposal:
    * a broken surviving route must never prevent removing the offending road. */
   static void reconcileDeletion(RoadData data,List<RoadIndex.Built> built,Set<UUID> removed){
-    var all=records(data);removed.forEach(all::remove);for(var b:built)all.put(b.record.id(),b.record);
+    var before=records(data);var all=new LinkedHashMap<>(before);removed.forEach(all::remove);for(var b:built)all.put(b.record.id(),b.record);
     var deleted=new HashSet<>(removed);for(var b:built)deleted.remove(b.record.id());
-    var ends=endpointOwners(all.values());
+    var ends=endpointOwners(all.values());var scope=new HashSet<UUID>();
     for(var r:new ArrayList<>(all.values())){
       var md=metadata(r);var additions=md.additions().stream().filter(a->!deleted.contains(a.connection())).toList();
       var cuts=new ArrayList<LaneSections.Cut>();
@@ -228,9 +228,16 @@ public final class LaneTopology {
         // Only normal hosts acquire new free endpoint points; surviving ramp
         // alignments and furniture remain saved work, including imperfect ones.
         if(normal(next))next=automatic(next,ends);
-        if(data.index.roads.containsKey(r.id()))removed.add(r.id());
-        built.removeIf(b->b.record.id().equals(r.id()));built.add(new RoadIndex.Built(next.structures(List.of())));
+        all.put(r.id(),next);scope.add(r.id());
       }
+    }
+    // A continuation built while A had a removed outer lane owns the old narrow
+    // port. Restore that physical seam with A before normalizing lane-count tapers.
+    // This moves only old coincident ordinary ports; surviving ramps are not replanned.
+    RoadContinuations.reconcile(before,all,scope);
+    for(var next:all.values())if(!next.equals(before.get(next.id()))||built.stream().anyMatch(b->b.record.id().equals(next.id()))){
+      if(data.index.roads.containsKey(next.id()))removed.add(next.id());
+      built.removeIf(b->b.record.id().equals(next.id()));built.add(new RoadIndex.Built(next.structures(List.of())));
     }
   }
   /** Store only contiguous physical contact runs. Never join disjoint runs with a

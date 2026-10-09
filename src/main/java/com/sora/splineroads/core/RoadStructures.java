@@ -305,7 +305,7 @@ public final class RoadStructures {
         if (d < 0 || d >= mesh.length() || d - previous < 10) continue;
         Sample s = sample(mesh, d);
         var support=mesh.settings().style().connectorRamp()?RoadSupports.ramp(mesh,d,ground):
-            mesh.settings().style().ramp()?RoadSupports.ramp(s,mesh.settings().thickness(),ground):RoadSupports.clearStandard(s,mesh.settings().thickness(),ground);
+            mesh.settings().style().ramp()?RoadSupports.ramp(s,mesh.settings().thickness(),ground):RoadSupports.clearStandard(mesh,d,ground);
         if(support.isEmpty()||support.stream().anyMatch(ground::blocked))continue;
         out.addAll(support);
         previous = d;

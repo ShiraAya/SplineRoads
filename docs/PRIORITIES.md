@@ -1,3 +1,5 @@
+> 最新 P1：十二图实机反馈，见 `docs/issues/0442-live-twelve-followup-028.md`。旧修复重新按截图验证。
+
 # SR 当前优先级入口（用户最新指令）
 
 1. 第一优先级：`issues/problem2-current-priority.md`，Q2-01～Q2-24 全部。

@@ -993,7 +993,10 @@ public final class RoadData extends SavedData {
       timing.stage("affected_structures");com.sora.splineroads.core.RoadPlanningBudget.phase("affected_structures");
       if(!deleting)AttachedPoints.reconcile(this,built,removed,false,deletedPoints);
       timing.stage("attached_points");com.sora.splineroads.core.RoadPlanningBudget.phase("attached_points");
-      if(deleting)LaneTopology.reconcileDeletion(this,built,removed);else LaneTopology.reconcile(this,built,removed);
+      if(deleting){
+        LaneTopology.reconcileDeletion(this,built,removed);
+        if(built.stream().noneMatch(r->r.record.junction()!=null))normalizeTransitions(built,removed,player,true);
+      }else LaneTopology.reconcile(this,built,removed);
       timing.stage("topology");com.sora.splineroads.core.RoadPlanningBudget.phase("topology");
       built.sort(Comparator.comparing(r -> r.record.id()));
       List<RoadIndex.Built> planning = new ArrayList<>();

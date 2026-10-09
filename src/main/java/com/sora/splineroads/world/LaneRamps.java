@@ -49,6 +49,13 @@ public final class LaneRamps {
     return port(road,LanePoints.point(point.id(),point.origin(),mesh(road),at.station()+at.sign()*offset,added.slot()));
   }
   public static double targetReach(LanePoints.Options options){return options.landing()==LanePoints.Landing.EXACT?0:Math.max(32,Math.min(128,options.radius()+options.transition()*2));}
+  /** Restoration policy does not move a previously validated motor path. */
+  private static boolean sameRoute(LanePoints.Link a,LanePoints.Link b){
+    if(Objects.equals(a,b))return true;
+    if(a==null||b==null||!a.options().separatesLane()||!b.options().separatesLane())return false;
+    var o=a.options();var n=b.options();
+    return a.equals(new LanePoints.Link(b.from(),b.to(),new LanePoints.Options(n.path(),o.departure(),n.arrival(),n.radius(),n.transition(),n.elevation(),n.landing(),n.gradeOverride()),b.junctionMouth(),b.targetOffset(),b.protectedMerge(),b.rectangularClosure()));
+  }
   private record Generated(RoadRecord road,LanePoints.Path path) {}
   static RoadRecord generate(RoadData data,Map<UUID,RoadRecord> all,UUID id,UUID owner,LanePoints.Link link){
     return generateChoice(data,all,id,owner,link,null).road();
@@ -81,7 +88,7 @@ public final class LaneRamps {
     // Rechecking an unchanged connector must first validate its saved alignment.
     // Searching from scratch can choose a different family or reject an old valid
     // layout after a candidate ordering update. This still runs current clearance.
-    if(old!=null&&(edited==null||old.settings().options().ends().start()!=null&&old.settings().options().ends().end()!=null)&&Objects.equals(LaneTopology.metadata(old).link(),link)&&base.width()==old.settings().width()
+    if(old!=null&&(edited==null||old.settings().options().ends().start()!=null&&old.settings().options().ends().end()!=null)&&sameRoute(LaneTopology.metadata(old).link(),link)&&base.width()==old.settings().width()
         &&base.thickness()==old.settings().thickness()&&base.style()==old.settings().style()
         &&(link.options().elevation()!=LanePoints.Elevation.AUTO||monotone(old.mesh())))try{
       var kept=old.settings(base);var candidate=kept.mesh();var context=LaneCrossSections.staged(all,id,link,candidate);
@@ -169,7 +176,7 @@ public final class LaneRamps {
    * the first direct candidate was valid. No route or safety check is removed. */
   private static Iterable<LaneRampPaths.Candidate> routeCandidates(LaneRampPaths.Port a,LaneRampPaths.Port b,Settings settings,LanePoints.Options options,RoadRecord source,LanePoints.Point point,RoadRecord target,LanePoints.Point targetPoint,double targetOffset,double maxGrade,Map<LanePoints.Path,String> errors,int stage){
     if(stage==2&&options.path()!=LanePoints.Path.AUTO)return List.of();
-    double[] leads=options.departure()==LanePoints.Departure.TEMPORARY?new double[]{0,32,64,96,128}:new double[]{0};
+    double[] leads=options.separatesLane()?new double[]{0,32,64,96,128}:new double[]{0};
     boolean tail=target!=null&&(options.arrival()==LanePoints.Arrival.MERGE||options.arrival()==LanePoints.Arrival.FLOW||options.arrival()==LanePoints.Arrival.ADD);
     double[] tails=tail?new double[]{0,16,32,48,64,96,128}:new double[]{0};
     return ()->new Iterator<>(){
