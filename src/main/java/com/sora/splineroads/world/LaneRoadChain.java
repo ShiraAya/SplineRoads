@@ -49,6 +49,11 @@ public final class LaneRoadChain {
             if(old.direction().dot(lane2.direction())<.995||old.position().distance(lane2.position())>.25
                 ||Math.abs(old.width()-lane2.width())>.25)continue;
             if((at==0?1:-1)!=lane2.sign()*direction)continue;
+            // A lane matched at the wide end of a taper may disappear (or its
+            // numeric slot may become opposing traffic) farther along this road.
+            // Keep that continuation as a normal obstacle, not a chain-wide
+            // selected-lane exemption. Otherwise every route hits a missing slot.
+            if(!continuous(road,slot,lane2.sign()))continue;
             if(next!=null)throw new IllegalArgumentException("车道接缝存在多个同向匹配，不能自动换道");
             next=new Leg(road,slot,lane2.sign(),boundary-lane2.sign()*at);
           }
@@ -57,6 +62,14 @@ public final class LaneRoadChain {
       }
     }
     out.sort(Comparator.comparingDouble(Leg::low));return new LaneRoadChain(out,point);
+  }
+  private static boolean continuous(RoadRecord road,int slot,int sign){
+    var raw=road.rawMesh();
+    for(var sample:raw.samples()){
+      if(slot<8&&slot>=RoadProfile.layout(raw,sample).catalog().lanes())return false;
+      if(LanePoints.lane(raw,sample.distance(),slot).sign()!=sign)return false;
+    }
+    return true;
   }
   public Position at(double offset){
     Leg selected=null;

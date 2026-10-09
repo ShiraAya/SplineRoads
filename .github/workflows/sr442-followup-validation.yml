@@ -1,6 +1,4 @@
-# Test-only correction: the unchanged production commit continues its 32-case
-# matrix in sr440-live-feedback. This job validates the corrected transaction test.
-name: SR442 transaction verification follow-up
+name: SR442 final transaction and matrix verification
 on:
   push:
     branches: [work/sr-04028-validation]
@@ -72,3 +70,34 @@ jobs:
             run441-console.log
             run442/logs/latest.log
             run442-console.log
+
+  matrix:
+    name: Minecraft matrix row ${{ matrix.row }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        row: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Real Minecraft preview build save delete matrix
+        run: |
+          set -o pipefail
+          bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run441matrix -ProadTestNamespaces=splineroads_matrix434 -ProadMatrixRow=${{ matrix.row }} -ProadTestHeap=3G | tee matrix-${{ matrix.row }}.log
+          grep -q 'MATRIX434 SUMMARY 8/8' matrix-${{ matrix.row }}.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr441-matrix-${{ matrix.row }}-${{ github.sha }}
+          path: |
+            matrix-${{ matrix.row }}.log
+            run441matrix/logs/latest.log

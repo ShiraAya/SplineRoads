@@ -16,8 +16,8 @@ public final class Live442GameTests {
   var from=Build429GameTests.point(data,source,60,slot);var to=Build429GameTests.point(data,target,160,slot);
   var temporary=new LanePoints.Options(LanePoints.Path.AUTO,LanePoints.Departure.TEMPORARY,LanePoints.Arrival.MERGE,24,32,LanePoints.Elevation.AUTO,LanePoints.Landing.FLEXIBLE);
   var detach=new LanePoints.Options(temporary.path(),LanePoints.Departure.DETACH,temporary.arrival(),24,32,temporary.elevation(),temporary.landing());
-  var id=UUID.randomUUID();var kept=LaneRamps.generate(data,LaneTopology.records(data),id,source.owner(),new LanePoints.Link(from,to,temporary,null));
-  var ramp=LaneRamps.generate(data,LaneTopology.records(data),id,source.owner(),new LanePoints.Link(from,to,detach,null));
+  var id=UUID.randomUUID();var kept=generate(data,LaneTopology.records(data),id,source.owner(),new LanePoints.Link(from,to,temporary,null));
+  var ramp=generate(data,LaneTopology.records(data),id,source.owner(),new LanePoints.Link(from,to,detach,null));
   h.assertTrue(ramp.alignment().equals(kept.alignment()),"fresh mode switch changes route");
   LaneRamps.build(data,level,null,ramp);System.out.println("LIVE442 DETACH_BUILD_PASS");
   var host=data.index.roads.get(source.id()).record;var cut=LaneTopology.metadata(host).cuts().stream().filter(c->c.connection().equals(id)).findFirst().orElseThrow();
@@ -36,12 +36,15 @@ public final class Live442GameTests {
   assertSeam(h,host,b);h.assertTrue(b.end().equals(far),"delete moved B remote endpoint");
   h.assertTrue(!LaneTopology.needsRefresh(data,new ArrayList<>(data.index.roads.values()),List.of(host.id(),b.id())),"delete leaves ordinary lane points off their final lanes");
   h.assertTrue(LaneTopology.point(b,manual.point()).id().equals(manual.point()),"delete replaced continuation point identity");
-  var again=LaneRamps.generate(data,LaneTopology.records(data),UUID.randomUUID(),source.owner(),new LanePoints.Link(from,to,detach,null));
+  var again=generate(data,LaneTopology.records(data),UUID.randomUUID(),source.owner(),new LanePoints.Link(from,to,detach,null));
   LaneRamps.build(data,level,null,again);System.out.println("LIVE442 REBUILD_PASS");
   assertSeam(h,data.index.roads.get(source.id()).record,data.index.roads.get(b.id()).record);
   var loaded=RoadData.load(data.save(new net.minecraft.nbt.CompoundTag()));
   h.assertTrue(loaded.index.roads.get(b.id()).record.save().equals(data.index.roads.get(b.id()).record.save()),"continuation repair changed during Mojang NBT reload");
   System.out.println("LIVE442 REAL_WORLD PASS continuation: 2->DETACH->1-lane B->delete->2-to-1 taper->new DETACH build");h.succeed();
+ }
+ private static RoadRecord generate(RoadData data,Map<UUID,RoadRecord> all,UUID id,UUID owner,LanePoints.Link link){
+  try(var budget=RoadPlanningBudget.open("SR442 pure route generation",180)){return LaneRamps.generate(data,all,id,owner,link);}
  }
  private static void fullLane(GameTestHelper h,RoadRecord before,RoadRecord host,int closed){
   var original=before.rawMesh();var removed=LanePoints.lane(original,100,closed);

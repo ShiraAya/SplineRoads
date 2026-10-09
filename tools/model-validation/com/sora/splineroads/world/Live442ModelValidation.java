@@ -28,6 +28,11 @@ public final class Live442ModelValidation {
   check(LaneTopology.point(moved,marker.id()).position().distance(LanePoints.lane(moved.mesh(),LaneTopology.point(moved,marker.id())).position())<1e-5,"delete left continuation manual point off its final lane");
   check(LaneSections.live(restored.mesh(),sign>0?270:30).count(sign)==2,"host outer lane not restored");
   check(RoadRecord.load(moved.save()).mesh().samples().equals(moved.mesh().samples()),"repaired continuation not persistent");
+  var origin=LanePoints.point(UUID.randomUUID(),LanePoints.Origin.MANUAL,restored.mesh(),150,slot);
+  all.put(restored.id(),restored.withLanePoints(LaneTopology.metadata(restored).points(List.of(origin))));
+  var chain=LaneRoadChain.of(all,LanePoints.Ref.lane(restored.id(),origin.id()));
+  check(!chain.ids().contains(moved.id()),"terminated taper slot incorrectly exempts a whole continuation");
+  check(chain.sweep().length()>0,"restored lane chain cannot be swept");
  }
  static void seam(RoadRecord a,boolean first,RoadRecord b){
   var ma=a.caps(0).mesh();var mb=b.caps(0).mesh();var x=first?ma.first():ma.last();var y=mb.first();
@@ -99,5 +104,28 @@ public final class Live442ModelValidation {
   var warnings=LaneClosureWarnings.paint(closed);check(warnings.size()==6,"upstream X warnings disappeared");
   for(var paint:warnings)for(var point:paint.points())check(RoadQueries.horizontal(closed,point).sample().distance()<cut.begin(),"warning painted inside removed region");
  }
- public static void main(String[]args){for(boolean left:new boolean[]{false,true})for(int sign:new int[]{-1,1})deleteContinuation(left,sign);departureRoute();earlierEmptyClosure();System.out.println("Live442ModelValidation: "+checks+" checks PASS");}
+ static void rebuildAfterDelete(){try(var budget=RoadPlanningBudget.open("restored continuation regression",120)){
+  var settings=Hotfix429ModelValidation.settings(RoadProfile.Type.ORDINARY,2,3,false).structure(Structure.AUTO);
+  var source=Hotfix429ModelValidation.road(new V(0,20,0),new V(0,20,300),settings);
+  var target=Hotfix429ModelValidation.road(new V(90,28,200),new V(90,28,500),settings);var raw=source.mesh();
+  int slot=LaneSections.live(raw,80).lanes().stream().filter(l->l.sign()==1&&LaneSections.edge(raw,80,l.index())).findFirst().orElseThrow().index();
+  var all=new LinkedHashMap<UUID,RoadRecord>();all.put(source.id(),source);all.put(target.id(),target);
+  var from=Hotfix429ModelValidation.point(all,source,80,slot);var to=Hotfix429ModelValidation.point(all,target,150,slot);source=all.get(source.id());
+  var deleted=UUID.randomUUID();source=source.withLanePoints(LaneTopology.metadata(source).cuts(List.of(new LaneSections.Cut(deleted,slot,1,80,364,32,null,false,false,true))));
+  var inherited=RoadEndpointSections.inherit(settings,RoadEndpointSections.section(source.caps(0).mesh(),false,false));var anchor=RoadMedianAnchor.position(source.caps(0).mesh(),false);
+  var b=new RoadRecord(UUID.randomUUID(),source.owner(),source.b(),RampJunctions.at(new V(0,20,480)),new Node(anchor,0,0),new Node(new V(0,20,480),0,0),inherited,true,4);
+  var data=new RoadData();for(var r:List.of(source,all.get(target.id()),b))data.index.put(new RoadIndex.Built(r));
+  var batch=new ArrayList<RoadIndex.Built>();var removed=new HashSet<UUID>(Set.of(deleted));LaneTopology.reconcileDeletion(data,batch,removed);
+  for(var id:removed)data.index.roads.remove(id);for(var r:batch)data.index.put(r);
+  all=new LinkedHashMap<>(LaneTopology.records(data));var options=new LanePoints.Options(LanePoints.Path.AUTO,LanePoints.Departure.DETACH,LanePoints.Arrival.MERGE,24,32,LanePoints.Elevation.AUTO,LanePoints.Landing.EXACT);
+  var link=new LanePoints.Link(from,to,options,null);var again=LaneRamps.generate(null,all,UUID.randomUUID(),source.owner(),link);
+  check(again.mesh().length()>0,"cannot generate DETACH after restoring A/B taper");
+  var collision=Hotfix429ModelValidation.road(new V(-30,20,400),new V(30,20,400),new Settings(Mode.STRAIGHT,Style.C1_RAMP,4,1,.35,90));boolean rejected=false;
+  try{LaneRamps.validateChanges(collision.mesh(),all,again.id(),link,Set.of(b.id()));}catch(IllegalArgumentException e){rejected=e.getMessage().contains(b.id().toString());}
+  check(rejected,"terminated continuation lost its collision protection");
+  batch=new ArrayList<>(List.of(new RoadIndex.Built(again)));removed=new HashSet<>();LaneTopology.reconcile(data,batch,removed);
+  for(var id:removed)all.remove(id);for(var r:batch)all.put(r.record.id(),r.record);
+  seam(all.get(source.id()),false,all.get(b.id()));
+ }}
+ public static void main(String[]args){for(boolean left:new boolean[]{false,true})for(int sign:new int[]{-1,1})deleteContinuation(left,sign);departureRoute();earlierEmptyClosure();rebuildAfterDelete();System.out.println("Live442ModelValidation: "+checks+" checks PASS");}
 }
