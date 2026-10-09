@@ -1,3 +1,9 @@
+## 2026-10-09 11:32 UTC 0.40.30 checkpoint 8
+
+- Corrected parent-branch real-server group passed all4 cases on CI37923174403 / cc78f7c3b687cb1515486a1955db41795b6398e6, including deletion and restoration. New444 real-server group also passed both cases. Full Forge, core/model regressions and matrix rows1/2 passed; remaining gates are running.
+- Local independent parent-branch diagnostic found0 interior obstructions and17 legitimate common-boundary parts. No production code changed for the fixture correction; remote src/main tree e9b4a1fd9e6d59652ec721237e7faa1258b42740 was read back and matches local.
+- Rebuilt JAR from this final validation commit downloaded and checked:5675630 bytes /989 entries; SHA256 6ed52d3ffdae6c45f1425a9903fd9278172671c6968594f35f4ba8b979995e5e. Not yet delivered. Figure4 remains open.
+
 ## 2026-10-09 11:20 UTC 0.40.30 checkpoint 7
 
 - CI37920960510 completed: full Forge, all local suites, 32/32 matrix and 9/10 real-server cases passed; the parent-branch case failed its old full-deck furniture assertion. Candidate not delivered.
