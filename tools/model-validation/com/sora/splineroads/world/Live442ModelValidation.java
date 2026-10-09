@@ -70,5 +70,22 @@ public final class Live442ModelValidation {
   }
  }
  static double segmentDistance(V p,V a,V b){var d=b.sub(a);double u=Math.max(0,Math.min(1,p.sub(a).dot(d)/Math.max(1e-10,d.dot(d))));return p.distance(a.add(d.mul(u)));}
- public static void main(String[]args){for(boolean left:new boolean[]{false,true})for(int sign:new int[]{-1,1})deleteContinuation(left,sign);departureRoute();System.out.println("Live442ModelValidation: "+checks+" checks PASS");}
+ static void earlierEmptyClosure(){
+  var settings=Hotfix429ModelValidation.settings(RoadProfile.Type.ORDINARY,3,0,false).structure(Structure.GROUND);
+  var host=Hotfix429ModelValidation.road(new V(0,20,0),new V(0,20,200),settings);
+  var all=new LinkedHashMap<UUID,RoadRecord>();all.put(host.id(),host);var ref=Hotfix429ModelValidation.point(all,host,160,0);var chain=LaneRoadChain.of(all,ref);
+  var points=new ArrayList<Sample>();for(double d=80;d<=160;d++){var lane=LanePoints.lane(host.rawMesh(),d,0);points.add(new Sample(lane.position().add(new V(0,-6+(d-80)*6/80,0)),lane.direction().left(),d-80,2));}
+  var ramp=RoadRibbon.mesh(points,new Settings(Mode.CURVE,Style.C1_RAMP,4,1,.35,90));
+  double unsafe=RoadClearance.contacts(chain.sweep(),ramp).stream().filter(RoadClearance.Contact::blocked).mapToDouble(RoadClearance.Contact::from).min().orElseThrow();
+  var events=new HashMap<UUID,List<LaneSections.Event>>();var id=UUID.randomUUID();chain.reserve(events,id,ramp,List.of(),true,0,32,true);
+  var cuts=LaneSections.derive(host.rawMesh(),events.get(host.id()));var cut=cuts.get(0);
+  check(Math.abs(cut.begin()-(unsafe-9))<1e-5,"physical cutoff did not move 8m before old one-block margin");
+  check(cut.underpass(),"low arrival lost underpass classification");
+  var closed=host.withLanePoints(LanePoints.Data.EMPTY.cuts(cuts)).mesh();
+  var ground=new RoadStructures.Ground(){public double top(double x,double z,double y){return 19.8;}public boolean joined(V p){return false;}public boolean blocked(RoadStructures.Part p){return false;}};
+  check(LaneClosureLandscape.plan(closed,ground).isEmpty(),"underpass closed slot retained planter, end kerb or paving pad");
+  var warnings=LaneClosureWarnings.paint(closed);check(warnings.size()==6,"upstream X warnings disappeared");
+  for(var paint:warnings)for(var point:paint.points())check(RoadQueries.horizontal(closed,point).sample().distance()<cut.begin(),"warning painted inside removed region");
+ }
+ public static void main(String[]args){for(boolean left:new boolean[]{false,true})for(int sign:new int[]{-1,1})deleteContinuation(left,sign);departureRoute();earlierEmptyClosure();System.out.println("Live442ModelValidation: "+checks+" checks PASS");}
 }

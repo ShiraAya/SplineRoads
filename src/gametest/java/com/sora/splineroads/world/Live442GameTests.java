@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;import net.minecraft.gametest.framework.*;imp
 import net.minecraftforge.gametest.*;import java.util.*;
 @GameTestHolder("splineroads_live442") @PrefixGameTestTemplate(false)
 public final class Live442GameTests {
- @GameTest(batch="splineroads_live442",template="empty",templateNamespace="splineroads_live441",timeoutTicks=18000)
+ @GameTest(batch="splineroads_live442",template="empty",templateNamespace="splineroads_live442",timeoutTicks=18000)
  public static void detachContinueDeleteAndBuildAgain(GameTestHelper h){
   var level=h.getLevel();var data=RoadData.get(level);int cx=220000,cz=cx;
   for(int x=cx-18;x<=cx+108;x++)for(int z=cz;z<=cz+522;z++){var p=new BlockPos(x,188,z);level.getChunkAt(p);level.setBlock(p,Blocks.STONE.defaultBlockState(),2);}
@@ -22,6 +22,8 @@ public final class Live442GameTests {
   LaneRamps.build(data,level,null,ramp);System.out.println("LIVE442 DETACH_BUILD_PASS");
   var host=data.index.roads.get(source.id()).record;var cut=LaneTopology.metadata(host).cuts().stream().filter(c->c.connection().equals(id)).findFirst().orElseThrow();
   h.assertTrue(cut.rectangular()&&cut.removed(60.01)>.999,"DETACH has inward merge transition");
+  fullLane(h,source,host,slot);
+  mouthRails(h,data,data.index.roads.get(id).record);
   var inherited=RoadEndpointSections.inherit(s,RoadEndpointSections.section(host.caps(0).mesh(),false,false));
   var b=data.connect(level,null,host.b(),Revision32GameTests.marker(h,cx,200,cz+360,0),inherited,null);
   System.out.println("LIVE442 CONTINUATION_BUILD_PASS");
@@ -37,6 +39,26 @@ public final class Live442GameTests {
   var loaded=RoadData.load(data.save(new net.minecraft.nbt.CompoundTag()));
   h.assertTrue(loaded.index.roads.get(b.id()).record.save().equals(data.index.roads.get(b.id()).record.save()),"continuation repair changed during Mojang NBT reload");
   System.out.println("LIVE442 REAL_WORLD PASS continuation: 2->DETACH->1-lane B->delete->2-to-1 taper->new DETACH build");h.succeed();
+ }
+ private static void fullLane(GameTestHelper h,RoadRecord before,RoadRecord host,int closed){
+  var original=before.rawMesh();var removed=LanePoints.lane(original,100,closed);
+  var next=LaneSections.live(original,100).lanes().stream().filter(l->l.index()!=closed&&l.sign()==removed.sign()).min(Comparator.comparingDouble(l->l.position().distance(removed.position()))).orElseThrow();
+  var samples=new ArrayList<Sample>();for(double d=70;d<=150;d++){var lane=LanePoints.lane(original,d,next.index());samples.add(new Sample(lane.position(),RoadStructures.sample(original,d).left(),d-70,lane.width()/2-.001));}
+  var drive=RoadRibbon.mesh(samples,new Settings(Mode.STRAIGHT,Style.C1_RAMP,4,1,.35,90));
+  h.assertTrue(host.structures().stream().filter(p->!p.pier()&&Math.abs(p.a().y()-drive.first().center().y())<.01&&p.height()<2).noneMatch(p->RoadClearance.structureInvades(p,drive,4.25)),"actual DETACH furniture narrows full-width neighboring lane");
+ }
+ private static void mouthRails(GameTestHelper h,RoadData data,RoadRecord ramp){
+  var link=LaneTopology.metadata(ramp).link();var all=LaneTopology.records(data);var pieces=new ArrayList<RoadStructures.Part>(ramp.structures());
+  for(boolean first:new boolean[]{true,false}){
+   var ref=first?link.from():link.to();var pos=LaneRoadChain.of(all,ref).at(first?0:link.targetOffset());var road=pos.road();pieces.addAll(road.structures());
+   var lane=LanePoints.lane(road.rawMesh(),pos.point());var at=RoadStructures.sample(road.rawMesh(),lane.station());
+   double side=Math.signum(lane.position().sub(at.center()).dot(at.left()));var edge=at.at(side*at.halfWidth(),0);var end=first?ramp.mesh().first():ramp.mesh().last();
+   double rampSide=Math.signum(edge.sub(end.center()).dot(end.left()));
+   h.assertTrue(end.at(rampSide*end.halfWidth(),0).distance(edge)<1e-5,"actual ramp shoulder does not meet host");
+   var expected=at.at(side*(at.halfWidth()-RoadRailJoin.INSET),0);double distance=Double.POSITIVE_INFINITY;
+   for(var p:pieces)if(!p.pier()&&p.material()==RoadStructures.Material.CONCRETE&&Math.abs(p.height()-.45)<1e-7){var delta=p.b().sub(p.a());double u=Math.max(0,Math.min(1,expected.sub(p.a()).dot(delta)/Math.max(1e-10,delta.dot(delta))));distance=Math.min(distance,expected.distance(p.a().add(delta.mul(u))));}
+   h.assertTrue(distance<.02,"actual outer rail gap at ramp mouth: "+distance);
+  }
  }
  private static void assertSeam(GameTestHelper h,RoadRecord a,RoadRecord b){
   var x=a.caps(0).mesh().last();var y=b.caps(0).mesh().first();

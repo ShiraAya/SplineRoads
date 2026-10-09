@@ -177,7 +177,17 @@ public final class LaneSections {
       if(side<0)extraLow+=width;else extraHigh+=width;
       if(width>layout.laneWidth()*.999999)extraCount++;
     }
-    double shift=(trimLow-trimHigh-extraLow+extraHigh)/2,half=s.halfWidth()-(trimLow+trimHigh)/2+(extraLow+extraHigh)/2;
+    // A new permanent rim needs the same protected shoulder as a temporary
+    // hole. Keep that footing in the departed slot, not in the live motor lane.
+    boolean rectangle=raw.settings().options().lanePoints().cuts().stream().anyMatch(cut->!cut.temporary()&&cut.rectangular()&&cut.removed(s.distance())>.999);
+    double padLow=0,padHigh=0;
+    if(rectangle&&raw.settings().options().outerRail()!=RoadProfile.OuterRail.OFF){
+      double rim=2*RoadRailJoin.INSET;
+      if(trimLow>0)padLow=Math.max(0,rim-(s.halfWidth()+layout.motorMin()));
+      if(trimHigh>0)padHigh=Math.max(0,rim-(s.halfWidth()-layout.motorMax()));
+    }
+    double deckLow=trimLow-padLow,deckHigh=trimHigh-padHigh;
+    double shift=(deckLow-deckHigh-extraLow+extraHigh)/2,half=s.halfWidth()-(deckLow+deckHigh)/2+(extraLow+extraHigh)/2;
     double min=layout.motorMin()+trimLow-extraLow-shift,max=layout.motorMax()-trimHigh+extraHigh-shift;
     int retained=count;for(double value:removal)if(value>=.5)retained--;
     // A removed lane does not drag its old divider onto the moving outer edge.

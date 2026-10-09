@@ -15,5 +15,19 @@ public final class Live442Validation {
    }
   }
  }
- public static void main(String[]args){supportCut();System.out.println("Live442Validation: "+checks+" checks PASS");}
+ static void permanentLaneRail(){
+  for(var style:List.of(Style.O3_ONE,Style.O4_RAIL,Style.H4_RAIL))for(boolean left:new boolean[]{false,true}){
+   var initial=Live435Validation.road(style,Structure.BRIDGE);var raw=RoadRibbon.mesh(initial.samples(),initial.settings().options(initial.settings().options().traffic(left)));
+   for(var closed:LaneSections.live(raw,100).lanes())if(LaneSections.edge(raw,100,closed.index())){
+    var near=LaneSections.live(raw,100).lanes().stream().filter(l->l.index()!=closed.index()&&l.sign()==closed.sign()).min(Comparator.comparingDouble(l->l.position().distance(closed.position()))).orElseThrow();
+    var cut=new LaneSections.Cut(UUID.randomUUID(),closed.index(),closed.sign(),closed.sign()>0?40:160,closed.sign()>0?250:-50,32,null,false,false,true);
+    var host=LaneSections.apply(RoadRibbon.mesh(raw.samples(),raw.settings().options(raw.settings().options().lanePoints(LanePoints.Data.EMPTY.cuts(List.of(cut))))));
+    var parts=RoadStructures.plan(host,Live435Validation.ground(0));var points=new ArrayList<Sample>();
+    for(double d=50;d<=150;d++){var lane=LanePoints.lane(raw,d,near.index());points.add(new Sample(lane.position(),RoadStructures.sample(raw,d).left(),d-50,lane.width()/2-.001));}
+    var travel=RoadRibbon.mesh(points,new Settings(Mode.STRAIGHT,Style.C1_RAMP,4,1,.35,90));
+    check(parts.stream().filter(p->!p.pier()&&Math.abs(p.a().y()-20)<1e-6&&p.height()<2).noneMatch(p->RoadClearance.structureInvades(p,travel,4.25)),"permanent DETACH rail narrows adjacent live lane: "+style+" left="+left+" slot="+closed.index());
+   }
+  }
+ }
+ public static void main(String[]args){supportCut();permanentLaneRail();System.out.println("Live442Validation: "+checks+" checks PASS");}
 }
