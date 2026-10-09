@@ -21,4 +21,4 @@
 
 完整 Forge、全部回归和32组服务端连接矩阵的最终状态见 PROGRESS.md 与 validation-results/0.40.31；当前仍在执行最终门禁。
 
-候选安装包来自提交 5ffc11cbd7333e3ae2d9687313e82e2cb4916e5b；生产 src/main 树 d2f776943562cc0e5ae97f2c7214931d33749650。JAR 5679259字节，SHA-256 798c505844eafdbb53bbc19f0941097baaf512108801c62cfd27ddb55eedf91b；版本及989个ZIP条目CRC已核对。
+候选安装包来自提交 217b6716ac9d96ef1b2bbd22c59966f170af4ded；生产 src/main 树 c8e6b3cba1fbc35e211598ff4e2110a3bf190ad8。JAR 5679302字节，SHA-256 291635cfc720faebdf057474d04a42aff7d08df7a57bc83e3233200203e42c6c；版本及989个ZIP条目CRC已核对。
