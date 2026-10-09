@@ -181,6 +181,8 @@ public final class RoadStructures {
       return joined(outside)?List.of():List.of(new RoadRailJoin.Span(a,b));
     }
 
+    default List<RoadRailJoin.Span> railSpans(V a,V b,V outside,double inset){return railSpans(a,b,outside);}
+
     default List<RoadRailJoin.Span> capRailSpans(V a,V b,V outside){return railSpans(a,b,outside);}
 
     /** Leave the node's editing target clear of raised median furniture. */
@@ -209,7 +211,8 @@ public final class RoadStructures {
       var run=new ArrayList<RailSpan>();
       for(double d=0;d<mesh.length()-1e-6;d+=.5) {
         Sample a=sample(mesh,d),b=sample(mesh,Math.min(mesh.length(),d+.5));
-        V aa=a.at(side*(a.halfWidth()-RoadRailJoin.INSET),0),bb=b.at(side*(b.halfWidth()-RoadRailJoin.INSET),0),mid=aa.add(bb).mul(.5);
+        double insetA=RoadRailJoin.inset(mesh,a,side),insetB=RoadRailJoin.inset(mesh,b,side);
+        V aa=a.at(side*(a.halfWidth()-insetA),0),bb=b.at(side*(b.halfWidth()-insetB),0),mid=aa.add(bb).mul(.5);
         boolean raised=mesh.settings().structure()==Structure.BRIDGE;
         for(V point:List.of(aa,mid,bb))raised|=elevated(mesh,point,ground.top(point.x(),point.z(),point.y()),ground);
         V sum=a.left().add(b.left());V normal=sum.horizontalLength()<1e-7?a.left():sum.horizontalUnit();
@@ -220,7 +223,7 @@ public final class RoadStructures {
             && (mesh.settings().options().outerRail()==RoadProfile.OuterRail.ON || highway
                 ||modern&&mesh.settings().style().ramp() ||mesh.settings().structure()==Structure.BRIDGE
                 ||mesh.settings().structure()!=Structure.GROUND&&raised);
-        var spans=visible?ground.railSpans(aa,bb,outside):List.<RoadRailJoin.Span>of();
+        var spans=visible?ground.railSpans(aa,bb,outside,(insetA+insetB)/2):List.<RoadRailJoin.Span>of();
         if(spans.isEmpty()){emitOuterRailRun(out,run,mesh,ground,modern,highway,side);run.clear();}
         for(var span:spans){
           if(!run.isEmpty()&&run.get(run.size()-1).b().distance(span.a())>1e-5){emitOuterRailRun(out,run,mesh,ground,modern,highway,side);run.clear();}

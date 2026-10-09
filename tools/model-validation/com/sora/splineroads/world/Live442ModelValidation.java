@@ -15,6 +15,7 @@ public final class Live442ModelValidation {
   var a=new Node(anchor,RoadPlanner.yaw(direction),0);var b=new Node(anchor.add(direction.mul(180)),a.yaw(),0);
   var child=new RoadRecord(UUID.randomUUID(),host.owner(),first?host.a():host.b(),RampJunctions.at(b.position()),a,b,nextSettings,true,4);
   check(child.caps(0).mesh().first().center().distance(end.center())<1e-6,"fixture continuation not aligned");
+  var marker=LanePoints.point(UUID.randomUUID(),LanePoints.Origin.MANUAL,child.mesh(),12,0);child=child.withLanePoints(LanePoints.Data.EMPTY.points(List.of(marker)));
   var data=new RoadData();for(var r:List.of(host,child,removed))data.index.put(new RoadIndex.Built(r));
   var batch=new ArrayList<RoadIndex.Built>();var deleted=new HashSet<UUID>(Set.of(removed.id()));LaneTopology.reconcileDeletion(data,batch,deleted);
   var all=new LinkedHashMap<>(LaneTopology.records(data));deleted.forEach(all::remove);batch.forEach(r->all.put(r.record.id(),r.record));
@@ -22,6 +23,7 @@ public final class Live442ModelValidation {
   check(moved.caps(0).mesh().first().center().distance(port.center())<1e-6,"delete DETACH leaves continuation center offset");
   check(Math.abs(moved.mesh().first().halfWidth()-port.halfWidth())<1e-6,"delete DETACH lacks 2-to-1 seam taper");
   check(moved.end().equals(child.end()),"delete moved remote continuation endpoint");
+  check(LaneTopology.point(moved,marker.id()).position().distance(LanePoints.lane(moved.mesh(),LaneTopology.point(moved,marker.id())).position())<1e-5,"delete left continuation manual point off its final lane");
   check(LaneSections.live(restored.mesh(),sign>0?270:30).count(sign)==2,"host outer lane not restored");
   check(RoadRecord.load(moved.save()).mesh().samples().equals(moved.mesh().samples()),"repaired continuation not persistent");
  }

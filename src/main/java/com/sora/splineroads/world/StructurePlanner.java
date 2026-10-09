@@ -119,6 +119,9 @@ final class StructurePlanner {
                 return railJoin==null?RoadStructures.Ground.super.railSpans(a,b,outside):railJoin.exposed(a,b,outside);
               }
 
+              public List<RoadRailJoin.Span> railSpans(V a,V b,V outside,double inset){
+                return railJoin==null?RoadStructures.Ground.super.railSpans(a,b,outside,inset):railJoin.exposed(a,b,outside,inset);
+              }
               public List<RoadRailJoin.Span> capRailSpans(V a,V b,V outside){
                 var result=new ArrayList<RoadRailJoin.Span>();
                 for(var span:railSpans(a,b,outside))result.addAll(capMouths.exposedMouth(span.a(),span.b()));

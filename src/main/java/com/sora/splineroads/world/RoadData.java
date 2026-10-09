@@ -996,6 +996,7 @@ public final class RoadData extends SavedData {
       if(deleting){
         LaneTopology.reconcileDeletion(this,built,removed);
         if(built.stream().noneMatch(r->r.record.junction()!=null))normalizeTransitions(built,removed,player,true);
+        LaneTopology.refreshDeletionPoints(this,built,removed);
       }else LaneTopology.reconcile(this,built,removed);
       timing.stage("topology");com.sora.splineroads.core.RoadPlanningBudget.phase("topology");
       built.sort(Comparator.comparing(r -> r.record.id()));

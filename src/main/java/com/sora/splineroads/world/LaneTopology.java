@@ -239,6 +239,17 @@ public final class LaneTopology {
       if(data.index.roads.containsKey(next.id()))removed.add(next.id());
       built.removeIf(b->b.record.id().equals(next.id()));built.add(new RoadIndex.Built(next.structures(List.of())));
     }
+    refreshDeletionPoints(data,built,removed);
+  }
+  /** Repair marker positions on the resulting ordinary profiles without replanning
+   * surviving connectors; deletion must still work beside a broken old ramp. */
+  static void refreshDeletionPoints(RoadData data,List<RoadIndex.Built> built,Set<UUID> removed){
+    var all=records(data);removed.forEach(all::remove);for(var b:built)all.put(b.record.id(),b.record);
+    var ends=endpointOwners(all.values());
+    for(int i=0;i<built.size();i++){
+      var record=built.get(i).record;if(!normal(record))continue;
+      var next=automatic(record,ends);if(!next.equals(record))built.set(i,new RoadIndex.Built(next));
+    }
   }
   /** Store only contiguous physical contact runs. Never join disjoint runs with a
    * fictitious chord and never copy a whole kilometre-long ramp into every host header. */

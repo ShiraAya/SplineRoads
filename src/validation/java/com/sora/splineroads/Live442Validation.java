@@ -22,6 +22,8 @@ public final class Live442Validation {
     var near=LaneSections.live(raw,100).lanes().stream().filter(l->l.index()!=closed.index()&&l.sign()==closed.sign()).min(Comparator.comparingDouble(l->l.position().distance(closed.position()))).orElseThrow();
     var cut=new LaneSections.Cut(UUID.randomUUID(),closed.index(),closed.sign(),closed.sign()>0?40:160,closed.sign()>0?250:-50,32,null,false,false,true);
     var host=LaneSections.apply(RoadRibbon.mesh(raw.samples(),raw.settings().options(raw.settings().options().lanePoints(LanePoints.Data.EMPTY.cuts(List.of(cut))))));
+    double end=closed.sign()>0?190:10;var old=RoadStructures.sample(raw,end);var now=RoadStructures.sample(host,end);
+    check(Math.abs(now.halfWidth()-(old.halfWidth()-closed.width()/2))<1e-6,"rail repair changed saved deck width / continuation port");
     var parts=RoadStructures.plan(host,Live435Validation.ground(0));var points=new ArrayList<Sample>();
     for(double d=50;d<=150;d++){var lane=LanePoints.lane(raw,d,near.index());points.add(new Sample(lane.position(),RoadStructures.sample(raw,d).left(),d-50,lane.width()/2-.001));}
     var travel=RoadRibbon.mesh(points,new Settings(Mode.STRAIGHT,Style.C1_RAMP,4,1,.35,90));

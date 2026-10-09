@@ -28,11 +28,14 @@ public final class Live442GameTests {
   var b=data.connect(level,null,host.b(),Revision32GameTests.marker(h,cx,200,cz+360,0),inherited,null);
   System.out.println("LIVE442 CONTINUATION_BUILD_PASS");
   assertSeam(h,data.index.roads.get(source.id()).record,data.index.roads.get(b.id()).record);
+  var manual=Build429GameTests.point(data,b,12,0);
   var far=b.end();data.remove(level,null,id);System.out.println("LIVE442 DELETE_PASS");
   host=data.index.roads.get(source.id()).record;b=data.index.roads.get(b.id()).record;
   h.assertTrue(LaneSections.live(host.mesh(),160).forward()==2,"delete did not restore A to two forward lanes");
   h.assertTrue(RoadLanes.counts(b.settings()).forward()==1,"delete changed B's authored lane count");
   assertSeam(h,host,b);h.assertTrue(b.end().equals(far),"delete moved B remote endpoint");
+  h.assertTrue(!LaneTopology.needsRefresh(data,new ArrayList<>(data.index.roads.values()),List.of(host.id(),b.id())),"delete leaves ordinary lane points off their final lanes");
+  h.assertTrue(LaneTopology.point(b,manual.point()).id().equals(manual.point()),"delete replaced continuation point identity");
   var again=LaneRamps.generate(data,LaneTopology.records(data),UUID.randomUUID(),source.owner(),new LanePoints.Link(from,to,detach,null));
   LaneRamps.build(data,level,null,again);System.out.println("LIVE442 REBUILD_PASS");
   assertSeam(h,data.index.roads.get(source.id()).record,data.index.roads.get(b.id()).record);
@@ -65,7 +68,11 @@ public final class Live442GameTests {
   h.assertTrue(x.center().distance(y.center())<1e-6,"A/B seam center mismatch: "+x.center().distance(y.center()));
   h.assertTrue(Math.abs(x.halfWidth()-y.halfWidth())<1e-6,"A/B seam width mismatch");
   var lx=RoadProfile.layout(a.caps(0).mesh(),x);var ly=RoadProfile.layout(b.caps(0).mesh(),y);
-  h.assertTrue(lx.dividers().size()==ly.dividers().size(),"A/B seam divider count mismatch");
-  for(int i=0;i<lx.dividers().size();i++)h.assertTrue(Math.abs(lx.dividers().get(i)-ly.dividers().get(i))<1e-5,"A/B divider offset mismatch");
+  // Permanent cuts retain authored divider axes for stable IDs; only interior
+  // dividers are painted. Compare the rendered set, not hidden metadata entries.
+  var dx=lx.dividers().stream().filter(d->d>lx.motorMin()+.12&&d<lx.motorMax()-.12).toList();
+  var dy=ly.dividers().stream().filter(d->d>ly.motorMin()+.12&&d<ly.motorMax()-.12).toList();
+  h.assertTrue(dx.size()==dy.size(),"A/B seam visible divider count mismatch");
+  for(int i=0;i<dx.size();i++)h.assertTrue(Math.abs(dx.get(i)-dy.get(i))<1e-5,"A/B visible divider offset mismatch");
  }
 }

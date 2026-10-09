@@ -11,6 +11,20 @@ public final class RoadRailJoin {
   // Keep even the 0.62 m highway footing wholly inside its owning deck.
   // A 0.16 m inset left the base in the adjacent live-lane clearance corridor.
   public static final double INSET=.34;
+  /** Fit a new permanent-cut railing inside its existing shoulder. Do not
+   * widen the saved deck: an already connected continuation owns that exact port. */
+  public static double inset(Mesh mesh,Sample at,int side){
+    if(mesh.reference()==null)return INSET;
+    var raw=LaneSections.reference(mesh);var original=RoadStructures.sample(raw,at.distance());boolean cutSide=false;
+    for(var cut:mesh.settings().options().lanePoints().cuts())if(!cut.temporary()&&cut.rectangular()&&cut.removed(at.distance())>.999){
+      var lane=LanePoints.lane(raw,at.distance(),cut.lane());
+      if(Math.signum(lane.position().sub(original.center()).dot(original.left()))==side){cutSide=true;break;}
+    }
+    if(!cutSide)return INSET;
+    var layout=RoadProfile.layout(mesh,at);double shoulder=side>0?at.halfWidth()-layout.motorMax():at.halfWidth()+layout.motorMin();
+    double half=RoadProfile.highway(mesh.settings().style())?.31:.21;
+    return Math.max(half+.015,Math.min(INSET,shoulder-half-.015));
+  }
   public record Span(V a,V b) {}
   /** Higher-priority neighbour owns coincident boundaries; strict interiors always win. */
   public record Neighbor(Mesh mesh,boolean ownsBoundary) {}
@@ -67,10 +81,12 @@ public final class RoadRailJoin {
           add(material,strip.al(),strip.br(),strip.bl(),true);
           // Only exposed band boundaries get an inset. Zero-size slots split a
           // continuous face too, but those split lines must not become false gutters.
-          V al=strip.al().sub(a.left().mul(strip.highWall()?INSET:0));
-          V ar=strip.ar().add(a.left().mul(strip.lowWall()?INSET:0));
-          V bl=strip.bl().sub(b.left().mul(strip.highWall()?INSET:0));
-          V br=strip.br().add(b.left().mul(strip.lowWall()?INSET:0));
+          double highA=strip.al().distance(a.at(a.halfWidth(),0))<1e-6?inset(mesh,a,1):INSET,highB=strip.bl().distance(b.at(b.halfWidth(),0))<1e-6?inset(mesh,b,1):INSET;
+          double lowA=strip.ar().distance(a.at(-a.halfWidth(),0))<1e-6?inset(mesh,a,-1):INSET,lowB=strip.br().distance(b.at(-b.halfWidth(),0))<1e-6?inset(mesh,b,-1):INSET;
+          V al=strip.al().sub(a.left().mul(strip.highWall()?highA:0));
+          V ar=strip.ar().add(a.left().mul(strip.lowWall()?lowA:0));
+          V bl=strip.bl().sub(b.left().mul(strip.highWall()?highB:0));
+          V br=strip.br().add(b.left().mul(strip.lowWall()?lowB:0));
           if(al.sub(ar).dot(a.left())<0||bl.sub(br).dot(b.left())<0)continue;
           var sample=RoadStructures.sample(mesh,(a.distance()+b.distance())/2);
           int high=profile(mesh,sample,1),low=profile(mesh,sample,-1);
@@ -142,12 +158,13 @@ public final class RoadRailJoin {
     for(var cut:cuts){if(cut.from()>at+epsilon)result.add(new Span(a.add(d.mul(at)),a.add(d.mul(cut.from()))));at=Math.max(at,cut.to());}
     if(at<1-epsilon)result.add(new Span(a.add(d.mul(at)),b));return List.copyOf(result);
   }
-  public List<Span> exposed(V a,V b,V outside){
+  public List<Span> exposed(V a,V b,V outside){return exposed(a,b,outside,INSET);}
+  public List<Span> exposed(V a,V b,V outside,double inset){
     V mid=a.add(b).mul(.5),direction=outside.sub(mid);
     if(direction.horizontalLength()<1e-8)return exposed(a,b);
     // Clip shared merge seams against actual neighboring pavement at the outer
     // edge, not its inset rail. Real positive gaps and height separation retain rails.
-    V shift=direction.horizontalUnit().mul(INSET+1e-5);
+    V shift=direction.horizontalUnit().mul(inset+1e-5);
     var inside=exposed(a,b);var boundary=exposed(material,a.add(shift),b.add(shift));
     var out=new ArrayList<Span>();V d=b.sub(a);double length=d.dot(d);
     for(var first:inside)for(var second:boundary){
