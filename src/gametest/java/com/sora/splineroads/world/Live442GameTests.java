@@ -70,9 +70,9 @@ public final class Live442GameTests {
   var lx=RoadProfile.layout(a.caps(0).mesh(),x);var ly=RoadProfile.layout(b.caps(0).mesh(),y);
   // Permanent cuts retain authored divider axes for stable IDs; only interior
   // dividers are painted. Compare the rendered set, not hidden metadata entries.
-  var dx=lx.dividers().stream().filter(d->d>lx.motorMin()+.12&&d<lx.motorMax()-.12).toList();
-  var dy=ly.dividers().stream().filter(d->d>ly.motorMin()+.12&&d<ly.motorMax()-.12).toList();
+  var dx=lx.dividers().stream().filter(d->d>lx.motorMin()+.12&&d<lx.motorMax()-.12).sorted().toList();
+  var dy=ly.dividers().stream().filter(d->d>ly.motorMin()+.12&&d<ly.motorMax()-.12).sorted().toList();
   h.assertTrue(dx.size()==dy.size(),"A/B seam visible divider count mismatch");
-  for(int i=0;i<dx.size();i++)h.assertTrue(Math.abs(dx.get(i)-dy.get(i))<1e-5,"A/B visible divider offset mismatch");
+  for(int i=0;i<dx.size();i++)h.assertTrue(Math.abs(dx.get(i)-dy.get(i))<1e-5,"A/B visible divider offset mismatch: "+dx+" / "+dy);
  }
 }
