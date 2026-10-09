@@ -74,7 +74,8 @@ final class RoadInteractions {
     return RoadClearance.structureInvades(p,m,4.25);
   }
   static List<Part> openPortal(RoadIndex.Built tube,List<Part> parts,List<RoadIndex.Built> roads){
-    if(tube.record.settings().structure()!=Structure.TUNNEL)return parts;
+    boolean explicit=tube.record.settings().structure()==Structure.TUNNEL;
+    if(!explicit&&(LaneTopology.metadata(tube.record).link()==null||parts.stream().noneMatch(p->p.material()==Material.TUNNEL)))return parts;
     // Lane mouths join a point inside a host, not its physical endpoint block.
     // Open only the contiguous approach to those authored hosts. Later crossings
     // and unrelated roads still reach the normal shell collision validator.
@@ -84,7 +85,8 @@ final class RoadInteractions {
     var target=link==null?Set.<UUID>of():LaneRamps.contactRoads(all,link.to());
     // RoadInfrastructure's lining extends 1.55 beyond the road edge; its last
     // wall segment can still overlap after the deck itself has separated.
-    var lining=link==null?tube.mesh:RoadRibbon.mesh(tube.mesh.samples().stream().map(s->new Sample(s.center(),s.left(),s.distance(),s.halfWidth()+1.55)).toList(),tube.mesh.settings());
+    double liningWidth=explicit?1.55:.4;
+    var lining=link==null?tube.mesh:RoadRibbon.mesh(tube.mesh.samples().stream().map(s->new Sample(s.center(),s.left(),s.distance(),s.halfWidth()+liningWidth)).toList(),tube.mesh.settings());
     double begin=link==null?0:lining.samples().get(LaneRamps.contactEnd(lining,all,source,true)).distance();
     double finish=link==null?tube.mesh.length():lining.samples().get(LaneRamps.contactEnd(lining,all,target,false)).distance();
     return parts.stream().filter(p->{

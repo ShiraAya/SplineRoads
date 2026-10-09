@@ -714,6 +714,9 @@ public final class LaneRamps {
   }
   /** Main-thread validation/publish. Reject stale work before touching any live state. */
   public static CompoundTag finishPreview(ServerPlayer player,ItemStack tool,CompoundTag t,PreviewWork work,PreviewRoute generated){
+    try(var chunks=RoadWorkChunks.open(player.serverLevel())){return finishPreviewLoaded(player,tool,t,work,generated);}
+  }
+  private static CompoundTag finishPreviewLoaded(ServerPlayer player,ItemStack tool,CompoundTag t,PreviewWork work,PreviewRoute generated){
     selection(player,tool,t);var data=RoadData.get(player.serverLevel());
     if(data.index.revision()!=work.revision)throw new IllegalArgumentException("计算期间道路已改变，旧预览已丢弃，请重新预览");
     var all=work.all;var id=work.id;var from=work.link.from();var to=work.link.to();var options=work.link.options();
@@ -725,7 +728,8 @@ public final class LaneRamps {
     // on this main-thread validation stage, before publishing or changing any block.
     var terrain=data.terrainGround();
     if(!LaneRampTerrain.clear(r.mesh(),LaneRampTerrain.floors(r.mesh(),LaneTopology.metadata(r).link().options(),terrain)))
-      r=generateChoice(data,all,r.id(),r.owner(),LaneTopology.metadata(r).link(),r.settings()).road();
+      try{r=generateChoice(data,all,r.id(),r.owner(),LaneTopology.metadata(r).link(),r.settings()).road();}
+      catch(IllegalArgumentException e){throw new CandidateRejected(e.getMessage());}
     if(!data.withinHeight(r.mesh()))throw new IllegalArgumentException("上跨／下穿超出世界高度范围");
     var planned=new ArrayList<RoadIndex.Built>();planned.add(new RoadIndex.Built(r));
     var removed=new HashSet<UUID>();if(all.containsKey(id))removed.add(id);

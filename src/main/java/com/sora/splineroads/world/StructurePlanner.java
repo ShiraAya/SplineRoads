@@ -53,7 +53,8 @@ final class StructurePlanner {
     var terrainReference=built.record.terrainClassificationMesh();
     var terrain=RoadTerrain.read(level,retained,originals,terrainCache);
     var link=LaneTopology.metadata(built.record).link();
-    if(link!=null)LaneRampTerrain.validate(built.mesh,link.options(),terrain);
+    if(link!=null)try{LaneRampTerrain.validate(built.mesh,link.options(),terrain);}
+      catch(IllegalArgumentException e){throw new LaneRamps.CandidateRejected(e.getMessage());}
     var ground = new RoadStructures.Ground() {
               public Mesh terrainReference(Mesh mesh){return terrainReference;}
               public boolean closedLanePlanting(UUID connection){

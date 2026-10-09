@@ -29,6 +29,13 @@ public final class Live440ModelValidation {
   check(opened.stream().noneMatch(p->p.material()==RoadStructures.Material.TUNNEL&&hosts.stream().anyMatch(h->hostIds.contains(h.record.id())&&RoadInteractions.invades(p,h.mesh))),"lane mouth remains blocked by tunnel shell");
   var blocked=shell.stream().filter(p->p.material()==RoadStructures.Material.TUNNEL&&RoadInteractions.invades(p,crossing.mesh())).toList();
   check(!blocked.isEmpty()&&opened.containsAll(blocked),"unrelated crossing incorrectly excused by portal opening");
+  var automatic=tunnel.settings(tunnel.settings().structure(Structure.AUTO));
+  var buried=new RoadStructures.Ground(){public double top(double x,double z,double y){return 150;}public boolean blocked(RoadStructures.Part p){return false;}public boolean joined(V p){return false;}};
+  var localShell=RoadAutoTunnels.enclose(automatic.mesh(),buried,List.of());
+  var localOpen=RoadInteractions.openPortal(new RoadIndex.Built(automatic),localShell,hosts);
+  check(localOpen.stream().noneMatch(p->p.material()==RoadStructures.Material.TUNNEL&&hosts.stream().anyMatch(h->hostIds.contains(h.record.id())&&RoadInteractions.invades(p,h.mesh))),"local underground mouth remains blocked");
+  var localBlocked=localShell.stream().filter(p->p.material()==RoadStructures.Material.TUNNEL&&RoadInteractions.invades(p,crossing.mesh())).toList();
+  check(!localBlocked.isEmpty()&&localOpen.containsAll(localBlocked),"local tunnel mouth exempted unrelated crossing");
  }
  static void mixedBelowAbove(){
   var s=Hotfix429ModelValidation.settings(RoadProfile.Type.ORDINARY,1,0,false);var host=Hotfix429ModelValidation.road(new V(0,100,0),new V(0,100,220),s);

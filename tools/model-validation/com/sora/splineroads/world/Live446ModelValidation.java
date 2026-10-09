@@ -37,6 +37,8 @@ public final class Live446ModelValidation {
   var exposed=RoadAutoTunnels.enclose(ramp,ground(p->p.x()>2.9?23:26),List.of());
   check(RoadAutoTunnels.regions(exposed).isEmpty(),"roof corner touching outside still capped");
   check(!exposed.isEmpty(),"open hillside lacks retaining walls");
+  var opening=RoadAutoTunnels.enclose(ramp,ground(p->p.x()>.8&&p.x()<1.4?23:26),List.of());
+  check(RoadAutoTunnels.regions(opening).isEmpty(),"narrow opening above roof missed between cover probes");
  }
  static void earthPolicy(){
   var road=ramp(20,200,false);var hill=ground(p->p.z()>70&&p.z()<130?23:19);
@@ -66,6 +68,28 @@ public final class Live446ModelValidation {
     if(Double.isFinite(previous))check(Math.abs(at.halfWidth()-previous)<.15,"sudden pavement widening at junction");previous=at.halfWidth();
    }
   }
+  var settings=LaneRampAlignment.usableWidth(new Settings(Mode.STRAIGHT,Style.C1_HIGHWAY_RAMP,4,1,.35,90).structure(Structure.BRIDGE),4);
+  var highway=RoadGeometry.build(new Node(new V(0,20,0),0,0),new Node(new V(0,20,60),0,0),settings);
+  var at=highway.first();var p=at.at(at.halfWidth()-RoadRailJoin.INSET,0);
+  var join=new RoadRailJoin(List.of(new RoadRailJoin.Neighbor(highway,true)));
+  check(join.joint(p,new V(.2,0,1),true,true)!=null,"highway ramp rail lost its matching junction profile");
  }
- public static void main(String[] args){structures();earthPolicy();widths();System.out.println("Live446ModelValidation: "+checks+" checks PASS; width bands, open/roofed cuts, original terrain constraints and option roundtrip (not Minecraft/GPU)");}
+ static void auxiliaryWidths(){
+  for(boolean highway:new boolean[]{false,true}){
+   var settings=RoadLanes.configure(new Settings(Mode.STRAIGHT,highway?Style.H3_ONE:Style.O3_ONE,20,1,.35,90).structure(Structure.BRIDGE),highway?RoadProfile.Type.HIGHWAY:RoadProfile.Type.ORDINARY,new RoadLanes.Counts(3,0),4);
+   var source=Hotfix429ModelValidation.road(new V(1400,20,-700),new V(1400,20,200),settings);
+   var target=Hotfix429ModelValidation.road(new V(1260,20,250),new V(1260,20,1000),settings);
+   var all=new LinkedHashMap<UUID,RoadRecord>();all.put(source.id(),source);all.put(target.id(),target);
+   var a=Hotfix429ModelValidation.point(all,source,200,2);var b=Hotfix429ModelValidation.point(all,target,250,2);
+   var options=new LanePoints.Options(LanePoints.Path.AUTO,LanePoints.Departure.BRANCH,LanePoints.Arrival.EXTRA,24,32,LanePoints.Elevation.AUTO,LanePoints.Landing.EXACT);
+   var ramp=LaneRamps.generate(null,all,new UUID(446,highway?90:91),source.owner(),new LanePoints.Link(a,b,options,null));var mesh=ramp.mesh();
+   for(int i=1;i<mesh.samples().size();i++){
+    var p=mesh.samples().get(i-1);var q=mesh.samples().get(i);
+    check(Math.abs(p.halfWidth()-q.halfWidth())<.16,"auxiliary merge has abrupt pavement width step");
+    check(Math.abs(RoadProfile.layout(mesh,q).laneWidth()-4)<1e-5,"auxiliary merge changes motor lane width");
+   }
+   check(RoadRecord.load(ramp.header()).mesh().samples().equals(mesh.samples()),"auxiliary width changes after reload");
+  }
+ }
+ public static void main(String[] args){structures();earthPolicy();widths();auxiliaryWidths();System.out.println("Live446ModelValidation: "+checks+" checks PASS; width bands, open/roofed cuts, original terrain constraints and option roundtrip (not Minecraft/GPU)");}
 }

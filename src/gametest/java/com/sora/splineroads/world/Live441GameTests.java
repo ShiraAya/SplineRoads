@@ -107,7 +107,9 @@ public final class Live441GameTests {
    System.out.println("LIVE441 SWITCH_PASS");}
   else {
    var host=data.index.roads.get(target.id()).record;
-   h.assertTrue(host.structures().stream().noneMatch(p->p.material()==RoadStructures.Material.GREEN||p.material()==RoadStructures.Material.SOIL),"exterior ground arrival kept a planter");
+   h.assertTrue(host.structures().stream().anyMatch(p->p.material()==RoadStructures.Material.GREEN),"roomy exterior ground arrival lost its planter");
+   var rampMesh=data.index.roads.get(ramp.id()).mesh;
+   h.assertTrue(host.structures().stream().filter(p->p.material()==RoadStructures.Material.GREEN||p.material()==RoadStructures.Material.SOIL).noneMatch(p->RoadClearance.structureInvades(p,rampMesh,4.25)),"planting enters ramp travel space");
    h.assertTrue(!LaneClosureWarnings.paint(host.mesh()).isEmpty(),"ground closure has no boundary warning");
    h.assertTrue(host.structures().stream().filter(LaneClosureLandscape::paved).allMatch(p->p.a().y()+p.height()<=surfaceY+.025&&p.b().y()+p.height()<=surfaceY+.025),"pavement fill rises above road");
   }

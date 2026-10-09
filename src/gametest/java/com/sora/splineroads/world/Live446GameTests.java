@@ -14,11 +14,11 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 import java.util.*;
 @GameTestHolder("splineroads_live446") @PrefixGameTestTemplate(false)
 public final class Live446GameTests {
- @GameTest(batch="splineroads_live446",template="empty",templateNamespace="splineroads_live445",timeoutTicks=18000)
+ @GameTest(batch="splineroads_live446",template="empty",templateNamespace="splineroads_live446",timeoutTicks=18000)
  public static void localOpenAndClosedTunnels(GameTestHelper h){scenario(h,260000,true,false);}
- @GameTest(batch="splineroads_live446",template="empty",templateNamespace="splineroads_live445",timeoutTicks=18000)
+ @GameTest(batch="splineroads_live446",template="empty",templateNamespace="splineroads_live446",timeoutTicks=18000)
  public static void defaultEarthAvoidance(GameTestHelper h){scenario(h,262000,false,false);}
- @GameTest(batch="splineroads_live446",template="empty",templateNamespace="splineroads_live445",timeoutTicks=18000)
+ @GameTest(batch="splineroads_live446",template="empty",templateNamespace="splineroads_live446",timeoutTicks=18000)
  public static void undergroundEndpointException(GameTestHelper h){scenario(h,264000,false,true);}
  private static void scenario(GameTestHelper h,int origin,boolean allow,boolean undergroundEnd){
   var level=h.getLevel();var data=RoadData.get(level);var player=FakePlayerFactory.getMinecraft(level);player.setGameMode(net.minecraft.world.level.GameType.CREATIVE);

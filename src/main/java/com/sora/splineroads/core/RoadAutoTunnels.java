@@ -20,6 +20,7 @@ public final class RoadAutoTunnels {
     if(mesh.settings().options().lanePoints().link()==null)return List.of();
     var out=new ArrayList<Section>();
     for(double d=0;d<mesh.length()-1e-7;d+=1){
+      RoadPlanningBudget.check();
       double end=Math.min(mesh.length(),d+1),mid=(d+end)/2;var at=RoadStructures.sample(mesh,mid);
       if(!below(at,ground))continue;
       boolean roof=true;double left=0,right=0,clearance=HEADROOM;
@@ -27,7 +28,8 @@ public final class RoadAutoTunnels {
       // One exposed shoulder/portal makes this whole cross-section an open cut.
       for(double station:new double[]{d+1e-6,mid,end-1e-6}){
         var s=RoadStructures.sample(mesh,station);
-        for(double u:new double[]{-1,-.5,0,.5,1}){
+        int across=(int)Math.ceil((s.halfWidth()*2+.8)/.5);
+        for(int i=0;i<=across;i++){double u=-1+2.0*i/across;
           V p=s.at(u*(s.halfWidth()+.4),0);double h=ground.surface(p.x(),p.z(),p.y());
           double depth=Double.isFinite(h)?Math.max(0,h-p.y()):0;
           roof&=depth>=MIN_COVER-1e-7;
