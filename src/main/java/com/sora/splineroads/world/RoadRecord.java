@@ -486,6 +486,24 @@ public record RoadRecord(
       ||!Objects.equals(before.options().ends().start(),after.options().ends().start())
       ||!Objects.equals(before.options().ends().end(),after.options().ends().end());
   }
+  /** Furniture/width edits do not discard a saved sampled ordinary-road path.
+   * A real endpoint, route, curve or vertical-profile edit still replans it. */
+  public RoadRecord retainAlignment(RoadRecord proposal){
+    var s=proposal.settings();var a=settings.options();var b=s.options();
+    if(alignment.isEmpty()||!start.equals(proposal.start())||!end.equals(proposal.end())
+        ||settings.mode()!=s.mode()||settings.tension()!=s.tension()||settings.arcDegrees()!=s.arcDegrees()
+        ||settings.rampTurn()!=s.rampTurn()||settings.structure()!=s.structure()
+        ||!a.routing().equals(b.routing())||!a.ports().equals(b.ports())
+        ||a.liftPosition()!=b.liftPosition()||a.liftHeight()!=b.liftHeight()
+        ||a.infrastructure().tunnelDepth()!=b.infrastructure().tunnelDepth()
+        ||a.infrastructure().bridgeRise()!=b.infrastructure().bridgeRise()
+        ||a.infrastructure().efficientDip()!=b.infrastructure().efficientDip()
+        ||a.infrastructure().maxGrade()!=b.infrastructure().maxGrade()
+        ||a.infrastructure().adjustment()!=b.infrastructure().adjustment())return proposal;
+    var adjusted=settings(s);
+    return new RoadRecord(proposal.id(),proposal.owner(),proposal.a(),proposal.b(),proposal.start(),proposal.end(),s,
+        proposal.automatic(),proposal.clearance(),List.of(),proposal.endCaps(),proposal.buildVersion(),proposal.assembly(),adjusted.alignment(),furniturePhase,proposal.junction());
+  }
   public RoadRecord settings(Settings value) {
     if(settings.equals(value))return this;
     List<Sample> adjusted = alignment;

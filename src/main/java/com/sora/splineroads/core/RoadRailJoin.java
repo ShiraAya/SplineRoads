@@ -30,7 +30,7 @@ public final class RoadRailJoin {
   /** Higher-priority neighbour owns coincident boundaries; strict interiors always win. */
   public record Neighbor(Mesh mesh,boolean ownsBoundary) {}
   private record Range(double from,double to) {}
-  private record Face(V a,V b,V c,boolean ownsBoundary,V tangent,Range auxiliary) {
+  private record Face(V a,V b,V c,boolean ownsBoundary,V tangent,Range auxiliary,double heightTolerance) {
     double cross(V p,V q,V r){return (q.x()-p.x())*(r.z()-p.z())-(q.z()-p.z())*(r.x()-p.x());}
     double height(V p){
       double det=cross(a,b,c);
@@ -47,7 +47,7 @@ public final class RoadRailJoin {
         if(!clip(t,fa,fb,ownsBoundary?-1e-7:1e-7))return null;
       }
       double da=from.y()-height(from),db=to.y()-height(to);
-      if(!clip(t,da,db,-JOIN_HEIGHT)||!clip(t,-da,-db,-JOIN_HEIGHT))return null;
+      if(!clip(t,da,db,-heightTolerance)||!clip(t,-da,-db,-heightTolerance))return null;
       return t[1]-t[0]>1e-7?new Range(t[0],t[1]):null;
     }
   }
@@ -71,6 +71,13 @@ public final class RoadRailJoin {
   private final Map<Long,List<Face>> material=new HashMap<>();
   private final Map<Long,List<Edge>> edges=new HashMap<>();
   private final Mesh current;
+  private double buildingTolerance=JOIN_HEIGHT;
+  private static boolean normalJoin(Mesh ramp,Mesh host){
+    if(ramp==null)return false;var link=ramp.settings().options().lanePoints().link();if(link==null)return false;
+    var points=host.settings().options().lanePoints().points();
+    return link.options().departure()==LanePoints.Departure.BRANCH&&points.stream().anyMatch(p->p.id().equals(link.from().point()))
+        ||link.options().arrival()==LanePoints.Arrival.FLOW&&points.stream().anyMatch(p->p.id().equals(link.to().point()));
+  }
   public RoadRailJoin(List<Neighbor> neighbors){this(null,neighbors,false);}
   public RoadRailJoin(Mesh current,List<Neighbor> neighbors){this(current,neighbors,false);}
   public static RoadRailJoin paint(Mesh current,List<Neighbor> neighbors){return new RoadRailJoin(current,neighbors,true);}
@@ -93,6 +100,10 @@ public final class RoadRailJoin {
   private RoadRailJoin(Mesh current,List<Neighbor> neighbors,boolean paint){
     this.current=current;
     for(var neighbor:neighbors){var mesh=neighbor.mesh();
+      // A normal fork follows the parent's longitudinal grade. Its differently
+      // oriented transverse samples can differ by centimetres inside that shared
+      // surface. Separate-height DETACH/EXTRA decks keep the strict tolerance.
+      buildingTolerance=normalJoin(current,mesh)||current!=null&&normalJoin(mesh,current)?.12:JOIN_HEIGHT;
       var ourAuxiliary=auxiliary(current,mesh);var theirAuxiliary=auxiliary(mesh,current);
       for(int i=1;i<mesh.samples().size();i++){
         var a=mesh.samples().get(i-1);var b=mesh.samples().get(i);
@@ -133,7 +144,7 @@ public final class RoadRailJoin {
   public static boolean sharedRail(Mesh neighbor,V a,V b){
     for(V point:List.of(a,a.add(b).mul(.5),b)){
       var q=RoadQueries.horizontal(neighbor,point);var at=q.sample();
-      if(Math.abs(point.y()-at.at(q.lateral(),0).y())>JOIN_HEIGHT)return false;
+      if(Math.abs(point.y()-at.at(q.lateral(),0).y())>.12)return false;
       int side=q.lateral()<0?-1:1;double edge=at.halfWidth()-inset(neighbor,at,side);
       if(Math.abs(q.lateral())<edge-.015||LaneDeck.outerOpening(neighbor,at.distance(),side))return false;
     }
@@ -146,7 +157,7 @@ public final class RoadRailJoin {
   private void add(Map<Long,List<Face>> target,V a,V b,V c,boolean owner,V tangent,Range auxiliary){
     double area=(b.x()-a.x())*(c.z()-a.z())-(b.z()-a.z())*(c.x()-a.x());
     if(Math.abs(area)<1e-10)return;if(area<0){V swap=b;b=c;c=swap;}
-    var face=new Face(a,b,c,owner,tangent,auxiliary);
+    var face=new Face(a,b,c,owner,tangent,auxiliary,buildingTolerance);
     for(int x=cell(Math.min(a.x(),Math.min(b.x(),c.x()))-1e-6);x<=cell(Math.max(a.x(),Math.max(b.x(),c.x()))+1e-6);x++)
       for(int z=cell(Math.min(a.z(),Math.min(b.z(),c.z()))-1e-6);z<=cell(Math.max(a.z(),Math.max(b.z(),c.z()))+1e-6);z++)
         target.computeIfAbsent(key(x,z),k->new ArrayList<>()).add(face);

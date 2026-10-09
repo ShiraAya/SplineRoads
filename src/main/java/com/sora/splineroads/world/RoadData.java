@@ -247,6 +247,7 @@ public final class RoadData extends SavedData {
               plan.settings(),
               settings.mode() == Mode.AUTO,
               4);
+      if(previous!=null)record=previous.retainAlignment(record);
       List<RoadIndex.Built> changes = new ArrayList<>();
       Set<UUID> removed = new HashSet<>();
       if (replace != null) removed.add(replace);

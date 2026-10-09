@@ -476,11 +476,13 @@ public final class RoadScreen extends Screen {
         int caps =
             (payload.getCompound("AutoA").getBoolean("Linked") ? 0 : 1)
                 | (payload.getCompound("AutoB").getBoolean("Linked") ? 0 : 2);
-        ClientRoads.preview =
-            style.ramp()
-                ? plan.mesh()
-                : com.sora.splineroads.core.RoadGeometry.endCaps(
-                    plan.mesh(), caps, plan.start().grade(), plan.end().grade());
+        // Use the same record path as construction: median anchoring, reserved
+        // slots and ADD lanes are part of the preview, not just later world writes.
+        var previous=payload.contains("Road")?RoadRecord.load(payload.getCompound("Road")):null;
+        var previewRecord=new RoadRecord(previous==null?new UUID(0,0):previous.id(),previous==null?new UUID(0,0):previous.owner(),
+            BlockPos.of(payload.getLong("A")),BlockPos.of(payload.getLong("B")),plan.start(),plan.end(),plan.settings(),mode==Mode.AUTO,4).caps(caps);
+        if(previous!=null)previewRecord=previous.retainAlignment(previewRecord);
+        ClientRoads.preview=previewRecord.mesh();
         payload.put("Settings", RoadRecord.writeSettings(s));
         if (pathButton != null && !optionsOnly())
           pathButton.setMessage(
