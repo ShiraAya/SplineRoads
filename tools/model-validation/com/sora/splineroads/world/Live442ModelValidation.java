@@ -58,13 +58,16 @@ public final class Live442ModelValidation {
   check(changed.alignment().equals(keep.alignment()),"departure-only edit reroutes saved ramp");
   check(LaneTopology.metadata(changed).link().options().departure()==LanePoints.Departure.DETACH,"kept old departure policy");
   all.put(id,changed);LaneCrossSections.reconcile(all);joinedRails(all,changed,source,80,target,150,slot);
-  var narrowSettings=changed.settings().taper(4,4).options(changed.settings().options().ends(RoadTransitions.Ends.NONE));
+  var narrowSettings=new Settings(changed.settings().mode(),changed.settings().style(),4,changed.settings().thickness(),changed.settings().tension(),changed.settings().arcDegrees()).taper(4,4).options(changed.settings().options().ends(RoadTransitions.Ends.NONE));
   var oldSamples=changed.mesh().samples().stream().map(q->new Sample(LanePoints.lane(changed.mesh(),q.distance(),0).position(),q.left(),q.distance(),2)).toList();
   var legacy=new RoadRecord(id,changed.owner(),changed.a(),changed.b(),changed.start(),changed.end(),narrowSettings,false,4).alignment(null,RoadRibbon.mesh(oldSamples,narrowSettings));
   all.put(id,legacy);var repaired=LaneRamps.generate(null,all,id,source.owner(),LaneTopology.metadata(legacy).link());
   check(!repaired.alignment().equals(legacy.alignment()),"legacy narrow mouth was retained unchanged");
-  check(repaired.mesh().samples().size()==legacy.mesh().samples().size(),"legacy mouth migration rerouted saved centerline");
-  for(int i=0;i<oldSamples.size();i++)check(LanePoints.lane(repaired.mesh(),repaired.mesh().samples().get(i).distance(),0).position().distance(oldSamples.get(i).center())<1e-5,"legacy refit moved motor route");
+  // .31 adds real shoulders to the old four-metre pavement. A changed width is
+  // allowed to choose a newly safe path, while both fixed motor mouths remain.
+  check(LaneRampAlignment.axis(repaired.mesh(),true).distance(oldSamples.get(0).center())<1e-5,"legacy width upgrade moved fixed source");
+  check(LaneRampAlignment.axis(repaired.mesh(),false).distance(oldSamples.get(oldSamples.size()-1).center())<1e-5,"legacy width upgrade moved fixed arrival");
+  check(repaired.settings().width()>=5.5,"legacy upgrade kept unseated rails");
   all.put(id,repaired);LaneCrossSections.reconcile(all);joinedRails(all,repaired,source,80,target,150,slot);
  }
  static void joinedRails(Map<UUID,RoadRecord> all,RoadRecord ramp,RoadRecord source,double from,RoadRecord target,double to,int slot){

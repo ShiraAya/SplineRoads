@@ -15,18 +15,30 @@ public final class Live445ModelValidation {
   for(var at:m.samples()){double d=at.distance();if(d<=368||d>=400)continue;double actual=LaneDeck.spans(m,at).stream().filter(s->s.high()-s.low()>.01).mapToDouble(s->at.at(s.high(),0).x()).min().orElseThrow();check(actual<=edge+1e-6,"ADD removes the old straight shoulder at "+d+": "+actual+" / "+edge);}
   for(double d=402;d<490;d+=1){var at=RoadStructures.sample(m,d);var l=RoadProfile.layout(m,at);for(double divider:l.dividers())if(divider>l.motorMin()+.2&&divider<l.motorMax()-.2)check(!RoadSurface.closedSlotBoundary(m,d,divider),"old DETACH makes the new ADD divider solid");}
  }
- static void temporary(int slot){
+ static void temporary(int slot){temporary(slot,LanePoints.Elevation.OVER);}
+ static void temporary(int slot,LanePoints.Elevation elevation){
   var source=Hotfix429ModelValidation.road(new V(0,108,0),new V(500,108,0),settings(Style.O6_RAIL,26));
   var target=Hotfix429ModelValidation.road(new V(250,100,-250),new V(250,100,250),settings(Style.O6_GREEN,28));
   var all=new LinkedHashMap<UUID,RoadRecord>();all.put(source.id(),source);all.put(target.id(),target);
   var a=Hotfix429ModelValidation.point(all,source,100,slot);var b=Hotfix429ModelValidation.point(all,target,400,3);
-  var options=new LanePoints.Options(LanePoints.Path.RIGHT,LanePoints.Departure.TEMPORARY,LanePoints.Arrival.ADD,24,32,LanePoints.Elevation.OVER,LanePoints.Landing.FLEXIBLE);
+  var options=new LanePoints.Options(LanePoints.Path.RIGHT,LanePoints.Departure.TEMPORARY,LanePoints.Arrival.ADD,24,32,elevation,LanePoints.Landing.FLEXIBLE);
   long start=System.nanoTime();var ramp=LaneRamps.generate(null,all,new UUID(445,100+slot),source.owner(),new LanePoints.Link(a,b,options,null));all.put(ramp.id(),ramp);LaneCrossSections.reconcile(all);LaneRamps.validate(ramp.mesh(),all,ramp.id(),LaneTopology.metadata(ramp).link());
   check(ramp.settings().width()>=5.5,"independent pavement lacks rail allowance");check(RoadProfile.layout(ramp.settings(),ramp.settings().width()).laneWidth()>=4,"nominal drive corridor narrower than four");
   var lane=LanePoints.lane(source.mesh(),LaneTopology.point(all.get(source.id()),a.point()));check(LaneRampAlignment.axis(ramp.mesh(),true).distance(lane.position())<1e-5,"fixed starting motor axis moved");
   check(RoadRecord.load(ramp.header()).mesh().samples().equals(ramp.mesh().samples()),"wide connector shifts after reload");
   var copy=LaneRamps.reconfigure(ramp,ramp.settings(),all);check(copy.mesh().samples().equals(ramp.mesh().samples()),"repeated preview drifts the wide connector");
-  System.out.printf(Locale.ROOT,"LIVE445 TEMPORARY slot=%d ms=%.2f length=%.2f%n",slot,(System.nanoTime()-start)/1e6,ramp.mesh().length());
+  System.out.printf(Locale.ROOT,"LIVE445 TEMPORARY slot=%d elevation=%s ms=%.2f length=%.2f%n",slot,elevation,(System.nanoTime()-start)/1e6,ramp.mesh().length());
+ }
+ static void ordinaryEdit(){
+  var road=Hotfix429ModelValidation.road(new V(0,20,0),new V(0,20,300),settings(Style.O6_GREEN,28));
+  var raw=road.mesh();var path=new ArrayList<Sample>();
+  for(var p:raw.samples())path.add(new Sample(p.center().add(new V(0,Math.pow(Math.sin(Math.PI*p.distance()/raw.length()),2)*6,0)),p.left(),p.distance(),p.halfWidth()));
+  road=road.alignment(null,RoadRibbon.mesh(path,road.settings()));
+  var settings=road.settings().options(road.settings().options().hideArrows(false));
+  var proposal=new RoadRecord(road.id(),road.owner(),road.a(),road.b(),road.start(),road.end(),settings,true,4);
+  var retained=road.retainAlignment(proposal);check(retained.alignment().equals(road.alignment()),"ordinary edit discards saved vertical path");
+  var moved=new RoadRecord(road.id(),road.owner(),road.a(),road.b(),road.start(),new Node(road.end().position().add(new V(2,0,0)),0,0),settings,true,4);
+  check(road.retainAlignment(moved).alignment().isEmpty(),"changed endpoint reuses stale alignment");
  }
  static void width(){
   for(var style:List.of(Style.C1_RAMP,Style.C1_HIGHWAY_RAMP)){
@@ -35,5 +47,5 @@ public final class Live445ModelValidation {
    check(RoadProfile.layout(m,m.first()).laneWidth()==4,"motor width includes the rail shoulders");
   }
  }
- public static void main(String[] args){addedBoundary();width();temporary(5);temporary(4);System.out.println("Live445ModelValidation: "+checks+" checks PASS (production geometry/planner with test adapters, not Minecraft)");}
+ public static void main(String[] args){addedBoundary();width();ordinaryEdit();temporary(5);temporary(4);temporary(5,LanePoints.Elevation.AUTO);System.out.println("Live445ModelValidation: "+checks+" checks PASS (production geometry/planner with test adapters, not Minecraft)");}
 }

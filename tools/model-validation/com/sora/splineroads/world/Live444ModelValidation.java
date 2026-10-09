@@ -4,15 +4,26 @@ import com.sora.splineroads.core.RoadGeometry.*;
 import com.sora.splineroads.core.RoadStructures.*;
 import java.util.*;
 public final class Live444ModelValidation {
+ static boolean covered(Part part,V p){
+  if(Math.abs(part.a().y()-p.y())>.3)return false;
+  var polygon=part.base();if(JunctionPaint.inside(polygon,p))return true;
+  // A joint belongs to both closed rail polygons; the ray test alone omits
+  // boundary points depending on floating-point roundoff at a curve sample.
+  for(int i=0;i<polygon.size();i++){var a=polygon.get(i);var b=polygon.get((i+1)%polygon.size());var v=b.sub(a);
+   double u=Math.max(0,Math.min(1,((p.x()-a.x())*v.x()+(p.z()-a.z())*v.z())/Math.max(1e-20,v.x()*v.x()+v.z()*v.z())));
+   if(p.sub(a.add(v.mul(u))).horizontalLength()<1e-6)return true;
+  }return false;
+ }
  static int checks;
  static void check(boolean ok,String why){checks++;if(!ok)throw new AssertionError(why);}
  static Ground ground(RoadRecord road,List<RoadRecord> all){
   var others=all.stream().filter(r->!r.id().equals(road.id())).toList();
+  var motorDecks=new IdentityHashMap<Mesh,Mesh>();
   var join=new RoadRailJoin(road.mesh(),others.stream().map(r->new RoadRailJoin.Neighbor(r.mesh(),RoadSurface.higherPriority(r.id(),r.mesh(),road.id(),road.mesh()))).toList());
   return new Ground(){public double top(double x,double z,double y){return 0;}public boolean joined(V p){return false;}
    public boolean unionRails(){return true;}
    public boolean blocked(Part p){return others.stream().anyMatch(r->RoadClearance.structureInvades(p,r.mesh(),4.25));}
-   public boolean railBlocked(Part p,V a,V b){return others.stream().anyMatch(r->!RoadRailJoin.sharedRail(r.mesh(),a,b)&&RoadClearance.structureInvades(p,r.mesh(),4.25));}
+   public boolean railBlocked(Part p,V a,V b){return others.stream().anyMatch(r->!RoadRailJoin.sharedRail(r.mesh(),a,b)&&RoadClearance.structureInvades(p,motorDecks.computeIfAbsent(r.mesh(),LaneDeck::motorOnly),4.25));}
    public List<RoadRailJoin.Span> railSpans(V a,V b,V outside,double inset){return join.exposed(a,b,outside,inset);}
    public V railJoint(V p,V d,boolean highway,boolean raised){return join.joint(p,d,highway,raised);}
    public boolean railPost(V p,boolean highway,boolean raised){return join.ownsPost(p,highway,raised);}
@@ -39,7 +50,7 @@ public final class Live444ModelValidation {
     V axis=at.at(side*(at.halfWidth()-RoadRailJoin.inset(mesh,at,side)),0);
     check(parts.stream().noneMatch(t->t.material()==Material.CONCRETE&&Math.abs(t.height()-.45)<1e-8&&JunctionPaint.inside(t.base(),axis)),"rail remains inside auxiliary taper seam at="+axis);seamChecks++;
    }
-   check(seamChecks>20,"auxiliary seam fixture has no substantial shared edge");
+   check(seamChecks>20,"auxiliary seam fixture has no substantial shared edge mirror="+mirror+" checked="+seamChecks);
   }
   int missing=0,visible=0;
   for(var r:records){var m=r.mesh();var g=ground(r,records);
@@ -48,7 +59,7 @@ public final class Live444ModelValidation {
     var at=RoadStructures.sample(m,d);double inset=RoadRailJoin.inset(m,at,side);V p=at.at(side*(at.halfWidth()-inset),0),delta=at.left().left().mul(-.02);
     if(g.railSpans(p.sub(delta),p.add(delta),p.add(at.left().mul(side)),inset).stream().noneMatch(span->span.a().sub(p).dot(delta)<=1e-9&&span.b().sub(p).dot(delta)>=-1e-9))continue;
     visible++;
-    if(parts.stream().noneMatch(t->t.material()==Material.CONCRETE&&Math.abs(t.height()-.45)<1e-8&&JunctionPaint.inside(t.base(),p))){
+    if(parts.stream().noneMatch(t->t.material()==Material.CONCRETE&&Math.abs(t.height()-.45)<1e-8&&covered(t,p))){
      missing++;if(missing<5)System.out.println("MISSING extra="+extra+" mirror="+mirror+" ramp="+r.id().equals(ramp.id())+" d="+d+" side="+side+" p="+p);
     }
    }

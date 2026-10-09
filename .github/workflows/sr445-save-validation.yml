@@ -29,6 +29,11 @@ jobs:
           path: build/libs/*.jar
       - name: Core and model regression
         run: bash tools/test_ramp39_model.sh
+      - name: Save-derived temporary self-host and real build regression
+        run: |
+          set -o pipefail
+          bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run445 -ProadTestNamespaces=splineroads_live445 -ProadTestHeap=3G | tee run445-console.log
+          grep -q 'LIVE445 REAL_WORLD PASS' run445-console.log
       - name: New screenshot regression
         run: |
           bash tools/check_sr439.sh
@@ -40,11 +45,6 @@ jobs:
           bash tools/check_sr445.sh
           bash tools/check_sr435.sh
           bash tools/check_sr438.sh
-      - name: Save-derived temporary self-host and real build regression
-        run: |
-          set -o pipefail
-          bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run445 -ProadTestNamespaces=splineroads_live445 -ProadTestHeap=3G | tee run445-console.log
-          grep -q 'LIVE445 REAL_WORLD PASS' run445-console.log
       - name: Seven-image bridge, ground, branch and stability regression
         run: |
           set -o pipefail

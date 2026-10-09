@@ -58,12 +58,12 @@ public final class LaneRamps {
   }
   private static LaneRampAlignment.Mouth[] contactMouths(Map<UUID,RoadRecord> all,LanePoints.Link link,UUID id){
     var source=host(all,link.from());var point=LaneTopology.point(source,link.from().point());var lane=LanePoints.lane(source.mesh(),point);
-    var from=link.options().sourceExtra()?new LaneRampAlignment.Mouth(lane.width(),0,0):LaneRampAlignment.mouth(source.mesh(),lane);
-    var to=new LaneRampAlignment.Mouth(lane.width(),0,0);
+    var from=link.options().sourceExtra()?LaneRampAlignment.Mouth.extra(lane.width()):LaneRampAlignment.mouth(source.mesh(),lane);
+    var to=LaneRampAlignment.Mouth.extra(lane.width());
     if(link.to().road()!=null){
       var position=chain(all,link.to()).at(link.targetOffset());var target=position.road().mesh();var targetLane=LanePoints.lane(target,position.point());
       if(link.options().arrival()==LanePoints.Arrival.ADD){var added=LaneAdditions.owned(target,id);targetLane=LanePoints.lane(target,added.station(),added.slot());}
-      to=link.options().targetExtra()?new LaneRampAlignment.Mouth(targetLane.width(),0,0):LaneRampAlignment.mouth(target,targetLane);
+      to=link.options().targetExtra()?LaneRampAlignment.Mouth.extra(targetLane.width()):LaneRampAlignment.mouth(target,targetLane);
     }
     return new LaneRampAlignment.Mouth[]{from,to};
   }
@@ -172,8 +172,8 @@ public final class LaneRamps {
       for(var candidate:routeCandidates(a,b,settings,link.options(),source,p,targetPosition==null?null:targetPosition.road(),targetPosition==null?null:targetPosition.point(),0,maxGrade,errors,stage,candidateMemo,offset))try{
         RoadPlanningBudget.check();
         if(CURRENT.get()!=null)CURRENT.get().routeCount++;
-        var sourceMouth=actual.options().sourceExtra()?new LaneRampAlignment.Mouth(lane.width(),0,0):LaneRampAlignment.mouth(currentSource.mesh(),LanePoints.lane(currentSource.mesh(),p));
-        var targetMouth=targetPosition==null||actual.options().targetExtra()?new LaneRampAlignment.Mouth(targetLaneWidth,0,0):LaneRampAlignment.mouth(targetPosition.road().mesh(),LanePoints.lane(targetPosition.road().mesh(),targetPosition.point()));
+        var sourceMouth=actual.options().sourceExtra()?LaneRampAlignment.Mouth.extra(lane.width()):LaneRampAlignment.mouth(currentSource.mesh(),LanePoints.lane(currentSource.mesh(),p));
+        var targetMouth=targetPosition==null||actual.options().targetExtra()?LaneRampAlignment.Mouth.extra(targetLaneWidth):LaneRampAlignment.mouth(targetPosition.road().mesh(),LanePoints.lane(targetPosition.road().mesh(),targetPosition.point()));
         // ADD has a new outer slot, not the old selected slot.
         if(actual.options().arrival()==LanePoints.Arrival.ADD){var host=targetPosition.road().mesh();var added=LaneAdditions.owned(host,id);targetMouth=LaneRampAlignment.mouth(host,LanePoints.lane(host,added.station(),added.slot()));}
         var baseMesh=fitHostContacts(LaneRampAlignment.fit(candidate.mesh(),sourceMouth,targetMouth),context,actual);

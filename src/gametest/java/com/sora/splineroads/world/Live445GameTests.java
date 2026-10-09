@@ -33,6 +33,10 @@ public final class Live445GameTests {
   var old=host.mesh();data.connect(level,null,a,b,host.settings(),host.id());var edited=data.index.roads.get(host.id()).mesh;
   h.assertTrue(old.first().center().distance(edited.first().center())<1e-6&&old.last().center().distance(edited.last().center())<1e-6,"unchanged host edit shifted its ends");
   data.remove(level,null,ramp.id());h.assertTrue(LaneTopology.metadata(data.index.roads.get(source.id()).record).cuts().isEmpty(),"temporary cut survived deletion");
-  System.out.println("LIVE445 REAL_WORLD PASS temporary self-host, wide ramp, ADD, ordinary edit, Mojang reload and deletion");h.succeed();
+  var innerFrom=Build429GameTests.point(data,source,100,4);
+  var internal=LaneRamps.generate(data,LaneTopology.records(data),UUID.randomUUID(),source.owner(),new LanePoints.Link(innerFrom,to,options,null));
+  LaneRamps.build(data,level,null,internal);h.assertTrue(data.index.roads.containsKey(internal.id()),"internal TEMPORARY could preview but not build");
+  data.remove(level,null,internal.id());
+  System.out.println("LIVE445 REAL_WORLD PASS outer/internal temporary self-host, wide ramp, ADD, ordinary edit, Mojang reload and deletion");h.succeed();
  }
 }

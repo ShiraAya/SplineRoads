@@ -14,6 +14,16 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 import java.util.*;
 @GameTestHolder("splineroads_live444") @PrefixGameTestTemplate(false)
 public final class Live444GameTests {
+ static boolean covered(Part part,V p){
+  if(Math.abs(part.a().y()-p.y())>.3)return false;
+  var polygon=part.base();if(JunctionPaint.inside(polygon,p))return true;
+  // A joint belongs to both closed rail polygons; the ray test alone omits
+  // boundary points depending on floating-point roundoff at a curve sample.
+  for(int i=0;i<polygon.size();i++){var a=polygon.get(i);var b=polygon.get((i+1)%polygon.size());var v=b.sub(a);
+   double u=Math.max(0,Math.min(1,((p.x()-a.x())*v.x()+(p.z()-a.z())*v.z())/Math.max(1e-20,v.x()*v.x()+v.z()*v.z())));
+   if(p.sub(a.add(v.mul(u))).horizontalLength()<1e-6)return true;
+  }return false;
+ }
  static RoadRecord road(V a,V b,Settings settings){
   var start=new Node(a,RoadPlanner.yaw(b.sub(a).horizontalUnit()),0);var end=new Node(b,start.yaw(),0);
   return new RoadRecord(UUID.randomUUID(),new UUID(444,1),RampJunctions.at(a),RampJunctions.at(b),start,end,settings,false,4);
@@ -45,7 +55,7 @@ public final class Live444GameTests {
      if(LaneDeck.outerOpening(m,d,side))continue;
      var at=RoadStructures.sample(m,d);double inset=RoadRailJoin.inset(m,at,side);V p=at.at(side*(at.halfWidth()-inset),0),delta=at.left().left().mul(-.02);
      if(join.exposed(p.sub(delta),p.add(delta),p.add(at.left().mul(side)),inset).stream().noneMatch(span->span.a().sub(p).dot(delta)<=1e-9&&span.b().sub(p).dot(delta)>=-1e-9))continue;
-     h.assertTrue(parts.stream().anyMatch(t->t.material()==Material.CONCRETE&&Math.abs(t.height()-.45)<1e-8&&JunctionPaint.inside(t.base(),p)),"actual exposed perimeter has no rail extra="+extra+" at="+p);checked++;
+     h.assertTrue(parts.stream().anyMatch(t->t.material()==Material.CONCRETE&&Math.abs(t.height()-.45)<1e-8&&covered(t,p)),"actual exposed perimeter has no rail extra="+extra+" at="+p);checked++;
     }
    }
    h.assertTrue(checked>1000,"insufficient perimeter fixture");

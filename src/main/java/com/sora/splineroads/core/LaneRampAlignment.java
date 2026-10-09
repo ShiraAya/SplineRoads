@@ -25,7 +25,11 @@ public final class LaneRampAlignment {
     return RoadRibbon.mesh(out,path.settings());
   }
   /** A port retains its motor axis while the pavement also meets an outside shoulder. */
-  public record Mouth(double lane,double low,double high){}
+  public record Mouth(double lane,double low,double high,boolean auxiliary){
+    public Mouth(double lane,double low,double high){this(lane,low,high,false);}
+    public static Mouth extra(double lane){return new Mouth(lane,0,0,true);}
+    boolean internal(){return !auxiliary&&low<1e-6&&high<1e-6;}
+  }
   public static Mouth mouth(Mesh host,LanePoints.Lane lane){
     var at=RoadStructures.sample(host,lane.station());var layout=RoadProfile.layout(host,at);
     double center=lane.position().sub(at.center()).dot(at.left());
@@ -58,6 +62,14 @@ public final class LaneRampAlignment {
         double bias=Math.signum(from.high()-from.low())*(1-sourceFree[i])+Math.signum(to.high()-to.low())*(1-targetFree[i]);
         shift+=shoulder*(1-wa)*(1-wb)*Math.max(-1,Math.min(1,bias));
         double width=settings.width()+(a.width()-settings.width())*wa+(b.width()-settings.width())*wb;
+        // An interior fixed mouth has no spare shoulder in either adjacent lane.
+        // Keep its authored slot width through the straight lead; widening starts
+        // with the separated turn, whose whole ribbon still undergoes clearance.
+        if(from.internal())width=Math.min(width,from.lane()+2*shoulder*sourceFree[i]);
+        if(to.internal())width=Math.min(width,to.lane()+2*shoulder*targetFree[i]);
+        // EXTRA already has an exact host-following pavement taper. A second,
+        // shorter width interpolation must not pull that shoulder away from it.
+        if(from.auxiliary()&&wa>0||to.auxiliary()&&wb>0)width=Math.max(width,p.halfWidth()*2);
         out.add(new Sample(p.center().add(p.left().mul(shift)),p.left(),p.distance(),width/2));
       }
       var next=RoadRibbon.mesh(out,settings);double movement=0;
@@ -70,8 +82,10 @@ public final class LaneRampAlignment {
     int n=path.samples().size();var end=first?path.first():path.last();double side=Math.signum(mouth.high()-mouth.low()),progress=0;
     var result=new double[n];
     for(int i=first?0:n-1;i>=0&&i<n;i+=first?1:-1){
-      progress=Math.max(progress,side*path.samples().get(i).center().sub(end.center()).dot(end.left()));
-      result[i]=side==0?1:Settings.smooth(Math.max(0,Math.min(1,progress/Math.max(1,path.settings().width()))));
+      var delta=path.samples().get(i).center().sub(end.center());
+      double lateral=delta.dot(end.left());
+      progress=Math.max(progress,side==0?Math.max(Math.abs(lateral)-.5,Math.abs(delta.y())-5.5):Math.abs(lateral));
+      result[i]=mouth.auxiliary()?1:Settings.smooth(Math.max(0,Math.min(1,progress/Math.max(1,path.settings().width()))));
     }return result;
   }
   /** Old saved paths can have correct lane axes and still miss an outside shoulder. */
