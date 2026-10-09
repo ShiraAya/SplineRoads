@@ -1,0 +1,89 @@
+{
+  "scope": "Production core/planner with explicit test adapters; not Minecraft world writes or GPU",
+  "logs": [
+    {
+      "name": "core446f.log",
+      "sha256": "57a83831976459c69588c5a8457ba97fce9787390f88cd64d93650955cfb5541",
+      "result_lines": [
+        "EndpointV2 core PASS: continuity, scope, paint isolation, identity, control interpolation, green taper, sidewalk walls",
+        "LanePointSnapValidation: 742 checks passed; reproduced old maximum drift=0.01943854553513143",
+        "LaneInteractionValidation: 254 checks passed",
+        "LaneRampV2Validation: 2836 checks passed",
+        "LaneRampWorkflowValidation: 9190 checks passed",
+        "Ramp39Validation: 16621 checks passed (production core; no Forge/client claims)",
+        "Ramp39ModelValidation: 817 checks passed; real LaneRamps/LaneTopology/LanePointCodec/RoadRecord, test-only NBT/world adapters; NO game/client/world-write claim",
+        "Ramp39CompoundValidation: 3845 checks passed; in-memory production planner/reconcile only, NOT Minecraft construction/rendering",
+        "Ramp39WidgetValidation: 28 checks passed; real screen state with test-only widgets, no Minecraft/GPU/network test"
+      ]
+    },
+    {
+      "name": "new446f.log",
+      "sha256": "e19984476b1c3de56696093c4ef6df25b0c1e21cebfad4f54fa93ab6e5bb4a8e",
+      "result_lines": [
+        "Live446ModelValidation: 13870 checks PASS; width bands, open/roofed cuts, original terrain constraints and option roundtrip (not Minecraft/GPU)"
+      ]
+    },
+    {
+      "name": "final446-439.log",
+      "sha256": "b9f5c8ea7b7bb709742100602b76b7bd251d87399e63fce7b5069798506a0d40",
+      "result_lines": [
+        "Live439Validation: 1336 checks PASS; mouths, monotone-first profiles, solid contacts and scene diagnostics",
+        "Live439ModelValidation: 1596 checks PASS; ascending/descending mixed-road clearance and NBT adapter round trip"
+      ]
+    },
+    {
+      "name": "final446-440.log",
+      "sha256": "61d87703eb852c107ccc79dd91988a63d8822c36fb160cb3529c8ad81cc31808",
+      "result_lines": [
+        "Live440Validation: 5 checks PASS; full-lane vs auxiliary guides, buried reservation vegetation and lid",
+        "Live440ModelValidation: 10 checks PASS; raw/normalized link, tunnel mouth opening and unrelated collision preservation, mixed below/above reservation"
+      ]
+    },
+    {
+      "name": "final446-441.log",
+      "sha256": "0048b94f270f32314479c82131c280795bfb20c3e8c6dc5cd3cb64f00731ec7a",
+      "result_lines": [
+        "Live441Validation: 236 checks PASS; live-lane rail clearance, ground closure pavement in VBO/terrain and buried-lid protection",
+        "Live441ModelValidation: 57 checks PASS; whole-lane departure, exact shoulder mouths, parent furniture, stable terrain classification, beam reservation and ancestor markers"
+      ]
+    },
+    {
+      "name": "final446-442.log",
+      "sha256": "9614c266e8bb71845fb968342fd7d277262ddc8fde6ef9ac9674d0335b318be1",
+      "result_lines": [
+        "Live442Validation: 1249 checks PASS",
+        "Live442ModelValidation: 108 checks PASS"
+      ]
+    },
+    {
+      "name": "final446-443.log",
+      "sha256": "7818e7f7a5f11d4a203755db579597dae63ba52c7217b7770ac342b9413f3a8b",
+      "result_lines": [
+        "Live443Validation 3781 checks PASS",
+        "Live443ModelValidation 402 checks PASS; generated normal fork, merging throat, persistence, repeated preview and grouping equivalence"
+      ]
+    },
+    {
+      "name": "final446-444.log",
+      "sha256": "ef3cc4f1827afb80a79f874ff73abcc461f8ba4b57d39d0774175484c3a8efc5",
+      "result_lines": [
+        "Live444Validation 629 checks PASS",
+        "Live444ModelValidation 197 checks PASS"
+      ]
+    },
+    {
+      "name": "final446-445.log",
+      "sha256": "adca083d34f0166b497b600ee5fc876d4abaea6931402736e3d74b99a84d5b71",
+      "result_lines": [
+        "Live445ModelValidation: 503 checks PASS (production geometry/planner with test adapters, not Minecraft)"
+      ]
+    },
+    {
+      "name": "final446-435.log",
+      "sha256": "03f8962084f0fa7737afe099906c8860dc82e2bc3ea2fb4e0789b39eef86dda2",
+      "result_lines": [
+        "Live435Validation: 1797 checks PASS; production geometry/paint/solids, NO GPU."
+      ]
+    }
+  ]
+}

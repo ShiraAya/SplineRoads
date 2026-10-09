@@ -65,5 +65,5 @@ public final class Live446GameTests {
   for(long key:cells)if(!data.index.occupied(key))h.assertTrue(!RoadBlocks.isCollider(level.getBlockState(BlockPos.of(key))),"orphan wall after deletion");
   System.out.println("LIVE446 REAL_WORLD PASS allow="+allow+" undergroundEnd="+undergroundEnd+": original terrain, publication/build, local sections, NBT and delete");h.succeed();
  }
- private static BlockPos marker(GameTestHelper h,net.minecraft.server.level.ServerPlayer player,int x,int y,int z){var p=Revision32GameTests.marker(h,x,y,z,0);((NodeEntity)h.getLevel().getBlockEntity(p)).owner=player.getUUID();return p;}
+ private static BlockPos marker(GameTestHelper h,net.minecraft.server.level.ServerPlayer player,int x,int y,int z){var p=Revision32GameTests.marker(h,x,y,z,0);var node=(NodeEntity)h.getLevel().getBlockEntity(p);node.owner=player.getUUID();node.apply(new Node(new V(x+.5,y,z+.5),0,0));return p;}
 }

@@ -9,15 +9,24 @@ public final class LaneRampTerrain {
  }
  public static double[] floors(Mesh mesh,LanePoints.Options options,Ground ground){
   if(allowed(mesh,options,ground))return null;
-  double[] floors=new double[mesh.samples().size()];Arrays.fill(floors,Double.NEGATIVE_INFINITY);
-  for(int i=0;i<floors.length;i++){
-   var at=mesh.samples().get(i);
-   for(double u:new double[]{-.8,0,.8}){
-    var p=at.at(u*at.halfWidth(),0);double top=ground.surface(p.x(),p.z(),p.y());
-    if(Double.isFinite(top))floors[i]=Math.max(floors[i],top-(p.y()-at.center().y()));
-   }
+  double[] sampled=new double[mesh.samples().size()];
+  for(int i=0;i<sampled.length;i++)sampled[i]=floor(mesh.samples().get(i),ground);
+  double[] floors=sampled.clone();
+  for(int i=1;i<floors.length;i++){
+   var a=mesh.samples().get(i-1);var b=mesh.samples().get(i);
+   double bound=Math.max(Math.max(sampled[i-1],sampled[i]),floor(RoadStructures.sample(mesh,(a.distance()+b.distance())/2),ground));
+   // A voxel step may begin between samples. Constrain BOTH ends of this
+   // segment to its highest terrain, so interpolation cannot enter the step.
+   floors[i-1]=Math.max(floors[i-1],bound);floors[i]=Math.max(floors[i],bound);
   }
   return floors;
+ }
+ private static double floor(Sample at,Ground ground){
+  double floor=Double.NEGATIVE_INFINITY;
+  for(double u:new double[]{-.8,0,.8}){
+   var p=at.at(u*at.halfWidth(),0);double top=ground.surface(p.x(),p.z(),p.y());
+   if(Double.isFinite(top))floor=Math.max(floor,top-(p.y()-at.center().y()));
+  }return floor;
  }
  public static boolean clear(Mesh mesh,double[] floors){
   if(floors==null)return true;

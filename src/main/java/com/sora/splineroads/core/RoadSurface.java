@@ -587,8 +587,15 @@ public final class RoadSurface {
   /** At lane-point mouths the edge paint meets the selected lane boundary, not the independent road shoulder rim. */
   public static double edgeOffset(Mesh mesh,Sample sample,int side){
     double normal=side*Math.max(.08,sample.halfWidth()-.3);
-    var link=mesh.settings().options().lanePoints().link();if(link==null)return normal;
     var layout=RoadProfile.layout(mesh,sample);
+    var link=mesh.settings().options().lanePoints().link();
+    if(link==null){
+      // Ordinary roads without a separate verge mark their actual driving edge,
+      // including asymmetric lane cuts. The old fixed .3 inset widened only the
+      // outside painted lane by absorbing the remaining pavement margin.
+      if(layout.catalog().type()==RoadProfile.Type.ORDINARY&&layout.cycleWidth()<.01&&layout.curbWidth()<.01)return layout.outer(side);
+      return normal;
+    }
     // A connector has a persisted four-block motor band plus separate rail shoulders.
     // Mark that band, so the outer lane cannot visually absorb both shoulders.
     if(mesh.settings().style().connectorRamp())return layout.outer(side);

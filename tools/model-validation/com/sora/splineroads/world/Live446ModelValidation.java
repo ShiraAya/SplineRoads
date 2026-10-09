@@ -48,6 +48,7 @@ public final class Live446ModelValidation {
   var raised=LaneRampCorridor.solveMixed(road,0,road.length(),List.of(),.2,false,floor);
   check(LaneRampTerrain.clear(raised,LaneRampTerrain.floors(raised,o,hill)),"terrain constrained solver still buried");
   check(raised.first().center().equals(road.first().center())&&raised.last().center().equals(road.last().center()),"earth policy moved fixed ports");
+  check(RoadAutoTunnels.enclose(raised,hill,List.of()).isEmpty(),"road between terrain samples still dips underground");
   check(LaneRampTerrain.allowed(road,options(true,LanePoints.Elevation.OVER),hill),"OVER cannot include allowed underground segment");
   check(LaneRampTerrain.allowed(road,o,ground(p->p.z()<10?26:19)),"underground departure exception lost");
   check(LaneRampTerrain.allowed(road,o,ground(p->p.z()>190?26:19)),"underground arrival exception lost");
@@ -57,6 +58,11 @@ public final class Live446ModelValidation {
   check(LanePoints.supported(road.settings().structure(Structure.TUNNEL)),"underground road cannot provide lane points");
  }
  static void widths(){
+  var ordinary=Hotfix429ModelValidation.road(new V(0,20,0),new V(0,20,200),new Settings(Mode.STRAIGHT,Style.O6_GREEN,28,1,.35,90));
+  var cut=new LaneSections.Cut(new UUID(446,89),5,1,20,240,32);
+  ordinary=ordinary.withLanePoints(LanePoints.Data.EMPTY.cuts(List.of(cut)));var host=ordinary.mesh();
+  for(var at:host.samples())for(int side:new int[]{-1,1})
+   check(Math.abs(RoadSurface.edgeOffset(host,at,side)-RoadProfile.layout(host,at).outer(side))<1e-7,"ordinary outer painted lane absorbs pavement margin");
   for(var kind:List.of(Style.C1_RAMP,Style.C1_HIGHWAY_RAMP)){
    var raw=ramp(20,120,false);raw=RoadRibbon.mesh(raw.samples(),new Settings(Mode.STRAIGHT,kind,raw.settings().width(),1,.35,90).options(raw.settings().options()));
    var m=LaneRampAlignment.fit(raw,new LaneRampAlignment.Mouth(4,0,.5),new LaneRampAlignment.Mouth(4,0,3.5));
