@@ -58,7 +58,7 @@ public final class RoadRailJoin {
   private static int profile(Mesh mesh,Sample sample,int side){
     var settings=mesh.settings();var outer=settings.options().outerRail();
     if(settings.structure()==Structure.TUNNEL||outer==RoadProfile.OuterRail.OFF)return NONE;
-    boolean highway=RoadProfile.catalog(settings.style()).type()==RoadProfile.Type.HIGHWAY;
+    boolean highway=RoadProfile.highway(settings.style());
     boolean raised=RoadStreetscape.raised(mesh,sample);
     boolean modern=RoadProfile.modern(settings.style());
     if(!modern)return settings.structure()==Structure.GROUND?NONE:5;

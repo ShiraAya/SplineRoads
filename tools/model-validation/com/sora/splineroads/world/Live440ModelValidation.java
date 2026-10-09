@@ -15,7 +15,9 @@ public final class Live440ModelValidation {
   var cuts=LaneTopology.metadata(context.get(source.id())).cuts();check(!cuts.isEmpty()&&cuts.get(0).rectangular(),"lost computed rectangle");check(cuts.get(0).end()-cuts.get(0).begin()<64,"fixture requires a short legal closure");
   all.put(id,road);LaneCrossSections.reconcile(all);
   var tunnel=LaneRamps.reconfigure(road,road.settings().structure(Structure.TUNNEL),all);
-  check(tunnel.settings().structure()==Structure.TUNNEL,"connector tunnel skin rejected");
+  check(tunnel.settings().structure()==Structure.AUTO,"connector type was not made local (0446)");
+  // Keep the old explicit shell as a geometry-only fixture for portal clipping.
+  tunnel=tunnel.settings(tunnel.settings().structure(Structure.TUNNEL));
   var ground=new RoadStructures.Ground(){public double top(double x,double z,double y){return 98;}public boolean blocked(RoadStructures.Part p){return false;}public boolean joined(V p){return false;}};
   var shell=RoadStructures.plan(tunnel.mesh(),ground);
   var center=RoadStructures.sample(tunnel.mesh(),tunnel.mesh().length()/2).center();

@@ -9,7 +9,8 @@ public final class LaneRampAlignment {
     drive=Math.max(4,drive);var o=settings.options();
     var port=new RoadTransitions.Port(-drive/2,drive/2,0,List.of(),0,0);
     return new Settings(settings.mode(),settings.style(),drive+1.5,settings.thickness(),settings.tension(),settings.arcDegrees(),
-        settings.startWidth(),settings.endWidth(),settings.structure(),settings.taperVersion(),settings.rampTurn(),o.ends(o.ends().port(port)));
+        o.ends().start()==null?drive+1.5:settings.startWidth(),o.ends().end()==null?drive+1.5:settings.endWidth(),
+        settings.structure(),settings.taperVersion(),settings.rampTurn(),o.ends(o.ends().port(port)));
   }
   public static Mesh fit(Mesh path,double startLane,double endLane,double transition){
     var profile=RoadProfile.layout(path.settings(),path.settings().width());

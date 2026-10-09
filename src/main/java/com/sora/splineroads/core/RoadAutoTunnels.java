@@ -67,7 +67,13 @@ public final class RoadAutoTunnels {
     for(var p:parts)if(p.material()==Material.TUNNEL&&p.model().startsWith(OPEN)){
       double[] values=parse(p.model(),OPEN,3);if(values!=null&&values[2]>=4&&values[2]<=RoadStructures.MAX_DROP)out.add(new OpenRegion(values[0],values[1],values[2]));
     }
-    return List.copyOf(out);
+    var merged=new ArrayList<OpenRegion>();
+    for(var r:out.stream().sorted(Comparator.comparingDouble(OpenRegion::from)).toList()){
+      if(!merged.isEmpty()){var last=merged.get(merged.size()-1);
+        if(Math.abs(last.to()-r.from())<1e-7&&Math.abs(last.clearance()-r.clearance())<1e-7){merged.set(merged.size()-1,new OpenRegion(last.from(),r.to(),last.clearance()));continue;}}
+      merged.add(r);
+    }
+    return List.copyOf(merged);
   }
   private static double[] parse(String tag,String prefix,int count){
     String[] pieces=tag.substring(prefix.length()).split(":");if(pieces.length!=count)return null;
