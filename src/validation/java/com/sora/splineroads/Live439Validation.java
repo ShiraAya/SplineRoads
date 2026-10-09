@@ -57,12 +57,12 @@ public final class Live439Validation {
   var settings=raw.settings().options(raw.settings().options().hideArrows(true).lanePoints(LanePoints.Data.EMPTY.points(List.of(point))));
   var host=RoadRibbon.mesh(raw.samples(),settings);double divider=RoadProfile.layout(host,host.first()).dividers().get(0);
   long original=centerPaint(RoadSurface.build(host,List.of(),List.of()),divider);check(original>0,"paint fixture lacks divider");
-  for(double dy:new double[]{-.2,5}){
+  for(double dy:new double[]{-.2,0,5}){
    var rawRamp=strip(40,100,20+dy,0,divider);
    var link=new LanePoints.Link(LanePoints.Ref.lane(new UUID(439,1),new UUID(439,2)),LanePoints.Ref.lane(new UUID(439,3),point.id()),LanePoints.Options.DEFAULT,null);
    var ramp=RoadRibbon.mesh(rawRamp.samples(),rawRamp.settings().options(rawRamp.settings().options().lanePoints(LanePoints.Data.EMPTY.link(link))));
    long remaining=centerPaint(RoadSurface.build(host,List.of(),List.of(ramp)),divider);
-   if(dy<0)check(remaining==0,"host dashed line floats above slightly lower linked ramp mouth");else check(remaining==original,"overpass erased host divider");
+   if(dy<0)check(remaining==0,"host dashed line floats above slightly lower linked ramp mouth");else check(remaining==original,dy==0?"coplanar connector erased live host divider":"overpass erased host divider");
   }
  }
  static void ids(){var id=new UUID(439,1);String text="与道路 "+id+" 冲突；道路 "+id;check(RoadConflictIds.read(text).size()==1,"duplicate conflict id");check(!RoadConflictIds.display(text).contains(id.toString()),"UUID exposed in user diagnostic");}

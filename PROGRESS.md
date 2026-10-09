@@ -1,3 +1,9 @@
+## 2026-10-09 10:59 UTC 0.40.30 checkpoint 5
+
+- All local base and 439/440/441/442/443/444/435/438 suites passed. New closure/common-perimeter core:629; actual generated fork/EXTRA model:190 including no internal auxiliary rail.
+- Added legacy monotone grade-corner detection: unchanged old ramps now rerun the constrained planner when needed, while smooth routes, KEEP, and restoration-only edits retain their existing alignment. A real planner fixture reproduces an old monotone corner, refreshes it, then verifies repeated smooth preview does not drift (model now193). Coplanar host-divider preservation has a dedicated regression.
+- Final production candidate queued for full Forge, dedicated Minecraft and 32-case matrix verification; no original-world/GPU acceptance is claimed.
+
 ## 2026-10-09 10:53 UTC 0.40.30 WIP checkpoint 4
 
 - Full Forge compile, game-test compile and reobfuscated JAR succeeded on CI commit 95ecfcf. That run stopped at a fixture assertion which counted deliberately removed outer-lane boundaries as exposed road; corrected fixture uses LaneDeck.outerOpening. No failed artifact is delivered.

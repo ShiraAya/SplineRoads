@@ -101,6 +101,7 @@ public final class LaneRamps {
     // layout after a candidate ordering update. This still runs current clearance.
     if(old!=null&&(edited==null||old.settings().options().ends().start()!=null&&old.settings().options().ends().end()!=null)&&sameRoute(LaneTopology.metadata(old).link(),link)&&base.width()==old.settings().width()
         &&base.thickness()==old.settings().thickness()&&base.style()==old.settings().style()
+        &&(link.options().elevation()==LanePoints.Elevation.KEEP||!LaneTopology.metadata(old).link().options().equals(link.options())||!verticalKink(old.mesh()))
         &&(link.options().elevation()!=LanePoints.Elevation.AUTO||monotone(old.mesh())))try{
       var kept=old.settings(base);var candidate=kept.mesh();var context=LaneCrossSections.staged(all,id,link,candidate);
       var mouths=contactMouths(context,link,id);
@@ -495,6 +496,19 @@ public final class LaneRamps {
     var v=c.contact();return String.format(Locale.ROOT,"；实际冲突道路 %s，交叠区在候选路线距 A 沿线 %.1f–%.1f 格（路线全长 %.1f 格，AB 水平直距 %.1f 格），%s；要求净空 %.2f 格，上跨需抬升 %.2f 格，下穿需降低 %.2f 格",c.road(),v.from(),v.to(),base.length(),base.last().center().sub(base.first().center()).horizontalLength(),RoadClearance.clearanceLabel(v.usableClearance()),v.required(),v.raise(),v.lower());
   }
   static boolean monotone(Mesh m){return verticalEffort(m)<=Math.abs(m.last().center().y()-m.first().center().y())+1e-5;}
+  /** An unchanged legacy preview must not keep a sharp grade corner forever.
+   * Smooth saved routes retain the fast path; restoration-only edits keep their
+   * exact validated alignment, and KEEP remains an explicit height-preservation mode. */
+  static boolean verticalKink(Mesh mesh){
+    var points=mesh.samples();double previous=0,previousRun=0;
+    for(int i=1;i<points.size();i++){
+      V delta=points.get(i).center().sub(points.get(i-1).center());double run=delta.horizontalLength();if(run<1e-6)continue;
+      double grade=delta.y()/run,change=Math.abs(grade-previous);
+      if(previousRun>0&&change>.02&&change/((run+previousRun)/2)>.03)return true;
+      previous=grade;previousRun=run;
+    }
+    return false;
+  }
   /** Keep several feasible layer assignments. A locally cheaper underpass must not
    * rule out an overpass required by the NEXT ramp. Triangle contacts share a group. */
   /** The running maximum is exactly the old group's max(to). Rescanning all

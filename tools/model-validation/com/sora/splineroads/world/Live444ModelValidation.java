@@ -56,5 +56,24 @@ public final class Live444ModelValidation {
   check(missing==0,"exposed perimeter has "+missing+" unguarded samples of "+visible+" extra="+extra+" mirror="+mirror);
   check(all.get(source.id()).mesh().samples().equals(source.mesh().samples()),"straight host indents around connector");
  }
- public static void main(String[] args){for(boolean extra:new boolean[]{false,true})for(int mirror:new int[]{1,-1})fixture(extra,mirror);System.out.println("Live444ModelValidation "+checks+" checks PASS");}
+ static void legacyKink(){
+  var settings=new Settings(Mode.STRAIGHT,Style.C1_RAMP,4,1,.35,90).structure(Structure.BRIDGE);
+  var source=Hotfix429ModelValidation.road(new V(0,20,0),new V(0,20,260),settings);
+  var target=Hotfix429ModelValidation.road(new V(80,28,180),new V(80,28,540),settings);
+  var all=new LinkedHashMap<UUID,RoadRecord>();all.put(source.id(),source);all.put(target.id(),target);
+  var a=Hotfix429ModelValidation.point(all,source,60,0);var b=Hotfix429ModelValidation.point(all,target,220,0);
+  var options=new LanePoints.Options(LanePoints.Path.AUTO,LanePoints.Departure.BRANCH,LanePoints.Arrival.FLOW,24,32,LanePoints.Elevation.AUTO,LanePoints.Landing.EXACT);
+  var fresh=LaneRamps.generate(null,all,new UUID(444,100),source.owner(),new LanePoints.Link(a,b,options,null));var mesh=fresh.mesh();
+  double start=mesh.samples().get(LaneRampThroat.end(mesh,List.of(source.mesh()),true)).distance()+10;
+  double end=mesh.samples().get(LaneRampThroat.end(mesh,List.of(target.mesh()),false)).distance()-10;
+  var samples=mesh.samples().stream().map(p->new Sample(new V(p.center().x(),20+8*Math.max(0,Math.min(1,(p.distance()-start)/(end-start))),p.center().z()),p.left(),p.distance(),p.halfWidth())).toList();
+  var old=fresh.alignment(null,RoadRibbon.mesh(samples,mesh.settings()));all.put(old.id(),old);LaneCrossSections.reconcile(all);
+  check(LaneRamps.monotone(old.mesh())&&LaneRamps.verticalKink(old.mesh()),"legacy fixture has no monotone grade corner");
+  LaneRamps.validate(old.mesh(),all,old.id(),LaneTopology.metadata(old).link());
+  var repaired=LaneRamps.generate(null,all,old.id(),old.owner(),LaneTopology.metadata(old).link());
+  check(!LaneRamps.verticalKink(repaired.mesh()),"unchanged preview retained legacy grade kink");
+  all.put(repaired.id(),repaired);LaneCrossSections.reconcile(all);
+  check(LaneRamps.generate(null,all,repaired.id(),repaired.owner(),LaneTopology.metadata(repaired).link()).alignment().equals(repaired.alignment()),"smooth saved preview drifted on recheck");
+ }
+ public static void main(String[] args){for(boolean extra:new boolean[]{false,true})for(int mirror:new int[]{1,-1})fixture(extra,mirror);legacyKink();System.out.println("Live444ModelValidation "+checks+" checks PASS");}
 }
