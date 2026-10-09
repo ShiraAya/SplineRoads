@@ -29,6 +29,18 @@ public final class Live445ModelValidation {
   var copy=LaneRamps.reconfigure(ramp,ramp.settings(),all);check(copy.mesh().samples().equals(ramp.mesh().samples()),"repeated preview drifts the wide connector");
   System.out.printf(Locale.ROOT,"LIVE445 TEMPORARY slot=%d elevation=%s ms=%.2f length=%.2f%n",slot,elevation,(System.nanoTime()-start)/1e6,ramp.mesh().length());
  }
+ static void ownGirders(){
+  var s=LaneRampAlignment.usableWidth(settings(Style.C1_RAMP,4),4);
+  var flat=RoadGeometry.build(new Node(new V(0,20,0),0,0),new Node(new V(0,20,80),0,0),s);
+  var welded=new RoadStructures.Part(new V(0,18.5,20),new V(0,18.5,22),1.1,.9,false,RoadStructures.Material.CONCRETE);
+  check(!RoadInteractions.selfSupportBlocked(welded,flat),"own girder cannot weld into underside");
+  var obstruction=new RoadStructures.Part(new V(0,22,20),new V(0,22,22),1.1,.9,false,RoadStructures.Material.CONCRETE);
+  check(RoadInteractions.selfSupportBlocked(obstruction,flat),"overhead beam lost actual vehicle clearance");
+  var loopSamples=List.of(new Sample(new V(0,10,0),new V(-1,0,0),0,2.75),new Sample(new V(0,10,40),new V(-1,0,0),40,2.75),new Sample(new V(40,15,60),new V(-1,0,0),80,2.75),new Sample(new V(0,20,40),new V(1,0,0),120,2.75),new Sample(new V(0,20,0),new V(1,0,0),160,2.75));
+  var loop=new Mesh(loopSamples,s,new V(-3,9,0),new V(43,20,63),160,false);
+  var between=new RoadStructures.Part(new V(0,13,20),new V(0,13,22),1.1,.9,false,RoadStructures.Material.CONCRETE);
+  check(RoadInteractions.selfSupportBlocked(between,loop),"upper bearing exempted a lower leg of its own ramp");
+ }
  static void ordinaryEdit(){
   var road=Hotfix429ModelValidation.road(new V(0,20,0),new V(0,20,300),settings(Style.O6_GREEN,28));
   var raw=road.mesh();var path=new ArrayList<Sample>();
@@ -47,5 +59,5 @@ public final class Live445ModelValidation {
    check(RoadProfile.layout(m,m.first()).laneWidth()==4,"motor width includes the rail shoulders");
   }
  }
- public static void main(String[] args){addedBoundary();width();ordinaryEdit();temporary(5);temporary(4);temporary(5,LanePoints.Elevation.AUTO);System.out.println("Live445ModelValidation: "+checks+" checks PASS (production geometry/planner with test adapters, not Minecraft)");}
+ public static void main(String[] args){addedBoundary();width();ownGirders();ordinaryEdit();temporary(5);temporary(4);temporary(5,LanePoints.Elevation.AUTO);System.out.println("Live445ModelValidation: "+checks+" checks PASS (production geometry/planner with test adapters, not Minecraft)");}
 }

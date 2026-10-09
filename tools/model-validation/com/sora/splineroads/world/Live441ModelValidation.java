@@ -139,7 +139,7 @@ public final class Live441ModelValidation {
  var actual=new RoadStructures.Ground(){
   public double top(double x,double z,double y){return 9;}public boolean joined(V p){return false;}
   public List<RoadRailJoin.Span> railSpans(V a,V b,V outside){return joins.exposed(a,b,outside);}
-  public boolean blocked(RoadStructures.Part p){return hosts.stream().anyMatch(m->RoadClearance.structureInvades(p,m,4.25)&&!(!p.pier()&&p.material()==RoadStructures.Material.CONCRETE&&p.height()<=1&&RoadClearance.belowSurface(p,m,.025)));}
+  public boolean blocked(RoadStructures.Part p){return RoadInteractions.selfSupportBlocked(p,edited.mesh())||hosts.stream().anyMatch(m->RoadClearance.structureInvades(p,m,4.25)&&!(!p.pier()&&p.material()==RoadStructures.Material.CONCRETE&&p.height()<=1&&RoadClearance.belowSurface(p,m,.025)));}
  };
  var parts=RoadInfrastructure.plan(edited.mesh(),actual);
  check(parts.stream().noneMatch(actual::blocked),"edited bridge left an actual structure in a live host lane");

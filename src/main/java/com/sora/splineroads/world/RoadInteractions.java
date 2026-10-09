@@ -62,6 +62,10 @@ final class RoadInteractions {
   }
   static boolean selfSupportBlocked(Part part,Mesh mesh){
     if(!part.pier()&&(part.material()!=Material.CONCRETE||part.width()<1||part.height()<.5))return false;
+    // A box girder or bearing is part of its OWN slab. Banked/curved sections
+    // can weld slightly into that slab; only geometry below every overlapping
+    // driving surface qualifies. A lower return leg still blocks the member.
+    if(!part.pier()&&part.material()==Material.CONCRETE&&RoadClearance.belowSurface(part,mesh,.025))return false;
     // Use the actual framed prism. A midpoint/bounding-radius test falsely hit
     // nearby lower samples of the SAME sloping deck, removing every ramp pier.
     return RoadClearance.structureInvades(part,mesh,4.25);
