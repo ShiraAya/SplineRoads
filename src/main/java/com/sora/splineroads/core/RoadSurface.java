@@ -611,14 +611,12 @@ public final class RoadSurface {
     }
     for (var r : ranges) {
       if (r[1] <= r[0] + 1e-9) continue;
-      out.add(
-          new Face(
-              List.of(
-                  a0.add(b0.sub(a0).mul(r[0])),
-                  a1.add(b1.sub(a1).mul(r[0])),
-                  a1.add(b1.sub(a1).mul(r[1])),
-                  a0.add(b0.sub(a0).mul(r[1]))),
-              0xEDEEE2));
+      var polygon=List.of(a0.add(b0.sub(a0).mul(r[0])),a1.add(b1.sub(a1).mul(r[0])),
+          a1.add(b1.sub(a1).mul(r[1])),a0.add(b0.sub(a0).mul(r[1])));
+      // The inset paint can already be inside the joining road while its outer
+      // deck boundary is exposed. Clip the actual stripe too, preventing doubled
+      // solid lines and partial stripes over the host divider at shallow noses.
+      for(var piece:visible(polygon,neighbors,.06))out.add(new Face(piece,0xEDEEE2));
     }
   }
 

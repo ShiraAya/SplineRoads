@@ -260,7 +260,7 @@ public final class LaneRampPaths {
     Mesh mesh=RoadRibbon.mesh(samples,settings);if(RoadRibbon.minRadius(mesh)<Math.max(settings.width()/2+.5,3))throw new IllegalArgumentException("接头内侧半径不足，请增大过渡长度");RoadRibbon.checkSelfIntersections(mesh,4);checkVolume(mesh);return mesh;
   }
   public static void checkVolume(Mesh mesh){
-    if(mesh.samples().size()<1024){shortVolume(mesh);return;}
+    if(mesh.samples().size()<96){shortVolume(mesh);return;}
     var p=mesh.samples();double half=p.stream().mapToDouble(Sample::halfWidth).max().orElse(mesh.settings().width()/2);
     double width=half*2,clearance=4+mesh.settings().thickness();var index=RoadPathIndex.points(mesh);
     for(int i=0;i<p.size();i+=3){

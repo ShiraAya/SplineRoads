@@ -72,7 +72,7 @@ public final class RoadRibbon {
 
   /** A loop may cross itself only with the same usable clearance as any other crossing. */
   public static void checkSelfIntersections(Mesh mesh, double clearance) {
-    if(mesh.samples().size()<1024){shortSelfIntersections(mesh,clearance);return;}
+    if(mesh.samples().size()<96){shortSelfIntersections(mesh,clearance);return;}
     var samples = mesh.samples();
     var index = RoadPathIndex.segments(mesh);
     for (int i = 1; i < samples.size(); i++) {

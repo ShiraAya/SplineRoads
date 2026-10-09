@@ -110,6 +110,12 @@ public final class LaneRamps {
         kept=new RoadRecord(id,owner,RampJunctions.at(start.position()),RampJunctions.at(end.position()),start,end,candidate.settings(),false,4).alignment(null,candidate).furniturePhase(old.furniturePhase());
         context=LaneCrossSections.staged(all,id,link,candidate);
       }
+      var fitted=fitHostContacts(candidate,context,link);
+      if(!fitted.samples().equals(candidate.samples())){
+        candidate=fitted;var start=RoadRibbon.start(candidate);var end=RoadRibbon.end(candidate);
+        kept=new RoadRecord(id,owner,RampJunctions.at(start.position()),RampJunctions.at(end.position()),start,end,candidate.settings(),false,4).alignment(null,candidate).furniturePhase(old.furniturePhase());
+        context=LaneCrossSections.staged(all,id,link,candidate);
+      }
       var from=port(host(context,link.from()),LaneTopology.point(host(context,link.from()),link.from().point()));
       var to=link.to().road()==null?null:resolvedArrival(context,link,id);
       if(LaneRampAlignment.axis(candidate,true).distance(from.position())<1e-5
@@ -301,7 +307,11 @@ public final class LaneRamps {
     // elevations. A whole-host XZ contact is NOT a joining throat: fitting it to the
     // host erases an overpass, creates a sag after docking and exempts a transverse
     // crossing of the opposite carriageway. Preserve legacy saved links only.
-    if(link.protectedMerge())return mesh;
+    if(link.protectedMerge()){
+      if(link.options().departure()==LanePoints.Departure.BRANCH)mesh=LaneRampThroat.fit(mesh,normalHosts(all,link,true),true);
+      if(link.options().arrival()==LanePoints.Arrival.FLOW)mesh=LaneRampThroat.fit(mesh,normalHosts(all,link,false),false);
+      return mesh;
+    }
     var sourceIds=contactRoads(all,link.from());var targetIds=contactRoads(all,link.to());
     var source=sourceIds.stream().map(all::get).filter(Objects::nonNull).map(LaneRamps::mesh).toList();
     var target=targetIds.stream().map(all::get).filter(Objects::nonNull).map(LaneRamps::mesh).toList();
@@ -316,6 +326,21 @@ public final class LaneRamps {
       samples.add(new Sample(sample.center().add(new V(0,dy,0)),sample.left(),sample.distance(),sample.halfWidth()));
     }
     return RoadRibbon.mesh(samples,mesh.settings());
+  }
+  private static List<Mesh> normalHosts(Map<UUID,RoadRecord> all,LanePoints.Link link,boolean first){
+    var ref=first?link.from():link.to();if(ref.road()==null)return List.of();
+    var out=new ArrayList<Mesh>();
+    // Single-lane parents (including free ramps) share their full paved ribbon.
+    // For a multi-lane host use only the selected lane: opposite lanes remain obstacles.
+    for(var leg:chain(all,ref).legs()){
+      var host=mesh(leg.road());
+      if(RoadProfile.catalog(host.settings()).lanes()==1)out.add(host);
+      else {var points=new ArrayList<Sample>();for(var at:host.samples()){
+        var lane=LanePoints.lane(host,at.distance(),leg.slot());
+        points.add(new Sample(lane.position(),at.left(),at.distance(),lane.width()/2));
+      }out.add(RoadRibbon.mesh(points,new Settings(Mode.CURVE,Style.C1_RAMP,4,host.settings().thickness(),.35,90)));}
+    }
+    return List.copyOf(out);
   }
   private static double hostHeightDelta(Sample sample,List<Mesh> hosts){
     double distance=Double.POSITIVE_INFINITY,delta=0;
@@ -476,6 +501,10 @@ public final class LaneRamps {
     var mode=link.options().elevation();return mode==LanePoints.Elevation.OVER&&o.contact().ours().y()>o.contact().other().y()||mode==LanePoints.Elevation.UNDER&&o.contact().ours().y()<o.contact().other().y();
   }
   private static double fixedApproach(Mesh ramp,Map<UUID,RoadRecord> all,LanePoints.Link link,boolean source){
+    if(source&&link.options().departure()==LanePoints.Departure.BRANCH||!source&&link.options().arrival()==LanePoints.Arrival.FLOW){
+      int end=LaneRampThroat.end(ramp,normalHosts(all,link,source),source);
+      return source?ramp.samples().get(end).distance():ramp.length()-ramp.samples().get(end).distance();
+    }
     if(source?!link.options().sourceExtra():!link.options().targetExtra())return 0;
     var ref=source?link.from():link.to();if(ref.road()==null)return 0;
     var location=LaneRoadChain.of(all,ref).at(source?0:link.targetOffset());var host=location.road();var point=location.point();

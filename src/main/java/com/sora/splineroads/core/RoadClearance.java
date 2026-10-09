@@ -141,7 +141,7 @@ public final class RoadClearance {
     double[] polygon=clipped.first;
     double from=Double.POSITIVE_INFINITY,to=Double.NEGATIVE_INFINITY,min=Double.POSITIVE_INFINITY;
     double raise=0,lower=0,minDiff=Double.POSITIVE_INFINITY,maxDiff=Double.NEGATIVE_INFINITY;
-    double required=RoadInfrastructure.girderDepth(a)>0||RoadInfrastructure.girderDepth(b)>0?4.25:REQUIRED;
+    double required=RoadInfrastructure.girderDepth(a)>0||RoadInfrastructure.girderDepth(b)>0||fascia(a)||fascia(b)?4.25:REQUIRED;
     V ours=null,other=null;int negative=0,positive=0;
     for(int i=0;i<n;i+=3){
       double x=polygon[i],z=polygon[i+2];double ya=t.height(x,z),yb=q.height(x,z),difference=ya-yb;
@@ -251,6 +251,8 @@ public final class RoadClearance {
   private static List<Triangle> makeTriangles(Mesh mesh){
     return makeTriangles(mesh,false);
   }
+  private static boolean fascia(Mesh mesh){return mesh.settings().style().connectorRamp()
+      &&mesh.settings().structure()!=Structure.GROUND&&mesh.settings().structure()!=Structure.TUNNEL;}
   private static List<Triangle> makeTriangles(Mesh mesh,boolean driving){
     var out=new ArrayList<Triangle>();var samples=mesh.samples();
     for(int i=1;i<samples.size();i++){

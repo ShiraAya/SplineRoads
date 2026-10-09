@@ -66,10 +66,12 @@ public final class RoadRailJoin {
     return profile(highway,raised);
   }
   private static int profile(boolean highway,boolean raised){return (highway?2:0)+(raised?1:0);}
+  private final List<Mesh> neighbors;
   private final Map<Long,List<Face>> grid=new HashMap<>();
   private final Map<Long,List<Face>> material=new HashMap<>();
   private final Map<Long,List<Edge>> edges=new HashMap<>();
   public RoadRailJoin(List<Neighbor> neighbors){
+    this.neighbors=neighbors.stream().map(Neighbor::mesh).toList();
     for(var neighbor:neighbors){var mesh=neighbor.mesh();
       for(int i=1;i<mesh.samples().size();i++){
         var a=mesh.samples().get(i-1);var b=mesh.samples().get(i);
@@ -165,7 +167,17 @@ public final class RoadRailJoin {
     // Clip shared merge seams against actual neighboring pavement at the outer
     // edge, not its inset rail. Real positive gaps and height separation retain rails.
     V shift=direction.horizontalUnit().mul(inset+1e-5);
-    var inside=exposed(a,b);var boundary=exposed(material,a.add(shift),b.add(shift));
+    var inside=exposed(a,b);
+    // At a diverging/merging nose the inset boundaries meet before the raw deck
+    // boundary. Clipping both independently cuts a gap between their meeting tips.
+    // Exact parallel auxiliary seams still need the material test (their inset
+    // polygons are disjoint despite the small deliberate paved overlap).
+    V tangent=b.sub(a).horizontalUnit();
+    for(var host:neighbors){var q=RoadQueries.horizontal(host,mid);
+      if(q.horizontalDistance()<q.sample().halfWidth()+inset+.05&&Math.abs(q.sample().center().y()-mid.y())<.12
+          &&Math.abs(q.tangent().horizontalUnit().dot(tangent))<.9999)return inside;
+    }
+    var boundary=exposed(material,a.add(shift),b.add(shift));
     var out=new ArrayList<Span>();V d=b.sub(a);double length=d.dot(d);
     for(var first:inside)for(var second:boundary){
       double lo=Math.max(first.a().sub(a).dot(d)/length,second.a().sub(shift).sub(a).dot(d)/length);
