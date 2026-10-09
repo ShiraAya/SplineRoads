@@ -9,6 +9,8 @@ public final class Live441GameTests {
  @GameTest(batch="splineroads_live441",template="empty",templateNamespace="splineroads_live441",timeoutTicks=18000)
  public static void lowGroundArrival(GameTestHelper h){scenario(h,true,212000);}
  @GameTest(batch="splineroads_live441",template="empty",templateNamespace="splineroads_live441",timeoutTicks=18000)
+ public static void roomyGroundArrival(GameTestHelper h){scenario(h,true,218000,true);}
+ @GameTest(batch="splineroads_live441",template="empty",templateNamespace="splineroads_live441",timeoutTicks=18000)
  public static void branchFromExistingRamp(GameTestHelper h){
   var level=h.getLevel();var data=RoadData.get(level);int cx=214000,cz=cx;
   for(int x=cx-108;x<=cx+18;x++)for(int z=cz;z<=cz+522;z++){var p=new BlockPos(x,188,z);level.getChunkAt(p);level.setBlock(p,Blocks.STONE.defaultBlockState(),2);}
@@ -80,7 +82,8 @@ public final class Live441GameTests {
   }
   return true;
  }
- private static void scenario(GameTestHelper h,boolean ground,int cx){
+ private static void scenario(GameTestHelper h,boolean ground,int cx){scenario(h,ground,cx,false);}
+ private static void scenario(GameTestHelper h,boolean ground,int cx,boolean roomy){
   var level=h.getLevel();var data=RoadData.get(level);int cz=cx;
   for(int x=cx-18;x<=cx+108;x++)for(int z=cz;z<=cz+402;z++){
    var p=new BlockPos(x,ground?199:188,z);level.getChunkAt(p);level.setBlock(p,Blocks.GRASS_BLOCK.defaultBlockState(),2);
@@ -91,7 +94,7 @@ public final class Live441GameTests {
   var target=data.connect(level,null,Revision32GameTests.marker(h,cx+90,ground?200:208,cz+180,0),Revision32GameTests.marker(h,cx+90,ground?200:208,cz+400,0),settings,null);
   var sourceMesh=source.mesh();int slot=LaneSections.live(sourceMesh,60).lanes().stream().filter(l->l.sign()==1&&LaneSections.edge(sourceMesh,60,l.index())).findFirst().orElseThrow().index();
   var from=Build429GameTests.point(data,source,60,slot);var to=Build429GameTests.point(data,target,140,slot);
-  var options=new LanePoints.Options(LanePoints.Path.AUTO,LanePoints.Departure.TEMPORARY,LanePoints.Arrival.MERGE,24,32,LanePoints.Elevation.AUTO,LanePoints.Landing.FLEXIBLE);
+  var options=new LanePoints.Options(LanePoints.Path.AUTO,LanePoints.Departure.TEMPORARY,LanePoints.Arrival.MERGE,24,roomy?64:32,LanePoints.Elevation.AUTO,LanePoints.Landing.FLEXIBLE);
   var ramp=LaneRamps.generate(data,LaneTopology.records(data),UUID.randomUUID(),source.owner(),new LanePoints.Link(from,to,options,null));
   double surfaceY=source.start().position().y();
   if(ground)h.assertTrue(ramp.mesh().samples().stream().allMatch(s->Math.abs(s.center().y()-surfaceY)<.01),"ground fixture must remain flat and unburied");
@@ -107,7 +110,11 @@ public final class Live441GameTests {
    System.out.println("LIVE441 SWITCH_PASS");}
   else {
    var host=data.index.roads.get(target.id()).record;
-   h.assertTrue(host.structures().stream().anyMatch(p->p.material()==RoadStructures.Material.GREEN),"roomy exterior ground arrival lost its planter");
+   // Independent geometry probe: transition=32 leaves only 11 continuous
+   // clear metres; transition=64 leaves a complete 12-metre planter run.
+   // Test both actual builds: removing the blanket exterior ban does not
+   // waive real ramp collision or the existing minimum green length.
+   h.assertTrue(host.structures().stream().anyMatch(p->p.material()==RoadStructures.Material.GREEN)==roomy,roomy?"roomy exterior ground arrival lost its planter":"narrow ground arrival generated an obstructing planter");
    var rampMesh=data.index.roads.get(ramp.id()).mesh;
    h.assertTrue(host.structures().stream().filter(p->p.material()==RoadStructures.Material.GREEN||p.material()==RoadStructures.Material.SOIL).noneMatch(p->RoadClearance.structureInvades(p,rampMesh,4.25)),"planting enters ramp travel space");
    h.assertTrue(!LaneClosureWarnings.paint(host.mesh()).isEmpty(),"ground closure has no boundary warning");
@@ -116,6 +123,6 @@ public final class Live441GameTests {
   var planning=new ArrayList<RoadIndex.Built>(data.index.roads.values());var ids=List.of(source.id(),target.id(),ramp.id());
   h.assertTrue(!LaneTopology.needsRefresh(data,planning,ids)&&!LaneCrossSections.needsRestoreRefresh(planning,ids),"saved topology is unstable");
   var saved=RoadData.load(data.save(new net.minecraft.nbt.CompoundTag()));h.assertTrue(saved.index.roads.get(ramp.id()).record.save().equals(data.index.roads.get(ramp.id()).record.save()),"NBT changed joined ramp");
-  System.out.println("LIVE441 REAL_WORLD PASS ground="+ground);h.succeed();
+  System.out.println("LIVE441 REAL_WORLD PASS ground="+ground+" roomy="+roomy);h.succeed();
  }
 }
