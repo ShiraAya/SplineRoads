@@ -9,6 +9,26 @@ import java.util.*;
 public final class LaneDeck {
   public record Span(double low,double high,boolean lowWall,boolean highWall){}
   public record Strip(V al,V ar,V bl,V br,boolean lowWall,boolean highWall){}
+  /** Visible and physical ground edge; the nominal ribbon still defines full-width lanes.
+   * Retain rail footings, verges and fixed auxiliary mouths. Blend at structural/road ends. */
+  public static double edge(Mesh mesh,Sample sample,int side){
+    double outer=side*sample.halfWidth();var l=RoadProfile.layout(mesh,sample);var o=mesh.settings().options();
+    if(o.lanePoints().link()!=null||l.catalog().type()!=RoadProfile.Type.ORDINARY||l.cycleWidth()>.01||l.curbWidth()>.01
+        ||o.sidewalk().enabled()||o.outerRail()==RoadProfile.OuterRail.ON
+        ||mesh.settings().structure()==Structure.TUNNEL||RoadStreetscape.raised(mesh,sample))return outer;
+    double d=sample.distance(),blend=Math.min(d,mesh.length()-d)/8;
+    for(var raised:o.streetscape().raisedSpans())blend=Math.min(blend,Math.max(0,Math.max(raised.from()-d,d-raised.to()))/8);
+    // Authored lane mouths may attach to the original shoulder, so leave their
+    // local footprint intact. Ordinary stretches need only a narrow paint margin.
+    for(double station:mouthStations(mesh)){
+      blend=Math.min(blend,Math.max(0,Math.abs(d-station)-64)/8);
+    }
+    double wanted=l.outer(side)+side*.14;
+    double trim=Math.max(0,side*(outer-wanted))*Settings.smooth(Math.max(0,Math.min(1,blend)));
+    return outer-side*trim;
+  }
+  private static final WeakIdentityCache<Mesh,List<Double>> MOUTH_STATIONS=new WeakIdentityCache<>(256,8192,List::size);
+  private static List<Double> mouthStations(Mesh mesh){return MOUTH_STATIONS.get(mesh,m->m.settings().options().lanePoints().points().stream().map(p->LanePoints.lane(LaneSections.reference(m),p).station()).toList());}
   public static boolean hasOpenings(Mesh mesh){return mesh.settings().options().lanePoints().cuts().stream().anyMatch(LaneSections.Cut::temporary);}
   private static final WeakIdentityCache<Mesh,List<Integer>> SLOT_ORDER=new WeakIdentityCache<>(256,8192,List::size);
   private static List<Integer> slots(Mesh mesh){return SLOT_ORDER.get(mesh,LaneDeck::slotOrder);}
@@ -74,7 +94,7 @@ public final class LaneDeck {
   /** A physically reserved outer slot is not an intact outer road boundary. */
   public static boolean outerOpening(Mesh mesh,double station,int side){
     var sample=RoadStructures.sample(mesh,station);
-    return !present(mesh,sample,side*(sample.halfWidth()-.025),0);
+    return !present(mesh,sample,edge(mesh,sample,side)-side*.025,0);
   }
   public static List<Span> spans(Mesh mesh,Sample sample){
     double probe=sample.distance();
@@ -86,13 +106,14 @@ public final class LaneDeck {
     return spans(mesh,sample,interval,true);
   }
   private static List<Span> spans(Mesh mesh,Sample sample,double interval,boolean footings){
-    if(!hasOpenings(mesh))return List.of(new Span(-sample.halfWidth(),sample.halfWidth(),true,true));
-    var out=new ArrayList<Span>();double low=-sample.halfWidth();boolean wall=true;
+    double left=edge(mesh,sample,-1),right=edge(mesh,sample,1);
+    if(!hasOpenings(mesh))return List.of(new Span(left,right,true,true));
+    var out=new ArrayList<Span>();double low=left;boolean wall=true;
     for(var hole:holes(mesh,sample,interval,footings)){
-      double high=Math.max(low,hole.low());boolean open=hole.high()-hole.low()>1e-7;
-      out.add(new Span(low,high,wall,open));low=Math.max(low,hole.high());wall=open;
+      double high=Math.min(right,Math.max(low,hole.low()));boolean open=hole.high()-hole.low()>1e-7;
+      out.add(new Span(low,high,wall,open));low=Math.min(right,Math.max(low,hole.high()));wall=open;
     }
-    out.add(new Span(low,sample.halfWidth(),wall,true));return out;
+    out.add(new Span(low,right,wall,true));return out;
   }
   public static List<Strip> strips(Mesh mesh,Sample a,Sample b){
     return strips(mesh,a,b,true);
@@ -140,6 +161,7 @@ public final class LaneDeck {
     return List.copyOf(result);
   }
   public static boolean present(Mesh mesh,Sample sample,double lateral,double margin){
+    if(lateral<edge(mesh,sample,-1)-margin-1e-8||lateral>edge(mesh,sample,1)+margin+1e-8)return false;
     if(!hasOpenings(mesh))return true;
     for(var hole:holes(mesh,sample))if(hole.high()-hole.low()>1e-7&&lateral>hole.low()+Math.max(0,margin)+1e-8&&lateral<hole.high()-Math.max(0,margin)-1e-8)return false;
     return true;
@@ -147,7 +169,7 @@ public final class LaneDeck {
   /** Raster batches retain authored longitudinal stations and original slot axes.
    * RoadRibbon.split rebases stations and would reopen/close the wrong part of a long road. */
   public static List<Mesh> rasterPieces(Mesh mesh,double length){
-    if(!hasOpenings(mesh)&&mesh.reference()==null&&mesh.settings().options().lanePoints().additions().isEmpty())return mesh.length()<=256?List.of(mesh):RoadRibbon.split(mesh,length);
+    if(RoadProfile.catalog(mesh.settings()).type()!=RoadProfile.Type.ORDINARY&&!hasOpenings(mesh)&&mesh.reference()==null&&mesh.settings().options().lanePoints().additions().isEmpty())return mesh.length()<=256?List.of(mesh):RoadRibbon.split(mesh,length);
     var out=new ArrayList<Mesh>();var points=mesh.samples();int start=0;
     for(int i=1;i<points.size();i++)if(points.get(i).distance()-points.get(start).distance()>=length||i==points.size()-1){
       var subset=List.copyOf(points.subList(start,i+1));

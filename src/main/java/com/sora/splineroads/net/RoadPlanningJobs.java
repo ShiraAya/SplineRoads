@@ -11,15 +11,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public final class RoadPlanningJobs {
   private static final ThreadPoolExecutor WORKER=new ThreadPoolExecutor(1,1,30,TimeUnit.SECONDS,
       new ArrayBlockingQueue<>(8),r->{Thread t=new Thread(r,"SR-route-planner");t.setDaemon(true);t.setPriority(Thread.NORM_PRIORITY-1);return t;},new ThreadPoolExecutor.AbortPolicy());
-  private static final Map<UUID,Job> ACTIVE=new HashMap<>(); // accessed on server thread only
+  private static final Map<UUID,Job> ACTIVE=new ConcurrentHashMap<>(); // packet thread may cancel only its authenticated owner
   static {WORKER.allowCoreThreadTimeOut(true);}
   private static final class Job {
-    final long request;final AtomicBoolean cancelled=new AtomicBoolean();FutureTask<Void> task;
+    final long request;final AtomicBoolean cancelled=new AtomicBoolean();volatile FutureTask<Void> task;
     Job(long request){this.request=request;}
     void stop(){cancelled.set(true);if(task!=null)task.cancel(true);WORKER.purge();}
   }
   public static void cancel(UUID player){var old=ACTIVE.remove(player);if(old!=null)old.stop();}
-  public static void cancel(UUID player,long request){var old=ACTIVE.get(player);if(old!=null&&old.request==request)cancel(player);}
+  public static void cancel(UUID player,long request){var old=ACTIVE.get(player);if(old!=null&&old.request==request&&ACTIVE.remove(player,old))old.stop();}
   public static int activeCount(){return ACTIVE.size();}
   public static void begin(ServerPlayer player,ItemStack tool,CompoundTag command){
     var work=LaneRamps.preparePreview(player,tool,command);var server=player.getServer();
@@ -49,16 +49,16 @@ public final class RoadPlanningJobs {
             }
             throw failure;
           }
-          try(var budget=RoadPlanningBudget.cancellable("预览事务校验")){
+          try(var budget=RoadPlanningBudget.cancellable("预览事务校验",job.cancelled::get)){
             CompoundTag reply;
             try{reply=LaneRamps.finishPreview(player,tool,t,work,result);}
             catch(LaneRamps.CandidateRejected e){
               if(work.alternative(attempt+1)){submit(player,tool,t,work,job,dimension,attempt+1,e);return;}
               throw e;
             }
-            ACTIVE.remove(owner);RoadNetwork.open(player,reply);
+            RoadPlanningBudget.check();ACTIVE.remove(owner,job);if(!job.cancelled.get())RoadNetwork.open(player,reply);
           }
-        }catch(RuntimeException e){ACTIVE.remove(owner);failed(player,t,e);}
+        }catch(RuntimeException e){ACTIVE.remove(owner,job);if(!job.cancelled.get())failed(player,t,e);}
       });return null;
     });
     try{

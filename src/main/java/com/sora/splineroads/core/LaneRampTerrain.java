@@ -10,7 +10,7 @@ public final class LaneRampTerrain {
  public static double[] floors(Mesh mesh,LanePoints.Options options,Ground ground){
   if(allowed(mesh,options,ground))return null;
   double[] sampled=new double[mesh.samples().size()];
-  for(int i=0;i<sampled.length;i++)sampled[i]=floor(mesh.samples().get(i),ground);
+  for(int i=0;i<sampled.length;i++){RoadPlanningBudget.check();sampled[i]=floor(mesh.samples().get(i),ground);}
   double[] floors=sampled.clone();
   for(int i=1;i<floors.length;i++){
    var a=mesh.samples().get(i-1);var b=mesh.samples().get(i);

@@ -12,8 +12,8 @@ public final class LaneRampWorkflowValidation {
     double station=host.length()/2;var samples=LaneRampApproach.build(host,lane,station,source,5,32);var selected=LanePoints.lane(host,station,lane);
     check((source?samples.get(0):samples.get(samples.size()-1)).center().distance(selected.position())<1e-6,"taper attaches to selected axis");
     int full=0;
-    for(int i=0;i<samples.size();i++){var s=samples.get(i);var q=RoadQueries.horizontal(host,s.center());if(source?i>=64:i<=64){full++;check(Math.abs(q.horizontalDistance()-q.sample().halfWidth()-2.48)<.06,"whole extra lane lies outside host, including bends");check(Math.abs(q.sample().left().dot(s.left()))>.99,"full auxiliary stretch follows curved host");}}
-    check(full>=63,"at least 32 block full-width parallel lane, not only an offset curve");
+    for(int i=0;i<samples.size();i++){var s=samples.get(i);var q=RoadQueries.horizontal(host,s.center());if(source?i*.5>=LaneRampApproach.taper(32):(samples.size()-1-i)*.5>=LaneRampApproach.taper(32)){full++;check(Math.abs(q.horizontalDistance()-q.sample().halfWidth()-2.48)<.06,"whole extra lane lies outside host, including bends");check(Math.abs(q.sample().left().dot(s.left()))>.99,"full auxiliary stretch follows curved host");}}
+    check(full>=31,"at least 16 block full-width parallel lane, not only an offset curve");
     boolean denied=false;try{LaneRampApproach.build(host,lane,selected.sign()>0?(source?host.length():0):(source?0:host.length()),source,5,32);}catch(IllegalArgumentException e){denied=true;}check(denied,"extra lane cannot extend beyond nonexistent host");
    }
   }

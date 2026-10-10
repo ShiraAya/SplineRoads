@@ -50,10 +50,10 @@ public final class RoadRenderMesh {
           Sample m = samples.get(k);
           double t = (m.distance() - a.distance()) / (b.distance() - a.distance());
           for (int side : new int[] {-1, 1})
-            if (a.at(side * a.halfWidth(), 0)
+            if (a.at(LaneDeck.edge(mesh,a,side), 0)
                     .mul(1 - t)
-                    .add(b.at(side * b.halfWidth(), 0).mul(t))
-                    .distance(m.at(side * m.halfWidth(), 0))
+                    .add(b.at(LaneDeck.edge(mesh,b,side), 0).mul(t))
+                    .distance(m.at(LaneDeck.edge(mesh,m,side), 0))
                 > 1e-7) {
               exact = false;
               break;
@@ -89,8 +89,8 @@ public final class RoadRenderMesh {
           Sample m = RoadStructures.sample(mesh, d + (next - d) * f);
           for (int side : new int[] {-1, 1}) {
             V linear =
-                a.at(side * a.halfWidth(), 0).mul(1 - f).add(b.at(side * b.halfWidth(), 0).mul(f));
-            if (linear.distance(m.at(side * m.halfWidth(), 0)) > error) {
+                a.at(LaneDeck.edge(mesh,a,side), 0).mul(1 - f).add(b.at(LaneDeck.edge(mesh,b,side), 0).mul(f));
+            if (linear.distance(m.at(LaneDeck.edge(mesh,m,side), 0)) > error) {
               good = false;
               break;
             }

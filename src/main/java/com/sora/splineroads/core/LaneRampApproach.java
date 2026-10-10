@@ -6,7 +6,9 @@ import java.util.*;
 /** Full-width auxiliary lane follows its host: a taper and a genuinely parallel running lane. */
 public final class LaneRampApproach {
   public static double taper(double transition){return Math.max(16,transition);}
-  public static double parallel(double transition){return Math.max(16,transition);}
+  // Transition controls the taper, not a second equally long locked straight.
+  // Keep a genuine full-width parallel run without consuming all of a short free span.
+  public static double parallel(double transition){return Math.max(16,transition/2);}
   public static double length(double transition){return taper(transition)+parallel(transition);}
 
   public static List<Sample> build(Mesh host,int lane,double station,boolean source,double width,double transition){

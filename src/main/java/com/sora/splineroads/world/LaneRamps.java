@@ -738,7 +738,7 @@ public final class LaneRamps {
     var staging=new LinkedHashMap<>(all);removed.forEach(staging::remove);for(var built:planned)staging.put(built.record.id(),built.record);r=staging.get(id);
     var checked=new CompoundTag();checked.put("Road",r.header());checked.putLong("WorldRevision",data.index.revision());checked.putInt("FromSignature",signature(data,from));checked.putInt("ToSignature",signature(data,to));checked.putUUID("Token",UUID.randomUUID());
     if(t.hasUUID("Id")){checked.putUUID("Id",id);checked.putInt("Signature",t.getInt("Signature"));}
-    tool.getOrCreateTag().put("LanePreview",checked);
+    RoadPlanningBudget.check();tool.getOrCreateTag().put("LanePreview",checked);
     var reply=new CompoundTag();reply.putString("Kind","laneRampCheck");reply.putString("ResolvedPath",generated.path().name());reply.putLong("Request",t.getLong("Request"));reply.put("Road",r.header());reply.putUUID("Token",checked.getUUID("Token"));reply.putDouble("TargetOffset",LaneTopology.metadata(r).link().targetOffset());reply.putDouble("GradeLimit",gradeLimit(staging,LaneTopology.metadata(r).link()));
     var finalLink=LaneTopology.metadata(r).link();var finalMesh=r.mesh();
     var metrics=LaneRampGrade.report(finalMesh,fixedApproach(finalMesh,staging,finalLink,true),

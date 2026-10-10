@@ -497,6 +497,16 @@ public final class RoadSurface {
     return result;
   }
 
+  /** Convex XZ intersection, retaining the subject's interpolated height. */
+  public static List<V> intersect(List<V> subject,List<V> clip){
+    var remaining=ccw(subject);var boundary=ccw(clip);
+    for(int i=0;i<boundary.size()&&!remaining.isEmpty();i++){
+      var a=boundary.get(i);var b=boundary.get((i+1)%boundary.size());
+      if(a.sub(b).horizontalLength()>1e-9)remaining=halfPlane(remaining,a,b,true);
+    }
+    return area(remaining)>1e-10?remaining:List.of();
+  }
+
   private static List<V> halfPlane(List<V> input, V a, V b, boolean inside) {
     if (input.isEmpty()) return input;
     List<V> out = new ArrayList<>();
@@ -576,8 +586,17 @@ public final class RoadSurface {
    * two through lanes. Keep that short boundary continuous; do not turn the whole
    * host road solid and do not override an explicit line-editor selection. */
   public static boolean closedSlotBoundary(Mesh mesh,double station,double lateral){
-    if(!LaneDeck.hasOpenings(mesh))return false;var sample=RoadStructures.sample(mesh,station);
-    var raw=LaneSections.reference(mesh);
+    var sample=RoadStructures.sample(mesh,station);var raw=LaneSections.reference(mesh);
+    // During ADD's widening, the old edge is still an outer boundary. The
+    // incoming lane only becomes a through lane at its actual joining station.
+    for(var added:LaneAdditions.ordered(raw))if(added.sign()*(station-added.station())<0&&added.fraction(station)>1e-7){
+      var lane=LaneAdditions.lane(raw,station,added.slot());
+      var layout=RoadProfile.layout(raw,RoadStructures.sample(raw,station));
+      int side=LaneAdditions.side(layout,added.sign());
+      double edge=lane.position().sub(sample.center()).dot(sample.left())-side*lane.width()*added.fraction(station)/2;
+      if(Math.abs(lateral-edge)<.2)return true;
+    }
+    if(!LaneDeck.hasOpenings(mesh))return false;
     for(int slot:LaneAdditions.slots(raw,station))if(mesh.settings().options().lanePoints().cuts().stream().anyMatch(c->c.temporary()&&c.lane()==slot&&c.removed(station)>.999)||LaneClosureWarnings.covers(mesh,station,slot)){
       var lane=LanePoints.lane(raw,station,slot);double center=lane.position().sub(sample.center()).dot(sample.left());
       if(Math.abs(Math.abs(lateral-center)-lane.width()/2)<.2)return true;

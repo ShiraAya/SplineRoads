@@ -68,7 +68,13 @@ public final class RoadNetwork {
 
     public static void handle(Action msg, Supplier<NetworkEvent.Context> supplier) {
       var ctx = supplier.get();
-      ctx.enqueueWork(
+      // The server can be inside pre-write validation. Cancellation must not queue
+      // behind that validation: this path touches only the owner's atomic job token,
+      // never world, inventory or UI state on the network thread.
+      if(msg.tag.getString("Action").equals("laneRampCancel")){
+        var sender=ctx.getSender();
+        if(sender!=null)RoadPlanningJobs.cancel(sender.getUUID(),msg.tag.getLong("Request"));
+      }else ctx.enqueueWork(
           () -> {
             if (ctx.getSender() != null) act(ctx.getSender(), msg.tag);
           });

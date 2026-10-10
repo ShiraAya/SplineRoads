@@ -46,10 +46,35 @@ public final class RoadTerrainMesh {
   public static Result build(RoadSurface.Geometry geometry,Set<Chunk> loaded) {
     Map<Cell,List<Polygon>> cells=new LinkedHashMap<>();
     for(var face:geometry.pavement()) if(asphalt(face)) add(cells,face,false,loaded);
-    for(var face:geometry.markings()) add(cells,face,true,loaded);
+    // Paint and pavement are sampled/triangulated independently. Project each
+    // clipped marking onto the actual deck triangles, not its approximate ribbon
+    // plane; a tiny depth bias alone cannot fix a twisted/sloping quad.
+    Map<Cell,List<Polygon>> paint=new LinkedHashMap<>();
+    for(var face:geometry.markings())add(paint,face,true,loaded);
+    Map<Cell,List<Polygon>> projected=new LinkedHashMap<>();
+    for(var entry:paint.entrySet())for(var marking:entry.getValue()){
+      boolean matched=false;var cell=entry.getKey();
+      for(int dy=-1;dy<=1;dy++){
+        var owner=new Cell(cell.x(),cell.y()+dy,cell.z());
+        for(var deck:cells.getOrDefault(owner,List.of())){
+          var polygon=RoadSurface.intersect(marking.vertices(),deck.vertices());
+          if(polygon.isEmpty())continue;
+          if(polygon.stream().anyMatch(p->Math.abs(p.y()-height(deck.vertices(),p))>.35))continue;
+          var surface=polygon.stream().map(p->new V(p.x(),height(deck.vertices(),p),p.z())).toList();
+          projected.computeIfAbsent(owner,k->new ArrayList<>()).add(new Polygon(surface,marking.color(),true));matched=true;
+        }
+      }
+      // Non-asphalt authored decoration retains its original surface ownership.
+      if(!matched)projected.computeIfAbsent(cell,k->new ArrayList<>()).add(marking);
+    }
+    projected.forEach((cell,polygons)->cells.computeIfAbsent(cell,k->new ArrayList<>()).addAll(polygons));
     int count=0;
     for(var e:cells.entrySet()) { e.setValue(List.copyOf(e.getValue())); count+=e.getValue().size(); }
     return new Result(Collections.unmodifiableMap(cells),count);
+  }
+  public static double height(List<V> polygon,V p){
+    var n=RoadLighting.normal(new RoadSurface.Face(polygon,0));var a=polygon.get(0);
+    return Math.abs(n.y())<1e-10?a.y():a.y()-(n.x()*(p.x()-a.x())+n.z()*(p.z()-a.z()))/n.y();
   }
   public static boolean asphalt(RoadSurface.Face face) {
     return face.texture()==RoadSurface.Texture.PLAIN;

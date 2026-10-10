@@ -28,7 +28,21 @@ public final class RoadLighting {
     for(double inset:new double[]{.2,.7,1.2})for(double outward:new double[]{.12,.65,1.15}){
       V p=vertex.add(direction.mul(Math.min(inset,length))).add(n.mul(outward));
       int x=(int)Math.floor(p.x()),y=(int)Math.floor(p.y()),z=(int)Math.floor(p.z());
-      if(!access.opaque(x,y,z))return access.packed(x,y,z);
+      if(!access.opaque(x,y,z)){
+        int light=access.packed(x,y,z);
+        // Thin lamp/rail faces can straddle a voxel boundary. A single corner
+        // sample used to paint a black patch beside the same illuminated face.
+        // Share only a nearby visible centroid sample; large surfaces and opaque
+        // walls keep their own local lighting. This does not make metal emissive.
+        if(length<=2){
+          V q=center.add(n.mul(outward));int cx=(int)Math.floor(q.x()),cy=(int)Math.floor(q.y()),cz=(int)Math.floor(q.z());
+          if(!access.opaque(cx,cy,cz)){
+            int other=access.packed(cx,cy,cz);
+            light=Math.max(light&0xffff,other&0xffff)|(Math.max(light>>>16,other>>>16)<<16);
+          }
+        }
+        return light;
+      }
     }
     // Long, narrow pavement triangles can keep their corner inside a wall voxel even
     // after a one-block diagonal inset. Their centroid is safely on the same visible face.

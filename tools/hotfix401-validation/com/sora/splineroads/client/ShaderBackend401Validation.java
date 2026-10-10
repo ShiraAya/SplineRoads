@@ -35,7 +35,7 @@ public final class ShaderBackend401Validation {
     IrisApi.active=false;terrain(false,"disable/fail pack -> VBO in same world");
     RoadClientConfig.SURFACE_BACKEND.set(RoadClientConfig.SurfaceBackend.TERRAIN);terrain(true,"explicit terrain override remains available");
     IrisApi.active=true;RoadClientConfig.SURFACE_BACKEND.set(RoadClientConfig.SurfaceBackend.VBO);terrain(false,"explicit VBO override remains available");
-    check(Minecraft.getInstance().levelRenderer.resets>0,"actual selector schedules chunk invalidation when switching");
+    check(Minecraft.getInstance().levelRenderer.resets==0,"switching does not force a global terrain rebuild; changed road sections publish separately");
     System.out.println("ShaderBackend401Validation: "+checks+" checks passed; actual reflection/backend code, fake API/world, NO GPU runtime claim");
   }
 }

@@ -18,6 +18,7 @@ final class RoadTerrain {
         var out=new ArrayList<AABB>();
         int bottom=Math.max(level.getMinBuildHeight(),key.getY()-(int)RoadStructures.MAX_DROP);
         for(int y=key.getY();y>=bottom;y--){
+          RoadPlanningBudget.check();
           BlockPos p=new BlockPos(key.getX(),y,key.getZ());
           if(!level.hasChunkAt(p))break;
           BlockState state=level.getBlockState(p);

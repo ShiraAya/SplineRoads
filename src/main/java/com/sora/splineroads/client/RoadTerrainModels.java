@@ -51,6 +51,7 @@ public final class RoadTerrainModels {
   private static volatile Assets loadedAssets;
   private static volatile long resourceRevision;
   private static long observedResource=Long.MIN_VALUE;
+  private static Assets observedAssets;
   private static volatile boolean enabled;
   private static String shaderStatus="not queried";
 
@@ -96,16 +97,45 @@ public final class RoadTerrainModels {
     boolean initialized=observedResource!=Long.MIN_VALUE,changed=observedResource!=resourceRevision,toggle=enabled!=wanted;
     observedResource=resourceRevision;RoadRenderer.shaderMode(ShaderPackState.extendedVertices(shader));
     if(lastCacheMiB!=RoadClientConfig.TERRAIN_CACHE_MIB.get())trimCache();
-    if(changed)reloadAtlas();enabled=wanted;
+    Set<Section> dirty=new HashSet<>();
+    if(initialized&&(changed||toggle))dirty.addAll(snapshots.keySet());
+    if(changed){reloadAtlas();observedAssets=loadedAssets;}enabled=wanted;
     if(toggle&&!wanted)suspend();
     if(wanted&&(toggle||changed))for(var e:chunkRoads.entrySet())if(loaded(e.getKey()))for(UUID road:e.getValue())request(new Tile(road,e.getKey()));
-    if(initialized&&(changed||toggle)&&Minecraft.getInstance().level!=null)Minecraft.getInstance().levelRenderer.allChanged();
+    // Only road-bearing sections need rebaking. Do not initiate another global
+    // world rebuild on top of the shader pack's own resource reload.
+    if(Minecraft.getInstance().level!=null)for(var section:dirty)
+      Minecraft.getInstance().levelRenderer.setSectionDirty(section.x(),section.y(),section.z());
   }
   public static boolean enabled(){return enabled;}
   public static Assets assets(){return enabled?loadedAssets:null;}
   private static void reloadAtlas(){
-    jobs.values().forEach(j->j.future().cancel(false));jobs.clear();waiting.clear();active.clear();cache.clear();cachedQuads=0;
-    pending.clear();published.clear();parts.clear();snapshots.clear();sources.replaceAll((road,source)->new Source(source.mesh(),loadedAssets));
+    jobs.values().forEach(j->j.future().cancel(false));jobs.clear();waiting.clear();
+    // A new atlas object is not new road geometry. Rebind immutable quads and
+    // transform their UVs if packing changed; retain the clipped tile and LRU.
+    if(observedAssets!=null){
+      active.replaceAll((tile,data)->rebind(data,observedAssets,loadedAssets));
+      cache.replaceAll((tile,data)->rebind(data,observedAssets,loadedAssets));
+    }
+    pending.clear();published.clear();parts.clear();snapshots.clear();
+    sources.replaceAll((road,source)->new Source(source.mesh(),loadedAssets));
+    active.forEach((tile,data)->data.sections().forEach((section,quads)->putPart(tile.road(),section,quads)));
+  }
+  static Prepared rebind(Prepared data,Assets old,Assets next){
+    Map<Section,Map<Integer,List<BakedQuad>>> sections=new LinkedHashMap<>();
+    data.sections().forEach((section,cells)->{
+      Map<Integer,List<BakedQuad>> replaced=new LinkedHashMap<>();
+      cells.forEach((cell,quads)->replaced.put(cell,quads.stream().map(q->{
+        var before=q.getSprite();var after=before==old.paint()?next.paint():next.asphalt();
+        int[] v=q.getVertices().clone();
+        for(int i=0;i<4;i++){
+          double u=(Float.intBitsToFloat(v[i*8+4])-before.getU(0))/(before.getU(16)-before.getU(0));
+          double t=(Float.intBitsToFloat(v[i*8+5])-before.getV(0))/(before.getV(16)-before.getV(0));
+          v[i*8+4]=Float.floatToRawIntBits(after.getU(u*16));v[i*8+5]=Float.floatToRawIntBits(after.getV(t*16));
+        }
+        return new BakedQuad(v,q.getTintIndex(),q.getDirection(),after,q.isShade());
+      }).toList()));sections.put(section,Collections.unmodifiableMap(replaced));
+    });return new Prepared(Collections.unmodifiableMap(sections),data.quads());
   }
   private static void suspend(){
     waiting.clear();sortWaiting=false;var order=new ArrayList<>(active.keySet());order.sort(Comparator.comparingDouble((Tile t)->distance(t.chunk())).reversed());
@@ -263,6 +293,47 @@ public final class RoadTerrainModels {
     }
     return new BakedQuad(data,-1,Direction.UP,sprite,true);
   }
+  private static List<RoadGeometry.V> vertices(BakedQuad q){
+    var v=q.getVertices();var out=new ArrayList<RoadGeometry.V>(4);
+    for(int i=0;i<4;i++)out.add(new RoadGeometry.V(Float.intBitsToFloat(v[i*8]),Float.intBitsToFloat(v[i*8+1]),Float.intBitsToFloat(v[i*8+2])));
+    return out;
+  }
+  /** Retained terrain must remain outside the road, but must not also draw
+   * underneath it. Clip only coplanar upward fill faces, preserving sidewalls. */
+  static List<BakedQuad> exposedFill(List<BakedQuad> base,List<BakedQuad> roads){
+    if(base.isEmpty()||roads==null||roads.isEmpty())return base;
+    var out=new ArrayList<BakedQuad>();
+    for(var q:base){
+      if(q.getDirection()!=Direction.UP){out.add(q);continue;}
+      var original=vertices(q);List<List<RoadGeometry.V>> pieces=List.of(original);
+      for(var road:roads){
+        var boundary=vertices(road);
+        if(boundary.stream().anyMatch(p->Math.abs(p.y()-RoadTerrainMesh.height(original,p))>.025))continue;
+        var next=new ArrayList<List<RoadGeometry.V>>();
+        for(var piece:pieces)next.addAll(RoadSurface.subtract(piece,boundary));pieces=next;
+        if(pieces.isEmpty())break;
+      }
+      if(pieces.size()==1&&pieces.get(0).equals(original)){out.add(q);continue;}
+      for(var piece:pieces)for(int i=1;i+1<piece.size();i++){
+        int[] packed=q.getVertices().clone();var triangle=List.of(piece.get(0),piece.get(i),piece.get(i+1),piece.get(i+1));
+        for(int j=0;j<4;j++){
+          var v=triangle.get(j);int k=j*8;
+          packed[k]=Float.floatToRawIntBits((float)v.x());packed[k+1]=Float.floatToRawIntBits((float)v.y());packed[k+2]=Float.floatToRawIntBits((float)v.z());
+          var a=original.get(0);var b=original.get(1).sub(a);var c=original.get(2).sub(a);var d=v.sub(a);
+          double det=b.x()*c.z()-b.z()*c.x();
+          if(Math.abs(det)>1e-12){
+            double u=(d.x()*c.z()-d.z()*c.x())/det,t=(b.x()*d.z()-b.z()*d.x())/det;
+            for(int component=4;component<=5;component++){
+              var data=q.getVertices();double first=Float.intBitsToFloat(data[component]);
+              packed[k+component]=Float.floatToRawIntBits((float)(first+u*(Float.intBitsToFloat(data[8+component])-first)+t*(Float.intBitsToFloat(data[16+component])-first)));
+            }
+          }
+        }
+        out.add(new BakedQuad(packed,q.getTintIndex(),q.getDirection(),q.getSprite(),q.isShade()));
+      }
+    }return List.copyOf(out);
+  }
+
   /** Do not bake the off-screen kilometres of a long road merely because one chunk is loaded. */
   public static Set<Chunk> loadedChunks(com.sora.splineroads.world.RoadIndex.Built road) {
     var level=Minecraft.getInstance().level;Set<Chunk> result=new HashSet<>();
@@ -306,10 +377,12 @@ public final class RoadTerrainModels {
     @Override public List<BakedQuad> getQuads(BlockState state,Direction side,RandomSource random,ModelData data,RenderType layer) {
       List<BakedQuad> base=originalVisible?super.getQuads(state,side,random,data,layer):List.of();
       var roads=data.get(QUADS);
+      if(enabled)base=exposedFill(base,roads);
       if(!enabled||side!=null||(layer!=null&&layer!=RenderType.solid())||roads==null||roads.isEmpty())return base;
       if(base.isEmpty())return roads;
-      return new AbstractList<>() {public int size(){return base.size()+roads.size();}
-        public BakedQuad get(int i){return i<base.size()?base.get(i):roads.get(i-base.size());}};
+      var fill=base;
+      return new AbstractList<>() {public int size(){return fill.size()+roads.size();}
+        public BakedQuad get(int i){return i<fill.size()?fill.get(i):roads.get(i-fill.size());}};
     }
     @Override public ChunkRenderTypeSet getRenderTypes(BlockState state,RandomSource random,ModelData data) {
       if(!originalVisible)return SOLID;
