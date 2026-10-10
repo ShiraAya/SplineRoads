@@ -47,10 +47,11 @@ jobs:
           bash tools/check_sr448.sh
           bash tools/check_terrain448.sh
           bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run448 -ProadTestNamespaces=splineroads_live448 -ProadTestHeap=3G | tee run448-console.log
-          grep -q "LIVE448 REAL_WORLD PASS" run448-console.log
+          test "$(grep -c 'LIVE448 REAL_WORLD PASS' run448-console.log)" -eq 2
           bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run447 -ProadTestNamespaces=splineroads_live447 -ProadTestHeap=3G | tee run447-console.log
           test "$(grep -c 'LIVE447 REAL_WORLD PASS' run447-console.log)" -eq 2
           grep -q 'LIVE447 CANCEL PASS' run447-console.log
+          grep -q 'LIVE448 GUARDRAIL_WIDTH PASS' run447-console.log
       - name: Seven-image bridge, ground, branch and stability regression
         run: |
           set -o pipefail

@@ -183,6 +183,7 @@ public final class RoadTerrainModels {
   private static void dropPart(UUID road,Section section){
     var bucket=parts.get(section);if(bucket!=null){bucket.remove(road);if(bucket.isEmpty())parts.remove(section);}
     var keys=published.get(road);if(keys!=null){keys.remove(section);if(keys.isEmpty())published.remove(road);}
+    snapshots.remove(section); // An edited/deleted contributor must never survive a backend switch.
     pending.add(section);
   }
   public static void remove(UUID road){

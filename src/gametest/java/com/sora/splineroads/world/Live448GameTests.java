@@ -8,6 +8,25 @@ import net.minecraftforge.gametest.*;
 import java.util.*;
 @GameTestHolder("splineroads_live448") @PrefixGameTestTemplate(false)
 public final class Live448GameTests {
+ @GameTest(batch="splineroads_live448",template="empty",templateNamespace="splineroads_live448",timeoutTicks=18000)
+ public static void heightmapScanPreservesOriginalTerrain(GameTestHelper h){
+  var level=h.getLevel();var ground=new BlockPos(298000,160,298000);level.getChunkAt(ground);level.setBlock(ground,Blocks.STONE.defaultBlockState(),2);
+  // A saved original surface higher than the now-cleared world must still be found.
+  var original=Map.of(ground.above(12).asLong(),Blocks.STONE.defaultBlockState());
+  var retained=Map.<Long,net.minecraft.world.level.block.state.BlockState>of();
+  var fast=RoadTerrain.read(level,retained,original,new RoadTerrain.Cache(retained,original));
+  var reference=RoadTerrain.read(level,retained,original,new HashMap<>());
+  for(double y:new double[]{160.5,165,180,240,300})h.assertTrue(fast.top(ground.getX()+.5,ground.getZ()+.5,y)==reference.top(ground.getX()+.5,ground.getZ()+.5,y)
+      ||Double.isNaN(fast.top(ground.getX()+.5,ground.getZ()+.5,y))&&Double.isNaN(reference.top(ground.getX()+.5,ground.getZ()+.5,y)),"heightmap shortcut changed restored terrain/top/drop limit at "+y);
+  try(var inputs=RoadPlanInputs.open(level,true)){
+   var reader=RoadTerrain.read(level,retained,Map.of(),new RoadTerrain.Cache(retained,Map.of()));reader.top(ground.getX()+.5,ground.getZ()+.5,240);
+   level.setBlock(ground.above(20),Blocks.STONE.defaultBlockState(),2);boolean rejected=false;
+   try{inputs.validate(level);}catch(IllegalArgumentException changed){rejected=true;}h.assertTrue(rejected,"new terrain in skipped air did not invalidate the preview");
+   level.setBlock(ground.above(20),Blocks.AIR.defaultBlockState(),2);level.setBlock(ground,Blocks.DIRT.defaultBlockState(),2);rejected=false;
+   try{inputs.validate(level);}catch(IllegalArgumentException changed){rejected=true;}h.assertTrue(rejected,"same-height terrain changes did not invalidate the preview");
+  }
+  System.out.println("LIVE448 REAL_WORLD PASS heightmap shortcut matches full scan, retains buried original surfaces and detects new overhead terrain");h.succeed();
+ }
  static void clearWidth(GameTestHelper h,RoadData data,RoadRecord road){
   var parts=data.index.roads.values().stream().flatMap(r->r.record.structures().stream())
       .filter(p->p.material()==RoadStructures.Material.CONCRETE&&(Math.abs(p.height()-.45)<1e-6||Math.abs(p.height()-.8)<1e-6)&&p.width()<=.621).toList();
@@ -39,9 +58,12 @@ public final class Live448GameTests {
   h.assertTrue(rejected&&data.index.revision()==revision&&level.getBlockState(obstacle).is(Blocks.BEDROCK),"cached preview overwrote a new obstacle or partly committed");
   level.setBlock(obstacle,Blocks.AIR.defaultBlockState(),2);
   token=UUID.randomUUID();long start=System.nanoTime();planned=data.prepareAssembly(level,null,List.of(new RoadIndex.Built(next)),Set.of(road.id()),Set.of(road.a(),road.b()),List.of(),token);double preview=(System.nanoTime()-start)/1e9;
-  var expected=planned.stream().filter(r->r.record.id().equals(road.id())).findFirst().orElseThrow();start=System.nanoTime();data.buildPrepared(level,null,token);double commit=(System.nanoTime()-start)/1e9;
+  var expected=planned.stream().filter(r->r.record.id().equals(road.id())).findFirst().orElseThrow();
+  var unrelated=new BlockPos(origin+14,200,origin+40);level.setBlock(unrelated,Blocks.STONE.defaultBlockState(),2);
+  start=System.nanoTime();data.buildPrepared(level,null,token);double commit=(System.nanoTime()-start)/1e9;
   h.assertTrue(data.index.roads.get(road.id())==expected,"build regenerated the planned mesh instead of reusing it");
   h.assertTrue(data.index.roads.get(road.id()).record.settings().options().hideArrows(),"planned edit not committed");
+  h.assertTrue(level.getBlockState(unrelated).is(Blocks.STONE),"cache transaction affected unrelated nearby terrain");
   rejected=false;try{data.buildPrepared(level,null,token);}catch(IllegalArgumentException consumed){rejected=true;}h.assertTrue(rejected,"preview token committed twice");
   System.out.printf("LIVE448 REAL_WORLD PASS cached preview=%.3fs commit=%.3fs, obstacle protection/atomicity/object reuse/token consumption%n",preview,commit);h.succeed();
  }

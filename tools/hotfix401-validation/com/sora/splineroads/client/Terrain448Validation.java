@@ -42,7 +42,7 @@ public final class Terrain448Validation {
    check(RoadTerrainModels.stats().baked()==baked&&RoadTerrainModels.stats().queued()==0,"switch rebuilt geometry");
    for(var q:read(model))check(q.getSprite()==RoadTerrainModels.assets().paint()||q.getSprite()==RoadTerrainModels.assets().asphalt(),"stale atlas sprite");
   }
-  RoadTerrainModels.remove(new UUID(448,1));RoadTerrainModels.publish();check(read(model).isEmpty(),"deleted cached road resurrected");
+  RoadTerrainModels.remove(new UUID(448,1));check(read(model).isEmpty(),"deleted contributor remains visible before next publish");RoadTerrainModels.publish();check(read(model).isEmpty(),"deleted cached road resurrected");
   System.out.println("Terrain448Validation: "+checks+" checks PASS; packed facing and first-frame cache, API adapters, NO GPU claim");
  }
 }

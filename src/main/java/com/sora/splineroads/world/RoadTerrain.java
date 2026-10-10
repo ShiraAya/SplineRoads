@@ -15,6 +15,7 @@ final class RoadTerrain {
   Cache(Map<Long,BlockState> retained,Map<Long,BlockState> originals){
    originalTop.defaultReturnValue(Integer.MIN_VALUE);
    for(var map:List.of(retained,originals))for(var entry:map.entrySet())if(!entry.getValue().isAir()){
+    RoadPlanningBudget.check();
     var p=BlockPos.of(entry.getKey());long column=BlockPos.asLong(p.getX(),0,p.getZ());
     originalTop.put(column,Math.max(originalTop.get(column),p.getY()));
    }
