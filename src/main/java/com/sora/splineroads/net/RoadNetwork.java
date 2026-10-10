@@ -73,7 +73,13 @@ public final class RoadNetwork {
       // never world, inventory or UI state on the network thread.
       if(msg.tag.getString("Action").equals("laneRampCancel")){
         var sender=ctx.getSender();
-        if(sender!=null)RoadPlanningJobs.cancel(sender.getUUID(),msg.tag.getLong("Request"));
+        if(sender!=null){
+          UUID owner=sender.getUUID();long request=msg.tag.getLong("Request");
+          RoadPlanningJobs.cancel(owner,request);
+          // Also cover a preview packet already queued but not registered yet.
+          // This nonblocking recheck follows its begin task in packet order.
+          ctx.enqueueWork(()->RoadPlanningJobs.cancel(owner,request));
+        }
       }else ctx.enqueueWork(
           () -> {
             if (ctx.getSender() != null) act(ctx.getSender(), msg.tag);
