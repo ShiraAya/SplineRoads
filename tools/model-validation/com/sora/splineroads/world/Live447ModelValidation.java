@@ -49,7 +49,7 @@ public final class Live447ModelValidation {
     var lane=LaneAdditions.lane(raw,station,8);int side=LaneAdditions.side(RoadProfile.layout(raw,RoadStructures.sample(raw,station)),sign);
     double seam=lane.position().sub(sample.center()).dot(sample.left())-side*lane.width()*added.fraction(station)/2;
     check(RoadSurface.closedSlotBoundary(grown,station,seam)==(delta<0),"ADD boundary becomes dashed before join or stays solid afterward");
-    if(delta<0)for(int edgeSide:new int[]{-1,1})check(Math.abs(LaneDeck.edge(grown,sample,edgeSide)-edgeSide*sample.halfWidth())<1e-8,"ADD taper without an authored point lost its straight shoulder");
+    if(delta<0)for(int edgeSide:new int[]{-1,1})check(Math.abs(LaneDeck.edge(grown,sample,edgeSide)-RoadProfile.layout(grown,sample).outer(edgeSide)-edgeSide*.14)<1e-8,"ADD widened an ordinary shoulder unnecessarily");
    }
   }
  }

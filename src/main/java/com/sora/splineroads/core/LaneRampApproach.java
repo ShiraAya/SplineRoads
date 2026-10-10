@@ -27,9 +27,12 @@ public final class LaneRampApproach {
       double d=length*i/n,at=from+sign*d;var s=RoadStructures.sample(host,at);var l=LanePoints.lane(host,at,lane);
       var layout=RoadProfile.layout(host,s);double lateral=l.position().sub(s.center()).dot(s.left());
       int side=layout.catalog().twoWay()?(lateral<layout.medianCenter()?-1:1):layout.outside();
-      // A narrow overlap seals the seam without putting the host footing
-      // inside the vehicle corridor of an approaching lower ramp.
-      double offset=s.halfWidth()+width/2-.02-side*lateral+side*motorCenter;
+      // The host verge seals the pavement seam; leave a small positive margin
+      // to its motor band so the free curve cannot invade a through lane.
+      // An auxiliary MOTOR lane starts at the motor edge. Sidewalks/cycle lanes
+      // and their separators are not another motor lane to branch around.
+      double edge=layout.cycleWidth()>.01?side*layout.outer(side)+.02:s.halfWidth()-.02;
+      double offset=edge+width/2-side*lateral+side*motorCenter;
       double grow=Settings.smooth(Math.min(1,(source?d:length-d)/taper(transition)));
       V position=l.position().add(s.left().mul(side*offset*grow));
       if(i>0)distance+=position.sub(out.get(i-1).center()).horizontalLength();

@@ -39,7 +39,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 public final class RoadData extends SavedData {
   public final RoadIndex index = new RoadIndex();
   private ServerLevel owningLevel;
-  RoadStructures.Ground terrainGround(){return owningLevel==null?null:RoadTerrain.read(owningLevel,terrainFill,terrainOriginal,new HashMap<>());}
+  RoadStructures.Ground terrainGround(){return owningLevel==null?null:RoadTerrain.read(owningLevel,terrainFill,terrainOriginal,new RoadTerrain.Cache(terrainFill,terrainOriginal));}
   boolean withinHeight(com.sora.splineroads.core.RoadGeometry.Mesh mesh){return owningLevel==null||mesh.min().y()-mesh.settings().thickness()>=owningLevel.getMinBuildHeight()&&mesh.max().y()+4<owningLevel.getMaxBuildHeight();}
   private Set<UUID> confirmedLaneDeletes=Set.of();
   void removeWithDependents(ServerLevel level,ServerPlayer player,UUID id,Set<UUID> dependents){for(var v:dependents)if(player!=null)requireOwner(player,index.roads.get(v).record.owner());confirmedLaneDeletes=Set.copyOf(dependents);try{remove(level,player,id);}finally{confirmedLaneDeletes=Set.of();}}
@@ -1075,7 +1075,7 @@ public final class RoadData extends SavedData {
       timing.stage("caps_and_dependencies");com.sora.splineroads.core.RoadPlanningBudget.phase("caps_and_dependencies");
       workChunks.roads(terrainRoads);
       timing.stage("terrain_chunk_access");com.sora.splineroads.core.RoadPlanningBudget.phase("terrain_chunk_access");
-      Map<BlockPos, List<net.minecraft.world.phys.AABB>> terrainCache = new HashMap<>();
+      Map<BlockPos, List<net.minecraft.world.phys.AABB>> terrainCache = new RoadTerrain.Cache(terrainFill,terrainOriginal);
       // Keep saved origins; anchor newly added sections to the already-built connected road.
       List<RoadIndex.Built> spacingReferences = new ArrayList<>(index.roads.values());
       for (int i = 0; i < built.size(); i++) {

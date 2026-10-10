@@ -34,8 +34,12 @@ public final class LaneRampAlignment {
   public static Mouth mouth(Mesh host,LanePoints.Lane lane){
     var at=RoadStructures.sample(host,lane.station());var layout=RoadProfile.layout(host,at);
     double center=lane.position().sub(at.center()).dot(at.left());
-    double low=Math.abs(center-lane.width()/2-layout.motorMin())<.01&&layout.cycleWidth()<.01?Math.max(0,at.halfWidth()+layout.motorMin()):0;
-    double high=Math.abs(center+lane.width()/2-layout.motorMax())<.01&&layout.cycleWidth()<.01?Math.max(0,at.halfWidth()-layout.motorMax()):0;
+    double low=Math.abs(center-lane.width()/2-layout.motorMin())<.01?Math.max(0,at.halfWidth()+layout.motorMin()):0;
+    double high=Math.abs(center+lane.width()/2-layout.motorMax())<.01?Math.max(0,at.halfWidth()-layout.motorMax()):0;
+    // A cycle verge does not turn the outermost motor slot into an interior slot.
+    // Seat the connector's rail shoulders in the local crossing mouth, outward
+    // of that motor slot, without absorbing the entire bicycle/sidewalk width.
+    if(layout.cycleWidth()>.01){low=Math.min(1.5,low);high=Math.min(1.5,high);}
     // Convert the host construction frame into this lane's driving frame.
     return lane.direction().dot(at.left().left().mul(-1))>0?new Mouth(lane.width(),low,high):new Mouth(lane.width(),high,low);
   }
@@ -85,8 +89,13 @@ public final class LaneRampAlignment {
     for(int i=first?0:n-1;i>=0&&i<n;i+=first?1:-1){
       var delta=path.samples().get(i).center().sub(end.center());
       double lateral=delta.dot(end.left());
-      progress=Math.max(progress,side==0?Math.max(Math.abs(lateral)-.5,Math.abs(delta.y())-5.5):Math.abs(lateral));
-      result[i]=mouth.auxiliary()?1:Settings.smooth(Math.max(0,Math.min(1,progress/Math.max(1,path.settings().width()))));
+      progress=Math.max(progress,side==0?Math.abs(lateral)-.5:Math.abs(lateral));
+      double lateralFree=Settings.smooth(Math.max(0,Math.min(1,progress/Math.max(1,path.settings().width()))));
+      // Vertical clearance releases the whole shoulder once the decks are apart.
+      // Subtracting 5.5 and then dividing by pavement width left an 8 m overpass
+      // permanently narrowed to ~4.6 m INCLUDING both guardrail footings.
+      double verticalFree=Settings.smooth(Math.max(0,Math.min(1,(Math.abs(delta.y())-4.25)/1.25)));
+      result[i]=mouth.auxiliary()?1:Math.max(lateralFree,verticalFree);
     }return result;
   }
   /** Old saved paths can have correct lane axes and still miss an outside shoulder. */

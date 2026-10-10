@@ -170,6 +170,26 @@ public final class LaneRampPaths {
         Mesh mesh=RoadRibbon.mesh(samples,settings);LaneRampGrade.validate(mesh,maxGrade);RoadRibbon.checkSelfIntersections(mesh,4);checkVolume(mesh);result.add(new Candidate(c.path(),mesh));
       }catch(IllegalArgumentException e){error=e.getMessage();}
     }catch(IllegalArgumentException e){error=e.getMessage();}
+    // A motor-edge departure can need to rise beside its host BEFORE turning
+    // across it. These straight free leads are not part of the locked at-grade
+    // auxiliary lane; profile the whole free span together so its length remains
+    // available for climbing. All candidates still pass the ordinary corridor.
+    if(o.sourceExtra()&&(o.path()==LanePoints.Path.DIRECT||o.path()==LanePoints.Path.AUTO))
+      for(double lead:new double[]{16,32,48})try{
+        if(end.position().sub(start.position()).dot(start.direction())<lead+8)continue;
+        V later=start.position().add(start.direction().mul(lead));
+        var late=new Port(later,start.direction(),start.outside(),start.extraWidth(),0);
+        var flatEnd=new Port(new V(end.position().x(),later.y(),end.position().z()),end.direction(),end.outside(),end.extraWidth(),0);
+        var direct=new LanePoints.Options(LanePoints.Path.DIRECT,LanePoints.Departure.BRANCH,LanePoints.Arrival.MERGE,o.radius(),o.transition(),o.elevation(),o.landing(),o.gradeOverride(),o.allowTunnel());
+        for(var c:candidates(late,flatEnd,settings,direct,maxGrade)){
+          var frames=new ArrayList<Frame>();line(frames,start.position(),later,start.direction());
+          for(var s:c.mesh().samples())add(frames,s.center(),s.left().left().mul(-1));
+          var free=finish(start,end,settings,frames,0,maxGrade);var samples=new ArrayList<Sample>();
+          append(samples,prefix);append(samples,free.samples());append(samples,suffix);
+          var mesh=RoadRibbon.mesh(samples,settings);LaneRampGrade.validate(mesh,maxGrade);RoadRibbon.checkSelfIntersections(mesh,4);checkVolume(mesh);
+          result.add(new Candidate(LanePoints.Path.DIRECT,mesh));
+        }
+      }catch(IllegalArgumentException ignored){}
     if(result.isEmpty())throw new IllegalArgumentException(error);
     return List.copyOf(result);
   }

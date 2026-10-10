@@ -11,7 +11,7 @@ public final class Live445ModelValidation {
   var road=Hotfix429ModelValidation.road(new V(0,20,0),new V(0,20,500),settings(Style.O6_GREEN,28));var id=new UUID(445,1);
   var cuts=List.of(new LaneSections.Cut(new UUID(445,2),5,1,20,560,32),new LaneSections.Cut(new UUID(445,3),4,1,60,560,32,null,false,false,true),new LaneSections.Cut(id,8,1,368,400,32,null,true,true,true));
   road=road.withLanePoints(LanePoints.Data.EMPTY.cuts(cuts).additions(List.of(new LaneAdditions.Addition(id,8,1,400,32))));var m=road.mesh();
-  var before=RoadStructures.sample(m,367);double edge=before.at(before.halfWidth(),0).x();
+  var before=RoadStructures.sample(m,367);double edge=before.at(LaneDeck.edge(m,before,1),0).x();
   for(var at:m.samples()){double d=at.distance();if(d<=368||d>=400)continue;double actual=LaneDeck.spans(m,at).stream().filter(s->s.high()-s.low()>.01).mapToDouble(s->at.at(s.high(),0).x()).min().orElseThrow();check(actual<=edge+1e-6,"ADD removes the old straight shoulder at "+d+": "+actual+" / "+edge);}
   for(double d=402;d<490;d+=1){var at=RoadStructures.sample(m,d);var l=RoadProfile.layout(m,at);for(double divider:l.dividers())if(divider>l.motorMin()+.2&&divider<l.motorMax()-.2)check(!RoadSurface.closedSlotBoundary(m,d,divider),"old DETACH makes the new ADD divider solid");}
  }

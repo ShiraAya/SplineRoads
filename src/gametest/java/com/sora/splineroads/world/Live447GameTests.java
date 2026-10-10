@@ -59,6 +59,7 @@ public final class Live447GameTests {
   var preview=RoadRecord.load(reply.getCompound("Road"));command.putUUID("Token",reply.getUUID("Token"));start=System.nanoTime();LaneRamps.build(player,tool,command);
   System.out.printf("LIVE448 CACHED_RAMP_BUILD %s %.3fs%n",departure,(System.nanoTime()-start)/1e9);
   var built=data.index.roads.get(preview.id()).record;LaneRampGrade.validate(built.mesh(),.2);
+  if(departure==LanePoints.Departure.TEMPORARY)Live448GameTests.clearWidth(h,data,built);
   h.assertTrue(LaneTopology.metadata(built).link().options().equals(options),"preview/build changed requested mode");
   h.assertTrue(Math.abs(LaneTopology.metadata(built).link().targetOffset())<=88,"flexible landing exceeded declared range");
   var reloaded=RoadData.load(data.save(new CompoundTag()));h.assertTrue(reloaded.index.roads.get(built.id()).record.save().equals(built.save()),"real NBT changed connector");

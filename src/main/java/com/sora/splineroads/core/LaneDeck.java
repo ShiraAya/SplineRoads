@@ -18,23 +18,12 @@ public final class LaneDeck {
         ||mesh.settings().structure()==Structure.TUNNEL||RoadStreetscape.raised(mesh,sample))return outer;
     double d=sample.distance(),blend=Math.min(d,mesh.length()-d)/8;
     for(var raised:o.streetscape().raisedSpans())blend=Math.min(blend,Math.max(0,Math.max(raised.from()-d,d-raised.to()))/8);
-    // Authored lane mouths may attach to the original shoulder, so leave their
-    // local footprint intact. Ordinary stretches need only a narrow paint margin.
-    for(double station:mouthStations(mesh)){
-      blend=Math.min(blend,Math.max(0,Math.abs(d-station)-64)/8);
-    }
-    // An ADD mouth can survive without an authored blue point. Keep its entire
-    // reservation/taper straight, including transitions longer than 64 blocks.
-    for(var addition:o.lanePoints().additions()){
-      double a=addition.station(),b=a-addition.sign()*addition.transition();
-      blend=Math.min(blend,Math.max(0,Math.max(Math.min(a,b)-d,d-Math.max(a,b)))/8);
-    }
+    // Blue selection points do not alter pavement. Auxiliary mouths now follow
+    // the motor edge, so unused points need no 64 m-wide shoulder reservation.
     double wanted=l.outer(side)+side*.14;
     double trim=Math.max(0,side*(outer-wanted))*Settings.smooth(Math.max(0,Math.min(1,blend)));
     return outer-side*trim;
   }
-  private static final WeakIdentityCache<Mesh,List<Double>> MOUTH_STATIONS=new WeakIdentityCache<>(256,8192,List::size);
-  private static List<Double> mouthStations(Mesh mesh){return MOUTH_STATIONS.get(mesh,m->m.settings().options().lanePoints().points().stream().map(p->LanePoints.lane(LaneSections.reference(m),p).station()).toList());}
   public static boolean hasOpenings(Mesh mesh){return mesh.settings().options().lanePoints().cuts().stream().anyMatch(LaneSections.Cut::temporary);}
   private static final WeakIdentityCache<Mesh,List<Integer>> SLOT_ORDER=new WeakIdentityCache<>(256,8192,List::size);
   private static List<Integer> slots(Mesh mesh){return SLOT_ORDER.get(mesh,LaneDeck::slotOrder);}
@@ -84,8 +73,11 @@ public final class LaneDeck {
         // their own ledges, never steal a neighboring motor lane.
         if(footings&&slot>=8){
           var original=RoadStructures.sample(raw,sample.distance());var originalLayout=RoadProfile.layout(raw,original);
-          if(highOuter)shoulder=Math.max(shoulder,original.halfWidth()-originalLayout.motorMax());
-          if(lowOuter)shoulder=Math.max(shoulder,original.halfWidth()+originalLayout.motorMin());
+          boolean rail=mesh.settings().structure()==Structure.BRIDGE||RoadStreetscape.raised(mesh,sample)
+              ||mesh.settings().options().outerRail()==RoadProfile.OuterRail.ON||RoadProfile.highway(mesh.settings().style());
+          shoulder=rail?shoulder:0;
+          if(highOuter)shoulder=Math.max(shoulder,edge(raw,original,1)-originalLayout.motorMax());
+          if(lowOuter)shoulder=Math.max(shoulder,originalLayout.motorMin()-edge(raw,original,-1));
         }
         boolean openLow=lowOuter&&(layout.cycleWidth()<.01||!layout.catalog().twoWay()&&layout.outside()>0);
         boolean openHigh=highOuter&&(layout.cycleWidth()<.01||!layout.catalog().twoWay()&&layout.outside()<0);

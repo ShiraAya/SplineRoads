@@ -9,6 +9,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 /** Per-transaction original terrain, shared by route policy and structural sections. */
 final class RoadTerrain {
+ /** One transaction's restored-terrain column index, shared by every replanned road. */
+ static final class Cache extends HashMap<BlockPos,List<AABB>> {
+  final it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap originalTop=new it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap();
+  Cache(Map<Long,BlockState> retained,Map<Long,BlockState> originals){
+   originalTop.defaultReturnValue(Integer.MIN_VALUE);
+   for(var map:List.of(retained,originals))for(var entry:map.entrySet())if(!entry.getValue().isAir()){
+    var p=BlockPos.of(entry.getKey());long column=BlockPos.asLong(p.getX(),0,p.getZ());
+    originalTop.put(column,Math.max(originalTop.get(column),p.getY()));
+   }
+  }
+ }
  static RoadStructures.Ground read(ServerLevel level,Map<Long,BlockState> retained,Map<Long,BlockState> originals,Map<BlockPos,List<AABB>> terrainCache){
   return new RoadStructures.Ground(){
     public double top(double x, double z, double deckY) {
@@ -17,7 +28,15 @@ final class RoadTerrain {
       var surfaces=terrainCache.computeIfAbsent(key,k->{
         var out=new ArrayList<AABB>();
         int bottom=Math.max(level.getMinBuildHeight(),key.getY()-(int)RoadStructures.MAX_DROP);
-        for(int y=key.getY();y>=bottom;y--){
+        int first=key.getY();
+        if(terrainCache instanceof Cache indexed){
+          // WORLD_SURFACE bounds real non-air blocks. Restored terrain can be
+          // above it (a buried road cleared the old surface), so include both.
+          int top=RoadPlanInputs.height(level,key.getX(),key.getZ())-1;
+          top=Math.max(top,indexed.originalTop.get(BlockPos.asLong(key.getX(),0,key.getZ())));
+          first=Math.min(first,top);
+        }
+        for(int y=first;y>=bottom;y--){
           RoadPlanningBudget.check();
           BlockPos p=new BlockPos(key.getX(),y,key.getZ());
           if(!level.hasChunkAt(p))break;

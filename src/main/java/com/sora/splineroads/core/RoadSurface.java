@@ -287,7 +287,7 @@ public final class RoadSurface {
           var aa = la.dividers();
           var bb = lb.dividers();
           for (int j = 0; j < Math.min(aa.size(),bb.size()); j++)
-            if ((aa.get(j)>la.motorMin()+.12&&aa.get(j)<la.motorMax()-.12||bb.get(j)>lb.motorMin()+.12&&bb.get(j)<lb.motorMax()-.12) && !overrideLine(markings,mesh,a,b,"divider:"+j,aa.get(j),bb.get(j),dividers) && (dash || closedSlotBoundary(mesh,(a.distance()+b.distance())/2,(aa.get(j)+bb.get(j))/2) || RoadSignals.solid(approaches, (a.distance() + b.distance()) / 2,
+            if ((aa.get(j)>la.motorMin()+.12&&aa.get(j)<la.motorMax()-.12||bb.get(j)>lb.motorMin()+.12&&bb.get(j)<lb.motorMax()-.12||closedSlotBoundary(mesh,(a.distance()+b.distance())/2,(aa.get(j)+bb.get(j))/2)) && !overrideLine(markings,mesh,a,b,"divider:"+j,aa.get(j),bb.get(j),dividers) && (dash || closedSlotBoundary(mesh,(a.distance()+b.distance())/2,(aa.get(j)+bb.get(j))/2) || RoadSignals.solid(approaches, (a.distance() + b.distance()) / 2,
                 (aa.get(j) + bb.get(j)-la.medianCenter()-lb.medianCenter()) / 2)))
               stripe(markings, a, b, aa.get(j), bb.get(j), .12, false, defaultDividers, .35);
         }

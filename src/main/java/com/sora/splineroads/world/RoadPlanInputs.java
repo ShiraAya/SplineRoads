@@ -19,6 +19,7 @@ final class RoadPlanInputs implements AutoCloseable {
   private final Map<Long,BlockState> states=new Long2ObjectOpenHashMap<>();
   private final Set<Long> probes=new it.unimi.dsi.fastutil.longs.LongOpenHashSet();
   private final Map<Long,CompoundTag> nodes=new HashMap<>();
+  private final Map<Long,Integer> heights=new HashMap<>();
   private RoadPlanInputs(ServerLevel level,boolean recording){
     this.level=level;this.recording=recording;previous=CURRENT.get();CURRENT.set(this);
   }
@@ -40,11 +41,21 @@ final class RoadPlanInputs implements AutoCloseable {
       scope.nodes.put(pos.asLong(),entity==null?null:entity.saveWithFullMetadata());
     return entity;
   }
+  static int height(ServerLevel level,int x,int z){
+    int height=level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE,x,z);
+    var scope=CURRENT.get();if(scope!=null&&scope.recording&&scope.level==level)scope.heights.putIfAbsent(BlockPos.asLong(x,0,z),height);
+    return height;
+  }
   void validate(ServerLevel current){
     if(current!=level)throw new IllegalArgumentException("预览世界已改变，请重新预览");
-    var chunks=new HashSet<Long>();for(long key:states.keySet())chunks.add(new net.minecraft.world.level.ChunkPos(BlockPos.of(key)).toLong());
+    var chunks=new HashSet<Long>();for(var keys:List.of(states.keySet(),heights.keySet(),nodes.keySet()))for(long key:keys)chunks.add(new net.minecraft.world.level.ChunkPos(BlockPos.of(key)).toLong());
     try(var lease=RoadWorkChunks.open(level)){
       lease.load(chunks);
+      for(var entry:heights.entrySet()){
+        RoadPlanningBudget.check();var p=BlockPos.of(entry.getKey());
+        if(level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE,p.getX(),p.getZ())!=entry.getValue())
+          throw new IllegalArgumentException("预览后地形高度已改变，请重新预览");
+      }
       for(var entry:states.entrySet()){
         RoadPlanningBudget.check();
         if(!level.getBlockState(BlockPos.of(entry.getKey())).equals(entry.getValue()))

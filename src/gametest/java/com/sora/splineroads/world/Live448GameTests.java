@@ -8,7 +8,25 @@ import net.minecraftforge.gametest.*;
 import java.util.*;
 @GameTestHolder("splineroads_live448") @PrefixGameTestTemplate(false)
 public final class Live448GameTests {
- @GameTest(batch="splineroads_live448",template="empty",templateNamespace="splineroads_live447",timeoutTicks=18000)
+ static void clearWidth(GameTestHelper h,RoadData data,RoadRecord road){
+  var parts=data.index.roads.values().stream().flatMap(r->r.record.structures().stream())
+      .filter(p->p.material()==RoadStructures.Material.CONCRETE&&(Math.abs(p.height()-.45)<1e-6||Math.abs(p.height()-.8)<1e-6)&&p.width()<=.621).toList();
+  int checked=0;double minimum=Double.POSITIVE_INFINITY;var mesh=road.mesh();
+  for(double d=2;d<mesh.length()-2;d+=1){var at=RoadStructures.sample(mesh,d);var forward=at.left().left().mul(-1);double low=Double.NEGATIVE_INFINITY,high=Double.POSITIVE_INFINITY;
+   for(var p:parts){
+    if(Math.min(p.a().y(),p.b().y())>at.center().y()+.2||Math.max(p.a().y(),p.b().y())+p.height()<at.center().y()+.1)continue;
+    var vertices=p.base();var hits=new ArrayList<Double>();
+    for(int i=0;i<vertices.size();i++){var a=vertices.get(i).sub(at.center());var b=vertices.get((i+1)%vertices.size()).sub(at.center());double x=a.dot(forward),y=b.dot(forward);
+     if(x*y<=0&&Math.abs(x-y)>1e-9)hits.add(a.add(b.sub(a).mul(x/(x-y))).dot(at.left()));
+    }
+    if(hits.size()<2)continue;double a=Collections.min(hits),b=Collections.max(hits);
+    if(b<0)low=Math.max(low,b);else if(a>0)high=Math.min(high,a);
+   }
+   if(Double.isFinite(low)&&Double.isFinite(high)){checked++;minimum=Math.min(minimum,high-low);h.assertTrue(high-low>=3.99,"guardrail clear width "+(high-low)+" at "+d);}
+  }
+  h.assertTrue(checked>15,"no actual paired guardrails checked");System.out.printf("LIVE448 GUARDRAIL_WIDTH PASS samples=%d minimum=%.3f%n",checked,minimum);
+ }
+ @GameTest(batch="splineroads_live448",template="empty",templateNamespace="splineroads_live448",timeoutTicks=18000)
  public static void preparedPreviewRechecksWorldBeforeCommit(GameTestHelper h){
   System.setProperty("sr.profile","true");var level=h.getLevel();var data=RoadData.get(level);int origin=294000;
   for(int x=-15;x<=15;x++)for(int z=-5;z<=85;z++){var p=new BlockPos(origin+x,199,origin+z);level.getChunkAt(p);level.setBlock(p,Blocks.GRASS_BLOCK.defaultBlockState(),2);}

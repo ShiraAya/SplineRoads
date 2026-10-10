@@ -44,6 +44,7 @@ jobs:
         run: |
           set -o pipefail
           bash tools/check_sr447.sh
+          bash tools/check_sr448.sh
           bash tools/check_terrain448.sh
           bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run448 -ProadTestNamespaces=splineroads_live448 -ProadTestHeap=3G | tee run448-console.log
           grep -q "LIVE448 REAL_WORLD PASS" run448-console.log
