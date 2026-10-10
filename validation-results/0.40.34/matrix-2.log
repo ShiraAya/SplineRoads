@@ -1,4 +1,5 @@
 2026-10-10T11:15:44.0787092Z LIVE438 REAL_WORLD PASS: ADD preview/build rechecked 3 times, stable alignment/ports, Mojang NBT, deletion with invalid saved neighbor, no orphan colliders
+2026-10-10T11:16:34.0802049Z MATRIX434 FIXTURE node_span=500 fixed_east=false mesh_lengths=501.0,501.0
 2026-10-10T11:16:34.5773647Z MATRIX434 C1 PLAN_PASS
 2026-10-10T11:16:35.4779559Z MATRIX434 C1 PREVIEW_PASS
 2026-10-10T11:16:37.1777792Z MATRIX434 C1 PASS ms=3110.535
@@ -23,6 +24,7 @@
 2026-10-10T11:18:09.9774575Z MATRIX434 C8 PLAN_PASS
 2026-10-10T11:18:10.8775921Z MATRIX434 C8 PREVIEW_PASS
 2026-10-10T11:18:12.4781985Z MATRIX434 C8 PASS ms=9232.727
+2026-10-10T11:18:12.4782194Z MATRIX434 SUMMARY 8/8 row=2 []
 2026-10-10T11:19:03.6774326Z CLOSE437 REAL_WORLD PASS: add two shared-host ramps, first alignment/structures/cells/blocks unchanged, remove second, no orphan colliders, NBT reload
 2026-10-10T11:20:14.9776867Z SEQUENTIAL436 REAL_WORLD PASS: add two shared-host ramps, first alignment/structures/cells/blocks unchanged, remove second, no orphan colliders, NBT reload
 2026-10-10T11:20:21.7804043Z EXPANSION437 REAL_WORLD PASS: blue point expands 3 to 4, Mojang NBT reload, cancel restores 3

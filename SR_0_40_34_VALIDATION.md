@@ -1,8 +1,8 @@
 # 0.40.34-alpha 验证记录
 
-最终生产候选 `00ab09e1569e23980d76c729c1c2a35aef659a23`，src/main树 `cfff5ef6202a60f9ffee19c7df84417e3c2a2976`。分支 work/sr-04034-preview-terrain，源码基于0.40.33本地7caefea5。
+最终生产提交 `00ab09e1569e23980d76c729c1c2a35aef659a23`，src/main树 `cfff5ef6202a60f9ffee19c7df84417e3c2a2976`。分支 work/sr-04034-preview-terrain，源码基于0.40.33本地7caefea5。
 
-[最终CI：38047574820](https://github.com/ShiraAya/SplineRoads/actions/runs/38047574820) 正在执行；全部门禁通过及包核验后补齐结果。
+[最终CI：38047574820](https://github.com/ShiraAya/SplineRoads/actions/runs/38047574820) 六任务全部成功。JAR已核对源码树、版本、999条目CRC与SHA-256。
 
 ## 本次六项修正
 
@@ -15,7 +15,15 @@
 
 ## 验证层次
 
-最终完整Forge、离线回归、实际Minecraft专项、32组连接矩阵与安装包核验待本轮CI结束后记录。阶段输出不作为最终整轮通过。
+- 完整Forge：compileJava、compileGameTestJava、jar与重混淆通过。
+- 核心与旧模型门禁全部通过；新增Live448 1020项、Live447 1036项、terrain448 52项及terrain447 49项通过；原terrain模型123、后端220、流式25项通过。
+- Minecraft实际世界专项19项：LIVE448 2、447 2、441 5、446 3、445 1、444 2、443 1、442 1、440 2。覆盖缓存规划对象直接复用、障碍原子拒绝、地形变化失效、无关方块保留、实际建造、Mojang NBT与删除；另验证实际任务token取消。
+- 连接矩阵32/32；每行另执行4项既有共享宿主、增车道、删除及重载测试。
+- 最终实际世界夹具：TEMPORARY预览3.923秒、缓存建造0.441秒；EXTRA预览1.834秒、缓存建造0.263秒。86个实际护栏截面最小净宽4.391格。80米普通道路缓存事务预览0.169秒、提交0.035秒。上述均为服务端夹具，不能替代用户原客户端90秒场景测量。
+
+证据：[CI摘要](validation-results/0.40.34/final-ci.json)、[主要输出](validation-results/0.40.34/verify-results.log)、[旧世界输出](validation-results/0.40.34/legacy-world-results.log)、四行matrix日志与[JAR核验](validation-results/0.40.34/jar-check.json)。
+
+最终JAR5709080字节，SHA-256 `ef32e64e770d6802bd065dfa6f8b1d425c933a5da8360d4e38ea4116b5e76ec3`；Manifest和mods.toml均0.40.34-alpha。此后仅更新文档，生产树不变。完整源码ZIP逐文件核对Git blob；0.40.33→0.40.34补丁应用后必须与最终源码同树，交付脚本强制执行。
 
 原私人存档几何复现：图五约2格断口修正后连续有线；图六两侧路肩在所查60～140站位均为0.14格。带非机动车道的原组 EXTRA DIRECT 纯几何计算成功。私人存档、截图及坐标文件不上传公共仓库，实际世界使用相对几何夹具。
 

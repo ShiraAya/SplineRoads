@@ -1,0 +1,59 @@
+{
+  "run_id": 38047574820,
+  "html_url": "https://github.com/ShiraAya/SplineRoads/actions/runs/38047574820",
+  "built_commit": "00ab09e1569e23980d76c729c1c2a35aef659a23",
+  "production_src_main_tree": "cfff5ef6202a60f9ffee19c7df84417e3c2a2976",
+  "conclusion": "success",
+  "forge": "PASS",
+  "minecraft_specialized_tests": 19,
+  "matrix_passes": 32,
+  "matrix_total": 32,
+  "additional_legacy_tests_per_matrix_row": 4,
+  "terrain448_checks": 52,
+  "model448_checks": 1020,
+  "client_gpu_tested": false,
+  "jobs": [
+    {
+      "id": 114200144272,
+      "name": "verify",
+      "conclusion": "success",
+      "html_url": "https://github.com/ShiraAya/SplineRoads/actions/runs/38047574820/job/114200144272",
+      "completed_at": "2026-10-10T11:28:15Z"
+    },
+    {
+      "id": 114200144381,
+      "name": "Minecraft matrix row 0",
+      "conclusion": "success",
+      "html_url": "https://github.com/ShiraAya/SplineRoads/actions/runs/38047574820/job/114200144381",
+      "completed_at": "2026-10-10T11:24:18Z"
+    },
+    {
+      "id": 114200144401,
+      "name": "Minecraft matrix row 1",
+      "conclusion": "success",
+      "html_url": "https://github.com/ShiraAya/SplineRoads/actions/runs/38047574820/job/114200144401",
+      "completed_at": "2026-10-10T11:25:34Z"
+    },
+    {
+      "id": 114200144412,
+      "name": "Existing structure and rebuild worlds",
+      "conclusion": "success",
+      "html_url": "https://github.com/ShiraAya/SplineRoads/actions/runs/38047574820/job/114200144412",
+      "completed_at": "2026-10-10T11:19:31Z"
+    },
+    {
+      "id": 114200144463,
+      "name": "Minecraft matrix row 3",
+      "conclusion": "success",
+      "html_url": "https://github.com/ShiraAya/SplineRoads/actions/runs/38047574820/job/114200144463",
+      "completed_at": "2026-10-10T11:24:31Z"
+    },
+    {
+      "id": 114200144502,
+      "name": "Minecraft matrix row 2",
+      "conclusion": "success",
+      "html_url": "https://github.com/ShiraAya/SplineRoads/actions/runs/38047574820/job/114200144502",
+      "completed_at": "2026-10-10T11:20:43Z"
+    }
+  ]
+}
