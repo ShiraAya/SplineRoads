@@ -1,0 +1,23 @@
+Source: https://github.com/ShiraAya/SplineRoads/actions/runs/38041941701/job/114183760707
+Commit: acb97c44f9ee10d0227b7934093e8c0cccfcc6ad
+Actual output excerpts (full logs at source URL):
+2026-10-10T09:39:08.8582689Z LIVE444 REAL_SERVER PASS generated perimeter extra=false guarded_samples=1823
+2026-10-10T09:39:48.9585842Z LIVE444 REAL_SERVER PASS generated perimeter extra=true guarded_samples=5137
+2026-10-10T09:40:11.3581066Z LIVE444 REAL_SERVER PASS late shell rejection, AUTO alternate, full publication/build and Mojang NBT
+2026-10-10T09:40:11.3585786Z [09:40:11] [Server thread/INFO] [minecraft/GameTestServer]: All 2 required tests passed :)
+2026-10-10T09:40:22.2539619Z BUILD SUCCESSFUL in 4m 31s
+2026-10-10T09:41:39.7547748Z LIVE443 REAL_SERVER PASS exact support planning against an unrasterized candidate and Mojang NBT
+2026-10-10T09:41:39.7560573Z [09:41:39] [Server thread/INFO] [minecraft/GameTestServer]: All 1 required tests passed :)
+2026-10-10T09:41:43.9629773Z BUILD SUCCESSFUL in 1m 21s
+2026-10-10T09:43:44.8471320Z LIVE442 DETACH_BUILD_PASS
+2026-10-10T09:43:49.5480307Z LIVE442 CONTINUATION_BUILD_PASS
+2026-10-10T09:43:50.8478017Z LIVE442 DELETE_PASS
+2026-10-10T09:44:23.2471382Z LIVE442 REBUILD_PASS
+2026-10-10T09:44:23.3494684Z LIVE442 REAL_WORLD PASS continuation: 2->DETACH->1-lane B->delete->2-to-1 taper->new DETACH build
+2026-10-10T09:44:23.3544089Z [09:44:23] [Server thread/INFO] [minecraft/GameTestServer]: All 1 required tests passed :)
+2026-10-10T09:44:28.6956504Z BUILD SUCCESSFUL in 2m 44s
+2026-10-10T09:46:03.5948390Z LIVE440 REAL_WORLD PASS underground=true: actual request/compute/publish/build, rectangle, flexible B, monotone, NBT, deletion
+2026-10-10T09:46:24.9944615Z LIVE440 REAL_WORLD PASS underground=false: actual request/compute/publish/build, rectangle, flexible B, monotone, NBT, deletion
+2026-10-10T09:46:24.9962926Z [09:46:24] [Server thread/INFO] [minecraft/GameTestServer]: All 2 required tests passed :)
+2026-10-10T09:46:32.1419321Z BUILD SUCCESSFUL in 2m 3s
+

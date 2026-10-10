@@ -1,0 +1,345 @@
+{
+  "run_id": 38041941701,
+  "run_url": "https://github.com/ShiraAya/SplineRoads/actions/runs/38041941701",
+  "built_commit": "acb97c44f9ee10d0227b7934093e8c0cccfcc6ad",
+  "production_src_main_tree": "0cbccf0db89b7ff0cb20f8b2a4f9aec4d0e456b0",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 114183760707,
+      "name": "Existing structure and rebuild worlds",
+      "conclusion": "success",
+      "url": "https://github.com/ShiraAya/SplineRoads/actions/runs/38041941701/job/114183760707",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run gradle/actions/setup-gradle@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Thirteen-image actual structure planning and candidate fallback",
+          "conclusion": "success"
+        },
+        {
+          "name": "Exact support planning on the Minecraft server",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real detach, continuation, deletion and rebuild sequence",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real request publication, underground and tunnel regression",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run gradle/actions/setup-gradle@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 114183760815,
+      "name": "verify",
+      "conclusion": "success",
+      "url": "https://github.com/ShiraAya/SplineRoads/actions/runs/38041941701/job/114183760815",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run gradle/actions/setup-gradle@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Full Forge build",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Core and model regression",
+          "conclusion": "success"
+        },
+        {
+          "name": "New screenshot regression",
+          "conclusion": "success"
+        },
+        {
+          "name": "Live447 core, terrain cache and original endpoint regressions",
+          "conclusion": "success"
+        },
+        {
+          "name": "Seven-image bridge, ground, branch and stability regression",
+          "conclusion": "success"
+        },
+        {
+          "name": "Local tunnel and original terrain policy regression",
+          "conclusion": "success"
+        },
+        {
+          "name": "Save-derived temporary self-host and real build regression",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run gradle/actions/setup-gradle@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 114183760840,
+      "name": "Minecraft matrix row 1",
+      "conclusion": "success",
+      "url": "https://github.com/ShiraAya/SplineRoads/actions/runs/38041941701/job/114183760840",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run gradle/actions/setup-gradle@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real Minecraft preview build save delete matrix",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run gradle/actions/setup-gradle@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 114183760861,
+      "name": "Minecraft matrix row 0",
+      "conclusion": "success",
+      "url": "https://github.com/ShiraAya/SplineRoads/actions/runs/38041941701/job/114183760861",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run gradle/actions/setup-gradle@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real Minecraft preview build save delete matrix",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run gradle/actions/setup-gradle@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 114183760889,
+      "name": "Minecraft matrix row 3",
+      "conclusion": "success",
+      "url": "https://github.com/ShiraAya/SplineRoads/actions/runs/38041941701/job/114183760889",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run gradle/actions/setup-gradle@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real Minecraft preview build save delete matrix",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run gradle/actions/setup-gradle@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 114183760892,
+      "name": "Minecraft matrix row 2",
+      "conclusion": "success",
+      "url": "https://github.com/ShiraAya/SplineRoads/actions/runs/38041941701/job/114183760892",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run gradle/actions/setup-gradle@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Real Minecraft preview build save delete matrix",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run gradle/actions/setup-gradle@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "layers": {
+    "forge": "compileJava, compileGameTestJava, jar/reobfuscation passed",
+    "adapter_models": "Core, 1036 Live447, 41 terrain447, existing geometry/planner/render gates passed",
+    "minecraft_worlds": "LIVE447 2 + LIVE441 5 + LIVE446 3 + LIVE445 1 + LIVE444 2 + LIVE443 1 + LIVE442 1 + LIVE440 2 = 17 required tests; LIVE444 has three scenario markers",
+    "connection_matrix": "32/32, plus each row's 4 existing shared-host/lifecycle tests",
+    "original_save": "Private geometry probes only; before-join paint 92/92, after-join paint 44/92, shoulder 0.140 blocks, driving lane 4.000 blocks",
+    "gpu_client": "NOT RUN: original client/shader screenshots, vehicle driving and original 641s end-to-end scenario"
+  }
+}
