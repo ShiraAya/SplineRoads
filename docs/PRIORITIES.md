@@ -1,3 +1,5 @@
+> 最新 P1：0447 六图追加反馈与 Q3-01～04，见 `docs/issues/0447-live-six-terrain-033.md`。用户明确本轮处理四项 terrain 缺陷，覆盖旧 P2 延后规则；多线程专项仍暂停。
+
 > 最新 P1：十二图实机反馈，见 `docs/issues/0442-live-twelve-followup-028.md`。旧修复重新按截图验证。
 
 # SR 当前优先级入口（用户最新指令）
