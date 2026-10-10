@@ -734,9 +734,10 @@ public final class LaneRamps {
     var planned=new ArrayList<RoadIndex.Built>();planned.add(new RoadIndex.Built(r));
     var removed=new HashSet<UUID>();if(all.containsKey(id))removed.add(id);
     var request=assemblyRequest(data,r);
-    planned=new ArrayList<>(data.previewAssembly(player.serverLevel(),player,planned,removed,request.endpoints(),request.moves()));
+    var token=UUID.randomUUID();
+    planned=new ArrayList<>(data.prepareAssembly(player.serverLevel(),player,planned,removed,request.endpoints(),request.moves(),token));
     var staging=new LinkedHashMap<>(all);removed.forEach(staging::remove);for(var built:planned)staging.put(built.record.id(),built.record);r=staging.get(id);
-    var checked=new CompoundTag();checked.put("Road",r.header());checked.putLong("WorldRevision",data.index.revision());checked.putInt("FromSignature",signature(data,from));checked.putInt("ToSignature",signature(data,to));checked.putUUID("Token",UUID.randomUUID());checked.putLong("Request",t.getLong("Request"));
+    var checked=new CompoundTag();checked.put("Road",r.header());checked.putLong("WorldRevision",data.index.revision());checked.putInt("FromSignature",signature(data,from));checked.putInt("ToSignature",signature(data,to));checked.putUUID("Token",token);checked.putLong("Request",t.getLong("Request"));
     if(t.hasUUID("Id")){checked.putUUID("Id",id);checked.putInt("Signature",t.getInt("Signature"));}
     RoadPlanningBudget.check();tool.getOrCreateTag().put("LanePreview",checked);
     var reply=new CompoundTag();reply.putString("Kind","laneRampCheck");reply.putString("ResolvedPath",generated.path().name());reply.putLong("Request",t.getLong("Request"));reply.put("Road",r.header());reply.putUUID("Token",checked.getUUID("Token"));reply.putDouble("TargetOffset",LaneTopology.metadata(r).link().targetOffset());reply.putDouble("GradeLimit",gradeLimit(staging,LaneTopology.metadata(r).link()));
@@ -762,7 +763,7 @@ public final class LaneRamps {
     var r=RoadRecord.load(checked.getCompound("Road"));var link=LaneTopology.metadata(r).link();var data=RoadData.get(player.serverLevel());
     if(checked.getLong("WorldRevision")!=data.index.revision())throw new IllegalArgumentException("道路几何已在预览后改变，请重新预览完整接头");
     if(t.hasUUID("Id")&&checked.getInt("Signature")!=t.getInt("Signature")||!LanePointCodec.options(link.options()).equals(t.getCompound("Options"))||checked.getInt("FromSignature")!=signature(data,link.from())||checked.getInt("ToSignature")!=signature(data,link.to()))throw new IllegalArgumentException("道路或选项已变化，请重新预览");
-    build(data,player.serverLevel(),player,r);LaneRampTool.clearSelection(tool);return t.hasUUID("Id")?"匝道已更新，身份与依赖引用保留":"匝道已建成，车道点引用生效";
+    data.buildPrepared(player.serverLevel(),player,checked.getUUID("Token"));LaneRampTool.clearSelection(tool);return t.hasUUID("Id")?"匝道已更新，身份与依赖引用保留":"匝道已建成，车道点引用生效";
   }
   public static String editRoad(ServerLevel level,ServerPlayer player,CompoundTag t){
     var data=RoadData.get(level);var b=data.index.roads.get(t.getUUID("Id"));

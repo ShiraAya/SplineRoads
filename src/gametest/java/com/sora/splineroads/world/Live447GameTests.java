@@ -56,7 +56,8 @@ public final class Live447GameTests {
   try(var budget=RoadPlanningBudget.open("LIVE447 real preview",90)){reply=work.resolve(route->LaneRamps.finishPreview(player,tool,command,work,route));}
   h.assertTrue(data.index.revision()==revision,"preview mutated world roads");
   System.out.printf("LIVE447 PREVIEW PASS %s %.3fs%n",departure,(System.nanoTime()-start)/1e9);
-  var preview=RoadRecord.load(reply.getCompound("Road"));command.putUUID("Token",reply.getUUID("Token"));LaneRamps.build(player,tool,command);
+  var preview=RoadRecord.load(reply.getCompound("Road"));command.putUUID("Token",reply.getUUID("Token"));start=System.nanoTime();LaneRamps.build(player,tool,command);
+  System.out.printf("LIVE448 CACHED_RAMP_BUILD %s %.3fs%n",departure,(System.nanoTime()-start)/1e9);
   var built=data.index.roads.get(preview.id()).record;LaneRampGrade.validate(built.mesh(),.2);
   h.assertTrue(LaneTopology.metadata(built).link().options().equals(options),"preview/build changed requested mode");
   h.assertTrue(Math.abs(LaneTopology.metadata(built).link().targetOffset())<=88,"flexible landing exceeded declared range");

@@ -36,6 +36,8 @@ public final class RoadWorkChunks implements AutoCloseable {
     return new RoadWorkChunks(level);
   }
 
+  static Set<Long> held(ServerLevel level){var state=ACTIVE.get(level);return state==null?Set.of():Set.copyOf(state.held);}
+
   public static int heldCount(ServerLevel level) {
     State state = ACTIVE.get(level);
     return state == null ? 0 : state.held.size();

@@ -201,7 +201,10 @@ public final class RoadTerrainModels {
   }
   private static void unload(Tile tile){
     waiting.remove(tile);var job=jobs.remove(tile);if(job!=null)job.future().cancel(false);
-    var data=active.remove(tile);if(data==null)return;
+    var data=active.remove(tile);if(data==null){
+      var retained=cache.get(tile);if(retained!=null)for(var section:retained.sections().keySet()){dropPart(tile.road(),section);snapshots.remove(section);}
+      return;
+    }
     for(var section:data.sections().keySet()){dropPart(tile.road(),section);snapshots.remove(section);}
     remember(tile,data);
   }

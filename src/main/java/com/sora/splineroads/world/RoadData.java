@@ -957,11 +957,48 @@ public final class RoadData extends SavedData {
   }
   List<RoadIndex.Built> previewAssembly(ServerLevel level,ServerPlayer player,List<RoadIndex.Built> built,
       Set<UUID> removed,Set<BlockPos> selectedNodes,List<NodeMove> moves){
-    var result=new ArrayList<RoadIndex.Built>();
-    replaceBatch(level,player,built,removed,true,selectedNodes,moves,RoadLimits.MAX_EDIT_CELLS,Set.of(),result);
-    return List.copyOf(result);
+    return prepareAssembly(level,player,built,removed,selectedNodes,moves,null);
   }
-  private void replaceBatch(ServerLevel level,ServerPlayer player,List<RoadIndex.Built> built,Set<UUID> removed,boolean assembly,Set<BlockPos> selectedNodes,List<NodeMove> moves,int editCellLimit,Set<UUID> deletedPoints,List<RoadIndex.Built> previewResult) {
+  private record PreparedEdit(List<RoadIndex.Built> built,Set<UUID> removed,boolean deleting,
+      Set<Long> touched,Set<Long> moveSources,Set<Long> moveTargets,Map<Long,BlockState> sidewalks,
+      Map<Long,List<RoadIndex.Built>> body,Set<Long> air,Set<Long> dry,
+      Map<Long,List<RoadIndex.Built>> finalByChunk,Set<BlockPos> endpoints,
+      List<RoadIndex.Built> finalRoads,List<NodeMove> moves,int editCellLimit,Set<Long> chunks){}
+  private record PreparedEntry(PreparedEdit edit,RoadPlanInputs inputs,UUID owner,long revision,long created){}
+  private final LinkedHashMap<UUID,PreparedEntry> preparedEdits=new LinkedHashMap<>();
+  List<RoadIndex.Built> prepareAssembly(ServerLevel level,ServerPlayer player,List<RoadIndex.Built> built,
+      Set<UUID> removed,Set<BlockPos> selectedNodes,List<NodeMove> moves,UUID token){
+    var result=new ArrayList<PreparedEdit>();
+    try(var inputs=RoadPlanInputs.open(level,token!=null)){
+      replaceBatch(level,player,built,removed,true,selectedNodes,moves,RoadLimits.MAX_EDIT_CELLS,Set.of(),result);
+      var edit=result.get(0);
+      if(token!=null){
+        UUID owner=player==null?null:player.getUUID();
+        preparedEdits.entrySet().removeIf(e->Objects.equals(e.getValue().owner(),owner)||expired(e.getValue()));
+        preparedEdits.put(token,new PreparedEntry(edit,inputs,owner,index.revision(),System.nanoTime()));
+        // Retain at most two previews, with one ordinary transaction's total cell budget.
+        while(preparedEdits.size()>1&&(preparedEdits.size()>2||preparedEdits.values().stream().mapToLong(e->e.edit().touched().size()).sum()>RoadLimits.MAX_EDIT_CELLS))
+          preparedEdits.remove(preparedEdits.keySet().iterator().next());
+      }
+      return List.copyOf(edit.built());
+    }
+  }
+  private static boolean expired(PreparedEntry e){return System.nanoTime()-e.created()>600_000_000_000L;}
+  void buildPrepared(ServerLevel level,ServerPlayer player,UUID token){
+    var entry=preparedEdits.get(token);
+    if(entry==null||expired(entry))throw new IllegalArgumentException("预览缓存已过期，请重新预览");
+    if(!Objects.equals(entry.owner(),player==null?null:player.getUUID()))throw new IllegalArgumentException("预览不属于当前玩家");
+    if(entry.revision()!=index.revision())throw new IllegalArgumentException("道路已改变，请重新预览");
+    try(var budget=com.sora.splineroads.core.RoadPlanningBudget.cancellable("提交已验证预览");
+        var timing=RoadTimings.start("preview_commit",index.roads.size(),entry.edit().built().size());
+        var chunks=RoadWorkChunks.open(level)){
+      chunks.load(entry.edit().chunks());entry.inputs().validate(level);
+      timing.stage("cached_world_inputs");
+      validateAndCommit(level,player,entry.edit(),false);
+      timing.stage("validation_commit_sync");
+    }finally{preparedEdits.remove(token);for(var road:index.roads.values())road.releaseEditRaster();}
+  }
+  private void replaceBatch(ServerLevel level,ServerPlayer player,List<RoadIndex.Built> built,Set<UUID> removed,boolean assembly,Set<BlockPos> selectedNodes,List<NodeMove> moves,int editCellLimit,Set<UUID> deletedPoints,List<PreparedEdit> previewResult) {
     try (var budget=com.sora.splineroads.core.RoadPlanningBudget.cancellable("道路事务预检查");
          var timing=RoadTimings.start("edit",index.roads.size(),built.size());
          var workChunks = RoadWorkChunks.open(level)) {
@@ -1172,6 +1209,25 @@ public final class RoadData extends SavedData {
       // Unrelated markers in a new road's footprint remain errors.
       for(var center:junctions.values())if(center.getBoolean("GeneratedRing") && built.stream().anyMatch(r->center.getUUID("Id").equals(r.record.assembly())))
         for(long port:center.getLongArray("Ports"))endpoints.add(BlockPos.of(port));
+      var prepared=new PreparedEdit(List.copyOf(built),Set.copyOf(removed),deleting,touched,moveSources,moveTargets,
+          sidewalks,body,air,dry,finalByChunk,Set.copyOf(endpoints),List.copyOf(finalRoads),List.copyOf(moves),editCellLimit,
+          RoadWorkChunks.held(level));
+      validateAndCommit(level,player,prepared,previewResult!=null);
+      if(previewResult!=null)previewResult.add(prepared);
+      timing.stage("validation_commit_sync");
+    } finally {
+      // Also release old roads materialized by an edit that was rejected.
+      for (var road : index.roads.values()) road.releaseEditRaster();
+    }
+  }
+
+  /** Reuses all geometry/raster planning; world protection and current block contents are
+   * always checked again, before the first write. No route search occurs on this path. */
+  private void validateAndCommit(ServerLevel level,ServerPlayer player,PreparedEdit edit,boolean preview){
+    var built=edit.built();var committed=built;var removed=edit.removed();var removedIds=removed;
+    boolean deleting=edit.deleting();var touched=edit.touched();var moveSources=edit.moveSources();var moveTargets=edit.moveTargets();
+    var sidewalks=edit.sidewalks();var body=edit.body();var air=edit.air();var dry=edit.dry();
+    var finalByChunk=edit.finalByChunk();var endpoints=edit.endpoints();var finalRoads=edit.finalRoads();var moves=edit.moves();int editCellLimit=edit.editCellLimit();
       Map<Long, BlockState> writes = new HashMap<>();
       for (long key : touched) {
         com.sora.splineroads.core.RoadPlanningBudget.check();
@@ -1264,7 +1320,7 @@ public final class RoadData extends SavedData {
         if(RoadBlocks.isCollider(current)||current.is(SplineRoads.TUNNEL_AIR.get())||current.equals(sidewalkPlaced.get(key)))changed++;
       }
       if(changed>editCellLimit)throw new IllegalArgumentException("实际需修改 "+changed+" 个方块，超过本次上限 "+editCellLimit);
-      if(previewResult!=null){previewResult.addAll(built);return;}
+      if(preview)return;
       com.sora.splineroads.core.RoadPlanningBudget.check();
       com.sora.splineroads.core.RoadPlanningBudget.committing();
       // All range/permission/geometry checks completed before any block is cleared.
@@ -1332,11 +1388,6 @@ public final class RoadData extends SavedData {
         if (committed.stream().noneMatch(b -> b.record.id().equals(id)))
           RoadNetwork.broadcastDelete(level, id);
       for (var r : built) RoadNetwork.broadcastRoad(level, r.record);
-      timing.stage("validation_commit_sync");
-    } finally {
-      // Also release old roads materialized by an edit that was rejected.
-      for (var road : index.roads.values()) road.releaseEditRaster();
-    }
   }
 
   private BlockState collisionState(long key, BlockState previous, List<RoadIndex.Built> roads) {

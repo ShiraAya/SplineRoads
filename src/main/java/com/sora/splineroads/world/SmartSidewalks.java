@@ -63,7 +63,7 @@ public final class SmartSidewalks {
       var ring=new RoadSidewalks.Config(true,c.side(),1,c.material(),false);
       for(var cell:RoadSidewalks.cells(expanded,ring)){
         var p=new BlockPos(cell.x(),cell.y(),cell.z());long key=p.asLong();if(!level.hasChunkAt(p))continue;
-        var current=level.getBlockState(p);var terrain=RoadBlocks.isCollider(current)||previous.containsKey(key)?originals.getOrDefault(key,current):current;
+        var current=RoadPlanInputs.state(level,p);var terrain=RoadBlocks.isCollider(current)||previous.containsKey(key)?originals.getOrDefault(key,current):current;
         if(terrain.hasBlockEntity()||!terrain.getFluidState().isEmpty()||!net.minecraft.world.level.block.Block.isShapeFullBlock(terrain.getCollisionShape(level,p)))continue;
         if(!r.record.structures().stream().anyMatch(part->part.material().name().startsWith("WALK_")&&part.a().sub(new com.sora.splineroads.core.RoadGeometry.V(p.getX()+.5,p.getY()+1,p.getZ()+.5)).horizontalLength()<c.width()+4))continue;
         boolean blocked=false;

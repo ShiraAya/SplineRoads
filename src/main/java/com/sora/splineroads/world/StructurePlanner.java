@@ -65,7 +65,7 @@ final class StructurePlanner {
               }
               public boolean marker(V point) {
                 for (BlockPos p : List.of(built.record.a(), built.record.b()))
-                  if (level.getBlockEntity(p) instanceof NodeEntity node
+                  if (RoadPlanInputs.node(level,p) instanceof NodeEntity node
                       && node.node().position().distance(point) < 1.6) return true;
                 return false;
               }

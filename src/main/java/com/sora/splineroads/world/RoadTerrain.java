@@ -21,7 +21,7 @@ final class RoadTerrain {
           RoadPlanningBudget.check();
           BlockPos p=new BlockPos(key.getX(),y,key.getZ());
           if(!level.hasChunkAt(p))break;
-          BlockState state=level.getBlockState(p);
+          BlockState state=RoadPlanInputs.state(level,p);
           state=RoadFoundation.source(p.asLong(),state,
               RoadBlocks.isCollider(state)||state.is(SplineRoads.TUNNEL_AIR.get()),
               state.isAir(),originals,retained,
