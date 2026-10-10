@@ -1,3 +1,5 @@
+> 最新 P1：0448 六图、预览复用与 terrain 缓存，见 `docs/issues/0448-preview-terrain-width-034.md`。本轮计算速度按用户新反馈处理，多线程专项仍暂停。
+
 > 最新 P1：0447 六图追加反馈与 Q3-01～04，见 `docs/issues/0447-live-six-terrain-033.md`。用户明确本轮处理四项 terrain 缺陷，覆盖旧 P2 延后规则；多线程专项仍暂停。
 
 > 最新P1：0446四图与匝道逐段隧道，见 `docs/issues/0446-width-green-tunnel-032.md`。允许隧道默认关，地下接头例外；有空间的地面闭区仍须绿化。覆盖旧默认埋地/外侧一律不绿化规则。

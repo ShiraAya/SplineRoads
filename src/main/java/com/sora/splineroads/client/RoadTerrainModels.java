@@ -120,6 +120,11 @@ public final class RoadTerrainModels {
     pending.clear();published.clear();parts.clear();snapshots.clear();
     sources.replaceAll((road,source)->new Source(source.mesh(),loadedAssets));
     active.forEach((tile,data)->data.sections().forEach((section,quads)->putPart(tile.road(),section,quads)));
+    cache.forEach((tile,data)->{if(loaded(tile.chunk()))data.sections().forEach((section,quads)->putPart(tile.road(),section,quads));});
+    // Resource reload already rebuilds chunk meshes. Publish the retained data
+    // now, so that rebuild sees the current atlas, not empty incremental snapshots.
+    for(var section:new ArrayList<>(pending))publishSection(section);
+    pending.clear();
   }
   static Prepared rebind(Prepared data,Assets old,Assets next){
     Map<Section,Map<Integer,List<BakedQuad>>> sections=new LinkedHashMap<>();
@@ -141,7 +146,9 @@ public final class RoadTerrainModels {
   }
   private static void suspend(){
     waiting.clear();sortWaiting=false;var order=new ArrayList<>(active.keySet());order.sort(Comparator.comparingDouble((Tile t)->distance(t.chunk())).reversed());
-    for(var t:order)remember(t,active.get(t));active.clear();pending.clear();published.clear();parts.clear();snapshots.clear();
+    for(var t:order)remember(t,active.remove(t));
+    // Keep visible snapshots for retained loaded tiles. enabled gates their use;
+    // eviction, road edits and chunk unload still invalidate their contributions.
   }
   public static void clear(){
     jobs.values().forEach(job->job.future().cancel(false));jobs.clear();waiting.clear();
@@ -170,7 +177,7 @@ public final class RoadTerrainModels {
     remove(road);geometry.sections().forEach((section,data)->putPart(road,section,data));
   }
   private static void putPart(UUID road,Section section,Map<Integer,List<BakedQuad>> data){
-    parts.computeIfAbsent(section,key->new HashMap<>()).put(road,data);
+    if(parts.computeIfAbsent(section,key->new HashMap<>()).put(road,data)==data)return;
     published.computeIfAbsent(road,key->new HashSet<>()).add(section);pending.add(section);
   }
   private static void dropPart(UUID road,Section section){
@@ -201,7 +208,12 @@ public final class RoadTerrainModels {
   private static void remember(Tile tile,Prepared data){var old=cache.put(tile,data);if(old!=null)cachedQuads-=old.quads();cachedQuads+=data.quads();trimCache();}
   private static void trimCache(){
     lastCacheMiB=RoadClientConfig.TERRAIN_CACHE_MIB.get();long limit=lastCacheMiB*1048576L/256L;
-    var it=cache.entrySet().iterator();while(it.hasNext()&&(cache.size()>CACHE_TILES||cachedQuads>limit)){cachedQuads-=it.next().getValue().quads();it.remove();}
+    var it=cache.entrySet().iterator();while(it.hasNext()&&(cache.size()>CACHE_TILES||cachedQuads>limit)){
+      var e=it.next();cachedQuads-=e.getValue().quads();it.remove();
+      if(!active.containsKey(e.getKey()))for(var section:e.getValue().sections().keySet()){
+        dropPart(e.getKey().road(),section);publishSection(section);pending.remove(section);
+      }
+    }
   }
   /** Chunk lifecycle events are coalesced; do NOT mark road geometry or infrastructure dirty. */
   static void chunkChanged(Chunk chunk){streamDirty.add(chunk);}
@@ -241,7 +253,11 @@ public final class RoadTerrainModels {
     int allowance=RoadClientConfig.TERRAIN_SECTIONS_PER_FRAME.get();long deadline=System.nanoTime()+900_000;
     while(allowance-->0&&!pending.isEmpty()&&System.nanoTime()<deadline) {
       var it=pending.iterator();Section section=it.next();it.remove();
-      var bucket=parts.get(section);boolean present=loaded(new Chunk(section.x(),section.z()));
+      publishSection(section);
+    }
+  }
+  private static void publishSection(Section section){
+      var mc=Minecraft.getInstance();var bucket=parts.get(section);boolean present=loaded(new Chunk(section.x(),section.z()));
       if(bucket==null||bucket.isEmpty()||!present)snapshots.remove(section);
       else {
         Map<Integer,List<BakedQuad>> combined=new HashMap<>();
@@ -252,7 +268,6 @@ public final class RoadTerrainModels {
         snapshots.put(section,Collections.unmodifiableMap(data));
       }
       if(present)mc.levelRenderer.setSectionDirty(section.x(),section.y(),section.z());
-    }
   }
   public static String status(){return (enabled?"terrain":"VBO")+" ("+shaderStatus+"), "+snapshots.size()+" sections, "+
       (waiting.size()+jobs.size())+" terrain tiles queued, "+pending.size()+" publish, "+cache.size()+" cached, "+preparedTiles+" baked / "+cacheHits+" reused";}

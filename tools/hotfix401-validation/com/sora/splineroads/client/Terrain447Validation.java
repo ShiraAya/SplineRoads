@@ -17,6 +17,7 @@ public final class Terrain447Validation {
   var paint=new RoadSurface.Face(List.of(new V(.8,100.01,0),new V(.8,100.01,2),new V(1.2,100.01,2),new V(1.2,100.01,0)),0xeeeeee);
   var result=RoadTerrainMesh.build(new RoadSurface.Geometry(List.of(deck),List.of(paint)));int marks=0;
   for(var e:result.cells().entrySet())for(var polygon:e.getValue())if(polygon.paint()){
+   check(RoadLighting.normal(new RoadSurface.Face(polygon.vertices(),polygon.color())).y()>0,"projected paint faces underground and is backface-culled");
    marks++;check(e.getValue().stream().anyMatch(p->!p.paint()&&polygon.vertices().stream().allMatch(v->Math.abs(v.y()-RoadTerrainMesh.height(p.vertices(),v))<1e-7)),"marking did not follow a real deck triangle in its collision cell");
   }
   check(marks>0,"test has no projected paint");

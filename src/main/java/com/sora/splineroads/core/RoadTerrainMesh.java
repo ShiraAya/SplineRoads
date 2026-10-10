@@ -60,7 +60,10 @@ public final class RoadTerrainMesh {
           var polygon=RoadSurface.intersect(marking.vertices(),deck.vertices());
           if(polygon.isEmpty())continue;
           if(polygon.stream().anyMatch(p->Math.abs(p.y()-height(deck.vertices(),p))>.35))continue;
-          var surface=polygon.stream().map(p->new V(p.x(),height(deck.vertices(),p),p.z())).toList();
+          var surface=new ArrayList<>(polygon.stream().map(p->new V(p.x(),height(deck.vertices(),p),p.z())).toList());
+          // Polygon intersection normalizes XZ winding, which faces down in XYZ.
+          // Re-establish the upward visible face after the final clipping operation.
+          if(normalY(surface)<0)Collections.reverse(surface);
           projected.computeIfAbsent(owner,k->new ArrayList<>()).add(new Polygon(surface,marking.color(),true));matched=true;
         }
       }
