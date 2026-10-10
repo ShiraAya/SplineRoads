@@ -23,6 +23,12 @@ public final class LaneDeck {
     for(double station:mouthStations(mesh)){
       blend=Math.min(blend,Math.max(0,Math.abs(d-station)-64)/8);
     }
+    // An ADD mouth can survive without an authored blue point. Keep its entire
+    // reservation/taper straight, including transitions longer than 64 blocks.
+    for(var addition:o.lanePoints().additions()){
+      double a=addition.station(),b=a-addition.sign()*addition.transition();
+      blend=Math.min(blend,Math.max(0,Math.max(Math.min(a,b)-d,d-Math.max(a,b)))/8);
+    }
     double wanted=l.outer(side)+side*.14;
     double trim=Math.max(0,side*(outer-wanted))*Settings.smooth(Math.max(0,Math.min(1,blend)));
     return outer-side*trim;

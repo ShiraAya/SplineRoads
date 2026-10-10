@@ -29,6 +29,17 @@ jobs:
           path: build/libs/*.jar
       - name: Core and model regression
         run: bash tools/test_ramp39_model.sh
+      - name: New screenshot regression
+        run: |
+          bash tools/check_sr439.sh
+          bash tools/check_sr440.sh
+          bash tools/check_sr441.sh
+          bash tools/check_sr442.sh
+          bash tools/check_sr443.sh
+          bash tools/check_sr444.sh
+          bash tools/check_sr445.sh
+          bash tools/check_sr435.sh
+          bash tools/check_sr438.sh
       - name: Live447 core, terrain cache and original endpoint regressions
         run: |
           set -o pipefail
@@ -58,37 +69,6 @@ jobs:
           set -o pipefail
           bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run445 -ProadTestNamespaces=splineroads_live445 -ProadTestHeap=3G | tee run445-console.log
           grep -q 'LIVE445 REAL_WORLD PASS' run445-console.log
-      - name: New screenshot regression
-        run: |
-          bash tools/check_sr439.sh
-          bash tools/check_sr440.sh
-          bash tools/check_sr441.sh
-          bash tools/check_sr442.sh
-          bash tools/check_sr443.sh
-          bash tools/check_sr444.sh
-          bash tools/check_sr445.sh
-          bash tools/check_sr435.sh
-          bash tools/check_sr438.sh
-      - name: Thirteen-image actual structure planning and candidate fallback
-        run: |
-          set -o pipefail
-          bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run444 -ProadTestNamespaces=splineroads_live444 -ProadTestHeap=3G | tee run444-console.log
-          grep -q 'LIVE444 REAL_SERVER PASS' run444-console.log
-      - name: Exact support planning on the Minecraft server
-        run: |
-          set -o pipefail
-          bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run443 -ProadTestNamespaces=splineroads_live443 -ProadTestHeap=3G | tee run443-console.log
-          grep -q 'LIVE443 REAL_SERVER PASS' run443-console.log
-      - name: Real detach, continuation, deletion and rebuild sequence
-        run: |
-          set -o pipefail
-          bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run442 -ProadTestNamespaces=splineroads_live442 -ProadTestHeap=3G | tee run442-console.log
-          grep -q 'LIVE442 REAL_WORLD PASS continuation:' run442-console.log
-      - name: Real request publication, underground and tunnel regression
-        run: |
-          set -o pipefail
-          bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run440terrain -ProadTestNamespaces=splineroads_live440 -ProadTestHeap=3G | tee run440terrain-console.log
-          grep -q 'LIVE440 REAL_WORLD PASS' run440terrain-console.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -116,6 +96,53 @@ jobs:
             run445/logs/latest.log
             run445-console.log
 
+  legacy-worlds:
+    name: Existing structure and rebuild worlds
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Thirteen-image actual structure planning and candidate fallback
+        run: |
+          set -o pipefail
+          bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run444 -ProadTestNamespaces=splineroads_live444 -ProadTestHeap=3G | tee run444-console.log
+          grep -q 'LIVE444 REAL_SERVER PASS' run444-console.log
+      - name: Exact support planning on the Minecraft server
+        run: |
+          set -o pipefail
+          bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run443 -ProadTestNamespaces=splineroads_live443 -ProadTestHeap=3G | tee run443-console.log
+          grep -q 'LIVE443 REAL_SERVER PASS' run443-console.log
+      - name: Real detach, continuation, deletion and rebuild sequence
+        run: |
+          set -o pipefail
+          bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run442 -ProadTestNamespaces=splineroads_live442 -ProadTestHeap=3G | tee run442-console.log
+          grep -q 'LIVE442 REAL_WORLD PASS continuation:' run442-console.log
+      - name: Real request publication, underground and tunnel regression
+        run: |
+          set -o pipefail
+          bash gradlew --no-daemon --max-workers=2 runGameTestServer -x downloadAssets -ProadRunDir=run440terrain -ProadTestNamespaces=splineroads_live440 -ProadTestHeap=3G | tee run440terrain-console.log
+          grep -q 'LIVE440 REAL_WORLD PASS' run440terrain-console.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sr447-existing-worlds-${{ github.sha }}
+          path: |
+            run444-console.log
+            run443-console.log
+            run442-console.log
+            run440terrain-console.log
+            run444/logs/latest.log
+            run443/logs/latest.log
+            run442/logs/latest.log
+            run440terrain/logs/latest.log
+
   matrix:
     name: Minecraft matrix row ${{ matrix.row }}
     runs-on: ubuntu-latest
@@ -142,7 +169,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: sr446-matrix-${{ matrix.row }}-${{ github.sha }}
+          name: sr447-matrix-${{ matrix.row }}-${{ github.sha }}
           path: |
             matrix-${{ matrix.row }}.log
             run441matrix/logs/latest.log

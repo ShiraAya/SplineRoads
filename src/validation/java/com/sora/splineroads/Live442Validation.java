@@ -10,7 +10,11 @@ public final class Live442Validation {
    check(parts.stream().anyMatch(p->p.pier()),"cut erased every support");
    for(var p:parts)for(var v:p.base()){
     var q=RoadQueries.horizontal(host,v);
-    if(v.y()<=q.sample().center().y()+.01&&q.sample().distance()>42&&q.sample().distance()<158)
+    // Beam portals deliberately stand outside the original deck. Only projections
+    // inside that deck can enter a removed lane; present() now also excludes the
+    // trimmed shoulder and exterior, rather than testing lane holes alone.
+    if(v.y()<=q.sample().center().y()+.01&&q.sample().distance()>42&&q.sample().distance()<158
+        &&Math.abs(v.sub(q.sample().center()).dot(q.sample().left()))<=q.sample().halfWidth()+.001)
      check(LaneDeck.present(host,q.sample(),v.sub(q.sample().center()).dot(q.sample().left()),.001),"support projects into removed lane slot "+slot+": "+p);
    }
   }
