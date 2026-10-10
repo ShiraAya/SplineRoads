@@ -1,0 +1,23 @@
+2026-10-10T11:12:38.3565186Z [36;1mgrep -q 'LIVE444 REAL_SERVER PASS' run444-console.log[0m
+2026-10-10T11:15:02.2447397Z LIVE444 REAL_SERVER PASS generated perimeter extra=false guarded_samples=1823
+2026-10-10T11:15:29.1448327Z LIVE444 REAL_SERVER PASS generated perimeter extra=true guarded_samples=5137
+2026-10-10T11:15:39.8477135Z LIVE444 REAL_SERVER PASS late shell rejection, AUTO alternate, full publication/build and Mojang NBT
+2026-10-10T11:15:39.8541193Z [11:15:39] [Server thread/INFO] [minecraft/GameTestServer]: All 2 required tests passed :)
+2026-10-10T11:15:47.3739752Z BUILD SUCCESSFUL in 3m 8s
+2026-10-10T11:15:47.7040278Z [36;1mgrep -q 'LIVE443 REAL_SERVER PASS' run443-console.log[0m
+2026-10-10T11:16:38.2727190Z LIVE443 REAL_SERVER PASS exact support planning against an unrasterized candidate and Mojang NBT
+2026-10-10T11:16:38.2743584Z [11:16:38] [Server thread/INFO] [minecraft/GameTestServer]: All 1 required tests passed :)
+2026-10-10T11:16:41.5741503Z BUILD SUCCESSFUL in 53s
+2026-10-10T11:16:41.9142500Z [36;1mgrep -q 'LIVE442 REAL_WORLD PASS continuation:' run442-console.log[0m
+2026-10-10T11:17:52.8879615Z LIVE442 DETACH_BUILD_PASS
+2026-10-10T11:17:55.3880007Z LIVE442 CONTINUATION_BUILD_PASS
+2026-10-10T11:17:56.1862591Z LIVE442 DELETE_PASS
+2026-10-10T11:18:11.9869327Z LIVE442 REBUILD_PASS
+2026-10-10T11:18:12.0896345Z LIVE442 REAL_WORLD PASS continuation: 2->DETACH->1-lane B->delete->2-to-1 taper->new DETACH build
+2026-10-10T11:18:12.0949392Z [11:18:12] [Server thread/INFO] [minecraft/GameTestServer]: All 1 required tests passed :)
+2026-10-10T11:18:16.3782547Z BUILD SUCCESSFUL in 1m 34s
+2026-10-10T11:18:16.6971827Z [36;1mgrep -q 'LIVE440 REAL_WORLD PASS' run440terrain-console.log[0m
+2026-10-10T11:19:12.5737242Z LIVE440 REAL_WORLD PASS underground=true: actual request/compute/publish/build, rectangle, flexible B, monotone, NBT, deletion
+2026-10-10T11:19:23.1737735Z LIVE440 REAL_WORLD PASS underground=false: actual request/compute/publish/build, rectangle, flexible B, monotone, NBT, deletion
+2026-10-10T11:19:23.1748369Z [11:19:23] [Server thread/INFO] [minecraft/GameTestServer]: All 2 required tests passed :)
+2026-10-10T11:19:28.0543252Z BUILD SUCCESSFUL in 1m 11s

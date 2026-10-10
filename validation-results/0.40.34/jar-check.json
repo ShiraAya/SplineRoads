@@ -1,0 +1,9 @@
+{
+  "version": "0.40.34-alpha",
+  "built_commit": "00ab09e1569e23980d76c729c1c2a35aef659a23",
+  "production_src_main_tree": "cfff5ef6202a60f9ffee19c7df84417e3c2a2976",
+  "bytes": 5709080,
+  "sha256": "ef32e64e770d6802bd065dfa6f8b1d425c933a5da8360d4e38ea4116b5e76ec3",
+  "zip_entries": 999,
+  "crc": "PASS"
+}
