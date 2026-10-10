@@ -127,8 +127,10 @@ public final class RoadTerrainModels {
       Map<Integer,List<BakedQuad>> replaced=new LinkedHashMap<>();
       cells.forEach((cell,quads)->replaced.put(cell,quads.stream().map(q->{
         var before=q.getSprite();var after=before==old.paint()?next.paint():next.asphalt();
-        int[] v=q.getVertices().clone();
-        for(int i=0;i<4;i++){
+        boolean sameUV=before.getU(0)==after.getU(0)&&before.getU(16)==after.getU(16)
+            &&before.getV(0)==after.getV(0)&&before.getV(16)==after.getV(16);
+        int[] v=sameUV?q.getVertices():q.getVertices().clone();
+        if(!sameUV)for(int i=0;i<4;i++){
           double u=(Float.intBitsToFloat(v[i*8+4])-before.getU(0))/(before.getU(16)-before.getU(0));
           double t=(Float.intBitsToFloat(v[i*8+5])-before.getV(0))/(before.getV(16)-before.getV(0));
           v[i*8+4]=Float.floatToRawIntBits(after.getU(u*16));v[i*8+5]=Float.floatToRawIntBits(after.getV(t*16));

@@ -59,6 +59,10 @@ public final class RoadPlanningJobs {
             RoadPlanningBudget.check();ACTIVE.remove(owner,job);if(!job.cancelled.get())RoadNetwork.open(player,reply);
           }
         }catch(RuntimeException e){ACTIVE.remove(owner,job);if(!job.cancelled.get())failed(player,t,e);}
+        finally{
+          if(job.cancelled.get()&&tool.getOrCreateTag().getCompound("LanePreview").getLong("Request")==job.request)
+            tool.getOrCreateTag().remove("LanePreview");
+        }
       });return null;
     });
     try{

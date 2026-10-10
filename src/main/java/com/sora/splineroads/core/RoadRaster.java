@@ -38,6 +38,7 @@ public final class RoadRaster {
       for (Mesh piece : LaneDeck.rasterPieces(mesh,96)) {
         var points = piece.samples();
         for (int i = 1; i < points.size(); i++) {
+      RoadPlanningBudget.check();
           Sample a = points.get(i - 1), b = points.get(i);
           for(var strip:LaneDeck.strips(piece,a,b)) {
           Segment segment=new Segment(strip.al(),strip.ar(),strip.bl(),strip.br(),mesh.settings().thickness());
@@ -194,6 +195,7 @@ public final class RoadRaster {
     // Rasterize long roads in bounded strips without retaining millions of sub-block tiles.
     Map<Cell, List<Box>> result = new HashMap<>();
     for (Mesh part : LaneDeck.rasterPieces(mesh,96)) {
+      RoadPlanningBudget.check();
       if (only != null
           && (only.x() + 1 < part.min().x()
               || only.x() > part.max().x()
@@ -219,6 +221,7 @@ public final class RoadRaster {
     var points = mesh.samples();
     double step = 1.0 / resolution;
     for (int i = 1; i < points.size(); i++) {
+      RoadPlanningBudget.check();
       Sample a = points.get(i - 1), b = points.get(i);
       for(var strip:LaneDeck.strips(mesh,a,b)) {
         triangle(tiles,strip.al(),strip.ar(),strip.br(),mesh.settings().thickness(),resolution,only);
@@ -246,6 +249,7 @@ public final class RoadRaster {
     // A quarter-grid mask fits in one long even for eighth-grid input.
     Map<Tile,Long> masks=new HashMap<>();
     for(var r:quads){
+      RoadPlanningBudget.check();
       int tx0=(int)Math.floor(r[0]*resolution),tx1=(int)Math.ceil(r[2]*resolution)-1;
       int tz0=(int)Math.floor(r[1]*resolution),tz1=(int)Math.ceil(r[3]*resolution)-1;
       int x0=Math.floorDiv(tx0,resolution),x1=Math.floorDiv(tx1,resolution);
@@ -300,6 +304,7 @@ public final class RoadRaster {
     double step = 1.0 / resolution;
     Map<Cell, List<Box>> result = new HashMap<>();
     for (var entry : tiles.entrySet()) {
+      RoadPlanningBudget.check();
       Tile tile = entry.getKey();
       double x0 = tile.x * step, z0 = tile.z * step;
       int x = Math.floorDiv(tile.x, resolution), z = Math.floorDiv(tile.z, resolution);
@@ -457,6 +462,7 @@ public final class RoadRaster {
   public static Map<Cell, List<Box>> structures(List<RoadStructures.Part> parts, Cell only) {
     Map<Cell, List<Box>> out = new HashMap<>();
     for (var part : parts) {
+      RoadPlanningBudget.check();
       if (only != null) {
         double w = part.halfExtent();
         if (only.x() + 1 <= Math.min(part.a().x(), part.b().x()) - w

@@ -61,11 +61,19 @@ public final class Live447ModelValidation {
   var wall=new RoadLighting.Access(){public boolean opaque(int x,int y,int z){return x>=1;}public int packed(int x,int y,int z){return x>=1?15<<20:0;}};
   check(RoadLighting.sample(face,face.points().get(0),wall)==0,"opaque centroid leaks light");
  }
+ static void oldLighting(){
+  var ceiling=new RoadStructures.Part(new V(0,10,0),new V(12,10,0),4,1,false,RoadStructures.Material.TUNNEL);
+  var air=new RoadLighting.Access(){public boolean opaque(int x,int y,int z){return y>=10;}public int packed(int x,int y,int z){return y>=10?0:9<<4;}};
+  for(var face:ceiling.faces())if(RoadLighting.normal(face).y()<-.9)for(var p:face.points())check(RoadLighting.sample(face,p,air)==9<<4,"ceiling underside now samples opaque roof");
+  var down=new RoadSurface.Face(List.of(new V(0,4,0),new V(8,4,8),new V(0,4,8)),0xdddddd);
+  var ground=new RoadLighting.Access(){public boolean opaque(int x,int y,int z){return false;}public int packed(int x,int y,int z){return y<4?0:8<<4;}};
+  check(RoadLighting.sample(down,down.points().get(0),ground,true)==8<<4,"pavement normal lighting regressed");
+ }
  static void cancellation()throws Exception{
   var stop=new AtomicBoolean();var entered=new java.util.concurrent.CountDownLatch(1);var finished=new java.util.concurrent.CountDownLatch(1);var error=new java.util.concurrent.atomic.AtomicReference<Throwable>();
   var worker=new Thread(()->{try(var outer=RoadPlanningBudget.cancellable("preview",stop::get);var nested=RoadPlanningBudget.cancellable("nested geometry")){entered.countDown();while(true)RoadPlanningBudget.check();}catch(RoadPlanningBudget.Aborted expected){}catch(Throwable t){error.set(t);}finally{finished.countDown();}});
   worker.start();check(entered.await(2,java.util.concurrent.TimeUnit.SECONDS),"cancel worker did not start");stop.set(true);
   check(finished.await(2,java.util.concurrent.TimeUnit.SECONDS)&&error.get()==null,"nested preview ignores external cancel token");
  }
- public static void main(String[]args)throws Exception{edge();lighting();cancellation();savedEndpoints();System.out.println("Live447ModelValidation: "+checks+" checks PASS (explicit adapters; not Minecraft/GPU)");}
+ public static void main(String[]args)throws Exception{edge();lighting();oldLighting();cancellation();savedEndpoints();System.out.println("Live447ModelValidation: "+checks+" checks PASS (explicit adapters; not Minecraft/GPU)");}
 }

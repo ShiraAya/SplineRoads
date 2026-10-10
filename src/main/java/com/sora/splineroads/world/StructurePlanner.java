@@ -107,6 +107,7 @@ final class StructurePlanner {
               public boolean railBlocked(RoadStructures.Part part,V a,V b){return blocked(part,a,b);}
               public boolean unionRails(){return laneEdges;}
               private boolean blocked(RoadStructures.Part part,V railA,V railB){
+                RoadPlanningBudget.check();
                 if(pierSpacing.tooClose(part))return true;
                 if(!RoadSidewalks.smoothPart(part)&&sidewalkSolids.intersects(part))return true;
                 if(LaneTopology.metadata(built.record).link()!=null&&RoadInteractions.selfSupportBlocked(part,built.mesh))return true;

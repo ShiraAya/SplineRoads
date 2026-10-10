@@ -1174,6 +1174,7 @@ public final class RoadData extends SavedData {
         for(long port:center.getLongArray("Ports"))endpoints.add(BlockPos.of(port));
       Map<Long, BlockState> writes = new HashMap<>();
       for (long key : touched) {
+        com.sora.splineroads.core.RoadPlanningBudget.check();
         BlockPos p = BlockPos.of(key);
         if (level.isOutsideBuildHeight(p) || !level.getWorldBorder().isWithinBounds(p))
           throw new IllegalArgumentException("道路超出世界高度或边界");
@@ -1311,6 +1312,7 @@ public final class RoadData extends SavedData {
         marker.apply(move.target());
       }
       for (long key : touched) {
+        com.sora.splineroads.core.RoadPlanningBudget.check();
         if (body.containsKey(key) || !deleting&&air.contains(key) || sidewalks.containsKey(key) || moveTargets.contains(key)) continue;
         BlockPos p = BlockPos.of(key);
         BlockState current = level.getBlockState(p);
